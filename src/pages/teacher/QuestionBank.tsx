@@ -185,34 +185,34 @@ export default function QuestionBank() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">வினாவங்கி</h1>
+          <h1 className="text-3xl font-bold">Question Bank / வினாவங்கி</h1>
           <p className="text-muted-foreground mt-2">
-            வினாக்களை உருவாக்கவும் மற்றும் நிர்வகிக்கவும்
+            Create and manage questions / வினாக்களை உருவாக்கவும் மற்றும் நிர்வகிக்கவும்
           </p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="w-4 h-4 mr-2" />
-              புதிய வினா
+              New Question / புதிய வினா
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>புதிய வினா சேர்க்கவும்</DialogTitle>
+              <DialogTitle>Add New Question / புதிய வினா சேர்க்கவும்</DialogTitle>
               <DialogDescription>
-                வினாவின் விவரங்களை நிரப்பவும்
+                Fill in the question details / வினாவின் விவரங்களை நிரப்பவும்
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="subject">பாடம் *</Label>
+                <Label htmlFor="subject">Subject / பாடம் *</Label>
                 <Select
                   value={formData.subject_id}
                   onValueChange={(value) => setFormData({ ...formData, subject_id: value })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="பாடத்தை தேர்ந்தெடுக்கவும்" />
+                    <SelectValue placeholder="Select subject / பாடத்தை தேர்ந்தெடுக்கவும்" />
                   </SelectTrigger>
                   <SelectContent>
                     {subjects.map((subject) => (
@@ -225,12 +225,12 @@ export default function QuestionBank() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="question_text">வினா *</Label>
+                <Label htmlFor="question_text">Question / வினா *</Label>
                 <Textarea
                   id="question_text"
                   value={formData.question_text}
                   onChange={(e) => setFormData({ ...formData, question_text: e.target.value })}
-                  placeholder="வினாவை உள்ளிடவும்"
+                  placeholder="Enter question / வினாவை உள்ளிடவும்"
                   rows={3}
                   required
                 />
@@ -238,7 +238,7 @@ export default function QuestionBank() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="question_type">வினா வகை *</Label>
+                  <Label htmlFor="question_type">Question Type / வினா வகை *</Label>
                   <Select
                     value={formData.question_type}
                     onValueChange={(value) =>
@@ -249,15 +249,15 @@ export default function QuestionBank() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="mcq">பல தேர்வு</SelectItem>
-                      <SelectItem value="true_false">உண்மை/பொய்</SelectItem>
-                      <SelectItem value="short_answer">குறுகிய பதில்</SelectItem>
+                      <SelectItem value="mcq">MCQ / பல தேர்வு</SelectItem>
+                      <SelectItem value="true_false">True/False / உண்மை/பொய்</SelectItem>
+                      <SelectItem value="short_answer">Short Answer / குறுகிய பதில்</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="difficulty">சிரம நிலை *</Label>
+                  <Label htmlFor="difficulty">Difficulty / சிரம நிலை *</Label>
                   <Select
                     value={formData.difficulty}
                     onValueChange={(value) =>
@@ -268,9 +268,9 @@ export default function QuestionBank() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="easy">எளிது</SelectItem>
-                      <SelectItem value="medium">நடுத்தரம்</SelectItem>
-                      <SelectItem value="hard">கடினம்</SelectItem>
+                      <SelectItem value="easy">Easy / எளிது</SelectItem>
+                      <SelectItem value="medium">Medium / நடுத்தரம்</SelectItem>
+                      <SelectItem value="hard">Hard / கடினம்</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -278,7 +278,7 @@ export default function QuestionBank() {
 
               {formData.question_type === 'mcq' && (
                 <div className="space-y-2">
-                  <Label>விருப்பங்கள்</Label>
+                  <Label>Options / விருப்பங்கள்</Label>
                   {formData.options.map((option, index) => (
                     <Input
                       key={index}
@@ -288,25 +288,25 @@ export default function QuestionBank() {
                         newOptions[index] = e.target.value;
                         setFormData({ ...formData, options: newOptions });
                       }}
-                      placeholder={`விருப்பம் ${index + 1}`}
+                      placeholder={`Option / விருப்பம் ${index + 1}`}
                     />
                   ))}
                 </div>
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="correct_answer">சரியான பதில் *</Label>
+                <Label htmlFor="correct_answer">Correct Answer / சரியான பதில் *</Label>
                 <Input
                   id="correct_answer"
                   value={formData.correct_answer}
                   onChange={(e) => setFormData({ ...formData, correct_answer: e.target.value })}
-                  placeholder="சரியான பதிலை உள்ளிடவும்"
+                  placeholder="Enter correct answer / சரியான பதிலை உள்ளிடவும்"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="marks">மதிப்பெண்கள் *</Label>
+                <Label htmlFor="marks">Marks / மதிப்பெண்கள் *</Label>
                 <Input
                   id="marks"
                   type="number"
@@ -319,9 +319,9 @@ export default function QuestionBank() {
 
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
-                  ரத்து செய்
+                  Cancel / ரத்து செய்
                 </Button>
-                <Button type="submit">சேர்க்கவும்</Button>
+                <Button type="submit">Add / சேர்க்கவும்</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -330,19 +330,19 @@ export default function QuestionBank() {
 
       <Card>
         <CardHeader>
-          <CardTitle>அனைத்து வினாக்கள் ({questions.length})</CardTitle>
+          <CardTitle>All Questions / அனைத்து வினாக்கள் ({questions.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>வினா</TableHead>
-                  <TableHead>பாடம்</TableHead>
-                  <TableHead>வகை</TableHead>
-                  <TableHead>சிரமம்</TableHead>
-                  <TableHead>மதிப்பெண்கள்</TableHead>
-                  <TableHead>செயல்கள்</TableHead>
+                  <TableHead>Question / வினா</TableHead>
+                  <TableHead>Subject / பாடம்</TableHead>
+                  <TableHead>Type / வகை</TableHead>
+                  <TableHead>Difficulty / சிரமம்</TableHead>
+                  <TableHead>Marks / மதிப்பெண்கள்</TableHead>
+                  <TableHead>Actions / செயல்கள்</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -369,7 +369,7 @@ export default function QuestionBank() {
                 {questions.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center text-muted-foreground">
-                      வினாக்கள் இல்லை
+                      No questions / வினாக்கள் இல்லை
                     </TableCell>
                   </TableRow>
                 )}

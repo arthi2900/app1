@@ -40,25 +40,25 @@ export default function AdminDashboard() {
 
   const statCards = [
     {
-      title: 'மொத்த பயனர்கள்',
+      title: 'Total Users / மொத்த பயனர்கள்',
       value: stats.totalUsers,
       icon: Users,
       color: 'text-primary',
     },
     {
-      title: 'மொத்த பாடங்கள்',
+      title: 'Total Subjects / மொத்த பாடங்கள்',
       value: stats.totalSubjects,
       icon: BookOpen,
       color: 'text-secondary',
     },
     {
-      title: 'மொத்த வினாக்கள்',
+      title: 'Total Questions / மொத்த வினாக்கள்',
       value: stats.totalQuestions,
       icon: FileQuestion,
       color: 'text-accent',
     },
     {
-      title: 'மொத்த தேர்வுகள்',
+      title: 'Total Exams / மொத்த தேர்வுகள்',
       value: stats.totalExams,
       icon: ClipboardList,
       color: 'text-chart-3',
@@ -70,7 +70,7 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">ஏற்றுகிறது...</p>
+          <p className="text-muted-foreground">Loading... / ஏற்றுகிறது...</p>
         </div>
       </div>
     );
@@ -79,9 +79,9 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">நிர்வாக டாஷ்போர்டு</h1>
+        <h1 className="text-3xl font-bold">Admin Dashboard / நிர்வாக டாஷ்போர்டு</h1>
         <p className="text-muted-foreground mt-2">
-          அமைப்பு கண்ணோட்டம் மற்றும் புள்ளிவிவரங்கள்
+          System overview and statistics / அமைப்பு கண்ணோட்டம் மற்றும் புள்ளிவிவரங்கள்
         </p>
       </div>
 
@@ -104,10 +104,12 @@ export default function AdminDashboard() {
 
       <Card>
         <CardHeader>
-          <CardTitle>வரவேற்பு</CardTitle>
+          <CardTitle>Welcome / வரவேற்பு</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
+            Welcome to the admin section of the Online Exam Management System.
+            Here you can manage users, assign roles, and control system settings. /
             ஆன்லைன் தேர்வு மேலாண்மை அமைப்பின் நிர்வாக பகுதிக்கு வரவேற்கிறோம்.
             இங்கு நீங்கள் பயனர்களை நிர்வகிக்கலாம், பாத்திரங்களை ஒதுக்கலாம் மற்றும்
             அமைப்பு அமைப்புகளை கட்டுப்படுத்தலாம்.

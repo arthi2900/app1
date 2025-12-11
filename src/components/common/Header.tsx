@@ -21,14 +21,14 @@ export default function Header() {
     try {
       await signOut();
       toast({
-        title: 'வெற்றி',
-        description: 'வெற்றிகரமாக வெளியேறினீர்கள்',
+        title: 'Success / வெற்றி',
+        description: 'Successfully logged out / வெற்றிகரமாக வெளியேறினீர்கள்',
       });
       navigate('/login');
     } catch (error: any) {
       toast({
-        title: 'பிழை',
-        description: error.message || 'வெளியேற முடியவில்லை',
+        title: 'Error / பிழை',
+        description: error.message || 'Could not log out / வெளியேற முடியவில்லை',
         variant: 'destructive',
       });
     }
@@ -41,32 +41,32 @@ export default function Header() {
 
     if (profile.role === 'admin') {
       links.push(
-        { to: '/admin', label: 'நிர்வாகம்', icon: LayoutDashboard },
-        { to: '/admin/users', label: 'பயனர்கள்', icon: Users }
+        { to: '/admin', label: 'Admin / நிர்வாகம்', icon: LayoutDashboard },
+        { to: '/admin/users', label: 'Users / பயனர்கள்', icon: Users }
       );
     }
 
     if (profile.role === 'principal') {
       links.push(
-        { to: '/principal', label: 'டாஷ்போர்டு', icon: LayoutDashboard },
-        { to: '/principal/approvals', label: 'ஒப்புதல்கள்', icon: ClipboardList },
-        { to: '/principal/reports', label: 'அறிக்கைகள்', icon: Award }
+        { to: '/principal', label: 'Dashboard / டாஷ்போர்டு', icon: LayoutDashboard },
+        { to: '/principal/approvals', label: 'Approvals / ஒப்புதல்கள்', icon: ClipboardList },
+        { to: '/principal/reports', label: 'Reports / அறிக்கைகள்', icon: Award }
       );
     }
 
     if (profile.role === 'teacher') {
       links.push(
-        { to: '/teacher', label: 'டாஷ்போர்டு', icon: LayoutDashboard },
-        { to: '/teacher/questions', label: 'வினாவங்கி', icon: FileQuestion },
-        { to: '/teacher/exams', label: 'தேர்வுகள்', icon: ClipboardList }
+        { to: '/teacher', label: 'Dashboard / டாஷ்போர்டு', icon: LayoutDashboard },
+        { to: '/teacher/questions', label: 'Question Bank / வினாவங்கி', icon: FileQuestion },
+        { to: '/teacher/exams', label: 'Exams / தேர்வுகள்', icon: ClipboardList }
       );
     }
 
     if (profile.role === 'student') {
       links.push(
-        { to: '/student', label: 'டாஷ்போர்டு', icon: LayoutDashboard },
-        { to: '/student/exams', label: 'தேர்வுகள்', icon: ClipboardList },
-        { to: '/student/results', label: 'முடிவுகள்', icon: Award }
+        { to: '/student', label: 'Dashboard / டாஷ்போர்டு', icon: LayoutDashboard },
+        { to: '/student/exams', label: 'Exams / தேர்வுகள்', icon: ClipboardList },
+        { to: '/student/results', label: 'Results / முடிவுகள்', icon: Award }
       );
     }
 
@@ -84,7 +84,7 @@ export default function Header() {
               <BookOpen className="w-6 h-6 text-primary-foreground" />
             </div>
             <span className="font-bold text-lg hidden sm:inline-block">
-              ஆன்லைன் தேர்வு
+              Online Exam / ஆன்லைன் தேர்வு
             </span>
           </Link>
 
@@ -123,10 +123,10 @@ export default function Header() {
                       {profile.full_name || profile.username}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {profile.role === 'admin' && 'நிர்வாகி'}
-                      {profile.role === 'principal' && 'தலைமை ஆசிரியர்'}
-                      {profile.role === 'teacher' && 'ஆசிரியர்'}
-                      {profile.role === 'student' && 'மாணவர்'}
+                      {profile.role === 'admin' && 'Admin / நிர்வாகி'}
+                      {profile.role === 'principal' && 'Principal / தலைமை ஆசிரியர்'}
+                      {profile.role === 'teacher' && 'Teacher / ஆசிரியர்'}
+                      {profile.role === 'student' && 'Student / மாணவர்'}
                     </p>
                   </div>
                 </DropdownMenuLabel>
@@ -147,7 +147,7 @@ export default function Header() {
                 </div>
                 <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
                   <LogOut className="w-4 h-4 mr-2" />
-                  வெளியேறு
+                  Logout / வெளியேறு
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -155,11 +155,11 @@ export default function Header() {
             <div className="flex items-center gap-2">
               <Link to="/login">
                 <Button variant="ghost" size="sm">
-                  உள்நுழைக
+                  Login / உள்நுழைக
                 </Button>
               </Link>
               <Link to="/register">
-                <Button size="sm">பதிவு செய்க</Button>
+                <Button size="sm">Register / பதிவு செய்க</Button>
               </Link>
             </div>
           )}

@@ -103,9 +103,9 @@ export default function StudentExams() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">கிடைக்கும் தேர்வுகள்</h1>
+        <h1 className="text-3xl font-bold">Available Exams / கிடைக்கும் தேர்வுகள்</h1>
         <p className="text-muted-foreground mt-2">
-          தேர்வுகளை எழுதவும் மற்றும் முடிவுகளை பார்க்கவும்
+          Take exams and view results / தேர்வுகளை எழுதவும் மற்றும் முடிவுகளை பார்க்கவும்
         </p>
       </div>
 
@@ -142,15 +142,15 @@ export default function StudentExams() {
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Clock className="w-4 h-4" />
-                    <span>காலம்: {exam.duration_minutes} நிமிடங்கள்</span>
+                    <span>Duration / காலம்: {exam.duration_minutes} minutes / நிமிடங்கள்</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Award className="w-4 h-4" />
-                    <span>மொத்த மதிப்பெண்கள்: {exam.total_marks}</span>
+                    <span>Total Marks / மொத்த மதிப்பெண்கள்: {exam.total_marks}</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <BookOpen className="w-4 h-4" />
-                    <span>தேர்ச்சி மதிப்பெண்கள்: {exam.pass_marks}</span>
+                    <span>Pass Marks / தேர்ச்சி மதிப்பெண்கள்: {exam.pass_marks}</span>
                   </div>
                   {schedule && (
                     <div className="flex items-center gap-2 text-muted-foreground">
@@ -179,7 +179,7 @@ export default function StudentExams() {
                   disabled={!available}
                   onClick={() => handleStartExam(exam.id)}
                 >
-                  {available ? 'தேர்வை தொடங்கு' : 'கிடைக்கவில்லை'}
+                  {available ? 'Start Exam / தேர்வை தொடங்கு' : 'Not Available / கிடைக்கவில்லை'}
                 </Button>
               </CardContent>
             </Card>
@@ -190,9 +190,9 @@ export default function StudentExams() {
           <Card className="col-span-full">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <BookOpen className="w-12 h-12 text-muted-foreground mb-4" />
-              <p className="text-lg font-medium">தேர்வுகள் இல்லை</p>
+              <p className="text-lg font-medium">No Exams / தேர்வுகள் இல்லை</p>
               <p className="text-sm text-muted-foreground mt-1">
-                தற்போது கிடைக்கும் தேர்வுகள் இல்லை
+                No exams available at the moment / தற்போது கிடைக்கும் தேர்வுகள் இல்லை
               </p>
             </CardContent>
           </Card>

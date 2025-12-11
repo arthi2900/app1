@@ -21,8 +21,8 @@ export default function Login() {
     
     if (!username.trim() || !password) {
       toast({
-        title: 'பிழை',
-        description: 'பயனர்பெயர் மற்றும் கடவுச்சொல் தேவை',
+        title: 'Error / பிழை',
+        description: 'Username and password are required / பயனர்பெயர் மற்றும் கடவுச்சொல் தேவை',
         variant: 'destructive',
       });
       return;
@@ -32,14 +32,14 @@ export default function Login() {
     try {
       await signIn(username, password);
       toast({
-        title: 'வெற்றி',
-        description: 'வெற்றிகரமாக உள்நுழைந்துள்ளீர்கள்',
+        title: 'Success / வெற்றி',
+        description: 'Successfully logged in / வெற்றிகரமாக உள்நுழைந்துள்ளீர்கள்',
       });
       navigate('/');
     } catch (error: any) {
       toast({
-        title: 'உள்நுழைவு தோல்வி',
-        description: error.message || 'தவறான பயனர்பெயர் அல்லது கடவுச்சொல்',
+        title: 'Login Failed / உள்நுழைவு தோல்வி',
+        description: error.message || 'Invalid username or password / தவறான பயனர்பெயர் அல்லது கடவுச்சொல்',
         variant: 'destructive',
       });
     } finally {
@@ -56,19 +56,19 @@ export default function Login() {
               <BookOpen className="w-8 h-8 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">உள்நுழைவு</CardTitle>
+          <CardTitle className="text-2xl font-bold">Login / உள்நுழைவு</CardTitle>
           <CardDescription>
-            ஆன்லைன் தேர்வு மேலாண்மை அமைப்பு
+            Online Exam Management System / ஆன்லைன் தேர்வு மேலாண்மை அமைப்பு
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">பயனர்பெயர்</Label>
+              <Label htmlFor="username">Username / பயனர்பெயர்</Label>
               <Input
                 id="username"
                 type="text"
-                placeholder="உங்கள் பயனர்பெயரை உள்ளிடவும்"
+                placeholder="Enter your username / உங்கள் பயனர்பெயரை உள்ளிடவும்"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={loading}
@@ -76,11 +76,11 @@ export default function Login() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">கடவுச்சொல்</Label>
+              <Label htmlFor="password">Password / கடவுச்சொல்</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="உங்கள் கடவுச்சொல்லை உள்ளிடவும்"
+                placeholder="Enter your password / உங்கள் கடவுச்சொல்லை உள்ளிடவும்"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
@@ -90,12 +90,12 @@ export default function Login() {
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'உள்நுழைகிறது...' : 'உள்நுழைக'}
+              {loading ? 'Logging in... / உள்நுழைகிறது...' : 'Login / உள்நுழைக'}
             </Button>
             <p className="text-sm text-center text-muted-foreground">
-              கணக்கு இல்லையா?{' '}
+              Don't have an account? / கணக்கு இல்லையா?{' '}
               <Link to="/register" className="text-primary hover:underline font-medium">
-                பதிவு செய்யவும்
+                Register / பதிவு செய்யவும்
               </Link>
             </p>
           </CardFooter>

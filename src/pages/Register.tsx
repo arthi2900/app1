@@ -23,8 +23,8 @@ export default function Register() {
     
     if (!username.trim() || !password || !confirmPassword) {
       toast({
-        title: 'பிழை',
-        description: 'அனைத்து புலங்களும் தேவை',
+        title: 'Error / பிழை',
+        description: 'All fields are required / அனைத்து புலங்களும் தேவை',
         variant: 'destructive',
       });
       return;
@@ -32,8 +32,8 @@ export default function Register() {
 
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
       toast({
-        title: 'பிழை',
-        description: 'பயனர்பெயரில் எழுத்துக்கள், எண்கள் மற்றும் _ மட்டுமே அனுமதிக்கப்படும்',
+        title: 'Error / பிழை',
+        description: 'Username can only contain letters, numbers and underscore / பயனர்பெயரில் எழுத்துக்கள், எண்கள் மற்றும் _ மட்டுமே அனுமதிக்கப்படும்',
         variant: 'destructive',
       });
       return;
@@ -41,8 +41,8 @@ export default function Register() {
 
     if (password !== confirmPassword) {
       toast({
-        title: 'பிழை',
-        description: 'கடவுச்சொற்கள் பொருந்தவில்லை',
+        title: 'Error / பிழை',
+        description: 'Passwords do not match / கடவுச்சொற்கள் பொருந்தவில்லை',
         variant: 'destructive',
       });
       return;
@@ -50,8 +50,8 @@ export default function Register() {
 
     if (password.length < 6) {
       toast({
-        title: 'பிழை',
-        description: 'கடவுச்சொல் குறைந்தது 6 எழுத்துக்கள் இருக்க வேண்டும்',
+        title: 'Error / பிழை',
+        description: 'Password must be at least 6 characters / கடவுச்சொல் குறைந்தது 6 எழுத்துக்கள் இருக்க வேண்டும்',
         variant: 'destructive',
       });
       return;
@@ -61,14 +61,14 @@ export default function Register() {
     try {
       await signUp(username, password, fullName);
       toast({
-        title: 'வெற்றி',
-        description: 'கணக்கு வெற்றிகரமாக உருவாக்கப்பட்டது',
+        title: 'Success / வெற்றி',
+        description: 'Account created successfully / கணக்கு வெற்றிகரமாக உருவாக்கப்பட்டது',
       });
       navigate('/login');
     } catch (error: any) {
       toast({
-        title: 'பதிவு தோல்வி',
-        description: error.message || 'கணக்கை உருவாக்க முடியவில்லை',
+        title: 'Registration Failed / பதிவு தோல்வி',
+        description: error.message || 'Could not create account / கணக்கை உருவாக்க முடியவில்லை',
         variant: 'destructive',
       });
     } finally {
@@ -85,45 +85,45 @@ export default function Register() {
               <BookOpen className="w-8 h-8 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">பதிவு செய்யவும்</CardTitle>
+          <CardTitle className="text-2xl font-bold">Register / பதிவு செய்யவும்</CardTitle>
           <CardDescription>
-            புதிய கணக்கை உருவாக்கவும்
+            Create a new account / புதிய கணக்கை உருவாக்கவும்
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">பயனர்பெயர் *</Label>
+              <Label htmlFor="username">Username / பயனர்பெயர் *</Label>
               <Input
                 id="username"
                 type="text"
-                placeholder="பயனர்பெயரை உள்ளிடவும்"
+                placeholder="Enter username / பயனர்பெயரை உள்ளிடவும்"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={loading}
                 required
               />
               <p className="text-xs text-muted-foreground">
-                எழுத்துக்கள், எண்கள் மற்றும் _ மட்டுமே
+                Letters, numbers and _ only / எழுத்துக்கள், எண்கள் மற்றும் _ மட்டுமே
               </p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="fullName">முழு பெயர்</Label>
+              <Label htmlFor="fullName">Full Name / முழு பெயர்</Label>
               <Input
                 id="fullName"
                 type="text"
-                placeholder="உங்கள் முழு பெயரை உள்ளிடவும்"
+                placeholder="Enter your full name / உங்கள் முழு பெயரை உள்ளிடவும்"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 disabled={loading}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">கடவுச்சொல் *</Label>
+              <Label htmlFor="password">Password / கடவுச்சொல் *</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="கடவுச்சொல்லை உள்ளிடவும்"
+                placeholder="Enter password / கடவுச்சொல்லை உள்ளிடவும்"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
@@ -131,11 +131,11 @@ export default function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">கடவுச்சொல் உறுதிப்படுத்தல் *</Label>
+              <Label htmlFor="confirmPassword">Confirm Password / கடவுச்சொல் உறுதிப்படுத்தல் *</Label>
               <Input
                 id="confirmPassword"
                 type="password"
-                placeholder="கடவுச்சொல்லை மீண்டும் உள்ளிடவும்"
+                placeholder="Re-enter password / கடவுச்சொல்லை மீண்டும் உள்ளிடவும்"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 disabled={loading}
@@ -145,12 +145,12 @@ export default function Register() {
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'பதிவு செய்கிறது...' : 'பதிவு செய்க'}
+              {loading ? 'Registering... / பதிவு செய்கிறது...' : 'Register / பதிவு செய்க'}
             </Button>
             <p className="text-sm text-center text-muted-foreground">
-              ஏற்கனவே கணக்கு உள்ளதா?{' '}
+              Already have an account? / ஏற்கனவே கணக்கு உள்ளதா?{' '}
               <Link to="/login" className="text-primary hover:underline font-medium">
-                உள்நுழைக
+                Login / உள்நுழைக
               </Link>
             </p>
           </CardFooter>
