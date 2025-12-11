@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { examApi, examScheduleApi, examAttemptApi } from '@/db/api';
-import type { ExamWithDetails, ExamSchedule } from '@/types/types';
-import { useToast } from '@/hooks/use-toast';
-import { Clock, BookOpen, Award, Calendar } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Clock, Award, BookOpen, Calendar } from 'lucide-react';
+import { examApi, examScheduleApi } from '@/db/api';
+import { useLanguage } from '@/contexts/LanguageContext';
+import type { Exam, ExamSchedule } from '@/types/types';
 
 export default function StudentExams() {
-  const [exams, setExams] = useState<ExamWithDetails[]>([]);
-  const [schedules, setSchedules] = useState<Record<string, ExamSchedule>>({});
+  const { t } = useLanguage();
+  const [exams, setExams] = useState<Exam[]>([]);
+  const [schedules, setSchedules] = useState<ExamSchedule[]>([]);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,72 +21,52 @@ export default function StudentExams() {
 
   const loadExams = async () => {
     try {
-      const examsData = await examApi.getPublishedExams();
+      const examsData = await examApi.getAllExams();
       setExams(examsData);
-
-      const schedulesData: Record<string, ExamSchedule> = {};
-      for (const exam of examsData) {
-        const schedule = await examScheduleApi.getExamSchedule(exam.id);
-        if (schedule) {
-          schedulesData[exam.id] = schedule;
-        }
-      }
-      setSchedules(schedulesData);
+      
+      const schedulesData = await Promise.all(
+        examsData.map(exam => examScheduleApi.getExamSchedule(exam.id))
+      );
+      setSchedules(schedulesData.filter((s): s is ExamSchedule => s !== null));
     } catch (error) {
       console.error('Error loading exams:', error);
-      toast({
-        title: 'பிழை',
-        description: 'தேர்வுகளை ஏற்ற முடியவில்லை',
-        variant: 'destructive',
-      });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleStartExam = async (examId: string) => {
-    try {
-      const attempt = await examAttemptApi.startAttempt(examId);
-      if (attempt) {
-        toast({
-          title: 'வெற்றி',
-          description: 'தேர்வு தொடங்கப்பட்டது',
-        });
-        // Navigate to exam taking page (to be implemented)
-        // navigate(`/student/take-exam/${attempt.id}`);
-      }
-    } catch (error: any) {
-      console.error('Error starting exam:', error);
-      toast({
-        title: 'பிழை',
-        description: error.message || 'தேர்வை தொடங்க முடியவில்லை',
-        variant: 'destructive',
-      });
-    }
+  const getExamStatus = (examId: string) => {
+    const schedule = schedules.find((s) => s.exam_id === examId);
+    if (!schedule) return 'upcoming';
+
+    const now = new Date();
+    const start = new Date(schedule.start_time);
+    const end = new Date(schedule.end_time);
+
+    if (now < start) return 'upcoming';
+    if (now > end) return 'completed';
+    return 'ongoing';
   };
 
   const isExamAvailable = (examId: string) => {
-    const schedule = schedules[examId];
-    if (!schedule) return false;
-
-    const now = new Date();
-    const startTime = new Date(schedule.start_time);
-    const endTime = new Date(schedule.end_time);
-
-    return now >= startTime && now <= endTime;
+    return getExamStatus(examId) === 'ongoing';
   };
 
-  const getExamStatus = (examId: string) => {
-    const schedule = schedules[examId];
-    if (!schedule) return 'திட்டமிடப்படவில்லை';
+  const handleStartExam = (examId: string) => {
+    navigate(`/student/exam/${examId}`);
+  };
 
-    const now = new Date();
-    const startTime = new Date(schedule.start_time);
-    const endTime = new Date(schedule.end_time);
-
-    if (now < startTime) return 'விரைவில்';
-    if (now > endTime) return 'முடிந்தது';
-    return 'நடப்பில்';
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'upcoming':
+        return <Badge variant="secondary">{t('exams.status.upcoming')}</Badge>;
+      case 'ongoing':
+        return <Badge className="bg-green-500">{t('exams.status.ongoing')}</Badge>;
+      case 'completed':
+        return <Badge variant="outline">{t('exams.status.completed')}</Badge>;
+      default:
+        return null;
+    }
   };
 
   if (loading) {
@@ -94,7 +74,7 @@ export default function StudentExams() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">ஏற்றுகிறது...</p>
+          <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -103,60 +83,43 @@ export default function StudentExams() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Available Exams / கிடைக்கும் தேர்வுகள்</h1>
-        <p className="text-muted-foreground mt-2">
-          Take exams and view results / தேர்வுகளை எழுதவும் மற்றும் முடிவுகளை பார்க்கவும்
-        </p>
+        <h1 className="text-3xl font-bold">{t('exams.title')}</h1>
+        <p className="text-muted-foreground mt-2">{t('exams.subtitle')}</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
         {exams.map((exam) => {
-          const schedule = schedules[exam.id];
           const status = getExamStatus(exam.id);
           const available = isExamAvailable(exam.id);
+          const schedule = schedules.find((s) => s.exam_id === exam.id);
 
           return (
             <Card key={exam.id} className="flex flex-col">
               <CardHeader>
                 <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-xl">{exam.title}</CardTitle>
-                    <CardDescription className="mt-1">
-                      {exam.subject?.name || 'பாடம் இல்லை'}
-                    </CardDescription>
-                  </div>
-                  <Badge
-                    variant={
-                      status === 'நடப்பில்'
-                        ? 'default'
-                        : status === 'விரைவில்'
-                          ? 'secondary'
-                          : 'outline'
-                    }
-                  >
-                    {status}
-                  </Badge>
+                  <CardTitle className="text-xl">{exam.title}</CardTitle>
+                  {getStatusBadge(status)}
                 </div>
               </CardHeader>
               <CardContent className="flex-1 space-y-4">
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Clock className="w-4 h-4" />
-                    <span>Duration / காலம்: {exam.duration_minutes} minutes / நிமிடங்கள்</span>
+                    <span>{t('exams.duration')}: {exam.duration_minutes} {t('exams.minutes')}</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Award className="w-4 h-4" />
-                    <span>Total Marks / மொத்த மதிப்பெண்கள்: {exam.total_marks}</span>
+                    <span>{t('exams.totalMarks')}: {exam.total_marks}</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <BookOpen className="w-4 h-4" />
-                    <span>Pass Marks / தேர்ச்சி மதிப்பெண்கள்: {exam.pass_marks}</span>
+                    <span>{t('exams.passMarks')}: {exam.pass_marks}</span>
                   </div>
                   {schedule && (
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Calendar className="w-4 h-4" />
                       <span>
-                        {new Date(schedule.start_time).toLocaleDateString('ta-IN', {
+                        {new Date(schedule.start_time).toLocaleDateString('en-US', {
                           day: 'numeric',
                           month: 'short',
                           year: 'numeric',
@@ -179,7 +142,7 @@ export default function StudentExams() {
                   disabled={!available}
                   onClick={() => handleStartExam(exam.id)}
                 >
-                  {available ? 'Start Exam / தேர்வை தொடங்கு' : 'Not Available / கிடைக்கவில்லை'}
+                  {available ? t('exams.startExam') : t('exams.notAvailable')}
                 </Button>
               </CardContent>
             </Card>
@@ -190,9 +153,9 @@ export default function StudentExams() {
           <Card className="col-span-full">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <BookOpen className="w-12 h-12 text-muted-foreground mb-4" />
-              <p className="text-lg font-medium">No Exams / தேர்வுகள் இல்லை</p>
+              <p className="text-lg font-medium">{t('exams.noExams')}</p>
               <p className="text-sm text-muted-foreground mt-1">
-                No exams available at the moment / தற்போது கிடைக்கும் தேர்வுகள் இல்லை
+                {t('exams.noExamsText')}
               </p>
             </CardContent>
           </Card>

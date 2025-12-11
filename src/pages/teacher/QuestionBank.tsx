@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -29,26 +28,29 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Plus, Trash2, FileQuestion } from 'lucide-react';
 import { questionApi, subjectApi } from '@/db/api';
-import type { QuestionWithSubject, Subject, QuestionType, DifficultyLevel } from '@/types/types';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Trash2, Edit } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import type { Question, Subject } from '@/types/types';
 
 export default function QuestionBank() {
-  const [questions, setQuestions] = useState<QuestionWithSubject[]>([]);
+  const { t } = useLanguage();
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { toast } = useToast();
+
   const [formData, setFormData] = useState({
-    subject_id: '',
     question_text: '',
-    question_type: 'mcq' as QuestionType,
+    subject_id: '',
+    question_type: 'mcq' as 'mcq' | 'true_false' | 'short_answer',
+    difficulty: 'medium' as 'easy' | 'medium' | 'hard',
+    marks: 1,
     options: ['', '', '', ''],
     correct_answer: '',
-    marks: 1,
-    difficulty: 'medium' as DifficultyLevel,
   });
-  const { toast } = useToast();
 
   useEffect(() => {
     loadData();
@@ -63,10 +65,9 @@ export default function QuestionBank() {
       setQuestions(questionsData);
       setSubjects(subjectsData);
     } catch (error) {
-      console.error('Error loading data:', error);
       toast({
-        title: 'பிழை',
-        description: 'தரவை ஏற்ற முடியவில்லை',
+        title: t('common.error'),
+        description: t('message.dataLoadFailed'),
         variant: 'destructive',
       });
     } finally {
@@ -77,59 +78,57 @@ export default function QuestionBank() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.subject_id || !formData.question_text || !formData.correct_answer) {
+    if (!formData.question_text || !formData.subject_id || !formData.correct_answer) {
       toast({
-        title: 'பிழை',
-        description: 'அனைத்து தேவையான புலங்களையும் நிரப்பவும்',
+        title: t('common.error'),
+        description: t('message.allFieldsRequired'),
         variant: 'destructive',
       });
       return;
     }
 
     try {
-      const questionData: any = {
-        subject_id: formData.subject_id,
+      await questionApi.createQuestion({
         question_text: formData.question_text,
+        subject_id: formData.subject_id,
         question_type: formData.question_type,
-        correct_answer: formData.correct_answer,
-        marks: formData.marks,
         difficulty: formData.difficulty,
+        marks: formData.marks,
         options: formData.question_type === 'mcq' ? formData.options.filter(o => o.trim()) : null,
-      };
-
-      await questionApi.createQuestion(questionData);
-      toast({
-        title: 'வெற்றி',
-        description: 'வினா வெற்றிகரமாக சேர்க்கப்பட்டது',
+        correct_answer: formData.correct_answer,
       });
+
+      toast({
+        title: t('common.success'),
+        description: t('message.questionAddSuccess'),
+      });
+
       setDialogOpen(false);
       resetForm();
       loadData();
-    } catch (error) {
-      console.error('Error creating question:', error);
+    } catch (error: any) {
       toast({
-        title: 'பிழை',
-        description: 'வினாவை சேர்க்க முடியவில்லை',
+        title: t('message.questionAddFailed'),
+        description: error.message,
         variant: 'destructive',
       });
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('இந்த வினாவை நீக்க விரும்புகிறீர்களா?')) return;
+    if (!confirm(t('message.confirmDelete'))) return;
 
     try {
       await questionApi.deleteQuestion(id);
       toast({
-        title: 'வெற்றி',
-        description: 'வினா வெற்றிகரமாக நீக்கப்பட்டது',
+        title: t('common.success'),
+        description: t('message.questionDeleteSuccess'),
       });
       loadData();
-    } catch (error) {
-      console.error('Error deleting question:', error);
+    } catch (error: any) {
       toast({
-        title: 'பிழை',
-        description: 'வினாவை நீக்க முடியவில்லை',
+        title: t('message.questionDeleteFailed'),
+        description: error.message,
         variant: 'destructive',
       });
     }
@@ -137,37 +136,27 @@ export default function QuestionBank() {
 
   const resetForm = () => {
     setFormData({
-      subject_id: '',
       question_text: '',
+      subject_id: '',
       question_type: 'mcq',
+      difficulty: 'medium',
+      marks: 1,
       options: ['', '', '', ''],
       correct_answer: '',
-      marks: 1,
-      difficulty: 'medium',
     });
   };
 
-  const getDifficultyBadge = (difficulty: DifficultyLevel) => {
-    const variants: Record<DifficultyLevel, string> = {
-      easy: 'bg-secondary text-secondary-foreground',
-      medium: 'bg-primary text-primary-foreground',
-      hard: 'bg-destructive text-destructive-foreground',
-    };
-    const labels: Record<DifficultyLevel, string> = {
-      easy: 'எளிது',
-      medium: 'நடுத்தரம்',
-      hard: 'கடினம்',
-    };
-    return <Badge className={variants[difficulty]}>{labels[difficulty]}</Badge>;
-  };
-
-  const getQuestionTypeLabel = (type: QuestionType) => {
-    const labels: Record<QuestionType, string> = {
-      mcq: 'பல தேர்வு',
-      true_false: 'உண்மை/பொய்',
-      short_answer: 'குறுகிய பதில்',
-    };
-    return labels[type];
+  const getDifficultyColor = (level: string) => {
+    switch (level) {
+      case 'easy':
+        return 'bg-green-100 text-green-800';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'hard':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
   };
 
   if (loading) {
@@ -175,7 +164,7 @@ export default function QuestionBank() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">ஏற்றுகிறது...</p>
+          <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -185,143 +174,156 @@ export default function QuestionBank() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Question Bank / வினாவங்கி</h1>
-          <p className="text-muted-foreground mt-2">
-            Create and manage questions / வினாக்களை உருவாக்கவும் மற்றும் நிர்வகிக்கவும்
-          </p>
+          <h1 className="text-3xl font-bold">{t('questions.title')}</h1>
+          <p className="text-muted-foreground mt-2">{t('questions.subtitle')}</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              New Question / புதிய வினா
+            <Button className="gap-2">
+              <Plus className="w-4 h-4" />
+              {t('questions.newQuestion')}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Add New Question / புதிய வினா சேர்க்கவும்</DialogTitle>
-              <DialogDescription>
-                Fill in the question details / வினாவின் விவரங்களை நிரப்பவும்
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="subject">Subject / பாடம் *</Label>
-                <Select
-                  value={formData.subject_id}
-                  onValueChange={(value) => setFormData({ ...formData, subject_id: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select subject / பாடத்தை தேர்ந்தெடுக்கவும்" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {subjects.map((subject) => (
-                      <SelectItem key={subject.id} value={subject.id}>
-                        {subject.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="question_text">Question / வினா *</Label>
-                <Textarea
-                  id="question_text"
-                  value={formData.question_text}
-                  onChange={(e) => setFormData({ ...formData, question_text: e.target.value })}
-                  placeholder="Enter question / வினாவை உள்ளிடவும்"
-                  rows={3}
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit}>
+              <DialogHeader>
+                <DialogTitle>{t('questions.addQuestion')}</DialogTitle>
+                <DialogDescription>{t('questions.fillDetails')}</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="question_type">Question Type / வினா வகை *</Label>
-                  <Select
-                    value={formData.question_type}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, question_type: value as QuestionType })
+                  <Label htmlFor="question">{t('questions.question')}</Label>
+                  <Input
+                    id="question"
+                    value={formData.question_text}
+                    onChange={(e) =>
+                      setFormData({ ...formData, question_text: e.target.value })
                     }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="mcq">MCQ / பல தேர்வு</SelectItem>
-                      <SelectItem value="true_false">True/False / உண்மை/பொய்</SelectItem>
-                      <SelectItem value="short_answer">Short Answer / குறுகிய பதில்</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    placeholder={t('questions.enterQuestion')}
+                    required
+                  />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="difficulty">Difficulty / சிரம நிலை *</Label>
-                  <Select
-                    value={formData.difficulty}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, difficulty: value as DifficultyLevel })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="easy">Easy / எளிது</SelectItem>
-                      <SelectItem value="medium">Medium / நடுத்தரம்</SelectItem>
-                      <SelectItem value="hard">Hard / கடினம்</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="subject">{t('questions.subject')}</Label>
+                    <Select
+                      value={formData.subject_id}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, subject_id: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={t('questions.selectSubject')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {subjects.map((subject) => (
+                          <SelectItem key={subject.id} value={subject.id}>
+                            {subject.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              {formData.question_type === 'mcq' && (
-                <div className="space-y-2">
-                  <Label>Options / விருப்பங்கள்</Label>
-                  {formData.options.map((option, index) => (
+                  <div className="space-y-2">
+                    <Label htmlFor="type">{t('questions.type')}</Label>
+                    <Select
+                      value={formData.question_type}
+                      onValueChange={(value: any) =>
+                        setFormData({ ...formData, question_type: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="mcq">{t('questionType.mcq')}</SelectItem>
+                        <SelectItem value="true_false">{t('questionType.trueFalse')}</SelectItem>
+                        <SelectItem value="short_answer">{t('questionType.shortAnswer')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="difficulty">{t('questions.difficulty')}</Label>
+                    <Select
+                      value={formData.difficulty}
+                      onValueChange={(value: any) =>
+                        setFormData({ ...formData, difficulty: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="easy">{t('difficulty.easy')}</SelectItem>
+                        <SelectItem value="medium">{t('difficulty.medium')}</SelectItem>
+                        <SelectItem value="hard">{t('difficulty.hard')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="marks">{t('questions.marks')}</Label>
                     <Input
-                      key={index}
-                      value={option}
-                      onChange={(e) => {
-                        const newOptions = [...formData.options];
-                        newOptions[index] = e.target.value;
-                        setFormData({ ...formData, options: newOptions });
-                      }}
-                      placeholder={`Option / விருப்பம் ${index + 1}`}
+                      id="marks"
+                      type="number"
+                      min="1"
+                      value={formData.marks}
+                      onChange={(e) =>
+                        setFormData({ ...formData, marks: parseInt(e.target.value) })
+                      }
+                      required
                     />
-                  ))}
+                  </div>
                 </div>
-              )}
 
-              <div className="space-y-2">
-                <Label htmlFor="correct_answer">Correct Answer / சரியான பதில் *</Label>
-                <Input
-                  id="correct_answer"
-                  value={formData.correct_answer}
-                  onChange={(e) => setFormData({ ...formData, correct_answer: e.target.value })}
-                  placeholder="Enter correct answer / சரியான பதிலை உள்ளிடவும்"
-                  required
-                />
+                {formData.question_type === 'mcq' && (
+                  <div className="space-y-2">
+                    <Label>{t('questions.options')}</Label>
+                    {formData.options.map((option, index) => (
+                      <Input
+                        key={index}
+                        value={option}
+                        onChange={(e) => {
+                          const newOptions = [...formData.options];
+                          newOptions[index] = e.target.value;
+                          setFormData({ ...formData, options: newOptions });
+                        }}
+                        placeholder={`${t('questions.option')} ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <Label htmlFor="answer">{t('questions.correctAnswer')}</Label>
+                  <Input
+                    id="answer"
+                    value={formData.correct_answer}
+                    onChange={(e) =>
+                      setFormData({ ...formData, correct_answer: e.target.value })
+                    }
+                    placeholder={t('questions.enterAnswer')}
+                    required
+                  />
+                </div>
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="marks">Marks / மதிப்பெண்கள் *</Label>
-                <Input
-                  id="marks"
-                  type="number"
-                  min="1"
-                  value={formData.marks}
-                  onChange={(e) => setFormData({ ...formData, marks: parseInt(e.target.value) })}
-                  required
-                />
-              </div>
-
               <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
-                  Cancel / ரத்து செய்
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setDialogOpen(false);
+                    resetForm();
+                  }}
+                >
+                  {t('common.cancel')}
                 </Button>
-                <Button type="submit">Add / சேர்க்கவும்</Button>
+                <Button type="submit">{t('common.add')}</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -330,30 +332,49 @@ export default function QuestionBank() {
 
       <Card>
         <CardHeader>
-          <CardTitle>All Questions / அனைத்து வினாக்கள் ({questions.length})</CardTitle>
+          <CardTitle>{t('questions.allQuestions')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
+          {questions.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <FileQuestion className="w-12 h-12 text-muted-foreground mb-4" />
+              <p className="text-lg font-medium">{t('questions.noQuestions')}</p>
+            </div>
+          ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Question / வினா</TableHead>
-                  <TableHead>Subject / பாடம்</TableHead>
-                  <TableHead>Type / வகை</TableHead>
-                  <TableHead>Difficulty / சிரமம்</TableHead>
-                  <TableHead>Marks / மதிப்பெண்கள்</TableHead>
-                  <TableHead>Actions / செயல்கள்</TableHead>
+                  <TableHead>{t('questions.question')}</TableHead>
+                  <TableHead>{t('questions.subject')}</TableHead>
+                  <TableHead>{t('questions.type')}</TableHead>
+                  <TableHead>{t('questions.difficulty')}</TableHead>
+                  <TableHead>{t('questions.marks')}</TableHead>
+                  <TableHead>{t('common.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {questions.map((question) => (
                   <TableRow key={question.id}>
-                    <TableCell className="max-w-md">
-                      <div className="line-clamp-2">{question.question_text}</div>
+                    <TableCell className="max-w-md truncate">
+                      {question.question_text}
                     </TableCell>
-                    <TableCell>{question.subject?.name || '-'}</TableCell>
-                    <TableCell>{getQuestionTypeLabel(question.question_type)}</TableCell>
-                    <TableCell>{getDifficultyBadge(question.difficulty)}</TableCell>
+                    <TableCell>
+                      {subjects.find((s) => s.id === question.subject_id)?.name || '-'}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">
+                        {question.question_type === 'mcq' && t('questionType.mcq')}
+                        {question.question_type === 'true_false' && t('questionType.trueFalse')}
+                        {question.question_type === 'short_answer' && t('questionType.shortAnswer')}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge className={getDifficultyColor(question.difficulty)}>
+                        {question.difficulty === 'easy' && t('difficulty.easy')}
+                        {question.difficulty === 'medium' && t('difficulty.medium')}
+                        {question.difficulty === 'hard' && t('difficulty.hard')}
+                      </Badge>
+                    </TableCell>
                     <TableCell>{question.marks}</TableCell>
                     <TableCell>
                       <Button
@@ -366,16 +387,9 @@ export default function QuestionBank() {
                     </TableCell>
                   </TableRow>
                 ))}
-                {questions.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground">
-                      No questions / வினாக்கள் இல்லை
-                    </TableCell>
-                  </TableRow>
-                )}
               </TableBody>
             </Table>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>

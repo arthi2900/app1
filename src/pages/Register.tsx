@@ -1,30 +1,32 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { Button } from '@/components/ui/button';
+import { Link, useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 import { BookOpen } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Register() {
   const [username, setUsername] = useState('');
-  const [fullName, setFullName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const { signUp } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!username.trim() || !password || !confirmPassword) {
+
+    if (!username.trim() || !password || !confirmPassword || !fullName.trim()) {
       toast({
-        title: 'Error / பிழை',
-        description: 'All fields are required / அனைத்து புலங்களும் தேவை',
+        title: t('common.error'),
+        description: t('message.allFieldsRequired'),
         variant: 'destructive',
       });
       return;
@@ -32,8 +34,8 @@ export default function Register() {
 
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
       toast({
-        title: 'Error / பிழை',
-        description: 'Username can only contain letters, numbers and underscore / பயனர்பெயரில் எழுத்துக்கள், எண்கள் மற்றும் _ மட்டுமே அனுமதிக்கப்படும்',
+        title: t('common.error'),
+        description: t('message.usernameInvalid'),
         variant: 'destructive',
       });
       return;
@@ -41,8 +43,8 @@ export default function Register() {
 
     if (password !== confirmPassword) {
       toast({
-        title: 'Error / பிழை',
-        description: 'Passwords do not match / கடவுச்சொற்கள் பொருந்தவில்லை',
+        title: t('common.error'),
+        description: t('message.passwordMismatch'),
         variant: 'destructive',
       });
       return;
@@ -50,8 +52,8 @@ export default function Register() {
 
     if (password.length < 6) {
       toast({
-        title: 'Error / பிழை',
-        description: 'Password must be at least 6 characters / கடவுச்சொல் குறைந்தது 6 எழுத்துக்கள் இருக்க வேண்டும்',
+        title: t('common.error'),
+        description: t('message.passwordTooShort'),
         variant: 'destructive',
       });
       return;
@@ -61,14 +63,14 @@ export default function Register() {
     try {
       await signUp(username, password, fullName);
       toast({
-        title: 'Success / வெற்றி',
-        description: 'Account created successfully / கணக்கு வெற்றிகரமாக உருவாக்கப்பட்டது',
+        title: t('common.success'),
+        description: t('message.registerSuccess'),
       });
       navigate('/login');
     } catch (error: any) {
       toast({
-        title: 'Registration Failed / பதிவு தோல்வி',
-        description: error.message || 'Could not create account / கணக்கை உருவாக்க முடியவில்லை',
+        title: t('message.registerFailed'),
+        description: error.message,
         variant: 'destructive',
       });
     } finally {
@@ -79,51 +81,50 @@ export default function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
       <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1 text-center">
-          <div className="flex justify-center mb-4">
+        <CardHeader className="space-y-4">
+          <div className="flex justify-center">
             <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
               <BookOpen className="w-8 h-8 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">Register / பதிவு செய்யவும்</CardTitle>
-          <CardDescription>
-            Create a new account / புதிய கணக்கை உருவாக்கவும்
+          <CardTitle className="text-2xl font-bold text-center">{t('auth.register')}</CardTitle>
+          <CardDescription className="text-center">
+            {t('app.title')}
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username / பயனர்பெயர் *</Label>
+              <Label htmlFor="fullName">{t('auth.fullName')}</Label>
+              <Input
+                id="fullName"
+                type="text"
+                placeholder={t('auth.enterFullName')}
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                disabled={loading}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="username">{t('auth.username')}</Label>
               <Input
                 id="username"
                 type="text"
-                placeholder="Enter username / பயனர்பெயரை உள்ளிடவும்"
+                placeholder={t('auth.enterUsername')}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={loading}
                 required
               />
-              <p className="text-xs text-muted-foreground">
-                Letters, numbers and _ only / எழுத்துக்கள், எண்கள் மற்றும் _ மட்டுமே
-              </p>
+              <p className="text-xs text-muted-foreground">{t('auth.usernameRule')}</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name / முழு பெயர்</Label>
-              <Input
-                id="fullName"
-                type="text"
-                placeholder="Enter your full name / உங்கள் முழு பெயரை உள்ளிடவும்"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password / கடவுச்சொல் *</Label>
+              <Label htmlFor="password">{t('auth.password')}</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter password / கடவுச்சொல்லை உள்ளிடவும்"
+                placeholder={t('auth.enterPassword')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
@@ -131,11 +132,11 @@ export default function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password / கடவுச்சொல் உறுதிப்படுத்தல் *</Label>
+              <Label htmlFor="confirmPassword">{t('auth.confirmPassword')}</Label>
               <Input
                 id="confirmPassword"
                 type="password"
-                placeholder="Re-enter password / கடவுச்சொல்லை மீண்டும் உள்ளிடவும்"
+                placeholder={t('auth.reenterPassword')}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 disabled={loading}
@@ -145,12 +146,12 @@ export default function Register() {
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Registering... / பதிவு செய்கிறது...' : 'Register / பதிவு செய்க'}
+              {loading ? t('auth.registering') : t('auth.registerButton')}
             </Button>
             <p className="text-sm text-center text-muted-foreground">
-              Already have an account? / ஏற்கனவே கணக்கு உள்ளதா?{' '}
+              {t('auth.haveAccount')}{' '}
               <Link to="/login" className="text-primary hover:underline font-medium">
-                Login / உள்நுழைக
+                {t('auth.login')}
               </Link>
             </p>
           </CardFooter>
