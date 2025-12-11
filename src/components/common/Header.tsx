@@ -75,6 +75,7 @@ export default function Header() {
 
   const links = getRoleBasedLinks();
 
+  // Get user-friendly role label
   const getRoleLabel = (role: string) => {
     const roleMap: Record<string, string> = {
       admin: 'Admin',
