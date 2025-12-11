@@ -6,25 +6,24 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { BookOpen } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
+import { profileApi } from '@/db/api';
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
-  const { t } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!username.trim() || !password) {
       toast({
-        title: t('common.error'),
-        description: t('message.allFieldsRequired'),
+        title: 'Error',
+        description: 'Please fill in all fields',
         variant: 'destructive',
       });
       return;
@@ -33,15 +32,38 @@ export default function Login() {
     setLoading(true);
     try {
       await signIn(username, password);
+      
+      const userProfile = await profileApi.getCurrentProfile();
+      
       toast({
-        title: t('common.success'),
-        description: t('message.loginSuccess'),
+        title: 'Success',
+        description: 'Login successful',
       });
-      navigate('/');
+
+      if (userProfile) {
+        switch (userProfile.role) {
+          case 'admin':
+            navigate('/admin');
+            break;
+          case 'principal':
+            navigate('/principal');
+            break;
+          case 'teacher':
+            navigate('/teacher');
+            break;
+          case 'student':
+            navigate('/student');
+            break;
+          default:
+            navigate('/');
+        }
+      } else {
+        navigate('/');
+      }
     } catch (error: any) {
       toast({
-        title: t('message.loginFailed'),
-        description: error.message || t('message.invalidCredentials'),
+        title: 'Login Failed',
+        description: error.message,
         variant: 'destructive',
       });
     } finally {
@@ -58,19 +80,19 @@ export default function Login() {
               <BookOpen className="w-8 h-8 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-center">{t('auth.login')}</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
           <CardDescription className="text-center">
-            {t('app.title')}
+            Online Exam Management System
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">{t('auth.username')}</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
                 type="text"
-                placeholder={t('auth.enterUsername')}
+                placeholder="Enter your username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={loading}
@@ -78,11 +100,11 @@ export default function Login() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">{t('auth.password')}</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder={t('auth.enterPassword')}
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
@@ -92,12 +114,12 @@ export default function Login() {
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? t('auth.loggingIn') : t('auth.loginButton')}
+              {loading ? 'Logging in...' : 'Login'}
             </Button>
             <p className="text-sm text-center text-muted-foreground">
-              {t('auth.noAccount')}{' '}
+              Don't have an account?{' '}
               <Link to="/register" className="text-primary hover:underline font-medium">
-                {t('auth.register')}
+                Register
               </Link>
             </p>
           </CardFooter>

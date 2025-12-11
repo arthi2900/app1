@@ -2,10 +2,8 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, BookOpen, FileQuestion, ClipboardList } from 'lucide-react';
 import { profileApi, subjectApi, questionApi, examApi } from '@/db/api';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function AdminDashboard() {
-  const { t } = useLanguage();
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalSubjects: 0,
@@ -42,25 +40,25 @@ export default function AdminDashboard() {
 
   const statCards = [
     {
-      title: t('admin.dashboard.totalUsers'),
+      title: 'Total Users',
       value: stats.totalUsers,
       icon: Users,
       color: 'text-primary',
     },
     {
-      title: t('admin.dashboard.totalSubjects'),
+      title: 'Total Subjects',
       value: stats.totalSubjects,
       icon: BookOpen,
       color: 'text-secondary',
     },
     {
-      title: t('admin.dashboard.totalQuestions'),
+      title: 'Total Questions',
       value: stats.totalQuestions,
       icon: FileQuestion,
       color: 'text-accent',
     },
     {
-      title: t('admin.dashboard.totalExams'),
+      title: 'Total Exams',
       value: stats.totalExams,
       icon: ClipboardList,
       color: 'text-chart-3',
@@ -72,7 +70,7 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">{t('common.loading')}</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -81,9 +79,9 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">{t('admin.dashboard.title')}</h1>
+        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
         <p className="text-muted-foreground mt-2">
-          {t('admin.dashboard.subtitle')}
+          System overview and statistics
         </p>
       </div>
 
@@ -106,11 +104,12 @@ export default function AdminDashboard() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('admin.dashboard.welcome')}</CardTitle>
+          <CardTitle>Welcome</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            {t('admin.dashboard.welcomeText')}
+            Welcome to the admin section of the Online Exam Management System.
+            Here you can manage users, assign roles, and control system settings.
           </p>
         </CardContent>
       </Card>

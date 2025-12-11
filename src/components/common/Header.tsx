@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -12,11 +11,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { BookOpen, User, LogOut, LayoutDashboard, Users, FileQuestion, ClipboardList, Award } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import LanguageToggle from './LanguageToggle';
 
 export default function Header() {
   const { profile, signOut } = useAuth();
-  const { t } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -24,14 +21,14 @@ export default function Header() {
     try {
       await signOut();
       toast({
-        title: t('common.success'),
-        description: t('message.logoutSuccess'),
+        title: 'Success',
+        description: 'Logged out successfully',
       });
       navigate('/login');
     } catch (error: any) {
       toast({
-        title: t('common.error'),
-        description: error.message || t('message.logoutFailed'),
+        title: 'Error',
+        description: error.message || 'Failed to logout',
         variant: 'destructive',
       });
     }
@@ -44,32 +41,32 @@ export default function Header() {
 
     if (profile.role === 'admin') {
       links.push(
-        { to: '/admin', label: t('nav.dashboard'), icon: LayoutDashboard },
-        { to: '/admin/users', label: t('nav.users'), icon: Users }
+        { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+        { to: '/admin/users', label: 'Users', icon: Users }
       );
     }
 
     if (profile.role === 'principal') {
       links.push(
-        { to: '/principal', label: t('nav.dashboard'), icon: LayoutDashboard },
-        { to: '/principal/approvals', label: t('nav.approvals'), icon: ClipboardList },
-        { to: '/principal/reports', label: t('nav.reports'), icon: Award }
+        { to: '/principal', label: 'Dashboard', icon: LayoutDashboard },
+        { to: '/principal/approvals', label: 'Approvals', icon: ClipboardList },
+        { to: '/principal/reports', label: 'Reports', icon: Award }
       );
     }
 
     if (profile.role === 'teacher') {
       links.push(
-        { to: '/teacher', label: t('nav.dashboard'), icon: LayoutDashboard },
-        { to: '/teacher/questions', label: t('nav.questionBank'), icon: FileQuestion },
-        { to: '/teacher/exams', label: t('nav.exams'), icon: ClipboardList }
+        { to: '/teacher', label: 'Dashboard', icon: LayoutDashboard },
+        { to: '/teacher/questions', label: 'Question Bank', icon: FileQuestion },
+        { to: '/teacher/exams', label: 'Exams', icon: ClipboardList }
       );
     }
 
     if (profile.role === 'student') {
       links.push(
-        { to: '/student', label: t('nav.dashboard'), icon: LayoutDashboard },
-        { to: '/student/exams', label: t('nav.exams'), icon: ClipboardList },
-        { to: '/student/results', label: t('nav.results'), icon: Award }
+        { to: '/student', label: 'Dashboard', icon: LayoutDashboard },
+        { to: '/student/exams', label: 'Exams', icon: ClipboardList },
+        { to: '/student/results', label: 'Results', icon: Award }
       );
     }
 
@@ -80,10 +77,10 @@ export default function Header() {
 
   const getRoleLabel = (role: string) => {
     const roleMap: Record<string, string> = {
-      admin: t('role.admin'),
-      principal: t('role.principal'),
-      teacher: t('role.teacher'),
-      student: t('role.student'),
+      admin: 'Admin',
+      principal: 'Principal',
+      teacher: 'Teacher',
+      student: 'Student',
     };
     return roleMap[role] || role;
   };
@@ -97,7 +94,7 @@ export default function Header() {
               <BookOpen className="w-6 h-6 text-primary-foreground" />
             </div>
             <span className="font-bold text-lg hidden sm:inline-block">
-              {t('app.shortTitle')}
+              Exam System
             </span>
           </Link>
 
@@ -118,8 +115,6 @@ export default function Header() {
           )}
 
           <div className="flex items-center gap-2">
-            <LanguageToggle />
-            
             {profile ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -158,7 +153,7 @@ export default function Header() {
                   </div>
                   <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
                     <LogOut className="w-4 h-4 mr-2" />
-                    {t('auth.logout')}
+                    Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -166,11 +161,11 @@ export default function Header() {
               <div className="flex items-center gap-2">
                 <Link to="/login">
                   <Button variant="ghost" size="sm">
-                    {t('auth.login')}
+                    Login
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button size="sm">{t('auth.register')}</Button>
+                  <Button size="sm">Register</Button>
                 </Link>
               </div>
             )}

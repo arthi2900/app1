@@ -31,11 +31,9 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Trash2, FileQuestion } from 'lucide-react';
 import { questionApi, subjectApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
-import { useLanguage } from '@/contexts/LanguageContext';
 import type { Question, Subject } from '@/types/types';
 
 export default function QuestionBank() {
-  const { t } = useLanguage();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,8 +64,8 @@ export default function QuestionBank() {
       setSubjects(subjectsData);
     } catch (error) {
       toast({
-        title: t('common.error'),
-        description: t('message.dataLoadFailed'),
+        title: 'Error',
+        description: 'Failed to load data',
         variant: 'destructive',
       });
     } finally {
@@ -80,8 +78,8 @@ export default function QuestionBank() {
 
     if (!formData.question_text || !formData.subject_id || !formData.correct_answer) {
       toast({
-        title: t('common.error'),
-        description: t('message.allFieldsRequired'),
+        title: 'Error',
+        description: 'Please fill in all required fields',
         variant: 'destructive',
       });
       return;
@@ -99,8 +97,8 @@ export default function QuestionBank() {
       });
 
       toast({
-        title: t('common.success'),
-        description: t('message.questionAddSuccess'),
+        title: 'Success',
+        description: 'Question added successfully',
       });
 
       setDialogOpen(false);
@@ -108,7 +106,7 @@ export default function QuestionBank() {
       loadData();
     } catch (error: any) {
       toast({
-        title: t('message.questionAddFailed'),
+        title: 'Failed to add question',
         description: error.message,
         variant: 'destructive',
       });
@@ -116,18 +114,18 @@ export default function QuestionBank() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm(t('message.confirmDelete'))) return;
+    if (!confirm('Are you sure you want to delete this question?')) return;
 
     try {
       await questionApi.deleteQuestion(id);
       toast({
-        title: t('common.success'),
-        description: t('message.questionDeleteSuccess'),
+        title: 'Success',
+        description: 'Question deleted successfully',
       });
       loadData();
     } catch (error: any) {
       toast({
-        title: t('message.questionDeleteFailed'),
+        title: 'Failed to delete question',
         description: error.message,
         variant: 'destructive',
       });
@@ -164,7 +162,7 @@ export default function QuestionBank() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">{t('common.loading')}</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -174,39 +172,39 @@ export default function QuestionBank() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t('questions.title')}</h1>
-          <p className="text-muted-foreground mt-2">{t('questions.subtitle')}</p>
+          <h1 className="text-3xl font-bold">Question Bank</h1>
+          <p className="text-muted-foreground mt-2">Manage your exam questions</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button className="gap-2">
               <Plus className="w-4 h-4" />
-              {t('questions.newQuestion')}
+              New Question
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <form onSubmit={handleSubmit}>
               <DialogHeader>
-                <DialogTitle>{t('questions.addQuestion')}</DialogTitle>
-                <DialogDescription>{t('questions.fillDetails')}</DialogDescription>
+                <DialogTitle>Add Question</DialogTitle>
+                <DialogDescription>Fill in the question details below</DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="question">{t('questions.question')}</Label>
+                  <Label htmlFor="question">Question</Label>
                   <Input
                     id="question"
                     value={formData.question_text}
                     onChange={(e) =>
                       setFormData({ ...formData, question_text: e.target.value })
                     }
-                    placeholder={t('questions.enterQuestion')}
+                    placeholder="Enter question text"
                     required
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="subject">{t('questions.subject')}</Label>
+                    <Label htmlFor="subject">Subject</Label>
                     <Select
                       value={formData.subject_id}
                       onValueChange={(value) =>
@@ -214,7 +212,7 @@ export default function QuestionBank() {
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder={t('questions.selectSubject')} />
+                        <SelectValue placeholder="Select subject" />
                       </SelectTrigger>
                       <SelectContent>
                         {subjects.map((subject) => (
@@ -227,7 +225,7 @@ export default function QuestionBank() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="type">{t('questions.type')}</Label>
+                    <Label htmlFor="type">Question Type</Label>
                     <Select
                       value={formData.question_type}
                       onValueChange={(value: any) =>
@@ -238,9 +236,9 @@ export default function QuestionBank() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="mcq">{t('questionType.mcq')}</SelectItem>
-                        <SelectItem value="true_false">{t('questionType.trueFalse')}</SelectItem>
-                        <SelectItem value="short_answer">{t('questionType.shortAnswer')}</SelectItem>
+                        <SelectItem value="mcq">Multiple Choice</SelectItem>
+                        <SelectItem value="true_false">True/False</SelectItem>
+                        <SelectItem value="short_answer">Short Answer</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -248,7 +246,7 @@ export default function QuestionBank() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="difficulty">{t('questions.difficulty')}</Label>
+                    <Label htmlFor="difficulty">Difficulty</Label>
                     <Select
                       value={formData.difficulty}
                       onValueChange={(value: any) =>
@@ -259,15 +257,15 @@ export default function QuestionBank() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="easy">{t('difficulty.easy')}</SelectItem>
-                        <SelectItem value="medium">{t('difficulty.medium')}</SelectItem>
-                        <SelectItem value="hard">{t('difficulty.hard')}</SelectItem>
+                        <SelectItem value="easy">Easy</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="hard">Hard</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="marks">{t('questions.marks')}</Label>
+                    <Label htmlFor="marks">Marks</Label>
                     <Input
                       id="marks"
                       type="number"
@@ -283,7 +281,7 @@ export default function QuestionBank() {
 
                 {formData.question_type === 'mcq' && (
                   <div className="space-y-2">
-                    <Label>{t('questions.options')}</Label>
+                    <Label>Options</Label>
                     {formData.options.map((option, index) => (
                       <Input
                         key={index}
@@ -293,21 +291,21 @@ export default function QuestionBank() {
                           newOptions[index] = e.target.value;
                           setFormData({ ...formData, options: newOptions });
                         }}
-                        placeholder={`${t('questions.option')} ${index + 1}`}
+                        placeholder={`Option ${index + 1}`}
                       />
                     ))}
                   </div>
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="answer">{t('questions.correctAnswer')}</Label>
+                  <Label htmlFor="answer">Correct Answer</Label>
                   <Input
                     id="answer"
                     value={formData.correct_answer}
                     onChange={(e) =>
                       setFormData({ ...formData, correct_answer: e.target.value })
                     }
-                    placeholder={t('questions.enterAnswer')}
+                    placeholder="Enter correct answer"
                     required
                   />
                 </div>
@@ -321,9 +319,9 @@ export default function QuestionBank() {
                     resetForm();
                   }}
                 >
-                  {t('common.cancel')}
+                  Cancel
                 </Button>
-                <Button type="submit">{t('common.add')}</Button>
+                <Button type="submit">Add</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -332,24 +330,24 @@ export default function QuestionBank() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('questions.allQuestions')}</CardTitle>
+          <CardTitle>All Questions</CardTitle>
         </CardHeader>
         <CardContent>
           {questions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <FileQuestion className="w-12 h-12 text-muted-foreground mb-4" />
-              <p className="text-lg font-medium">{t('questions.noQuestions')}</p>
+              <p className="text-lg font-medium">No questions yet</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('questions.question')}</TableHead>
-                  <TableHead>{t('questions.subject')}</TableHead>
-                  <TableHead>{t('questions.type')}</TableHead>
-                  <TableHead>{t('questions.difficulty')}</TableHead>
-                  <TableHead>{t('questions.marks')}</TableHead>
-                  <TableHead>{t('common.actions')}</TableHead>
+                  <TableHead>Question</TableHead>
+                  <TableHead>Subject</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Difficulty</TableHead>
+                  <TableHead>Marks</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -363,16 +361,16 @@ export default function QuestionBank() {
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline">
-                        {question.question_type === 'mcq' && t('questionType.mcq')}
-                        {question.question_type === 'true_false' && t('questionType.trueFalse')}
-                        {question.question_type === 'short_answer' && t('questionType.shortAnswer')}
+                        {question.question_type === 'mcq' && 'Multiple Choice'}
+                        {question.question_type === 'true_false' && 'True/False'}
+                        {question.question_type === 'short_answer' && 'Short Answer'}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge className={getDifficultyColor(question.difficulty)}>
-                        {question.difficulty === 'easy' && t('difficulty.easy')}
-                        {question.difficulty === 'medium' && t('difficulty.medium')}
-                        {question.difficulty === 'hard' && t('difficulty.hard')}
+                        {question.difficulty === 'easy' && 'Easy'}
+                        {question.difficulty === 'medium' && 'Medium'}
+                        {question.difficulty === 'hard' && 'Hard'}
                       </Badge>
                     </TableCell>
                     <TableCell>{question.marks}</TableCell>

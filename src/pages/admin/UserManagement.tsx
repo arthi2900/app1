@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -17,10 +16,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { profileApi } from '@/db/api';
-import type { Profile, UserRole } from '@/types/types';
-import { useToast } from '@/hooks/use-toast';
 import { Users } from 'lucide-react';
+import { profileApi } from '@/db/api';
+import { useToast } from '@/hooks/use-toast';
+import type { Profile } from '@/types/types';
 
 export default function UserManagement() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -36,10 +35,9 @@ export default function UserManagement() {
       const data = await profileApi.getAllProfiles();
       setProfiles(data);
     } catch (error) {
-      console.error('Error loading profiles:', error);
       toast({
-        title: 'பிழை',
-        description: 'பயனர்களை ஏற்ற முடியவில்லை',
+        title: 'Error',
+        description: 'Failed to load users',
         variant: 'destructive',
       });
     } finally {
@@ -47,25 +45,24 @@ export default function UserManagement() {
     }
   };
 
-  const handleRoleChange = async (userId: string, newRole: UserRole) => {
+  const handleRoleChange = async (userId: string, newRole: string) => {
     try {
-      await profileApi.updateProfile(userId, { role: newRole });
+      await profileApi.updateProfile(userId, { role: newRole as any });
       toast({
-        title: 'வெற்றி',
-        description: 'பாத்திரம் வெற்றிகரமாக புதுப்பிக்கப்பட்டது',
+        title: 'Success',
+        description: 'Role updated successfully',
       });
       loadProfiles();
-    } catch (error) {
-      console.error('Error updating role:', error);
+    } catch (error: any) {
       toast({
-        title: 'பிழை',
-        description: 'பாத்திரத்தை புதுப்பிக்க முடியவில்லை',
+        title: 'Error',
+        description: 'Failed to update role',
         variant: 'destructive',
       });
     }
   };
 
-  const getRoleBadgeVariant = (role: UserRole) => {
+  const getRoleBadgeVariant = (role: string) => {
     switch (role) {
       case 'admin':
         return 'default';
@@ -80,16 +77,16 @@ export default function UserManagement() {
     }
   };
 
-  const getRoleLabel = (role: UserRole) => {
+  const getRoleLabel = (role: string) => {
     switch (role) {
       case 'admin':
-        return 'நிர்வாகி';
+        return 'Admin';
       case 'principal':
-        return 'தலைமை ஆசிரியர்';
+        return 'Principal';
       case 'teacher':
-        return 'ஆசிரியர்';
+        return 'Teacher';
       case 'student':
-        return 'மாணவர்';
+        return 'Student';
       default:
         return role;
     }
@@ -100,7 +97,7 @@ export default function UserManagement() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">ஏற்றுகிறது...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -110,33 +107,35 @@ export default function UserManagement() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">பயனர் நிர்வாகம்</h1>
+          <h1 className="text-3xl font-bold">User Management</h1>
           <p className="text-muted-foreground mt-2">
-            பயனர்களை நிர்வகிக்கவும் மற்றும் பாத்திரங்களை ஒதுக்கவும்
+            Manage users and assign roles
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Users className="w-5 h-5 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">
-            மொத்தம்: {profiles.length}
-          </span>
-        </div>
+        <Badge variant="secondary" className="text-lg px-4 py-2">
+          Total: {profiles.length}
+        </Badge>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>அனைத்து பயனர்கள்</CardTitle>
+          <CardTitle>All Users</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
+          {profiles.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Users className="w-12 h-12 text-muted-foreground mb-4" />
+              <p className="text-lg font-medium">No users found</p>
+            </div>
+          ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>பயனர்பெயர்</TableHead>
-                  <TableHead>முழு பெயர்</TableHead>
-                  <TableHead>பாத்திரம்</TableHead>
-                  <TableHead>உருவாக்கப்பட்டது</TableHead>
-                  <TableHead>செயல்கள்</TableHead>
+                  <TableHead>Username</TableHead>
+                  <TableHead>Full Name</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -150,21 +149,25 @@ export default function UserManagement() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {new Date(profile.created_at).toLocaleDateString('ta-IN')}
+                      {new Date(profile.created_at).toLocaleDateString('en-US', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                      })}
                     </TableCell>
                     <TableCell>
                       <Select
                         value={profile.role}
-                        onValueChange={(value) => handleRoleChange(profile.id, value as UserRole)}
+                        onValueChange={(value) => handleRoleChange(profile.id, value)}
                       >
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-32">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="student">மாணவர்</SelectItem>
-                          <SelectItem value="teacher">ஆசிரியர்</SelectItem>
-                          <SelectItem value="principal">தலைமை ஆசிரியர்</SelectItem>
-                          <SelectItem value="admin">நிர்வாகி</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
+                          <SelectItem value="principal">Principal</SelectItem>
+                          <SelectItem value="teacher">Teacher</SelectItem>
+                          <SelectItem value="student">Student</SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>
@@ -172,7 +175,7 @@ export default function UserManagement() {
                 ))}
               </TableBody>
             </Table>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -1,56 +1,105 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileQuestion, ClipboardList, BookOpen } from 'lucide-react';
+import { questionApi, examApi, subjectApi } from '@/db/api';
 
 export default function TeacherDashboard() {
+  const [stats, setStats] = useState({
+    totalQuestions: 0,
+    totalExams: 0,
+    totalSubjects: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  const loadStats = async () => {
+    try {
+      const [questions, exams, subjects] = await Promise.all([
+        questionApi.getAllQuestions(),
+        examApi.getAllExams(),
+        subjectApi.getAllSubjects(),
+      ]);
+
+      setStats({
+        totalQuestions: questions.length,
+        totalExams: exams.length,
+        totalSubjects: subjects.length,
+      });
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const statCards = [
+    {
+      title: 'Total Questions',
+      value: stats.totalQuestions,
+      icon: FileQuestion,
+      color: 'text-primary',
+    },
+    {
+      title: 'Total Exams',
+      value: stats.totalExams,
+      icon: ClipboardList,
+      color: 'text-secondary',
+    },
+    {
+      title: 'Total Subjects',
+      value: stats.totalSubjects,
+      icon: BookOpen,
+      color: 'text-accent',
+    },
+  ];
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">ஆசிரியர் டாஷ்போர்டு</h1>
+        <h1 className="text-3xl font-bold">Teacher Dashboard</h1>
         <p className="text-muted-foreground mt-2">
-          வினாக்கள் மற்றும் தேர்வுகளை நிர்வகிக்கவும்
+          Manage questions and exams
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">மொத்த வினாக்கள்</CardTitle>
-            <FileQuestion className="w-5 h-5 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">0</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">மொத்த தேர்வுகள்</CardTitle>
-            <ClipboardList className="w-5 h-5 text-secondary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">0</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">மொத்த பாடங்கள்</CardTitle>
-            <BookOpen className="w-5 h-5 text-accent" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">0</div>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+        {statCards.map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <Card key={stat.title}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                <Icon className={`w-5 h-5 ${stat.color}`} />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stat.value}</div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>வரவேற்பு</CardTitle>
+          <CardTitle>Welcome</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            ஆசிரியர் பகுதிக்கு வரவேற்கிறோம். இங்கு நீங்கள் வினாக்களை உருவாக்கலாம்,
-            வினாத்தாள்களை தயாரிக்கலாம் மற்றும் தேர்வுகளை நடத்தலாம்.
+            Welcome to the teacher section. Here you can create questions, manage exams, and view student results.
           </p>
         </CardContent>
       </Card>

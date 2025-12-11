@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
-import { LanguageProvider } from '@/contexts/LanguageContext';
 import Header from '@/components/common/Header';
 import routes from './routes';
 
@@ -29,11 +28,9 @@ function AppContent() {
 
 function App() {
   return (
-    <LanguageProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </LanguageProvider>
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 

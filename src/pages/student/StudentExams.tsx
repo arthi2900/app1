@@ -5,11 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Award, BookOpen, Calendar } from 'lucide-react';
 import { examApi, examScheduleApi } from '@/db/api';
-import { useLanguage } from '@/contexts/LanguageContext';
 import type { Exam, ExamSchedule } from '@/types/types';
 
 export default function StudentExams() {
-  const { t } = useLanguage();
   const [exams, setExams] = useState<Exam[]>([]);
   const [schedules, setSchedules] = useState<ExamSchedule[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,11 +57,11 @@ export default function StudentExams() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'upcoming':
-        return <Badge variant="secondary">{t('exams.status.upcoming')}</Badge>;
+        return <Badge variant="secondary">Upcoming</Badge>;
       case 'ongoing':
-        return <Badge className="bg-green-500">{t('exams.status.ongoing')}</Badge>;
+        return <Badge className="bg-green-500">Ongoing</Badge>;
       case 'completed':
-        return <Badge variant="outline">{t('exams.status.completed')}</Badge>;
+        return <Badge variant="outline">Completed</Badge>;
       default:
         return null;
     }
@@ -74,7 +72,7 @@ export default function StudentExams() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">{t('common.loading')}</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -83,8 +81,8 @@ export default function StudentExams() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">{t('exams.title')}</h1>
-        <p className="text-muted-foreground mt-2">{t('exams.subtitle')}</p>
+        <h1 className="text-3xl font-bold">My Exams</h1>
+        <p className="text-muted-foreground mt-2">View and take your scheduled exams</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
@@ -105,15 +103,15 @@ export default function StudentExams() {
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Clock className="w-4 h-4" />
-                    <span>{t('exams.duration')}: {exam.duration_minutes} {t('exams.minutes')}</span>
+                    <span>Duration: {exam.duration_minutes} minutes</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Award className="w-4 h-4" />
-                    <span>{t('exams.totalMarks')}: {exam.total_marks}</span>
+                    <span>Total Marks: {exam.total_marks}</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <BookOpen className="w-4 h-4" />
-                    <span>{t('exams.passMarks')}: {exam.pass_marks}</span>
+                    <span>Pass Marks: {exam.pass_marks}</span>
                   </div>
                   {schedule && (
                     <div className="flex items-center gap-2 text-muted-foreground">
@@ -142,7 +140,7 @@ export default function StudentExams() {
                   disabled={!available}
                   onClick={() => handleStartExam(exam.id)}
                 >
-                  {available ? t('exams.startExam') : t('exams.notAvailable')}
+                  {available ? 'Start Exam' : 'Not Available'}
                 </Button>
               </CardContent>
             </Card>
@@ -153,9 +151,9 @@ export default function StudentExams() {
           <Card className="col-span-full">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <BookOpen className="w-12 h-12 text-muted-foreground mb-4" />
-              <p className="text-lg font-medium">{t('exams.noExams')}</p>
+              <p className="text-lg font-medium">No exams available</p>
               <p className="text-sm text-muted-foreground mt-1">
-                {t('exams.noExamsText')}
+                Check back later for scheduled exams
               </p>
             </CardContent>
           </Card>

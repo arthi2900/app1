@@ -6,7 +6,6 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { BookOpen } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Register() {
@@ -16,7 +15,6 @@ export default function Register() {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const { signUp } = useAuth();
-  const { t } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -25,8 +23,8 @@ export default function Register() {
 
     if (!username.trim() || !password || !confirmPassword || !fullName.trim()) {
       toast({
-        title: t('common.error'),
-        description: t('message.allFieldsRequired'),
+        title: 'Error',
+        description: 'Please fill in all fields',
         variant: 'destructive',
       });
       return;
@@ -34,8 +32,8 @@ export default function Register() {
 
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
       toast({
-        title: t('common.error'),
-        description: t('message.usernameInvalid'),
+        title: 'Error',
+        description: 'Username can only contain letters, numbers, and underscores',
         variant: 'destructive',
       });
       return;
@@ -43,8 +41,8 @@ export default function Register() {
 
     if (password !== confirmPassword) {
       toast({
-        title: t('common.error'),
-        description: t('message.passwordMismatch'),
+        title: 'Error',
+        description: 'Passwords do not match',
         variant: 'destructive',
       });
       return;
@@ -52,8 +50,8 @@ export default function Register() {
 
     if (password.length < 6) {
       toast({
-        title: t('common.error'),
-        description: t('message.passwordTooShort'),
+        title: 'Error',
+        description: 'Password must be at least 6 characters',
         variant: 'destructive',
       });
       return;
@@ -63,13 +61,13 @@ export default function Register() {
     try {
       await signUp(username, password, fullName);
       toast({
-        title: t('common.success'),
-        description: t('message.registerSuccess'),
+        title: 'Success',
+        description: 'Registration successful',
       });
       navigate('/login');
     } catch (error: any) {
       toast({
-        title: t('message.registerFailed'),
+        title: 'Registration Failed',
         description: error.message,
         variant: 'destructive',
       });
@@ -87,19 +85,19 @@ export default function Register() {
               <BookOpen className="w-8 h-8 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-center">{t('auth.register')}</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">Register</CardTitle>
           <CardDescription className="text-center">
-            {t('app.title')}
+            Online Exam Management System
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="fullName">{t('auth.fullName')}</Label>
+              <Label htmlFor="fullName">Full Name</Label>
               <Input
                 id="fullName"
                 type="text"
-                placeholder={t('auth.enterFullName')}
+                placeholder="Enter your full name"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 disabled={loading}
@@ -107,24 +105,24 @@ export default function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="username">{t('auth.username')}</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
                 type="text"
-                placeholder={t('auth.enterUsername')}
+                placeholder="Enter your username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={loading}
                 required
               />
-              <p className="text-xs text-muted-foreground">{t('auth.usernameRule')}</p>
+              <p className="text-xs text-muted-foreground">Only letters, numbers, and underscores allowed</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">{t('auth.password')}</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder={t('auth.enterPassword')}
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
@@ -132,11 +130,11 @@ export default function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">{t('auth.confirmPassword')}</Label>
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
               <Input
                 id="confirmPassword"
                 type="password"
-                placeholder={t('auth.reenterPassword')}
+                placeholder="Re-enter your password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 disabled={loading}
@@ -146,12 +144,12 @@ export default function Register() {
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? t('auth.registering') : t('auth.registerButton')}
+              {loading ? 'Registering...' : 'Register'}
             </Button>
             <p className="text-sm text-center text-muted-foreground">
-              {t('auth.haveAccount')}{' '}
+              Already have an account?{' '}
               <Link to="/login" className="text-primary hover:underline font-medium">
-                {t('auth.login')}
+                Login
               </Link>
             </p>
           </CardFooter>

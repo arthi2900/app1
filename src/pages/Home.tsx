@@ -1,40 +1,101 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { BookOpen, Users, FileQuestion, Award } from 'lucide-react';
 
 export default function Home() {
-  const { profile, loading } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!loading && profile) {
-      switch (profile.role) {
-        case 'admin':
-          navigate('/admin');
-          break;
-        case 'principal':
-          navigate('/principal');
-          break;
-        case 'teacher':
-          navigate('/teacher');
-          break;
-        case 'student':
-          navigate('/student');
-          break;
-        default:
-          navigate('/login');
-      }
-    } else if (!loading && !profile) {
-      navigate('/login');
-    }
-  }, [profile, loading, navigate]);
-
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center">
-        <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-muted-foreground">திருப்பி விடுகிறது...</p>
-      </div>
+    <div className="space-y-12">
+      <section className="text-center space-y-4 py-12">
+        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+          Online Exam Management System
+        </h1>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          A comprehensive platform for conducting and managing online exams efficiently
+        </p>
+        <div className="flex gap-4 justify-center pt-4">
+          <Link to="/login">
+            <Button size="lg">Login</Button>
+          </Link>
+          <Link to="/register">
+            <Button size="lg" variant="outline">
+              Register
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      <section className="grid gap-6 md:grid-cols-2 2xl:grid-cols-4">
+        <Card>
+          <CardHeader>
+            <BookOpen className="w-10 h-10 text-primary mb-2" />
+            <CardTitle>Exam Management</CardTitle>
+            <CardDescription>
+              Create and manage exams with ease
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Teachers can create exams, set schedules, and manage question banks efficiently.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <Users className="w-10 h-10 text-primary mb-2" />
+            <CardTitle>User Management</CardTitle>
+            <CardDescription>
+              Role-based access control
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Admins can manage users, assign roles, and control system access.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <FileQuestion className="w-10 h-10 text-primary mb-2" />
+            <CardTitle>Question Bank</CardTitle>
+            <CardDescription>
+              Comprehensive question repository
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Build and maintain a rich question bank with multiple question types.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <Award className="w-10 h-10 text-primary mb-2" />
+            <CardTitle>Results & Reports</CardTitle>
+            <CardDescription>
+              Detailed performance analytics
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              View detailed results, generate reports, and track student performance.
+            </p>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="bg-muted/30 rounded-lg p-8 text-center">
+        <h2 className="text-3xl font-bold mb-4">Get Started Today</h2>
+        <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+          Join our platform and experience seamless online exam management
+        </p>
+        <Link to="/register">
+          <Button size="lg">Create Account</Button>
+        </Link>
+      </section>
     </div>
   );
 }
