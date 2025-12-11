@@ -99,22 +99,6 @@ export default function Header() {
             </span>
           </Link>
 
-          {profile && (
-            <nav className="hidden md:flex items-center gap-1">
-              {links.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <Link key={link.to} to={link.to}>
-                    <Button variant="ghost" size="sm" className="gap-2">
-                      <Icon className="w-4 h-4" />
-                      {link.label}
-                    </Button>
-                  </Link>
-                );
-              })}
-            </nav>
-          )}
-
           <div className="flex items-center gap-2">
             {profile ? (
               <DropdownMenu>

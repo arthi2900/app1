@@ -9,7 +9,8 @@ Online Exam Management System
 A comprehensive online exam conducting and management system for educational institutions. Features include question paper creation, exam conduct, automatic evaluation, and detailed reporting.
 
 ## 2. User Roles\n
-### 2.1 Admin\n- Complete system administration\n- User account creation and management
+### 2.1 Admin\n- Complete system administration
+- User account creation and management
 - Role-based Access Control setup
 - System configurations (exam duration, evaluation policy)
 - Permission management\n
@@ -18,15 +19,16 @@ A comprehensive online exam conducting and management system for educational ins
 - Exam schedule approval
 - Student report viewing
 - Teacher performance monitoring
-\n### 2.3 Teacher
+
+### 2.3 Teacher
 - Question creation\n- Question paper preparation
-- Exam conduct
-- Student performance viewing
+- Exam conduct\n- Student performance viewing
 \n### 2.4 Student
 - Exam participation
 - Result viewing
 - Access to past exam reports
-\n## 3. Key Features
+
+## 3. Key Features
 
 ### 3.1 Question Bank
 - Subject-wise question storage
@@ -56,19 +58,16 @@ A comprehensive online exam conducting and management system for educational ins
 - Create user accounts for all roles
 - Role-based Access Control management
 - System Settings control
-
-### 3.6 Principal Functions
+\n### 3.6 Principal Functions
 - Exam schedule review and approval
 - Student report access
 - Teacher performance monitoring
-
-### 3.7 Teacher Functions
-- Question creation and management
-- Question paper preparation\n- Exam conduct and monitoring
+\n### 3.7 Teacher Functions\n- Question creation and management
+- Question paper preparation
+- Exam conduct and monitoring
 - Student performance viewing
 
-### 3.8 Student Functions
-- Exam writing\n- Result viewing
+### 3.8 Student Functions\n- Exam writing\n- Result viewing
 - Access to past exam reports
 
 ## 4. Language Support
@@ -86,15 +85,15 @@ A comprehensive online exam conducting and management system for educational ins
 ### 5.1 Audit Logs
 - User activity logging
 - Track who did what and when
-
-### 5.2 Backup & Restore
+\n### 5.2 Backup & Restore
 - Question bank backup
 - Exam data backup
 - Restore functionality
 
-### 5.3 Notifications\n- Exam schedule notifications
-- Result notifications\n
-### 5.4 Analytics Dashboard
+### 5.3 Notifications
+- Exam schedule notifications
+- Result notifications
+\n### 5.4 Analytics Dashboard
 - Student performance analysis
 - Teacher performance analysis
 - Subject-wise analysis
@@ -109,11 +108,12 @@ A comprehensive online exam conducting and management system for educational ins
 - Soft rounded corners (8px radius) - modern and friendly appearance
 - Subtle shadow effects - depth and hierarchy perception
 - Clear borders - for content sections
-
-### 6.3 Overall Layout
-- Card-based design - for information grouping
+\n### 6.3 Overall Layout
+- Side panel navigation - fixed left sidebar (240px width) containing role-based menu items with icons and labels
+- Card-based design - for information grouping in main content area
 - Responsive grid layout - for various screen sizes
-- Clear navigation menu - for easy access
+- Clear navigation menu - for easy access to all features
+- Main content area adjusts dynamically based on side panel state (collapsed/expanded)
 
 ## 7. Reference Images
 User provided screenshot (screenshot.png) showing the admin dashboard with bilingual display - this will be updated to show single language display based on user preference.
