@@ -1,5 +1,15 @@
-import SamplePage from './pages/SamplePage';
 import type { ReactNode } from 'react';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import UserManagement from './pages/admin/UserManagement';
+import PrincipalDashboard from './pages/principal/PrincipalDashboard';
+import TeacherDashboard from './pages/teacher/TeacherDashboard';
+import QuestionBank from './pages/teacher/QuestionBank';
+import StudentDashboard from './pages/student/StudentDashboard';
+import StudentExams from './pages/student/StudentExams';
+import ProtectedRoute from './components/common/ProtectedRoute';
 
 interface RouteConfig {
   name: string;
@@ -10,10 +20,93 @@ interface RouteConfig {
 
 const routes: RouteConfig[] = [
   {
-    name: 'Sample Page',
+    name: 'Home',
     path: '/',
-    element: <SamplePage />
-  }
+    element: <Home />,
+    visible: false,
+  },
+  {
+    name: 'Login',
+    path: '/login',
+    element: <Login />,
+    visible: false,
+  },
+  {
+    name: 'Register',
+    path: '/register',
+    element: <Register />,
+    visible: false,
+  },
+  {
+    name: 'Admin Dashboard',
+    path: '/admin',
+    element: (
+      <ProtectedRoute allowedRoles={['admin']}>
+        <AdminDashboard />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'User Management',
+    path: '/admin/users',
+    element: (
+      <ProtectedRoute allowedRoles={['admin']}>
+        <UserManagement />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Principal Dashboard',
+    path: '/principal',
+    element: (
+      <ProtectedRoute allowedRoles={['principal']}>
+        <PrincipalDashboard />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Teacher Dashboard',
+    path: '/teacher',
+    element: (
+      <ProtectedRoute allowedRoles={['teacher']}>
+        <TeacherDashboard />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Question Bank',
+    path: '/teacher/questions',
+    element: (
+      <ProtectedRoute allowedRoles={['teacher']}>
+        <QuestionBank />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Student Dashboard',
+    path: '/student',
+    element: (
+      <ProtectedRoute allowedRoles={['student']}>
+        <StudentDashboard />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Student Exams',
+    path: '/student/exams',
+    element: (
+      <ProtectedRoute allowedRoles={['student']}>
+        <StudentExams />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
 ];
 
 export default routes;
