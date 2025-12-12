@@ -28,10 +28,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Edit, Ban, CheckCircle, UserCheck, UserX, Clock } from 'lucide-react';
+import { Users, Edit, Ban, CheckCircle, UserCheck, UserX, Clock, Key } from 'lucide-react';
 import { profileApi, schoolApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
 import type { Profile, UserRole, School } from '@/types/types';
+import { supabase } from '@/db/supabase';
 
 interface EditingUser {
   id: string;
@@ -48,6 +49,10 @@ export default function UserManagement() {
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState<EditingUser | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isResetPasswordDialogOpen, setIsResetPasswordDialogOpen] = useState(false);
+  const [resetPasswordUser, setResetPasswordUser] = useState<Profile | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [generatedPassword, setGeneratedPassword] = useState('');
   const [activeTab, setActiveTab] = useState<'pending' | 'active' | 'suspended'>('pending');
   const { toast } = useToast();
 
@@ -192,6 +197,73 @@ export default function UserManagement() {
     }
   };
 
+  const generateRandomPassword = () => {
+    const length = 10;
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    return password;
+  };
+
+  const handleOpenResetPassword = (profile: Profile) => {
+    setResetPasswordUser(profile);
+    const randomPassword = generateRandomPassword();
+    setNewPassword(randomPassword);
+    setGeneratedPassword('');
+    setIsResetPasswordDialogOpen(true);
+  };
+
+  const handleResetPassword = async () => {
+    if (!resetPasswordUser || !newPassword.trim()) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please enter a new password',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast({
+        title: 'Validation Error',
+        description: 'Password must be at least 6 characters long',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.admin.updateUserById(
+        resetPasswordUser.id,
+        { password: newPassword }
+      );
+
+      if (error) throw error;
+
+      setGeneratedPassword(newPassword);
+
+      toast({
+        title: 'Success',
+        description: 'Password reset successfully',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to reset password',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleCloseResetPasswordDialog = () => {
+    setIsResetPasswordDialogOpen(false);
+    setResetPasswordUser(null);
+    setNewPassword('');
+    setGeneratedPassword('');
+  };
+
   const getRoleLabel = (role: string) => {
     const roleMap: Record<string, string> = {
       admin: 'Admin',
@@ -275,6 +347,15 @@ export default function UserManagement() {
             <Button size="sm" variant="outline" onClick={() => handleEdit(profile)} className="h-8">
               <Edit className="w-4 h-4 mr-1" />
               Edit
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => handleOpenResetPassword(profile)}
+              className="h-8"
+            >
+              <Key className="w-4 h-4 mr-1" />
+              Reset Password
             </Button>
             <Button
               size="sm"
@@ -542,6 +623,89 @@ export default function UserManagement() {
             <Button onClick={handleSave}>
               Save Changes
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isResetPasswordDialogOpen} onOpenChange={handleCloseResetPasswordDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Reset Password</DialogTitle>
+            <DialogDescription>
+              Reset password for user: <strong>{resetPasswordUser?.username}</strong>
+            </DialogDescription>
+          </DialogHeader>
+          
+          {!generatedPassword ? (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="new-password">New Password</Label>
+                <Input
+                  id="new-password"
+                  type="text"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Enter new password"
+                />
+                <p className="text-xs text-muted-foreground">
+                  A random password has been generated. You can modify it or use as is.
+                </p>
+              </div>
+              
+              <div className="bg-muted p-3 rounded-md">
+                <p className="text-sm font-medium mb-1">Important:</p>
+                <p className="text-sm text-muted-foreground">
+                  Make sure to copy and share this password with the user securely. 
+                  They can change it later from their account settings.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="bg-primary/10 border border-primary/20 p-4 rounded-md">
+                <p className="text-sm font-medium mb-2">Password Reset Successful!</p>
+                <p className="text-sm text-muted-foreground mb-3">
+                  The new password for <strong>{resetPasswordUser?.username}</strong> is:
+                </p>
+                <div className="bg-background p-3 rounded border font-mono text-sm break-all">
+                  {generatedPassword}
+                </div>
+                <p className="text-xs text-muted-foreground mt-3">
+                  Please copy this password and share it with the user securely.
+                </p>
+              </div>
+              
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                  navigator.clipboard.writeText(generatedPassword);
+                  toast({
+                    title: 'Copied',
+                    description: 'Password copied to clipboard',
+                  });
+                }}
+              >
+                Copy Password
+              </Button>
+            </div>
+          )}
+          
+          <DialogFooter>
+            {!generatedPassword ? (
+              <>
+                <Button variant="outline" onClick={handleCloseResetPasswordDialog}>
+                  Cancel
+                </Button>
+                <Button onClick={handleResetPassword}>
+                  Reset Password
+                </Button>
+              </>
+            ) : (
+              <Button onClick={handleCloseResetPasswordDialog} className="w-full">
+                Close
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
