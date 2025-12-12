@@ -8,10 +8,9 @@ Online Exam Management System
 ### 1.2 Application Purpose
 A comprehensive online exam conducting and management system for educational institutions. Features include school management, question paper creation, exam conduct, automatic evaluation, and detailed reporting.
 
-## 2. User Roles
-
-### 2.1 Admin\n- Complete system administration
-- School management (create, edit, view schools)
+## 2. User Roles\n
+### 2.1 Admin
+- Complete system administration\n- School management (create, edit, view schools)
 - User account creation and management
 - New user approval management
 - Role-based Access Control setup
@@ -63,7 +62,8 @@ Admin can create and manage schools with the following details:
 \n#### 3.1.2 School Management Features
 - Create new school with all mandatory fields
 - Edit existing school information
-- View complete school list\n- Search and filter schools by name, code, or affiliation
+- View complete school list
+- Search and filter schools by name, code, or affiliation
 - Auto-generate unique School Code/ID upon school creation
 - Link Principal from existing user database (dropdown selection)
 - Define subject list for each school
@@ -201,13 +201,37 @@ Admin can create and manage schools with the following details:
 - Subtle shadow effects - depth and hierarchy perception
 - Clear borders - for content sections
 \n### 7.3 Overall Layout
-- Side panel navigation - fixed left sidebar (240px width) containing role-based menu items with icons and labels
+- Side panel navigation - fixed left sidebar (240px width) with collapsible toggle button
+- **Admin Navigation Menu Items:**
+  - Dashboard (with grid icon)
+  - User Management (with users icon)
+  - School Management (with building icon)
+  - Question Bank (with question icon)
+  - Exam Management (with document icon)
+  - Reports & Analytics (with chart icon)
+  - System Settings (with gear icon)
+- **Principal Navigation Menu Items:**
+  - Dashboard\n  - Teacher Management
+  - Exam Schedules
+  - Student Reports\n  - Profile Settings
+- **Teacher Navigation Menu Items:**
+  - Dashboard
+  - Question Bank
+  - Create Exam Paper
+  - Conduct Exam
+  - Student Performance
+  - Profile Settings
+- **Student Navigation Menu Items:**\n  - Dashboard
+  - My Exams
+  - Results
+  - Past Reports
+  - Profile Settings
 - Card-based design - for information grouping in main content area
 - Responsive grid layout - for various screen sizes
-- Clear navigation menu - for easy access to all features
 - Main content area adjusts dynamically based on side panel state (collapsed/expanded)
 - Tab-based user management interface showing Pending Users, Active Users, and Suspended Users separately
 - School management interface with create, edit, and view options
-\n## 8. Reference Images
-1. screenshot.png - Admin dashboard interface
+
+## 8. Reference Images
+1. screenshot.png - Admin dashboard interface showing side panel navigation with Dashboard and User Management menu items
 2. screenshot-2.png - User management interface showing Active Users list with Edit and Suspend buttons

@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   ChevronRight,
   BookOpen,
+  Building2,
 } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -44,7 +45,8 @@ export default function Sidebar({ collapsed, onCollapsedChange }: SidebarProps) 
     if (profile.role === 'admin') {
       links.push(
         { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-        { to: '/admin/users', label: 'User Management', icon: Users }
+        { to: '/admin/users', label: 'User Management', icon: Users },
+        { to: '/admin/schools', label: 'School Management', icon: Building2 }
       );
     }
 
