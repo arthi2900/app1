@@ -185,14 +185,13 @@ export default function UserManagement() {
     return (
       <TableRow key={profile.id} className={profile.suspended ? 'opacity-60' : ''}>
         <TableCell className="font-medium">{profile.username}</TableCell>
-        <TableCell>{profile.email || '-'}</TableCell>
+        <TableCell>{profile.full_name || '-'}</TableCell>
         <TableCell>
           <Badge variant={getRoleBadgeVariant(profile.role)}>
             {getRoleLabel(profile.role)}
           </Badge>
         </TableCell>
         <TableCell>{profile.school_name || '-'}</TableCell>
-        <TableCell>{profile.phone || '-'}</TableCell>
         <TableCell>
           <Badge variant={profile.suspended ? 'destructive' : 'secondary'}>
             {profile.suspended ? 'Suspended' : 'Active'}
@@ -283,10 +282,9 @@ export default function UserManagement() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Username</TableHead>
-                      <TableHead>Email</TableHead>
+                      <TableHead>Full Name</TableHead>
                       <TableHead>Role</TableHead>
                       <TableHead>School Name</TableHead>
-                      <TableHead>Contact Number</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
@@ -316,10 +314,9 @@ export default function UserManagement() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Username</TableHead>
-                      <TableHead>Email</TableHead>
+                      <TableHead>Full Name</TableHead>
                       <TableHead>Role</TableHead>
                       <TableHead>School Name</TableHead>
-                      <TableHead>Contact Number</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
