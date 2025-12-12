@@ -8,9 +8,9 @@ Online Exam Management System
 ### 1.2 Application Purpose
 A comprehensive online exam conducting and management system for educational institutions. Features include question paper creation, exam conduct, automatic evaluation, and detailed reporting.
 
-## 2. User Roles\n
-### 2.1 Admin
-- Complete system administration
+## 2. User Roles
+
+### 2.1 Admin\n- Complete system administration
 - User account creation and management
 - New user approval management
 - Role-based Access Control setup
@@ -69,7 +69,8 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - School name displayed on report header
 
 ### 3.5 User Registration and Approval Workflow
-- When a new user creates an account (signup), they will be assigned 'Pending Approval' status\n- New users with'Pending Approval' status will be displayed separately in'Pending Users' list (not in Active Users list)
+- When a new user creates an account (signup), they will be assigned 'Pending Approval' status
+- New users with 'Pending Approval' status will be displayed separately in'Pending Users' list (not in Active Users list)
 - Admin must review and approve new user accounts
 - Only after Admin approval, user status changes to 'Active' and they are moved to Active Users list
 - This prevents unauthorized users from accessing the system
@@ -119,14 +120,15 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 ## 4. Language Support
 
 ### 4.1 UI Language
-- Default UI language: English
-- Users can switch to Tamil based on their requirement
-- Only one language will be displayed in the UI at any given time (not both simultaneously)
-- Language preference will be saved for each user
-- All buttons, menus, labels, and messages will be displayed in the selected language
-- Language toggle option available in user settings
-
-## 5. Future Scope Features
+- **UI Language: English Only**
+- All user interface elements (buttons, menus, labels, navigation, forms, tables, headers) will be displayed in English\n- This includes all management interfaces, dashboards, and system pages
+\n### 4.2 Chat/Communication Language
+- Users can communicate in any language they prefer for chat, messages, or communication features
+- Chat language is flexible and not restricted to English
+\n### 4.3 Language Rule Summary
+- **UI = Always English**
+- **Chat/Communication = Any Language**
+\n## 5. Future Scope Features
 
 ### 5.1 Audit Logs
 - User activity logging
@@ -168,5 +170,5 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - Tab-based user management interface showing Pending Users, Active Users, and Suspended Users separately
 
 ## 7. Reference Images
-1. screenshot.png - Admin dashboard with bilingual display (will be updated to show single language based on user preference)
+1. screenshot.png - Admin dashboard interface
 2. screenshot-2.png - User management interface showing Active Users list with Edit and Suspend buttons

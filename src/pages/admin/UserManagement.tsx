@@ -167,20 +167,20 @@ export default function UserManagement() {
       ));
 
       toast({
-        title: 'வெற்றி',
-        description: 'பயனர் ஒப்புதல் வழங்கப்பட்டது',
+        title: 'Success',
+        description: 'User approved successfully',
       });
     } catch (error) {
       toast({
-        title: 'பிழை',
-        description: 'பயனரை ஒப்புதல் செய்ய முடியவில்லை',
+        title: 'Error',
+        description: 'Failed to approve user',
         variant: 'destructive',
       });
     }
   };
 
   const handleReject = async (userId: string) => {
-    if (!confirm('இந்த பயனரை நிராகரிக்க விரும்புகிறீர்களா? இது நிரந்தரமாக நீக்கப்படும்.')) {
+    if (!confirm('Are you sure you want to reject this user? This will permanently delete their account.')) {
       return;
     }
 
@@ -190,13 +190,13 @@ export default function UserManagement() {
       setProfiles(profiles.filter(p => p.id !== userId));
 
       toast({
-        title: 'வெற்றி',
-        description: 'பயனர் நிராகரிக்கப்பட்டு நீக்கப்பட்டார்',
+        title: 'Success',
+        description: 'User rejected and removed successfully',
       });
     } catch (error) {
       toast({
-        title: 'பிழை',
-        description: 'பயனரை நிராகரிக்க முடியவில்லை',
+        title: 'Error',
+        description: 'Failed to reject user',
         variant: 'destructive',
       });
     }
@@ -240,14 +240,14 @@ export default function UserManagement() {
         <TableCell>
           <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-300">
             <Clock className="w-3 h-3 mr-1" />
-            நிலுவையில்
+            Pending
           </Badge>
         </TableCell>
         <TableCell>
           <div className="flex items-center gap-2">
             <Button size="sm" onClick={() => handleApprove(profile.id)} className="h-8">
               <UserCheck className="w-4 h-4 mr-1" />
-              ஒப்புதல்
+              Approve
             </Button>
             <Button
               size="sm"
@@ -256,7 +256,7 @@ export default function UserManagement() {
               className="h-8"
             >
               <UserX className="w-4 h-4 mr-1" />
-              நிராகரி
+              Reject
             </Button>
           </div>
         </TableCell>
@@ -324,20 +324,20 @@ export default function UserManagement() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">பயனர் மேலாண்மை</h1>
+          <h1 className="text-3xl font-bold">User Management</h1>
           <p className="text-muted-foreground mt-2">
-            பயனர்களை நிர்வகித்தல், பாத்திரங்களை ஒதுக்குதல் மற்றும் கணக்குகளை இடைநிறுத்துதல்
+            Manage users, assign roles, and control account access
           </p>
         </div>
         <div className="flex gap-4">
           <Badge variant="outline" className="text-lg px-4 py-2 bg-yellow-50 text-yellow-700 border-yellow-300">
-            நிலுவையில்: {pendingProfiles.length}
+            Pending: {pendingProfiles.length}
           </Badge>
           <Badge variant="secondary" className="text-lg px-4 py-2">
-            செயலில்: {activeProfiles.length}
+            Active: {activeProfiles.length}
           </Badge>
           <Badge variant="destructive" className="text-lg px-4 py-2">
-            இடைநிறுத்தம்: {suspendedProfiles.length}
+            Suspended: {suspendedProfiles.length}
           </Badge>
         </div>
       </div>
@@ -346,42 +346,42 @@ export default function UserManagement() {
         <TabsList>
           <TabsTrigger value="pending">
             <Clock className="w-4 h-4 mr-2" />
-            நிலுவையில் உள்ள பயனர்கள் ({pendingProfiles.length})
+            Pending Users ({pendingProfiles.length})
           </TabsTrigger>
           <TabsTrigger value="active">
             <Users className="w-4 h-4 mr-2" />
-            செயலில் உள்ள பயனர்கள் ({activeProfiles.length})
+            Active Users ({activeProfiles.length})
           </TabsTrigger>
           <TabsTrigger value="suspended">
             <Ban className="w-4 h-4 mr-2" />
-            இடைநிறுத்தப்பட்டவர்கள் ({suspendedProfiles.length})
+            Suspended Users ({suspendedProfiles.length})
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>நிலுவையில் உள்ள பயனர்கள்</CardTitle>
+              <CardTitle>Pending Users</CardTitle>
             </CardHeader>
             <CardContent>
               {pendingProfiles.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <Clock className="w-12 h-12 text-muted-foreground mb-4" />
-                  <p className="text-lg font-medium">நிலுவையில் உள்ள பயனர்கள் இல்லை</p>
+                  <p className="text-lg font-medium">No pending users</p>
                   <p className="text-sm text-muted-foreground mt-2">
-                    புதிய பயனர்கள் பதிவு செய்யும்போது இங்கே காண்பிக்கப்படும்
+                    New user registrations will appear here for approval
                   </p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>பயனர் பெயர்</TableHead>
-                      <TableHead>முழு பெயர்</TableHead>
-                      <TableHead>பாத்திரம்</TableHead>
-                      <TableHead>பள்ளி பெயர்</TableHead>
-                      <TableHead>நிலை</TableHead>
-                      <TableHead>செயல்கள்</TableHead>
+                      <TableHead>Username</TableHead>
+                      <TableHead>Full Name</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>School Name</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -396,24 +396,24 @@ export default function UserManagement() {
         <TabsContent value="active" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>செயலில் உள்ள பயனர்கள்</CardTitle>
+              <CardTitle>Active Users</CardTitle>
             </CardHeader>
             <CardContent>
               {activeProfiles.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <Users className="w-12 h-12 text-muted-foreground mb-4" />
-                  <p className="text-lg font-medium">செயலில் உள்ள பயனர்கள் இல்லை</p>
+                  <p className="text-lg font-medium">No active users found</p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>பயனர் பெயர்</TableHead>
-                      <TableHead>முழு பெயர்</TableHead>
-                      <TableHead>பாத்திரம்</TableHead>
-                      <TableHead>பள்ளி பெயர்</TableHead>
-                      <TableHead>நிலை</TableHead>
-                      <TableHead>செயல்கள்</TableHead>
+                      <TableHead>Username</TableHead>
+                      <TableHead>Full Name</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>School Name</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -428,24 +428,24 @@ export default function UserManagement() {
         <TabsContent value="suspended" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>இடைநிறுத்தப்பட்ட பயனர்கள்</CardTitle>
+              <CardTitle>Suspended Users</CardTitle>
             </CardHeader>
             <CardContent>
               {suspendedProfiles.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <Ban className="w-12 h-12 text-muted-foreground mb-4" />
-                  <p className="text-lg font-medium">இடைநிறுத்தப்பட்ட பயனர்கள் இல்லை</p>
+                  <p className="text-lg font-medium">No suspended users</p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>பயனர் பெயர்</TableHead>
-                      <TableHead>முழு பெயர்</TableHead>
-                      <TableHead>பாத்திரம்</TableHead>
-                      <TableHead>பள்ளி பெயர்</TableHead>
-                      <TableHead>நிலை</TableHead>
-                      <TableHead>செயல்கள்</TableHead>
+                      <TableHead>Username</TableHead>
+                      <TableHead>Full Name</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>School Name</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
