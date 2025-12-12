@@ -15,11 +15,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Edit, Save, X, Ban, CheckCircle } from 'lucide-react';
+import { Users, Edit, Ban, CheckCircle } from 'lucide-react';
 import { profileApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
 import type { Profile, UserRole } from '@/types/types';
@@ -37,6 +46,7 @@ export default function UserManagement() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState<EditingUser | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'active' | 'suspended'>('active');
   const { toast } = useToast();
 
@@ -68,10 +78,12 @@ export default function UserManagement() {
       school_name: profile.school_name || '',
       role: profile.role,
     });
+    setIsEditDialogOpen(true);
   };
 
   const handleCancelEdit = () => {
     setEditingUser(null);
+    setIsEditDialogOpen(false);
   };
 
   const handleSave = async () => {
@@ -115,6 +127,7 @@ export default function UserManagement() {
       });
 
       setEditingUser(null);
+      setIsEditDialogOpen(false);
     } catch (error) {
       toast({
         title: 'Error',
@@ -169,72 +182,17 @@ export default function UserManagement() {
   const suspendedProfiles = profiles.filter(p => p.suspended);
 
   const renderUserRow = (profile: Profile) => {
-    const isEditing = editingUser?.id === profile.id;
-
     return (
       <TableRow key={profile.id} className={profile.suspended ? 'opacity-60' : ''}>
         <TableCell className="font-medium">{profile.username}</TableCell>
+        <TableCell>{profile.email || '-'}</TableCell>
         <TableCell>
-          {isEditing ? (
-            <Input
-              value={editingUser.email}
-              onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
-              className="h-8"
-              type="email"
-              placeholder="Email"
-            />
-          ) : (
-            profile.email || '-'
-          )}
+          <Badge variant={getRoleBadgeVariant(profile.role)}>
+            {getRoleLabel(profile.role)}
+          </Badge>
         </TableCell>
-        <TableCell>
-          {isEditing ? (
-            <Select
-              value={editingUser.role}
-              onValueChange={(value) => setEditingUser({ ...editingUser, role: value as UserRole })}
-            >
-              <SelectTrigger className="h-8 w-32">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="principal">Principal</SelectItem>
-                <SelectItem value="teacher">Teacher</SelectItem>
-                <SelectItem value="student">Student</SelectItem>
-              </SelectContent>
-            </Select>
-          ) : (
-            <Badge variant={getRoleBadgeVariant(profile.role)}>
-              {getRoleLabel(profile.role)}
-            </Badge>
-          )}
-        </TableCell>
-        <TableCell>
-          {isEditing ? (
-            <Input
-              value={editingUser.school_name}
-              onChange={(e) => setEditingUser({ ...editingUser, school_name: e.target.value })}
-              className="h-8"
-              placeholder="School name *"
-              required
-            />
-          ) : (
-            profile.school_name || '-'
-          )}
-        </TableCell>
-        <TableCell>
-          {isEditing ? (
-            <Input
-              value={editingUser.phone}
-              onChange={(e) => setEditingUser({ ...editingUser, phone: e.target.value })}
-              className="h-8"
-              type="tel"
-              placeholder="Contact number"
-            />
-          ) : (
-            profile.phone || '-'
-          )}
-        </TableCell>
+        <TableCell>{profile.school_name || '-'}</TableCell>
+        <TableCell>{profile.phone || '-'}</TableCell>
         <TableCell>
           <Badge variant={profile.suspended ? 'destructive' : 'secondary'}>
             {profile.suspended ? 'Suspended' : 'Active'}
@@ -242,43 +200,28 @@ export default function UserManagement() {
         </TableCell>
         <TableCell>
           <div className="flex items-center gap-2">
-            {isEditing ? (
-              <>
-                <Button size="sm" onClick={handleSave} className="h-8">
-                  <Save className="w-4 h-4 mr-1" />
-                  Save
-                </Button>
-                <Button size="sm" variant="outline" onClick={handleCancelEdit} className="h-8">
-                  <X className="w-4 h-4 mr-1" />
-                  Cancel
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button size="sm" variant="outline" onClick={() => handleEdit(profile)} className="h-8">
-                  <Edit className="w-4 h-4 mr-1" />
-                  Edit
-                </Button>
-                <Button
-                  size="sm"
-                  variant={profile.suspended ? 'default' : 'destructive'}
-                  onClick={() => handleToggleSuspend(profile.id, profile.suspended)}
-                  className="h-8"
-                >
-                  {profile.suspended ? (
-                    <>
-                      <CheckCircle className="w-4 h-4 mr-1" />
-                      Unsuspend
-                    </>
-                  ) : (
-                    <>
-                      <Ban className="w-4 h-4 mr-1" />
-                      Suspend
-                    </>
-                  )}
-                </Button>
-              </>
-            )}
+            <Button size="sm" variant="outline" onClick={() => handleEdit(profile)} className="h-8">
+              <Edit className="w-4 h-4 mr-1" />
+              Edit
+            </Button>
+            <Button
+              size="sm"
+              variant={profile.suspended ? 'default' : 'destructive'}
+              onClick={() => handleToggleSuspend(profile.id, profile.suspended)}
+              className="h-8"
+            >
+              {profile.suspended ? (
+                <>
+                  <CheckCircle className="w-4 h-4 mr-1" />
+                  Unsuspend
+                </>
+              ) : (
+                <>
+                  <Ban className="w-4 h-4 mr-1" />
+                  Suspend
+                </>
+              )}
+            </Button>
           </div>
         </TableCell>
       </TableRow>
@@ -390,6 +333,95 @@ export default function UserManagement() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Edit User Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+            <DialogDescription>
+              Update user information. Fields marked with * are required.
+            </DialogDescription>
+          </DialogHeader>
+          {editingUser && (
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-username">Username</Label>
+                <Input
+                  id="edit-username"
+                  value={profiles.find(p => p.id === editingUser.id)?.username || ''}
+                  disabled
+                  className="bg-muted"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-full-name">Full Name</Label>
+                <Input
+                  id="edit-full-name"
+                  value={editingUser.full_name}
+                  onChange={(e) => setEditingUser({ ...editingUser, full_name: e.target.value })}
+                  placeholder="Enter full name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-email">Email Address</Label>
+                <Input
+                  id="edit-email"
+                  type="email"
+                  value={editingUser.email}
+                  onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
+                  placeholder="Enter email address"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-phone">Contact Number</Label>
+                <Input
+                  id="edit-phone"
+                  type="tel"
+                  value={editingUser.phone}
+                  onChange={(e) => setEditingUser({ ...editingUser, phone: e.target.value })}
+                  placeholder="Enter contact number"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-school">School Name *</Label>
+                <Input
+                  id="edit-school"
+                  value={editingUser.school_name}
+                  onChange={(e) => setEditingUser({ ...editingUser, school_name: e.target.value })}
+                  placeholder="Enter school name"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-role">Role</Label>
+                <Select
+                  value={editingUser.role}
+                  onValueChange={(value) => setEditingUser({ ...editingUser, role: value as UserRole })}
+                >
+                  <SelectTrigger id="edit-role">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="principal">Principal</SelectItem>
+                    <SelectItem value="teacher">Teacher</SelectItem>
+                    <SelectItem value="student">Student</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancelEdit}>
+              Cancel
+            </Button>
+            <Button onClick={handleSave}>
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
