@@ -29,10 +29,21 @@ export const profileApi = {
   async getAllProfiles(): Promise<Profile[]> {
     const { data, error } = await supabase
       .from('profiles')
-      .select('*')
+      .select(`
+        *,
+        schools!profiles_school_id_fkey (
+          school_name
+        )
+      `)
       .order('created_at', { ascending: false });
     if (error) throw error;
-    return Array.isArray(data) ? data : [];
+    
+    const profiles = Array.isArray(data) ? data : [];
+    return profiles.map((profile: any) => ({
+      ...profile,
+      school_name: profile.schools?.school_name || null,
+      schools: undefined
+    }));
   },
 
   async updateProfile(id: string, updates: Partial<Profile>): Promise<Profile | null> {

@@ -9,8 +9,8 @@ Online Exam Management System
 A comprehensive online exam conducting and management system for educational institutions. Features include school management, question paper creation, exam conduct, automatic evaluation, and detailed reporting.
 
 ## 2. User Roles\n
-### 2.1 Admin
-- Complete system administration\n- School management (create, edit, view schools)
+### 2.1 Admin\n- Complete system administration
+- School management (create, edit, view schools)
 - User account creation and management
 - New user approval management
 - Role-based Access Control setup
@@ -46,10 +46,10 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - Profile picture (optional)\n- Account status (Pending Approval/Active/Suspended)
 \n## 3. School Management Module
 
-### 3.1 School Master
-Admin can create and manage schools with the following details:
+### 3.1 School Master\nAdmin can create and manage schools with the following details:
 \n#### 3.1.1 School Information Fields
-- School Name (mandatory)
+- School Name (unique, mandatory)
+- Assignment (optional, selected from existing School Name)
 - School Address (mandatory)
 - Contact Number (mandatory)
 - Email Address (mandatory)
@@ -67,6 +67,7 @@ Admin can create and manage schools with the following details:
 - Auto-generate unique School Code/ID upon school creation
 - Link Principal from existing user database (dropdown selection)
 - Define subject list for each school
+- Assign school to another school via Assignment field (optional)
 \n#### 3.1.3 School-User Relationship
 - When creating/editing user accounts, Admin selects school from dropdown (populated from School Master)
 - Principal, Teacher, and Student roles must be linked to a school
@@ -85,7 +86,8 @@ Admin can create and manage schools with the following details:
   - Subject reference
   - School reference (questions linked to specific school)
 \n### 4.2 Exam Paper Generation
-- Automatic selection from question bank\n- Manual question selection option
+- Automatic selection from question bank
+- Manual question selection option
 - Question paper preview feature
 - Question paper approval process
 - School-specific question papers
@@ -156,8 +158,7 @@ Admin can create and manage schools with the following details:
 
 ### 5.1 UI Language
 - **UI Language: English Only**
-- All user interface elements (buttons, menus, labels, navigation, forms, tables, headers) will be displayed in English
-- This includes all management interfaces, dashboards, and system pages
+- All user interface elements (buttons, menus, labels, navigation, forms, tables, headers) will be displayed in English\n- This includes all management interfaces, dashboards, and system pages
 
 ### 5.2 Chat/Communication Language
 - Users can communicate in any language they prefer for chat, messages, or communication features
@@ -221,7 +222,8 @@ Admin can create and manage schools with the following details:
   - Conduct Exam
   - Student Performance
   - Profile Settings
-- **Student Navigation Menu Items:**\n  - Dashboard
+- **Student Navigation Menu Items:**
+  - Dashboard
   - My Exams
   - Results
   - Past Reports

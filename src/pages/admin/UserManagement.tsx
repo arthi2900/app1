@@ -29,21 +29,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Users, Edit, Ban, CheckCircle, UserCheck, UserX, Clock } from 'lucide-react';
-import { profileApi } from '@/db/api';
+import { profileApi, schoolApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
-import type { Profile, UserRole } from '@/types/types';
+import type { Profile, UserRole, School } from '@/types/types';
 
 interface EditingUser {
   id: string;
   full_name: string;
   email: string;
   phone: string;
-  school_name: string;
+  school_id: string;
   role: UserRole;
 }
 
 export default function UserManagement() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [schools, setSchools] = useState<School[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState<EditingUser | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -52,6 +53,7 @@ export default function UserManagement() {
 
   useEffect(() => {
     loadProfiles();
+    loadSchools();
   }, []);
 
   const loadProfiles = async () => {
@@ -69,13 +71,22 @@ export default function UserManagement() {
     }
   };
 
+  const loadSchools = async () => {
+    try {
+      const data = await schoolApi.getAllSchools();
+      setSchools(data);
+    } catch (error) {
+      console.error('Failed to load schools:', error);
+    }
+  };
+
   const handleEdit = (profile: Profile) => {
     setEditingUser({
       id: profile.id,
       full_name: profile.full_name || '',
       email: profile.email || '',
       phone: profile.phone || '',
-      school_name: profile.school_name || '',
+      school_id: profile.school_id || '',
       role: profile.role,
     });
     setIsEditDialogOpen(true);
@@ -89,37 +100,16 @@ export default function UserManagement() {
   const handleSave = async () => {
     if (!editingUser) return;
 
-    // Validate mandatory fields
-    if (!editingUser.school_name.trim()) {
-      toast({
-        title: 'Validation Error',
-        description: 'School name is required',
-        variant: 'destructive',
-      });
-      return;
-    }
-
     try {
       await profileApi.updateProfile(editingUser.id, {
         full_name: editingUser.full_name || null,
         email: editingUser.email || null,
         phone: editingUser.phone || null,
-        school_name: editingUser.school_name || null,
+        school_id: editingUser.school_id || null,
         role: editingUser.role,
       });
 
-      setProfiles(profiles.map(p =>
-        p.id === editingUser.id
-          ? { 
-              ...p, 
-              full_name: editingUser.full_name || null, 
-              email: editingUser.email || null,
-              phone: editingUser.phone || null,
-              school_name: editingUser.school_name || null, 
-              role: editingUser.role 
-            }
-          : p
-      ));
+      await loadProfiles();
 
       toast({
         title: 'Success',
@@ -508,14 +498,23 @@ export default function UserManagement() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-school">School Name *</Label>
-                <Input
-                  id="edit-school"
-                  value={editingUser.school_name}
-                  onChange={(e) => setEditingUser({ ...editingUser, school_name: e.target.value })}
-                  placeholder="Enter school name"
-                  required
-                />
+                <Label htmlFor="edit-school">School</Label>
+                <Select
+                  value={editingUser.school_id || 'none'}
+                  onValueChange={(value) => setEditingUser({ ...editingUser, school_id: value === 'none' ? '' : value })}
+                >
+                  <SelectTrigger id="edit-school">
+                    <SelectValue placeholder="Select a school (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">None</SelectItem>
+                    {schools.map((school) => (
+                      <SelectItem key={school.id} value={school.id}>
+                        {school.school_name} ({school.school_code})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-role">Role</Label>
