@@ -11,10 +11,27 @@ export interface Profile {
   email: string | null;
   phone: string | null;
   school_name: string | null;
+  school_id: string | null;
   role: UserRole;
   approved: boolean;
   suspended: boolean;
   created_at: string;
+}
+
+export interface School {
+  id: string;
+  school_name: string;
+  school_address: string;
+  contact_number: string;
+  email: string;
+  school_code: string;
+  affiliation_board: string;
+  class_range_from: number;
+  class_range_to: number;
+  subjects_offered: string[];
+  principal_id: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Subject {

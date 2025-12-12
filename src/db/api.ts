@@ -1,6 +1,7 @@
 import { supabase } from './supabase';
 import type {
   Profile,
+  School,
   Subject,
   Question,
   Exam,
@@ -83,6 +84,67 @@ export const profileApi = {
       .delete()
       .eq('id', id);
     if (error) throw error;
+  },
+};
+
+// School APIs
+export const schoolApi = {
+  async getAllSchools(): Promise<School[]> {
+    const { data, error } = await supabase
+      .from('schools')
+      .select('*')
+      .order('school_name', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getSchoolById(id: string): Promise<School | null> {
+    const { data, error } = await supabase
+      .from('schools')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async createSchool(school: Omit<School, 'id' | 'school_code' | 'created_at' | 'updated_at'>): Promise<School | null> {
+    const { data, error } = await supabase
+      .from('schools')
+      .insert(school)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateSchool(id: string, updates: Partial<School>): Promise<School | null> {
+    const { data, error } = await supabase
+      .from('schools')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async deleteSchool(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('schools')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  async getSchoolByPrincipalId(principalId: string): Promise<School | null> {
+    const { data, error } = await supabase
+      .from('schools')
+      .select('*')
+      .eq('principal_id', principalId)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
   },
 };
 

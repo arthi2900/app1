@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
+import SchoolManagement from './pages/admin/SchoolManagement';
 import PrincipalDashboard from './pages/principal/PrincipalDashboard';
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
 import QuestionBank from './pages/teacher/QuestionBank';
@@ -53,6 +54,16 @@ const routes: RouteConfig[] = [
     element: (
       <ProtectedRoute allowedRoles={['admin']}>
         <UserManagement />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'School Management',
+    path: '/admin/schools',
+    element: (
+      <ProtectedRoute allowedRoles={['admin']}>
+        <SchoolManagement />
       </ProtectedRoute>
     ),
     visible: false,

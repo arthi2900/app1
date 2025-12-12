@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { BookOpen, User, LogOut, LayoutDashboard, Users, FileQuestion, ClipboardList, Award } from 'lucide-react';
+import { BookOpen, User, LogOut, LayoutDashboard, Users, FileQuestion, ClipboardList, Award, Building2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Header() {
@@ -42,7 +42,8 @@ export default function Header() {
     if (profile.role === 'admin') {
       links.push(
         { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-        { to: '/admin/users', label: 'Users', icon: Users }
+        { to: '/admin/users', label: 'Users', icon: Users },
+        { to: '/admin/schools', label: 'Schools', icon: Building2 }
       );
     }
 
