@@ -13,6 +13,8 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [schoolName, setSchoolName] = useState('');
   const [loading, setLoading] = useState(false);
   const { signUp } = useAuth();
@@ -22,7 +24,7 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!username.trim() || !password || !confirmPassword || !fullName.trim()) {
+    if (!username.trim() || !password || !confirmPassword || !fullName.trim() || !schoolName.trim()) {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields',
@@ -35,6 +37,15 @@ export default function Register() {
       toast({
         title: 'Error',
         description: 'Username can only contain letters, numbers, and underscores',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast({
+        title: 'Error',
+        description: 'Please enter a valid email address',
         variant: 'destructive',
       });
       return;
@@ -60,7 +71,7 @@ export default function Register() {
 
     setLoading(true);
     try {
-      await signUp(username, password, fullName, schoolName || undefined);
+      await signUp(username, password, fullName, email || undefined, phone || undefined, schoolName);
       toast({
         title: 'Success',
         description: 'Registration successful',
@@ -94,7 +105,7 @@ export default function Register() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
+              <Label htmlFor="fullName">Full Name *</Label>
               <Input
                 id="fullName"
                 type="text"
@@ -106,18 +117,41 @@ export default function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="schoolName">School Name</Label>
+              <Label htmlFor="email">Email Address</Label>
               <Input
-                id="schoolName"
-                type="text"
-                placeholder="Enter your school name (optional)"
-                value={schoolName}
-                onChange={(e) => setSchoolName(e.target.value)}
+                id="email"
+                type="email"
+                placeholder="Enter your email address (optional)"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="phone">Contact Number</Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="Enter your contact number (optional)"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="schoolName">School Name *</Label>
+              <Input
+                id="schoolName"
+                type="text"
+                placeholder="Enter your school name"
+                value={schoolName}
+                onChange={(e) => setSchoolName(e.target.value)}
+                disabled={loading}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="username">Username *</Label>
               <Input
                 id="username"
                 type="text"
@@ -130,7 +164,7 @@ export default function Register() {
               <p className="text-xs text-muted-foreground">Only letters, numbers, and underscores allowed</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Password *</Label>
               <Input
                 id="password"
                 type="password"
@@ -142,7 +176,7 @@ export default function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Label htmlFor="confirmPassword">Confirm Password *</Label>
               <Input
                 id="confirmPassword"
                 type="password"

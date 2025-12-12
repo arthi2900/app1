@@ -27,6 +27,8 @@ import type { Profile, UserRole } from '@/types/types';
 interface EditingUser {
   id: string;
   full_name: string;
+  email: string;
+  phone: string;
   school_name: string;
   role: UserRole;
 }
@@ -61,6 +63,8 @@ export default function UserManagement() {
     setEditingUser({
       id: profile.id,
       full_name: profile.full_name || '',
+      email: profile.email || '',
+      phone: profile.phone || '',
       school_name: profile.school_name || '',
       role: profile.role,
     });
@@ -73,16 +77,35 @@ export default function UserManagement() {
   const handleSave = async () => {
     if (!editingUser) return;
 
+    // Validate mandatory fields
+    if (!editingUser.school_name.trim()) {
+      toast({
+        title: 'Validation Error',
+        description: 'School name is required',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     try {
       await profileApi.updateProfile(editingUser.id, {
         full_name: editingUser.full_name || null,
+        email: editingUser.email || null,
+        phone: editingUser.phone || null,
         school_name: editingUser.school_name || null,
         role: editingUser.role,
       });
 
       setProfiles(profiles.map(p =>
         p.id === editingUser.id
-          ? { ...p, full_name: editingUser.full_name || null, school_name: editingUser.school_name || null, role: editingUser.role }
+          ? { 
+              ...p, 
+              full_name: editingUser.full_name || null, 
+              email: editingUser.email || null,
+              phone: editingUser.phone || null,
+              school_name: editingUser.school_name || null, 
+              role: editingUser.role 
+            }
           : p
       ));
 
@@ -154,23 +177,14 @@ export default function UserManagement() {
         <TableCell>
           {isEditing ? (
             <Input
-              value={editingUser.full_name}
-              onChange={(e) => setEditingUser({ ...editingUser, full_name: e.target.value })}
+              value={editingUser.email}
+              onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
               className="h-8"
+              type="email"
+              placeholder="Email"
             />
           ) : (
-            profile.full_name || '-'
-          )}
-        </TableCell>
-        <TableCell>
-          {isEditing ? (
-            <Input
-              value={editingUser.school_name}
-              onChange={(e) => setEditingUser({ ...editingUser, school_name: e.target.value })}
-              className="h-8"
-            />
-          ) : (
-            profile.school_name || '-'
+            profile.email || '-'
           )}
         </TableCell>
         <TableCell>
@@ -196,11 +210,35 @@ export default function UserManagement() {
           )}
         </TableCell>
         <TableCell>
-          {new Date(profile.created_at).toLocaleDateString('en-US', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-          })}
+          {isEditing ? (
+            <Input
+              value={editingUser.school_name}
+              onChange={(e) => setEditingUser({ ...editingUser, school_name: e.target.value })}
+              className="h-8"
+              placeholder="School name *"
+              required
+            />
+          ) : (
+            profile.school_name || '-'
+          )}
+        </TableCell>
+        <TableCell>
+          {isEditing ? (
+            <Input
+              value={editingUser.phone}
+              onChange={(e) => setEditingUser({ ...editingUser, phone: e.target.value })}
+              className="h-8"
+              type="tel"
+              placeholder="Contact number"
+            />
+          ) : (
+            profile.phone || '-'
+          )}
+        </TableCell>
+        <TableCell>
+          <Badge variant={profile.suspended ? 'destructive' : 'secondary'}>
+            {profile.suspended ? 'Suspended' : 'Active'}
+          </Badge>
         </TableCell>
         <TableCell>
           <div className="flex items-center gap-2">
@@ -302,10 +340,11 @@ export default function UserManagement() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Username</TableHead>
-                      <TableHead>Full Name</TableHead>
-                      <TableHead>School</TableHead>
+                      <TableHead>Email</TableHead>
                       <TableHead>Role</TableHead>
-                      <TableHead>Created</TableHead>
+                      <TableHead>School Name</TableHead>
+                      <TableHead>Contact Number</TableHead>
+                      <TableHead>Status</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -334,10 +373,11 @@ export default function UserManagement() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Username</TableHead>
-                      <TableHead>Full Name</TableHead>
-                      <TableHead>School</TableHead>
+                      <TableHead>Email</TableHead>
                       <TableHead>Role</TableHead>
-                      <TableHead>Created</TableHead>
+                      <TableHead>School Name</TableHead>
+                      <TableHead>Contact Number</TableHead>
+                      <TableHead>Status</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>

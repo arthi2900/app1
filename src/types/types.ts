@@ -8,6 +8,8 @@ export interface Profile {
   id: string;
   username: string;
   full_name: string | null;
+  email: string | null;
+  phone: string | null;
   school_name: string | null;
   role: UserRole;
   suspended: boolean;
