@@ -65,6 +65,25 @@ export const profileApi = {
     if (error) throw error;
     return data;
   },
+
+  async approveUser(id: string): Promise<Profile | null> {
+    const { data, error } = await supabase
+      .from('profiles')
+      .update({ approved: true })
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async rejectUser(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('profiles')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
 };
 
 // Subject APIs

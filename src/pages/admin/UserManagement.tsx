@@ -28,7 +28,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Edit, Ban, CheckCircle } from 'lucide-react';
+import { Users, Edit, Ban, CheckCircle, UserCheck, UserX, Clock } from 'lucide-react';
 import { profileApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
 import type { Profile, UserRole } from '@/types/types';
@@ -47,7 +47,7 @@ export default function UserManagement() {
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState<EditingUser | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'active' | 'suspended'>('active');
+  const [activeTab, setActiveTab] = useState<'pending' | 'active' | 'suspended'>('pending');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -158,6 +158,50 @@ export default function UserManagement() {
     }
   };
 
+  const handleApprove = async (userId: string) => {
+    try {
+      await profileApi.approveUser(userId);
+
+      setProfiles(profiles.map(p =>
+        p.id === userId ? { ...p, approved: true } : p
+      ));
+
+      toast({
+        title: 'வெற்றி',
+        description: 'பயனர் ஒப்புதல் வழங்கப்பட்டது',
+      });
+    } catch (error) {
+      toast({
+        title: 'பிழை',
+        description: 'பயனரை ஒப்புதல் செய்ய முடியவில்லை',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleReject = async (userId: string) => {
+    if (!confirm('இந்த பயனரை நிராகரிக்க விரும்புகிறீர்களா? இது நிரந்தரமாக நீக்கப்படும்.')) {
+      return;
+    }
+
+    try {
+      await profileApi.rejectUser(userId);
+
+      setProfiles(profiles.filter(p => p.id !== userId));
+
+      toast({
+        title: 'வெற்றி',
+        description: 'பயனர் நிராகரிக்கப்பட்டு நீக்கப்பட்டார்',
+      });
+    } catch (error) {
+      toast({
+        title: 'பிழை',
+        description: 'பயனரை நிராகரிக்க முடியவில்லை',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const getRoleLabel = (role: string) => {
     const roleMap: Record<string, string> = {
       admin: 'Admin',
@@ -178,8 +222,47 @@ export default function UserManagement() {
     return variantMap[role] || 'outline';
   };
 
-  const activeProfiles = profiles.filter(p => !p.suspended);
+  const pendingProfiles = profiles.filter(p => !p.approved);
+  const activeProfiles = profiles.filter(p => p.approved && !p.suspended);
   const suspendedProfiles = profiles.filter(p => p.suspended);
+
+  const renderPendingUserRow = (profile: Profile) => {
+    return (
+      <TableRow key={profile.id}>
+        <TableCell className="font-medium">{profile.username}</TableCell>
+        <TableCell>{profile.full_name || '-'}</TableCell>
+        <TableCell>
+          <Badge variant={getRoleBadgeVariant(profile.role)}>
+            {getRoleLabel(profile.role)}
+          </Badge>
+        </TableCell>
+        <TableCell>{profile.school_name || '-'}</TableCell>
+        <TableCell>
+          <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-300">
+            <Clock className="w-3 h-3 mr-1" />
+            நிலுவையில்
+          </Badge>
+        </TableCell>
+        <TableCell>
+          <div className="flex items-center gap-2">
+            <Button size="sm" onClick={() => handleApprove(profile.id)} className="h-8">
+              <UserCheck className="w-4 h-4 mr-1" />
+              ஒப்புதல்
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() => handleReject(profile.id)}
+              className="h-8"
+            >
+              <UserX className="w-4 h-4 mr-1" />
+              நிராகரி
+            </Button>
+          </div>
+        </TableCell>
+      </TableRow>
+    );
+  };
 
   const renderUserRow = (profile: Profile) => {
     return (
@@ -241,52 +324,96 @@ export default function UserManagement() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">User Management</h1>
+          <h1 className="text-3xl font-bold">பயனர் மேலாண்மை</h1>
           <p className="text-muted-foreground mt-2">
-            Manage users, assign roles, and suspend accounts
+            பயனர்களை நிர்வகித்தல், பாத்திரங்களை ஒதுக்குதல் மற்றும் கணக்குகளை இடைநிறுத்துதல்
           </p>
         </div>
         <div className="flex gap-4">
+          <Badge variant="outline" className="text-lg px-4 py-2 bg-yellow-50 text-yellow-700 border-yellow-300">
+            நிலுவையில்: {pendingProfiles.length}
+          </Badge>
           <Badge variant="secondary" className="text-lg px-4 py-2">
-            Active: {activeProfiles.length}
+            செயலில்: {activeProfiles.length}
           </Badge>
           <Badge variant="destructive" className="text-lg px-4 py-2">
-            Suspended: {suspendedProfiles.length}
+            இடைநிறுத்தம்: {suspendedProfiles.length}
           </Badge>
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'active' | 'suspended')}>
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'pending' | 'active' | 'suspended')}>
         <TabsList>
+          <TabsTrigger value="pending">
+            <Clock className="w-4 h-4 mr-2" />
+            நிலுவையில் உள்ள பயனர்கள் ({pendingProfiles.length})
+          </TabsTrigger>
           <TabsTrigger value="active">
-            Active Users ({activeProfiles.length})
+            <Users className="w-4 h-4 mr-2" />
+            செயலில் உள்ள பயனர்கள் ({activeProfiles.length})
           </TabsTrigger>
           <TabsTrigger value="suspended">
-            Suspended Users ({suspendedProfiles.length})
+            <Ban className="w-4 h-4 mr-2" />
+            இடைநிறுத்தப்பட்டவர்கள் ({suspendedProfiles.length})
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="active" className="mt-6">
+        <TabsContent value="pending" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Active Users</CardTitle>
+              <CardTitle>நிலுவையில் உள்ள பயனர்கள்</CardTitle>
             </CardHeader>
             <CardContent>
-              {activeProfiles.length === 0 ? (
+              {pendingProfiles.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <Users className="w-12 h-12 text-muted-foreground mb-4" />
-                  <p className="text-lg font-medium">No active users found</p>
+                  <Clock className="w-12 h-12 text-muted-foreground mb-4" />
+                  <p className="text-lg font-medium">நிலுவையில் உள்ள பயனர்கள் இல்லை</p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    புதிய பயனர்கள் பதிவு செய்யும்போது இங்கே காண்பிக்கப்படும்
+                  </p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Username</TableHead>
-                      <TableHead>Full Name</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>School Name</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead>பயனர் பெயர்</TableHead>
+                      <TableHead>முழு பெயர்</TableHead>
+                      <TableHead>பாத்திரம்</TableHead>
+                      <TableHead>பள்ளி பெயர்</TableHead>
+                      <TableHead>நிலை</TableHead>
+                      <TableHead>செயல்கள்</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {pendingProfiles.map(renderPendingUserRow)}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="active" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>செயலில் உள்ள பயனர்கள்</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {activeProfiles.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <Users className="w-12 h-12 text-muted-foreground mb-4" />
+                  <p className="text-lg font-medium">செயலில் உள்ள பயனர்கள் இல்லை</p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>பயனர் பெயர்</TableHead>
+                      <TableHead>முழு பெயர்</TableHead>
+                      <TableHead>பாத்திரம்</TableHead>
+                      <TableHead>பள்ளி பெயர்</TableHead>
+                      <TableHead>நிலை</TableHead>
+                      <TableHead>செயல்கள்</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -301,24 +428,24 @@ export default function UserManagement() {
         <TabsContent value="suspended" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Suspended Users</CardTitle>
+              <CardTitle>இடைநிறுத்தப்பட்ட பயனர்கள்</CardTitle>
             </CardHeader>
             <CardContent>
               {suspendedProfiles.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <Ban className="w-12 h-12 text-muted-foreground mb-4" />
-                  <p className="text-lg font-medium">No suspended users</p>
+                  <p className="text-lg font-medium">இடைநிறுத்தப்பட்ட பயனர்கள் இல்லை</p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Username</TableHead>
-                      <TableHead>Full Name</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>School Name</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead>பயனர் பெயர்</TableHead>
+                      <TableHead>முழு பெயர்</TableHead>
+                      <TableHead>பாத்திரம்</TableHead>
+                      <TableHead>பள்ளி பெயர்</TableHead>
+                      <TableHead>நிலை</TableHead>
+                      <TableHead>செயல்கள்</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

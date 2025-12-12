@@ -12,6 +12,7 @@ export interface Profile {
   phone: string | null;
   school_name: string | null;
   role: UserRole;
+  approved: boolean;
   suspended: boolean;
   created_at: string;
 }
