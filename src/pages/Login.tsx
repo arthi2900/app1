@@ -13,7 +13,7 @@ export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signIn, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -41,6 +41,16 @@ export default function Login() {
       });
 
       if (userProfile) {
+        if (userProfile.suspended) {
+          await signOut();
+          toast({
+            title: 'Account Suspended',
+            description: 'Your account has been suspended. Please contact the administrator.',
+            variant: 'destructive',
+          });
+          return;
+        }
+
         switch (userProfile.role) {
           case 'admin':
             navigate('/admin');

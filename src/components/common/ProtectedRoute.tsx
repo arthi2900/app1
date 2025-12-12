@@ -1,5 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
+import { useEffect } from 'react';
 import type { UserRole } from '@/types/types';
 
 interface ProtectedRouteProps {
@@ -8,7 +10,19 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  const { profile, loading } = useAuth();
+  const { profile, loading, signOut } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (profile?.suspended) {
+      toast({
+        title: 'Account Suspended',
+        description: 'Your account has been suspended. Please contact the administrator.',
+        variant: 'destructive',
+      });
+      signOut();
+    }
+  }, [profile?.suspended]);
 
   if (loading) {
     return (
@@ -22,6 +36,10 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
   }
 
   if (!profile) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (profile.suspended) {
     return <Navigate to="/login" replace />;
   }
 

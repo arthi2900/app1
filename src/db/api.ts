@@ -54,6 +54,17 @@ export const profileApi = {
     if (error) throw error;
     return Array.isArray(data) ? data : [];
   },
+
+  async toggleSuspend(id: string, suspended: boolean): Promise<Profile | null> {
+    const { data, error } = await supabase
+      .from('profiles')
+      .update({ suspended })
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
 };
 
 // Subject APIs

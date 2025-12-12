@@ -10,6 +10,7 @@ export interface Profile {
   full_name: string | null;
   school_name: string | null;
   role: UserRole;
+  suspended: boolean;
   created_at: string;
 }
 

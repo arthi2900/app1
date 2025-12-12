@@ -13,29 +13,35 @@ A comprehensive online exam conducting and management system for educational ins
 - User account creation and management
 - Role-based Access Control setup
 - System configurations (exam duration, evaluation policy)
-- Permission management\n
+- Permission management\n- User profile editing and suspension management
+
 ### 2.2 Principal
 - Teacher management
 - Exam schedule approval
 - Student report viewing
 - Teacher performance monitoring
+- Profile editing capability
 
 ### 2.3 Teacher
 - Question creation\n- Question paper preparation
 - Exam conduct\n- Student performance viewing
-\n### 2.4 Student
+- Profile editing capability
+
+### 2.4 Student
 - Exam participation
 - Result viewing
 - Access to past exam reports
+- Profile editing capability
 
 ### 2.5 User Profile Information
 All users (Admin, Principal, Teacher, Student) will have the following profile information:
-- User name\n- Email address
+- User name
+- Email address
 - Role\n- School name (mandatory field)
 - Contact number
 - Profile picture (optional)
-
-## 3. Key Features
+- Account status (Active/Suspended)
+\n## 3. Key Features
 
 ### 3.1 Question Bank
 - Subject-wise question storage
@@ -68,18 +74,34 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - Role-based Access Control management
 - System Settings control
 - View and manage users by school name
+- Edit user profiles with Save button
+- Suspend user accounts with Suspend button
+- View suspended users in separate list
 
 ### 3.6 Principal Functions
 - Exam schedule review and approval
-- Student report access (filtered by school)\n- Teacher performance monitoring (within their school)
+- Student report access (filtered by school)
+- Teacher performance monitoring (within their school)
+- Edit own profile with Save button
 \n### 3.7 Teacher Functions\n- Question creation and management
 - Question paper preparation
 - Exam conduct and monitoring
 - Student performance viewing (within their school)
-
-### 3.8 Student Functions\n- Exam writing\n- Result viewing
+- Edit own profile with Save button
+\n### 3.8 Student Functions
+- Exam writing\n- Result viewing
 - Access to past exam reports
 - View school name in profile
+- Edit own profile with Save button
+
+### 3.9 User Profile Management
+- Edit button: Available for all users to modify their profile information
+- Save button: Saves changes made to profile information
+- Suspend button: Available only for Admin role to suspend user accounts
+- Suspended users:\n  - Cannot login to the system
+  - Displayed in separate 'Suspended Users' view
+  - Can be filtered and managed independently
+  - Admin can reactivate suspended accounts
 
 ## 4. Language Support
 
