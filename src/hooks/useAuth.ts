@@ -56,7 +56,7 @@ export function useAuth() {
     return data;
   };
 
-  const signUp = async (username: string, password: string, fullName?: string) => {
+  const signUp = async (username: string, password: string, fullName?: string, schoolName?: string) => {
     const email = `${username}@miaoda.com`;
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -64,8 +64,14 @@ export function useAuth() {
     });
     if (error) throw error;
     
-    if (data.user && fullName) {
-      await profileApi.updateProfile(data.user.id, { full_name: fullName });
+    if (data.user) {
+      const updates: any = {};
+      if (fullName) updates.full_name = fullName;
+      if (schoolName) updates.school_name = schoolName;
+      
+      if (Object.keys(updates).length > 0) {
+        await profileApi.updateProfile(data.user.id, updates);
+      }
     }
     
     return data;

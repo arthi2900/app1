@@ -28,6 +28,13 @@ A comprehensive online exam conducting and management system for educational ins
 - Result viewing
 - Access to past exam reports
 
+### 2.5 User Profile Information
+All users (Admin, Principal, Teacher, Student) will have the following profile information:
+- User name\n- Email address
+- Role\n- School name (mandatory field)
+- Contact number
+- Profile picture (optional)
+
 ## 3. Key Features
 
 ### 3.1 Question Bank
@@ -37,8 +44,7 @@ A comprehensive online exam conducting and management system for educational ins
 - For each question:\n  - Marks allocation
   - Difficulty level indication
   - Subject reference
-
-### 3.2 Exam Paper Generation
+\n### 3.2 Exam Paper Generation
 - Automatic selection from question bank
 - Manual question selection option
 - Question paper preview feature
@@ -54,21 +60,26 @@ A comprehensive online exam conducting and management system for educational ins
 - Pass/Fail status display
 - Detailed analysis:\n  - Subject-wise performance
   - Question-wise analysis
-\n### 3.5 Admin Functions
+- School name displayed on report header
+
+### 3.5 Admin Functions
 - Create user accounts for all roles
+- Assign school name to each user during account creation
 - Role-based Access Control management
 - System Settings control
-\n### 3.6 Principal Functions
+- View and manage users by school name
+
+### 3.6 Principal Functions
 - Exam schedule review and approval
-- Student report access
-- Teacher performance monitoring
+- Student report access (filtered by school)\n- Teacher performance monitoring (within their school)
 \n### 3.7 Teacher Functions\n- Question creation and management
 - Question paper preparation
 - Exam conduct and monitoring
-- Student performance viewing
+- Student performance viewing (within their school)
 
 ### 3.8 Student Functions\n- Exam writing\n- Result viewing
 - Access to past exam reports
+- View school name in profile
 
 ## 4. Language Support
 
@@ -97,6 +108,7 @@ A comprehensive online exam conducting and management system for educational ins
 - Student performance analysis
 - Teacher performance analysis
 - Subject-wise analysis
+- School-wise performance comparison
 
 ## 6. Design Style
 

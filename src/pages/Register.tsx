@@ -13,6 +13,7 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [schoolName, setSchoolName] = useState('');
   const [loading, setLoading] = useState(false);
   const { signUp } = useAuth();
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function Register() {
     if (!username.trim() || !password || !confirmPassword || !fullName.trim()) {
       toast({
         title: 'Error',
-        description: 'Please fill in all fields',
+        description: 'Please fill in all required fields',
         variant: 'destructive',
       });
       return;
@@ -59,7 +60,7 @@ export default function Register() {
 
     setLoading(true);
     try {
-      await signUp(username, password, fullName);
+      await signUp(username, password, fullName, schoolName || undefined);
       toast({
         title: 'Success',
         description: 'Registration successful',
@@ -102,6 +103,17 @@ export default function Register() {
                 onChange={(e) => setFullName(e.target.value)}
                 disabled={loading}
                 required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="schoolName">School Name</Label>
+              <Input
+                id="schoolName"
+                type="text"
+                placeholder="Enter your school name (optional)"
+                value={schoolName}
+                onChange={(e) => setSchoolName(e.target.value)}
+                disabled={loading}
               />
             </div>
             <div className="space-y-2">

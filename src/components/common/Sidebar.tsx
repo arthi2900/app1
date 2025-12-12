@@ -148,6 +148,11 @@ export default function Sidebar() {
                   <p className="text-sm font-medium truncate">
                     {profile.full_name || profile.username}
                   </p>
+                  {profile.school_name && (
+                    <p className="text-xs text-muted-foreground truncate">
+                      {profile.school_name}
+                    </p>
+                  )}
                   <p className="text-xs text-muted-foreground capitalize">
                     {profile.role}
                   </p>

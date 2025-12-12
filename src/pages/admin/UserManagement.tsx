@@ -133,6 +133,7 @@ export default function UserManagement() {
                 <TableRow>
                   <TableHead>Username</TableHead>
                   <TableHead>Full Name</TableHead>
+                  <TableHead>School</TableHead>
                   <TableHead>Role</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead>Actions</TableHead>
@@ -143,6 +144,7 @@ export default function UserManagement() {
                   <TableRow key={profile.id}>
                     <TableCell className="font-medium">{profile.username}</TableCell>
                     <TableCell>{profile.full_name || '-'}</TableCell>
+                    <TableCell>{profile.school_name || '-'}</TableCell>
                     <TableCell>
                       <Badge variant={getRoleBadgeVariant(profile.role)}>
                         {getRoleLabel(profile.role)}
