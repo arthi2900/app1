@@ -2,6 +2,8 @@ import type { ReactNode } from 'react';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import ResetPassword from './pages/auth/ResetPassword';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
 import SchoolManagement from './pages/admin/SchoolManagement';
@@ -36,6 +38,18 @@ const routes: RouteConfig[] = [
     name: 'Register',
     path: '/register',
     element: <Register />,
+    visible: false,
+  },
+  {
+    name: 'Forgot Password',
+    path: '/forgot-password',
+    element: <ForgotPassword />,
+    visible: false,
+  },
+  {
+    name: 'Reset Password',
+    path: '/reset-password',
+    element: <ResetPassword />,
     visible: false,
   },
   {
