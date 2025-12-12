@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, ClipboardList, Award } from 'lucide-react';
+import { Users, ClipboardList } from 'lucide-react';
 import { profileApi, examApi } from '@/db/api';
+import { useAuth } from '@/hooks/useAuth';
+import SchoolProfile from '@/components/principal/SchoolProfile';
 
 export default function PrincipalDashboard() {
+  const { profile } = useAuth();
   const [stats, setStats] = useState({
     totalTeachers: 0,
     totalStudents: 0,
@@ -74,7 +77,7 @@ export default function PrincipalDashboard() {
       <div>
         <h1 className="text-3xl font-bold">Principal Dashboard</h1>
         <p className="text-muted-foreground mt-2">
-          System overview and approvals
+          System overview and school management
         </p>
       </div>
 
@@ -94,6 +97,8 @@ export default function PrincipalDashboard() {
           );
         })}
       </div>
+
+      {profile && <SchoolProfile principalId={profile.id} />}
 
       <Card>
         <CardHeader>
