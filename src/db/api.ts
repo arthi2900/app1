@@ -110,6 +110,28 @@ export const profileApi = {
       .eq('id', id);
     if (error) throw error;
   },
+
+  async getTeachersBySchoolId(schoolId: string): Promise<Profile[]> {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select(`
+        *,
+        schools!profiles_school_id_fkey (
+          school_name
+        )
+      `)
+      .eq('role', 'teacher')
+      .eq('school_id', schoolId)
+      .order('full_name', { ascending: true });
+    if (error) throw error;
+    
+    const profiles = Array.isArray(data) ? data : [];
+    return profiles.map((profile: any) => ({
+      ...profile,
+      school_name: profile.schools?.school_name || null,
+      schools: undefined
+    }));
+  },
 };
 
 // School APIs

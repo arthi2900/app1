@@ -8,6 +8,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
 import SchoolManagement from './pages/admin/SchoolManagement';
 import PrincipalDashboard from './pages/principal/PrincipalDashboard';
+import TeachersList from './pages/principal/TeachersList';
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
 import QuestionBank from './pages/teacher/QuestionBank';
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -88,6 +89,16 @@ const routes: RouteConfig[] = [
     element: (
       <ProtectedRoute allowedRoles={['principal']}>
         <PrincipalDashboard />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Teachers List',
+    path: '/principal/teachers',
+    element: (
+      <ProtectedRoute allowedRoles={['principal']}>
+        <TeachersList />
       </ProtectedRoute>
     ),
     visible: false,

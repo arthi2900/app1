@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, ClipboardList } from 'lucide-react';
 import { profileApi, examApi } from '@/db/api';
@@ -6,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import SchoolProfile from '@/components/principal/SchoolProfile';
 
 export default function PrincipalDashboard() {
+  const navigate = useNavigate();
   const { profile } = useAuth();
   const [stats, setStats] = useState({
     totalTeachers: 0,
@@ -46,18 +48,22 @@ export default function PrincipalDashboard() {
       value: stats.totalTeachers,
       icon: Users,
       color: 'text-primary',
+      onClick: () => navigate('/principal/teachers'),
+      clickable: true,
     },
     {
       title: 'Total Students',
       value: stats.totalStudents,
       icon: Users,
       color: 'text-secondary',
+      clickable: false,
     },
     {
       title: 'Total Exams',
       value: stats.totalExams,
       icon: ClipboardList,
       color: 'text-accent',
+      clickable: false,
     },
   ];
 
@@ -85,13 +91,22 @@ export default function PrincipalDashboard() {
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.title}>
+            <Card
+              key={stat.title}
+              className={stat.clickable ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''}
+              onClick={stat.clickable ? stat.onClick : undefined}
+            >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
                 <Icon className={`w-5 h-5 ${stat.color}`} />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stat.value}</div>
+                {stat.clickable && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Click to view details
+                  </p>
+                )}
               </CardContent>
             </Card>
           );

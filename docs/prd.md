@@ -29,8 +29,7 @@ A comprehensive online exam conducting and management system for educational ins
 - **School-based isolation**: Can only view and manage users (teachers and students) from their assigned school
 - **Visibility Rules**:
   - ✅ Can view: Teachers from their own school, Students from their own school
-  - ❌ Cannot view: Users from other schools
-\n### 2.3 Teacher
+  - ❌ Cannot view: Users from other schools\n\n### 2.3 Teacher
 - Question creation (for assigned school only)
 - Question paper preparation (for assigned school only)
 - Exam conduct (for assigned school only)
@@ -39,7 +38,8 @@ A comprehensive online exam conducting and management system for educational ins
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view and interact with students from their assigned school
 - **Visibility Rules**:
-  - ✅ Can view: Students from their own school\n  - ❌ Cannot view: Principal (even from the same school), Other teachers (even from the same school), Users from other schools
+  - ✅ Can view: Students from their own school
+  - ❌ Cannot view: Principal (even from the same school), Other teachers (even from the same school), Users from other schools
 
 ### 2.4 Student
 - Exam participation (for assigned school only)
@@ -116,8 +116,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - Students can only view their own reports
 - School name, address, and code displayed on report header
 
-#### 4.2.5 Search and Filter
-- All user lists, question banks, exams, and reports are automatically filtered by school and role-based visibility rules
+#### 4.2.5 Search and Filter\n- All user lists, question banks, exams, and reports are automatically filtered by school and role-based visibility rules
 - Search functionality respects school-based isolation and role permissions
 - Dropdown lists and selection options show only school-relevant and role-appropriate data
 
@@ -155,7 +154,8 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - School name, address, and code displayed on report header
 - **School isolation**: Reports filtered by school for Principal and Teacher access
 - **Student access**: Students can only view their own reports
-\n### 5.5 User Registration and Approval Workflow
+
+### 5.5 User Registration and Approval Workflow
 - When a new user creates an account (signup), they will be assigned 'Pending Approval' status\n- During registration, user must select school from dropdown list
 - New users with'Pending Approval' status will be displayed separately in'Pending Users' list (not in Active Users list)
 - Admin must review and approve new user accounts
@@ -232,12 +232,28 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - Admin can filter and manage users based on their status
 - **School filtering**: Principal views show only teachers and students from their assigned school; Teacher views show only students from their assigned school
 
-## 6. Language Support
+### 5.12 Principal Dashboard - Total Teachers Card Feature
+- **Total Teachers Card**: Displays the total count of teachers in the Principal's assigned school
+- **Click Functionality**: When Principal clicks on the'Total Teachers' card, the system opens a 'Teachers List' page
+- **Data Fetching Rule**: \n  - Fetch all teachers using school_id (not logged-in user ID)
+  - Display all teachers registered under the same school
+  - Show complete teacher list regardless of which teacher is currently logged in
+- **Teachers List Page - Display Fields**:
+  - Teacher Name\n  - Subject
+  - Phone Number
+- **Access Control**:
+  - Only Principal/Headmaster can view this list
+  - Teachers cannot view other teachers\n  - Data is school-wise, not user-wise
+- **UX Requirements**:
+  - Page header:'All Teachers of This School'
+  - Enable search functionality
+  - Enable sort functionality
+  - Display total count of teachers at the top of the page
+\n## 6. Language Support
 
 ### 6.1 UI Language
 - **UI Language: English Only**
-- All user interface elements (buttons, menus, labels, navigation, forms, tables, headers) will be displayed in English
-- This includes all management interfaces, dashboards, and system pages
+- All user interface elements (buttons, menus, labels, navigation, forms, tables, headers) will be displayed in English\n- This includes all management interfaces, dashboards, and system pages
 \n### 6.2 Chat/Communication Language
 - Users can communicate in any language they prefer for chat, messages, or communication features
 - Chat language is flexible and not restricted to English
@@ -275,8 +291,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - Secondary color: Green (#10B981) - for success and positive actions
 - Warning color: Red (#EF4444) - for errors and warnings
 - Pending status color: Orange (#F59E0B) - for pending approval indication
-
-### 8.2 Visual Details
+\n### 8.2 Visual Details
 - Soft rounded corners (8px radius) - modern and friendly appearance
 - Subtle shadow effects - depth and hierarchy perception
 - Clear borders - for content sections
@@ -310,7 +325,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - School management interface with create, edit, and view options
 - Password reset page with clean form layout and clear instructions
 - **School-based filtering indicators**: Visual badges or labels showing current school context for non-Admin users
-
-## 9. Reference Images
+- **Principal Dashboard Cards**: Clickable cards including'Total Teachers' card that opens detailed list view
+\n## 9. Reference Images
 1. screenshot.png - Admin dashboard interface showing side panel navigation with Dashboard and User Management menu items
 2. screenshot-2.png - User management interface showing Active Users list with Edit and Suspend buttons
