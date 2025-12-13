@@ -235,12 +235,31 @@ export default function UserManagement() {
     }
 
     try {
-      const { error } = await supabase.auth.admin.updateUserById(
-        resetPasswordUser.id,
-        { password: newPassword }
-      );
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error('No active session');
+      }
 
-      if (error) throw error;
+      const { data, error } = await supabase.functions.invoke('reset-user-password', {
+        body: JSON.stringify({
+          userId: resetPasswordUser.id,
+          newPassword: newPassword,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        const errorMsg = await error?.context?.text();
+        throw new Error(errorMsg || 'Failed to reset password');
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to reset password');
+      }
 
       setGeneratedPassword(newPassword);
 
@@ -249,6 +268,7 @@ export default function UserManagement() {
         description: 'Password reset successfully',
       });
     } catch (error: any) {
+      console.error('Password reset error:', error);
       toast({
         title: 'Error',
         description: error.message || 'Failed to reset password',
