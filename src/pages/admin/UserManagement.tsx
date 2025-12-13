@@ -457,10 +457,9 @@ export default function UserManagement() {
                   School Context: {currentUser.school_name}
                 </p>
                 <p className="text-sm text-blue-700">
-                  You can only view and manage users from your school. 
-                  {currentUser.role === 'principal' && ' As a Principal, you have full access to all users in your school.'}
-                  {currentUser.role === 'teacher' && ' As a Teacher, you can view students and other teachers in your school.'}
-                  {currentUser.role === 'student' && ' As a Student, you can view other students and teachers in your school.'}
+                  {currentUser.role === 'principal' && 'As a Principal, you can view and manage all teachers and students in your school.'}
+                  {currentUser.role === 'teacher' && 'As a Teacher, you can view students from your school. You cannot view other teachers or the principal.'}
+                  {currentUser.role === 'student' && 'As a Student, you can only view your own profile. Other students and teachers are not visible to you.'}
                 </p>
               </div>
             </div>

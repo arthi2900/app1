@@ -21,21 +21,21 @@ The Online Exam Management System implements **school-based isolation** (multi-t
 
 #### 2. **Principal** (School Head)
 - **Access Level**: Full access within their assigned school
-- **Can See**: Only users (teachers and students) from their school
+- **Can See**: Teachers and students from their school
 - **Can Manage**: Teachers and students in their school, approve exams
-- **Cannot See**: Users from other schools
+- **Cannot See**: Users from other schools, other principals
 
 #### 3. **Teacher**
 - **Access Level**: Limited access within their assigned school
-- **Can See**: Only students and other teachers from their school
+- **Can See**: ONLY students from their school
 - **Can Manage**: Create questions, create exams, view student results from their school
-- **Cannot See**: Users from other schools
+- **Cannot See**: Principal, other teachers, users from other schools
 
 #### 4. **Student**
-- **Access Level**: Minimal access within their assigned school
-- **Can See**: Other students and teachers from their school
+- **Access Level**: Minimal access - own profile only
+- **Can See**: Only their own profile and personal data
 - **Can Do**: Take exams, view their own results
-- **Cannot See**: Users from other schools
+- **Cannot See**: Other students, teachers, principal, users from other schools
 
 ---
 
@@ -47,16 +47,36 @@ The Online Exam Management System implements **school-based isolation** (multi-t
 The system uses PostgreSQL Row Level Security to enforce school isolation at the database level:
 
 ```sql
--- Users can only view profiles from their own school
-CREATE POLICY "Users can view same school profiles"
-ON profiles
-FOR SELECT
-TO authenticated
+-- Principals can view teachers and students from their school
+CREATE POLICY "Principals can view teachers and students in their school"
+ON profiles FOR SELECT
 USING (
-  NOT is_admin(auth.uid()) 
-  AND school_id IS NOT NULL 
-  AND school_id = get_user_school_id()
+  EXISTS (
+    SELECT 1 FROM profiles p
+    WHERE p.id = auth.uid()
+    AND p.role = 'principal'
+    AND p.school_id IS NOT NULL
+    AND profiles.school_id = p.school_id
+    AND profiles.role IN ('teacher', 'student')
+  )
 );
+
+-- Teachers can view students from their school only
+CREATE POLICY "Teachers can view students in their school"
+ON profiles FOR SELECT
+USING (
+  EXISTS (
+    SELECT 1 FROM profiles p
+    WHERE p.id = auth.uid()
+    AND p.role = 'teacher'
+    AND p.school_id IS NOT NULL
+    AND profiles.school_id = p.school_id
+    AND profiles.role = 'student'
+  )
+);
+
+-- Students can only view their own profile
+-- Handled by "Users can view own profile" policy
 ```
 
 #### Helper Functions
@@ -104,20 +124,20 @@ You have full access to manage users across all schools in the system.
 
 #### Principal View
 - **Dashboard**: Statistics for their school only
-- **User Management**: Only teachers and students from their school
-- **Exam Management**: Only exams created for their school
-- **Results**: Only results from students in their school
+- **User Management**: Teachers and students from their school (not other principals)
+- **Exam Management**: Exams created for their school
+- **Results**: Results from students in their school
 
 #### Teacher View
-- **Question Bank**: Questions they created or shared within their school
+- **Question Bank**: Questions they created
 - **Exam Creation**: Can create exams for students in their school
-- **Student List**: Only students from their school
+- **Student List**: ONLY students from their school (cannot see other teachers or principal)
 - **Results**: Only results from their school's students
 
 #### Student View
-- **Available Exams**: Only exams scheduled for their school
+- **Available Exams**: Only exams scheduled for them
 - **Results**: Only their own results
-- **Classmates**: Only students from their school
+- **Profile**: Only their own profile (cannot see other students, teachers, or principal)
 
 ---
 

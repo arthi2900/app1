@@ -17,6 +17,7 @@ A comprehensive online exam conducting and management system for educational ins
 - System configurations (exam duration, evaluation policy)
 - Permission management\n- User profile editing and suspension management
 - **Cross-school visibility**: Admin can view and manage all schools and users across the entire system
+- **Full management rights**: Create, edit, suspend, delete all users and schools
 
 ### 2.2 Principal
 - Teacher management (within assigned school only)
@@ -26,25 +27,33 @@ A comprehensive online exam conducting and management system for educational ins
 - Profile editing capability
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view and manage users (teachers and students) from their assigned school
-
-### 2.3 Teacher
+- **Visibility Rules**:
+  - ✅ Can view: Teachers from their own school, Students from their own school
+  - ❌ Cannot view: Users from other schools
+\n### 2.3 Teacher
 - Question creation (for assigned school only)
 - Question paper preparation (for assigned school only)
 - Exam conduct (for assigned school only)
 - Student performance viewing (within assigned school only)
 - Profile editing capability
 - Linked to specific school from school master list
-- **School-based isolation**: Can only view and interact with students and other teachers from their assigned school
+- **School-based isolation**: Can only view and interact with students from their assigned school
+- **Visibility Rules**:
+  - ✅ Can view: Students from their own school\n  - ❌ Cannot view: Principal (even from the same school), Other teachers (even from the same school), Users from other schools
 
 ### 2.4 Student
 - Exam participation (for assigned school only)
 - Result viewing (own results only)
 - Access to past exam reports (own reports only)
 - Profile editing capability\n- Linked to specific school from school master list
-- **School-based isolation**: Can only view exams, results, and classmates from their assigned school
-\n### 2.5 User Profile Information
+- **School-based isolation**: Can only view exams, results, and personal information from their assigned school
+- **Visibility Rules**:
+  - ✅ Can view: Only their own profile details, Personal exam data, results, and assigned content
+  - ❌ Cannot view: Other students, Teachers, Principal, Admin\n
+### 2.5 User Profile Information
 All users (Admin, Principal, Teacher, Student) will have the following profile information:
-- User name\n- Email address
+- User name
+- Email address
 - Role\n- School name (mandatory field, selected from dropdown list populated from School Master)
 - Contact number
 - Profile picture (optional)\n- Account status (Pending Approval/Active/Suspended)
@@ -65,7 +74,8 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 \n#### 3.1.2 School Management Features
 - Create new school with all mandatory fields
 - Edit existing school information
-- View complete school list\n- Search and filter schools by name, code, or affiliation
+- View complete school list
+- Search and filter schools by name, code, or affiliation
 - Auto-generate unique School Code/ID upon school creation
 - Link Principal from existing user database (dropdown selection)
 - Define subject list for each school
@@ -81,17 +91,17 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 
 ### 4.1 Isolation Principle
 - Users from same school form an isolated group
-- Within each school group, Principal, Teachers, and Students can only see and interact with users from their own school
-- Admin has cross-school visibility and can manage all schools\n\n### 4.2 Isolation Implementation
+- Within each school group, Principal, Teachers, and Students can only see and interact with users based on their role-specific visibility rules
+- Admin has cross-school visibility and can manage all schools\n
+### 4.2 Isolation Implementation
 \n#### 4.2.1 User Visibility Rules
 - **Admin**: Can view all users from all schools
 - **Principal**: Can only view teachers and students from assigned school
-- **Teacher**: Can only view other teachers and students from assigned school
-- **Student**: Can only view classmates (other students) from assigned school
+- **Teacher**: Can only view students from assigned school (cannot view Principal or other teachers)
+- **Student**: Can only view their own profile and personal information (cannot view other students, teachers, or Principal)
 
 #### 4.2.2 Question Bank Isolation
-- Questions are tagged with school information
-- Teachers can only access question bank of their assigned school
+- Questions are tagged with school information\n- Teachers can only access question bank of their assigned school
 - Questions created by teachers are automatically linked to their school
 - Cross-school question sharing is not allowed (unless explicitly enabled by Admin)
 
@@ -106,16 +116,15 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - Students can only view their own reports
 - School name, address, and code displayed on report header
 
-#### 4.2.5 Search and Filter\n- All user lists, question banks, exams, and reports are automatically filtered by school
-- Search functionality respects school-based isolation
-- Dropdown lists and selection options show only school-relevant data
+#### 4.2.5 Search and Filter
+- All user lists, question banks, exams, and reports are automatically filtered by school and role-based visibility rules
+- Search functionality respects school-based isolation and role permissions
+- Dropdown lists and selection options show only school-relevant and role-appropriate data
 
 ### 4.3 School Group Interconnection
-- All users within same school are interconnected
-- Principal oversees all teachers and students in their school
-- Teachers can view student lists and performance within their school
-- Students can see classmates and school-specific information
-- Communication and notifications are school-scoped
+- All users within same school are interconnected based on role-specific visibility\n- Principal oversees all teachers and students in their school
+- Teachers can view student lists and performance within their school (but not Principal or other teachers)
+- Students can only access their own information\n- Communication and notifications are school-scoped and role-appropriate
 
 ## 5. Key Features
 
@@ -127,8 +136,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
   - Subject reference
   - School reference (questions linked to specific school)
 - **School-based filtering**: Teachers only see questions from their school
-
-### 5.2 Exam Paper Generation
+\n### 5.2 Exam Paper Generation
 - Automatic selection from question bank (school-specific)
 - Manual question selection option (school-specific)
 - Question paper preview feature
@@ -146,8 +154,8 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
   - Question-wise analysis
 - School name, address, and code displayed on report header
 - **School isolation**: Reports filtered by school for Principal and Teacher access
-
-### 5.5 User Registration and Approval Workflow
+- **Student access**: Students can only view their own reports
+\n### 5.5 User Registration and Approval Workflow
 - When a new user creates an account (signup), they will be assigned 'Pending Approval' status\n- During registration, user must select school from dropdown list
 - New users with'Pending Approval' status will be displayed separately in'Pending Users' list (not in Active Users list)
 - Admin must review and approve new user accounts
@@ -186,29 +194,30 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - Suspend user accounts with Suspend button
 - Approve pending users with Approve button
 - **Cross-school access**: Admin can view and manage all schools and users
-
+- **Full management rights**: Create, edit, suspend, delete\n
 ### 5.8 Principal Functions
 - Exam schedule review and approval (within assigned school only)
 - Student report access (filtered by assigned school)\n- Teacher performance monitoring (within assigned school only)
 - Edit own profile with Save button
 - View school details (read-only)
 - **School-based access**: All data and user lists filtered by assigned school
-
-### 5.9 Teacher Functions
+- **Visibility**: Can view teachers and students from assigned school only
+\n### 5.9 Teacher Functions
 - Question creation and management (for assigned school subjects only)
 - Question paper preparation (for assigned school only)
 - Exam conduct and monitoring (for assigned school only)
 - Student performance viewing (within assigned school only)
 - Edit own profile with Save button
 - View school details (read-only)\n- **School-based access**: All data and user lists filtered by assigned school
-
-### 5.10 Student Functions
+- **Visibility**: Can view students from assigned school only (cannot view Principal or other teachers)
+\n### 5.10 Student Functions
 - Exam writing (for assigned school only)
 - Result viewing (own results only)
 - Access to past exam reports (own reports only)
 - View school name, address, and code in profile
 - Edit own profile with Save button
-- **School-based access**: Only see exams and classmates from assigned school
+- **School-based access**: Only see exams and personal information from assigned school
+- **Visibility**: Can only view their own profile details and personal exam data (cannot view other students, teachers, or Principal)
 
 ### 5.11 User Profile Management
 - Edit button: Available for all users to modify their profile information
@@ -221,7 +230,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
   - Suspended: Users whose accounts have been suspended, cannot login
 - Each status displayed in separate tabs/views for easy management
 - Admin can filter and manage users based on their status
-- **School filtering**: Principal and Teacher views show only users from their assigned school
+- **School filtering**: Principal views show only teachers and students from their assigned school; Teacher views show only students from their assigned school
 
 ## 6. Language Support
 
@@ -238,8 +247,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 \n## 7. Future Scope Features
 
 ### 7.1 Audit Logs
-- User activity logging
-- Track who did what and when
+- User activity logging\n- Track who did what and when
 - School-based activity filtering
 \n### 7.2 Backup & Restore
 - Question bank backup (school-wise)
@@ -295,8 +303,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - **Student Navigation Menu Items:**
   - Dashboard
   - My Exams (school-filtered)\n  - Results\n  - Past Reports
-  - Profile Settings
-- Card-based design - for information grouping in main content area
+  - Profile Settings\n- Card-based design - for information grouping in main content area
 - Responsive grid layout - for various screen sizes
 - Main content area adjusts dynamically based on side panel state (collapsed/expanded)
 - Tab-based user management interface showing Pending Users, Active Users, and Suspended Users separately

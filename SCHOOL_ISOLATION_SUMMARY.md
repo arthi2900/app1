@@ -20,18 +20,21 @@
 - Purple banner: "Administrator Access"
 
 **Principal** 🏫
-- Sees ONLY users from their assigned school
+- Sees ONLY teachers and students from their assigned school
+- Cannot see other principals or users from other schools
 - Can manage teachers and students in their school
 - Blue banner: "School Context: [School Name]"
 
 **Teacher** 👨‍🏫
-- Sees ONLY users from their assigned school
-- Can view students and other teachers
+- Sees ONLY students from their assigned school
+- Cannot see principal, other teachers, or users from other schools
+- Can view and manage student results
 - Blue banner: "School Context: [School Name]"
 
 **Student** 🎓
-- Sees ONLY users from their assigned school
-- Can view other students and teachers
+- Sees ONLY their own profile
+- Cannot see other students, teachers, principal, or any other users
+- Can take exams and view own results
 - Blue banner: "School Context: [School Name]"
 
 ---
@@ -40,10 +43,24 @@
 
 ### 1. Database Security
 ```sql
--- Automatic filtering at database level
-CREATE POLICY "Users can view same school profiles"
+-- Principals can view teachers and students from their school
+CREATE POLICY "Principals can view teachers and students in their school"
 ON profiles FOR SELECT
-USING (school_id = get_user_school_id());
+USING (
+  role = 'principal' AND school_id = get_user_school_id()
+  AND target.role IN ('teacher', 'student')
+);
+
+-- Teachers can view students from their school only
+CREATE POLICY "Teachers can view students in their school"
+ON profiles FOR SELECT
+USING (
+  role = 'teacher' AND school_id = get_user_school_id()
+  AND target.role = 'student'
+);
+
+-- Students can only view their own profile
+-- Handled by "Users can view own profile" policy
 ```
 
 ### 2. Helper Functions
@@ -64,16 +81,24 @@ USING (school_id = get_user_school_id());
 2. Go to User Management
 3. You should see:
    - Blue banner with your school name
-   - Only users from your school in the list
-   - No users from other schools
+   - Only teachers and students from your school in the list
+   - No other principals, no users from other schools
 
 ### Test as Teacher:
 1. Log in as a teacher user
 2. Go to User Management
 3. You should see:
    - Blue banner with your school name
-   - Only students and teachers from your school
-   - No users from other schools
+   - Only students from your school
+   - No principal, no other teachers, no users from other schools
+
+### Test as Student:
+1. Log in as a student user
+2. Go to User Management (if accessible)
+3. You should see:
+   - Blue banner with your school name
+   - Only your own profile
+   - No other students, no teachers, no principal
 
 ### Test as Admin:
 1. Log in as an admin user
@@ -149,14 +174,18 @@ If teacher Alice moves from School A to School B:
 
 After implementation, verify:
 
-- [ ] Principals can only see users from their school
-- [ ] Teachers can only see users from their school
-- [ ] Students can only see users from their school
+- [ ] Principals can see teachers and students from their school
+- [ ] Principals cannot see other principals or users from other schools
+- [ ] Teachers can see students from their school
+- [ ] Teachers cannot see principal, other teachers, or users from other schools
+- [ ] Students can only see their own profile
+- [ ] Students cannot see other students, teachers, or principal
 - [ ] Admins can see users from all schools
 - [ ] School context banner appears for non-admins
 - [ ] Admin access banner appears for admins
-- [ ] User counts are correct for each school
+- [ ] User counts are correct for each role
 - [ ] No cross-school data leakage
+- [ ] No cross-role data leakage within schools
 
 ---
 
@@ -197,9 +226,9 @@ For detailed information, see:
 | Role | Access Level | Can See | Cannot See |
 |------|-------------|---------|------------|
 | Admin | System-wide | All schools, all users | Nothing (full access) |
-| Principal | School-wide | Own school's users | Other schools' users |
-| Teacher | School-wide | Own school's users | Other schools' users |
-| Student | School-wide | Own school's users | Other schools' users |
+| Principal | School-wide | Teachers and students from own school | Other principals, users from other schools |
+| Teacher | School-limited | Students from own school only | Principal, other teachers, users from other schools |
+| Student | Self-only | Own profile and personal data only | Other students, teachers, principal, all other users |
 
 ---
 
