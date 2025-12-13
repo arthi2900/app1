@@ -38,8 +38,7 @@ A comprehensive online exam conducting and management system for educational ins
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view and interact with students from their assigned school
 - **Visibility Rules**:
-  - ✅ Can view: Students from their own school
-  - ❌ Cannot view: Principal (even from the same school), Other teachers (even from the same school), Users from other schools
+  - ✅ Can view: Students from their own school\n  - ❌ Cannot view: Principal (even from the same school), Other teachers (even from the same school), Users from other schools
 
 ### 2.4 Student
 - Exam participation (for assigned school only)
@@ -197,12 +196,12 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - **Full management rights**: Create, edit, suspend, delete\n
 ### 5.8 Principal Functions
 - Exam schedule review and approval (within assigned school only)
-- Student report access (filtered by assigned school)\n- Teacher performance monitoring (within assigned school only)
-- Edit own profile with Save button
+- Student report access (filtered by assigned school)\n- Teacher performance monitoring (within assigned school only)\n- Edit own profile with Save button
 - View school details (read-only)
 - **School-based access**: All data and user lists filtered by assigned school
 - **Visibility**: Can view teachers and students from assigned school only
-\n### 5.9 Teacher Functions
+
+### 5.9 Teacher Functions
 - Question creation and management (for assigned school subjects only)
 - Question paper preparation (for assigned school only)
 - Exam conduct and monitoring (for assigned school only)
@@ -249,7 +248,27 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
   - Enable search functionality
   - Enable sort functionality
   - Display total count of teachers at the top of the page
-\n## 6. Language Support
+\n### 5.13 Principal Dashboard - Total Students Card Feature
+- **Total Students Card**: Displays the total count of students in the Principal's assigned school
+- **Click Functionality**: When Principal clicks on the 'Total Students' card, the system opens a 'Students List' page
+- **Data Fetching Rule**: 
+  - Fetch all students using school_id (not logged-in user ID)
+  - Display all students registered under the same school
+  - Show complete student list regardless of which student is currently logged in
+- **Students List Page - Display Fields**:
+  - Student Name
+  - Class
+  - Phone Number
+- **Access Control**:
+  - Only Principal/Headmaster can view this list
+  - Teachers and Students cannot view this complete list
+  - Data is school-wise, not user-wise
+- **UX Requirements**:
+  - Page header: 'All Students of This School'
+  - Enable search functionality
+  - Enable sort functionality\n  - Display total count of students at the top of the page
+
+## 6. Language Support
 
 ### 6.1 UI Language
 - **UI Language: English Only**
@@ -284,8 +303,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - School-wise performance comparison (Admin only)
 - Board/Affiliation-wise comparison (Admin only)
 
-## 8. Design Style
-
+## 8. Design Style\n
 ### 8.1 Color Scheme
 - Primary color: Blue (#2563EB) - conveys trust and educational appearance
 - Secondary color: Green (#10B981) - for success and positive actions
@@ -308,7 +326,8 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - **Principal Navigation Menu Items:**
   - Dashboard\n  - Teacher Management (school-filtered)
   - Exam Schedules (school-filtered)
-  - Student Reports (school-filtered)\n  - Profile Settings\n- **Teacher Navigation Menu Items:**
+  - Student Reports (school-filtered)
+  - Profile Settings\n- **Teacher Navigation Menu Items:**
   - Dashboard
   - Question Bank (school-filtered)
   - Create Exam Paper (school-filtered)
@@ -318,14 +337,19 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - **Student Navigation Menu Items:**
   - Dashboard
   - My Exams (school-filtered)\n  - Results\n  - Past Reports
-  - Profile Settings\n- Card-based design - for information grouping in main content area
+  - Profile Settings
+- Card-based design - for information grouping in main content area
 - Responsive grid layout - for various screen sizes
 - Main content area adjusts dynamically based on side panel state (collapsed/expanded)
 - Tab-based user management interface showing Pending Users, Active Users, and Suspended Users separately
 - School management interface with create, edit, and view options
 - Password reset page with clean form layout and clear instructions
 - **School-based filtering indicators**: Visual badges or labels showing current school context for non-Admin users
-- **Principal Dashboard Cards**: Clickable cards including'Total Teachers' card that opens detailed list view
-\n## 9. Reference Images
+- **Principal Dashboard Cards**: Clickable cards including'Total Teachers' card and 'Total Students' card that open detailed list views
+
+## 9. Reference Images
 1. screenshot.png - Admin dashboard interface showing side panel navigation with Dashboard and User Management menu items
-2. screenshot-2.png - User management interface showing Active Users list with Edit and Suspend buttons
+2. screenshot.png - User management interface showing Active Users list with Edit and Suspend buttons
+3. screenshot.png - Login page interface with username, password fields and Forgot Password link
+4. screenshot.png - School edit form showing school information fields including name, address, contact details, affiliation, class range, and subjects
+5. image.png - Principal dashboard showing 'All Teachers of This School' page with teachers list and search functionality

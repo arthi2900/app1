@@ -56,7 +56,8 @@ export default function PrincipalDashboard() {
       value: stats.totalStudents,
       icon: Users,
       color: 'text-secondary',
-      clickable: false,
+      onClick: () => navigate('/principal/students'),
+      clickable: true,
     },
     {
       title: 'Total Exams',

@@ -132,6 +132,28 @@ export const profileApi = {
       schools: undefined
     }));
   },
+
+  async getStudentsBySchoolId(schoolId: string): Promise<Profile[]> {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select(`
+        *,
+        schools!profiles_school_id_fkey (
+          school_name
+        )
+      `)
+      .eq('role', 'student')
+      .eq('school_id', schoolId)
+      .order('full_name', { ascending: true });
+    if (error) throw error;
+    
+    const profiles = Array.isArray(data) ? data : [];
+    return profiles.map((profile: any) => ({
+      ...profile,
+      school_name: profile.schools?.school_name || null,
+      schools: undefined
+    }));
+  },
 };
 
 // School APIs
