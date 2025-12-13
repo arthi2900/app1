@@ -19,7 +19,7 @@ import type { Profile } from '@/types/types';
 
 export default function TeachersList() {
   const navigate = useNavigate();
-  const { profile } = useAuth();
+  const { profile, refreshProfile } = useAuth();
   const { toast } = useToast();
   const [teachers, setTeachers] = useState<Profile[]>([]);
   const [filteredTeachers, setFilteredTeachers] = useState<Profile[]>([]);
@@ -27,6 +27,7 @@ export default function TeachersList() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState<'full_name' | 'phone'>('full_name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [schoolName, setSchoolName] = useState<string>('');
 
   useEffect(() => {
     loadTeachers();
@@ -37,18 +38,24 @@ export default function TeachersList() {
   }, [teachers, searchQuery, sortField, sortOrder]);
 
   const loadTeachers = async () => {
-    if (!profile?.school_id) {
-      toast({
-        title: 'Error',
-        description: 'You are not assigned to any school',
-        variant: 'destructive',
-      });
-      setLoading(false);
-      return;
-    }
-
     try {
-      const data = await profileApi.getTeachersBySchoolId(profile.school_id);
+      // Fetch fresh profile data
+      const currentProfile = await profileApi.getCurrentProfile();
+      
+      if (!currentProfile?.school_id) {
+        toast({
+          title: 'Error',
+          description: 'You are not assigned to any school',
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Store school name for display
+      setSchoolName(currentProfile.school_name || 'Your School');
+
+      const data = await profileApi.getTeachersBySchoolId(currentProfile.school_id);
       setTeachers(data);
     } catch (error) {
       console.error('Error loading teachers:', error);
@@ -135,7 +142,7 @@ export default function TeachersList() {
         <div>
           <h1 className="text-3xl font-bold">All Teachers of This School</h1>
           <p className="text-muted-foreground mt-2">
-            {profile?.school_name || 'Your School'}
+            {schoolName}
           </p>
         </div>
       </div>

@@ -91,6 +91,12 @@ export function useAuth() {
     if (error) throw error;
   };
 
+  const refreshProfile = async () => {
+    if (user) {
+      await loadProfile();
+    }
+  };
+
   return {
     user,
     profile,
@@ -98,6 +104,7 @@ export function useAuth() {
     signIn,
     signUp,
     signOut,
+    refreshProfile,
     isAdmin: profile?.role === 'admin',
     isPrincipal: profile?.role === 'principal',
     isTeacher: profile?.role === 'teacher',
