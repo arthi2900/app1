@@ -134,10 +134,43 @@ User Logs In
 - Password updated via `updateUser()` method
 
 ### Admin-Initiated Reset:
-- Uses Supabase Auth Admin API `updateUserById()`
-- Requires admin authentication
-- Generates cryptographically secure random password
-- Direct database update without email verification
+- **Secure Edge Function Implementation**: Uses Supabase Edge Function with service role key
+- **Authentication Flow**:
+  1. Frontend sends request to `reset-user-password` Edge Function
+  2. Edge Function verifies admin's JWT token
+  3. Edge Function checks user has admin role in database
+  4. Edge Function uses service role key to call `auth.admin.updateUserById()`
+  5. Password updated securely on backend
+- **Security Features**:
+  - Service role key never exposed to frontend
+  - Role-based access control enforced
+  - All operations logged on backend
+  - CORS headers configured for security
+- **Why Edge Function?**: 
+  - Admin API requires service role key (elevated privileges)
+  - Service role key must never be in frontend code
+  - Edge Function acts as secure backend proxy
+  - Prevents "user not allowed" errors
+
+---
+
+## Common Issues and Solutions
+
+### "User Not Allowed" Error:
+**Problem**: This error occurs when trying to use admin API methods from frontend with anon key.
+
+**Solution**: The system now uses a secure Edge Function that properly handles admin operations with the service role key on the backend. Make sure:
+1. You are logged in as an admin
+2. Your session is active (try logging out and back in)
+3. The Edge Function is deployed (check Supabase dashboard)
+
+### Edge Function Not Found:
+**Problem**: Error calling `reset-user-password` function.
+
+**Solution**: 
+1. Verify the Edge Function is deployed in Supabase dashboard
+2. Check Edge Functions logs for errors
+3. Ensure your Supabase project has Edge Functions enabled
 
 ---
 
