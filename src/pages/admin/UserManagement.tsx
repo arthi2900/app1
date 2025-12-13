@@ -46,6 +46,7 @@ interface EditingUser {
 export default function UserManagement() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [schools, setSchools] = useState<School[]>([]);
+  const [currentUser, setCurrentUser] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState<EditingUser | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -57,9 +58,19 @@ export default function UserManagement() {
   const { toast } = useToast();
 
   useEffect(() => {
+    loadCurrentUser();
     loadProfiles();
     loadSchools();
   }, []);
+
+  const loadCurrentUser = async () => {
+    try {
+      const profile = await profileApi.getCurrentProfile();
+      setCurrentUser(profile);
+    } catch (error) {
+      console.error('Failed to load current user:', error);
+    }
+  };
 
   const loadProfiles = async () => {
     try {
@@ -432,6 +443,50 @@ export default function UserManagement() {
           </Badge>
         </div>
       </div>
+
+      {/* School Isolation Context Banner */}
+      {currentUser && currentUser.role !== 'admin' && currentUser.school_name && (
+        <Card className="bg-blue-50 border-blue-200">
+          <CardContent className="py-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-blue-100 p-2 rounded-lg">
+                <Users className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="font-medium text-blue-900">
+                  School Context: {currentUser.school_name}
+                </p>
+                <p className="text-sm text-blue-700">
+                  You can only view and manage users from your school. 
+                  {currentUser.role === 'principal' && ' As a Principal, you have full access to all users in your school.'}
+                  {currentUser.role === 'teacher' && ' As a Teacher, you can view students and other teachers in your school.'}
+                  {currentUser.role === 'student' && ' As a Student, you can view other students and teachers in your school.'}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {currentUser && currentUser.role === 'admin' && (
+        <Card className="bg-purple-50 border-purple-200">
+          <CardContent className="py-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-purple-100 p-2 rounded-lg">
+                <Users className="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <p className="font-medium text-purple-900">
+                  Administrator Access
+                </p>
+                <p className="text-sm text-purple-700">
+                  You have full access to manage users across all schools in the system.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'pending' | 'active' | 'suspended')}>
         <TabsList>

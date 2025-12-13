@@ -19,11 +19,25 @@ export const profileApi = {
   async getCurrentProfile(): Promise<Profile | null> {
     const { data, error } = await supabase
       .from('profiles')
-      .select('*')
+      .select(`
+        *,
+        schools!profiles_school_id_fkey (
+          school_name,
+          school_code
+        )
+      `)
       .eq('id', (await supabase.auth.getUser()).data.user?.id || '')
       .maybeSingle();
     if (error) throw error;
-    return data;
+    
+    if (!data) return null;
+    
+    return {
+      ...data,
+      school_name: data.schools?.school_name || null,
+      school_code: data.schools?.school_code || null,
+      schools: undefined
+    };
   },
 
   async getAllProfiles(): Promise<Profile[]> {

@@ -6,7 +6,7 @@
 Online Exam Management System
 
 ### 1.2 Application Purpose
-A comprehensive online exam conducting and management system for educational institutions. Features include school management, question paper creation, exam conduct, automatic evaluation, and detailed reporting.
+A comprehensive online exam conducting and management system for educational institutions. Features include school management, question paper creation, exam conduct, automatic evaluation, and detailed reporting with school-based data isolation.
 
 ## 2. User Roles\n
 ### 2.1 Admin\n- Complete system administration
@@ -16,38 +16,41 @@ A comprehensive online exam conducting and management system for educational ins
 - Role-based Access Control setup
 - System configurations (exam duration, evaluation policy)
 - Permission management\n- User profile editing and suspension management
+- **Cross-school visibility**: Admin can view and manage all schools and users across the entire system
 
 ### 2.2 Principal
-- Teacher management (within assigned school)
-- Exam schedule approval
-- Student report viewing (within assigned school)
-- Teacher performance monitoring
+- Teacher management (within assigned school only)
+- Exam schedule approval (within assigned school only)
+- Student report viewing (within assigned school only)
+- Teacher performance monitoring (within assigned school only)
 - Profile editing capability
 - Linked to specific school from school master list
+- **School-based isolation**: Can only view and manage users (teachers and students) from their assigned school
 
 ### 2.3 Teacher
-- Question creation\n- Question paper preparation
-- Exam conduct\n- Student performance viewing (within assigned school)
+- Question creation (for assigned school only)
+- Question paper preparation (for assigned school only)
+- Exam conduct (for assigned school only)
+- Student performance viewing (within assigned school only)
 - Profile editing capability
 - Linked to specific school from school master list
+- **School-based isolation**: Can only view and interact with students and other teachers from their assigned school
 
-### 2.4 Student\n- Exam participation
-- Result viewing
-- Access to past exam reports
-- Profile editing capability
-- Linked to specific school from school master list
-
-### 2.5 User Profile Information
+### 2.4 Student
+- Exam participation (for assigned school only)
+- Result viewing (own results only)
+- Access to past exam reports (own reports only)
+- Profile editing capability\n- Linked to specific school from school master list
+- **School-based isolation**: Can only view exams, results, and classmates from their assigned school
+\n### 2.5 User Profile Information
 All users (Admin, Principal, Teacher, Student) will have the following profile information:
-- User name
-- Email address
+- User name\n- Email address
 - Role\n- School name (mandatory field, selected from dropdown list populated from School Master)
 - Contact number
 - Profile picture (optional)\n- Account status (Pending Approval/Active/Suspended)
 \n## 3. School Management Module
 
-### 3.1 School Master
-Admin can create and manage schools with the following details:
+### 3.1 School Master\nAdmin can create and manage schools with the following details:
 \n#### 3.1.1 School Information Fields
 - School Name (unique, mandatory)
 - Assignment (optional, selected from existing School Name)\n- School Address (mandatory)
@@ -62,8 +65,7 @@ Admin can create and manage schools with the following details:
 \n#### 3.1.2 School Management Features
 - Create new school with all mandatory fields
 - Edit existing school information
-- View complete school list
-- Search and filter schools by name, code, or affiliation
+- View complete school list\n- Search and filter schools by name, code, or affiliation
 - Auto-generate unique School Code/ID upon school creation
 - Link Principal from existing user database (dropdown selection)
 - Define subject list for each school
@@ -75,42 +77,84 @@ Admin can create and manage schools with the following details:
 - One Principal can be assigned to only one school
 - Multiple Teachers and Students can be assigned to same school
 
-## 4. Key Features
+## 4. School-Based Data Isolation
 
-### 4.1 Question Bank
-- Subject-wise question storage
+### 4.1 Isolation Principle
+- Users from same school form an isolated group
+- Within each school group, Principal, Teachers, and Students can only see and interact with users from their own school
+- Admin has cross-school visibility and can manage all schools\n\n### 4.2 Isolation Implementation
+\n#### 4.2.1 User Visibility Rules
+- **Admin**: Can view all users from all schools
+- **Principal**: Can only view teachers and students from assigned school
+- **Teacher**: Can only view other teachers and students from assigned school
+- **Student**: Can only view classmates (other students) from assigned school
+
+#### 4.2.2 Question Bank Isolation
+- Questions are tagged with school information
+- Teachers can only access question bank of their assigned school
+- Questions created by teachers are automatically linked to their school
+- Cross-school question sharing is not allowed (unless explicitly enabled by Admin)
+
+#### 4.2.3 Exam Isolation
+- Exams are school-specific
+- Teachers can only create exams for their assigned school
+- Students can only see and participate in exams from their assigned school
+- Exam schedules are filtered by school\n
+#### 4.2.4 Report Isolation
+- Principals can only view reports of students from their assigned school
+- Teachers can only view performance of students from their assigned school
+- Students can only view their own reports
+- School name, address, and code displayed on report header
+
+#### 4.2.5 Search and Filter\n- All user lists, question banks, exams, and reports are automatically filtered by school
+- Search functionality respects school-based isolation
+- Dropdown lists and selection options show only school-relevant data
+
+### 4.3 School Group Interconnection
+- All users within same school are interconnected
+- Principal oversees all teachers and students in their school
+- Teachers can view student lists and performance within their school
+- Students can see classmates and school-specific information
+- Communication and notifications are school-scoped
+
+## 5. Key Features
+
+### 5.1 Question Bank\n- Subject-wise question storage
 - Question types:\n  - MCQ (Multiple Choice Questions)
   - True/False\n  - Short Answer
 - For each question:\n  - Marks allocation
   - Difficulty level indication
   - Subject reference
   - School reference (questions linked to specific school)
-\n### 4.2 Exam Paper Generation
-- Automatic selection from question bank\n- Manual question selection option
-- Question paper preview feature
-- Question paper approval process
-- School-specific question papers
+- **School-based filtering**: Teachers only see questions from their school
 
-### 4.3 Exam Conduct
-- Exam time scheduling
-- Student login system
-- Exam writing interface
+### 5.2 Exam Paper Generation
+- Automatic selection from question bank (school-specific)
+- Manual question selection option (school-specific)
+- Question paper preview feature
+- Question paper approval process\n- School-specific question papers
+- **School isolation**: Only questions from same school are available for selection
+
+### 5.3 Exam Conduct\n- Exam time scheduling (school-specific)
+- Student login system\n- Exam writing interface
 - Auto-submit after time expires
-\n### 4.4 Student Report
+- **School isolation**: Students only see exams from their assigned school
+\n### 5.4 Student Report
 - Automatic marks calculation
 - Pass/Fail status display
 - Detailed analysis:\n  - Subject-wise performance
   - Question-wise analysis
 - School name, address, and code displayed on report header
+- **School isolation**: Reports filtered by school for Principal and Teacher access
 
-### 4.5 User Registration and Approval Workflow
+### 5.5 User Registration and Approval Workflow
 - When a new user creates an account (signup), they will be assigned 'Pending Approval' status\n- During registration, user must select school from dropdown list
 - New users with'Pending Approval' status will be displayed separately in'Pending Users' list (not in Active Users list)
 - Admin must review and approve new user accounts
 - Only after Admin approval, user status changes to 'Active' and they are moved to Active Users list
 - This prevents unauthorized users from accessing the system
 
-### 4.6 Password Reset/Recovery Feature
+### 5.6 Password Reset/Recovery Feature
 - **Forgot Password Link**: Available on login page for all users
 - **Password Reset Process**:
   - User clicks 'Forgot Password' link on login page
@@ -129,10 +173,9 @@ Admin can create and manage schools with the following details:
   - Email verification required\n  - Password strength validation
   - Notification email sent after successful password change
 
-### 4.7 Admin Functions
+### 5.7 Admin Functions
 - Create and manage schools in School Master
-- Create user accounts for all roles
-- Assign school to each user during account creation (via dropdown)
+- Create user accounts for all roles\n- Assign school to each user during account creation (via dropdown)
 - Link Principal to school during school creation/editing
 - Review and approve pending user registrations
 - Role-based Access Control management
@@ -142,25 +185,32 @@ Admin can create and manage schools with the following details:
 - Edit user profiles with Save button
 - Suspend user accounts with Suspend button
 - Approve pending users with Approve button
-\n### 4.8 Principal Functions
-- Exam schedule review and approval (within assigned school)
-- Student report access (filtered by assigned school)
-- Teacher performance monitoring (within assigned school)
+- **Cross-school access**: Admin can view and manage all schools and users
+
+### 5.8 Principal Functions
+- Exam schedule review and approval (within assigned school only)
+- Student report access (filtered by assigned school)\n- Teacher performance monitoring (within assigned school only)
 - Edit own profile with Save button
 - View school details (read-only)
-\n### 4.9 Teacher Functions
-- Question creation and management (for assigned school subjects)
-- Question paper preparation (for assigned school)
-- Exam conduct and monitoring (for assigned school)
-- Student performance viewing (within assigned school)
+- **School-based access**: All data and user lists filtered by assigned school
+
+### 5.9 Teacher Functions
+- Question creation and management (for assigned school subjects only)
+- Question paper preparation (for assigned school only)
+- Exam conduct and monitoring (for assigned school only)
+- Student performance viewing (within assigned school only)
 - Edit own profile with Save button
-- View school details (read-only)\n
-### 4.10 Student Functions
-- Exam writing\n- Result viewing
-- Access to past exam reports
+- View school details (read-only)\n- **School-based access**: All data and user lists filtered by assigned school
+
+### 5.10 Student Functions
+- Exam writing (for assigned school only)
+- Result viewing (own results only)
+- Access to past exam reports (own reports only)
 - View school name, address, and code in profile
 - Edit own profile with Save button
-\n### 4.11 User Profile Management
+- **School-based access**: Only see exams and classmates from assigned school
+
+### 5.11 User Profile Management
 - Edit button: Available for all users to modify their profile information
 - Save button: Saves changes made to profile information
 - Approve button: Available only for Admin role to approve pending user registrations
@@ -171,57 +221,58 @@ Admin can create and manage schools with the following details:
   - Suspended: Users whose accounts have been suspended, cannot login
 - Each status displayed in separate tabs/views for easy management
 - Admin can filter and manage users based on their status
+- **School filtering**: Principal and Teacher views show only users from their assigned school
 
-## 5. Language Support
+## 6. Language Support
 
-### 5.1 UI Language
+### 6.1 UI Language
 - **UI Language: English Only**
 - All user interface elements (buttons, menus, labels, navigation, forms, tables, headers) will be displayed in English
 - This includes all management interfaces, dashboards, and system pages
-
-### 5.2 Chat/Communication Language
+\n### 6.2 Chat/Communication Language
 - Users can communicate in any language they prefer for chat, messages, or communication features
 - Chat language is flexible and not restricted to English
-\n### 5.3 Language Rule Summary
+\n### 6.3 Language Rule Summary
 - **UI = Always English**
 - **Chat/Communication = Any Language**
-\n## 6. Future Scope Features
+\n## 7. Future Scope Features
 
-### 6.1 Audit Logs
+### 7.1 Audit Logs
 - User activity logging
 - Track who did what and when
-\n### 6.2 Backup & Restore
-- Question bank backup
-- Exam data backup
-- School data backup
-- Restore functionality
+- School-based activity filtering
+\n### 7.2 Backup & Restore
+- Question bank backup (school-wise)
+- Exam data backup (school-wise)
+- School data backup\n- Restore functionality
 
-### 6.3 Notifications
-- Exam schedule notifications
-- Result notifications
+### 7.3 Notifications
+- Exam schedule notifications (school-specific)
+- Result notifications (school-specific)
 - New user registration notifications for Admin
 - School-related updates
 - Password reset confirmation notifications
 
-### 6.4 Analytics Dashboard
-- Student performance analysis
-- Teacher performance analysis
-- Subject-wise analysis
-- School-wise performance comparison
-- Board/Affiliation-wise comparison
+### 7.4 Analytics Dashboard
+- Student performance analysis (school-wise)
+- Teacher performance analysis (school-wise)
+- Subject-wise analysis (school-wise)
+- School-wise performance comparison (Admin only)
+- Board/Affiliation-wise comparison (Admin only)
 
-## 7. Design Style\n
-### 7.1 Color Scheme
+## 8. Design Style
+
+### 8.1 Color Scheme
 - Primary color: Blue (#2563EB) - conveys trust and educational appearance
 - Secondary color: Green (#10B981) - for success and positive actions
 - Warning color: Red (#EF4444) - for errors and warnings
 - Pending status color: Orange (#F59E0B) - for pending approval indication
 
-### 7.2 Visual Details
+### 8.2 Visual Details
 - Soft rounded corners (8px radius) - modern and friendly appearance
 - Subtle shadow effects - depth and hierarchy perception
 - Clear borders - for content sections
-\n### 7.3 Overall Layout
+\n### 8.3 Overall Layout
 - Side panel navigation - fixed left sidebar (240px width) with collapsible toggle button
 - **Admin Navigation Menu Items:**
   - Dashboard (with grid icon)
@@ -232,20 +283,18 @@ Admin can create and manage schools with the following details:
   - Reports & Analytics (with chart icon)
   - System Settings (with gear icon)
 - **Principal Navigation Menu Items:**
-  - Dashboard\n  - Teacher Management
-  - Exam Schedules
-  - Student Reports\n  - Profile Settings
-- **Teacher Navigation Menu Items:**
+  - Dashboard\n  - Teacher Management (school-filtered)
+  - Exam Schedules (school-filtered)
+  - Student Reports (school-filtered)\n  - Profile Settings\n- **Teacher Navigation Menu Items:**
   - Dashboard
-  - Question Bank
-  - Create Exam Paper
-  - Conduct Exam
-  - Student Performance
+  - Question Bank (school-filtered)
+  - Create Exam Paper (school-filtered)
+  - Conduct Exam (school-filtered)
+  - Student Performance (school-filtered)
   - Profile Settings
-- **Student Navigation Menu Items:**\n  - Dashboard
-  - My Exams
-  - Results
-  - Past Reports
+- **Student Navigation Menu Items:**
+  - Dashboard
+  - My Exams (school-filtered)\n  - Results\n  - Past Reports
   - Profile Settings
 - Card-based design - for information grouping in main content area
 - Responsive grid layout - for various screen sizes
@@ -253,7 +302,8 @@ Admin can create and manage schools with the following details:
 - Tab-based user management interface showing Pending Users, Active Users, and Suspended Users separately
 - School management interface with create, edit, and view options
 - Password reset page with clean form layout and clear instructions
+- **School-based filtering indicators**: Visual badges or labels showing current school context for non-Admin users
 
-## 8. Reference Images
+## 9. Reference Images
 1. screenshot.png - Admin dashboard interface showing side panel navigation with Dashboard and User Management menu items
 2. screenshot-2.png - User management interface showing Active Users list with Edit and Suspend buttons
