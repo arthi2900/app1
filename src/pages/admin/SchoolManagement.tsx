@@ -15,6 +15,8 @@ import { Textarea } from '@/components/ui/textarea';
 
 const AFFILIATION_BOARDS = [
   'State Board',
+  'TN State Board',
+  'Metric',
   'CBSE',
   'ICSE',
   'IB',
@@ -26,6 +28,7 @@ const COMMON_SUBJECTS = [
   'Mathematics',
   'Science',
   'English',
+  'Tamil',
   'Social Studies',
   'Physics',
   'Chemistry',
