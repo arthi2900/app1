@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, BookOpen, Users, GraduationCap, UserCheck, Plus, Pencil, Trash2 } from 'lucide-react';
+import { ArrowLeft, BookOpen, Users, GraduationCap, UserCheck, Plus, Pencil, Trash2, UserCog } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -34,7 +34,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { academicApi, profileApi } from '@/db/api';
-import type { Class, Section, AcademicSubject, Profile } from '@/types/types';
+import type { Class, Section, AcademicSubject, Profile, TeacherAssignmentWithDetails } from '@/types/types';
 
 const CURRENT_ACADEMIC_YEAR = '2024-2025';
 
@@ -49,18 +49,22 @@ export default function AcademicsManagement() {
   const [sections, setSections] = useState<Section[]>([]);
   const [subjects, setSubjects] = useState<AcademicSubject[]>([]);
   const [students, setStudents] = useState<Profile[]>([]);
+  const [teachers, setTeachers] = useState<Profile[]>([]);
+  const [teacherAssignments, setTeacherAssignments] = useState<TeacherAssignmentWithDetails[]>([]);
   
   // Dialog states
   const [classDialog, setClassDialog] = useState(false);
   const [sectionDialog, setSectionDialog] = useState(false);
   const [subjectDialog, setSubjectDialog] = useState(false);
   const [studentDialog, setStudentDialog] = useState(false);
+  const [teacherDialog, setTeacherDialog] = useState(false);
   
   // Form states
   const [classForm, setClassForm] = useState({ class_name: '', class_code: '', description: '' });
   const [sectionForm, setSectionForm] = useState({ class_id: '', section_name: '', section_code: '' });
   const [subjectForm, setSubjectForm] = useState({ class_id: '', subject_name: '', subject_code: '', description: '' });
   const [studentForm, setStudentForm] = useState({ student_id: '', class_id: '', section_id: '' });
+  const [teacherForm, setTeacherForm] = useState({ teacher_id: '', subject_id: '', class_id: '', section_id: '' });
   
   // Edit states
   const [editingClass, setEditingClass] = useState<Class | null>(null);
@@ -78,15 +82,17 @@ export default function AcademicsManagement() {
     }
 
     try {
-      const [classesData, subjectsData, studentsData] = await Promise.all([
+      const [classesData, subjectsData, studentsData, teachersData] = await Promise.all([
         academicApi.getClassesBySchoolId(profile.school_id),
         academicApi.getSubjectsBySchoolId(profile.school_id),
         profileApi.getStudentsBySchoolId(profile.school_id),
+        profileApi.getTeachersBySchoolId(profile.school_id),
       ]);
       
       setClasses(classesData);
       setSubjects(subjectsData);
       setStudents(studentsData);
+      setTeachers(teachersData);
       
       // Load all sections for all classes
       const allSections: Section[] = [];
@@ -95,6 +101,16 @@ export default function AcademicsManagement() {
         allSections.push(...classSections);
       }
       setSections(allSections);
+      
+      // Load all teacher assignments
+      const allAssignments: TeacherAssignmentWithDetails[] = [];
+      for (const cls of classesData) {
+        for (const section of allSections.filter(s => s.class_id === cls.id)) {
+          const assignments = await academicApi.getAssignmentsByClassSection(cls.id, section.id, CURRENT_ACADEMIC_YEAR);
+          allAssignments.push(...assignments);
+        }
+      }
+      setTeacherAssignments(allAssignments);
     } catch (error) {
       console.error('Error loading data:', error);
       toast({
@@ -241,12 +257,51 @@ export default function AcademicsManagement() {
     }
   };
 
+  // Teacher Assignment (HEART OF THE SYSTEM)
+  const handleAssignTeacher = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      await academicApi.createTeacherAssignment({
+        teacher_id: teacherForm.teacher_id,
+        subject_id: teacherForm.subject_id,
+        class_id: teacherForm.class_id,
+        section_id: teacherForm.section_id,
+        academic_year: CURRENT_ACADEMIC_YEAR,
+      });
+      toast({ title: 'Success', description: 'Teacher assigned successfully' });
+      setTeacherDialog(false);
+      setTeacherForm({ teacher_id: '', subject_id: '', class_id: '', section_id: '' });
+      loadData(); // Reload to show new assignment
+    } catch (error) {
+      console.error('Error assigning teacher:', error);
+      toast({ title: 'Error', description: 'Failed to assign teacher', variant: 'destructive' });
+    }
+  };
+
+  const handleDeleteTeacherAssignment = async (id: string) => {
+    if (!confirm('Remove this teacher assignment?')) return;
+    
+    try {
+      await academicApi.deleteTeacherAssignment(id);
+      toast({ title: 'Success', description: 'Teacher assignment removed successfully' });
+      loadData();
+    } catch (error) {
+      console.error('Error removing teacher assignment:', error);
+      toast({ title: 'Error', description: 'Failed to remove teacher assignment', variant: 'destructive' });
+    }
+  };
+
   const getClassName = (classId: string) => {
     return classes.find(c => c.id === classId)?.class_name || 'Unknown';
   };
 
   const getSectionName = (sectionId: string) => {
     return sections.find(s => s.id === sectionId)?.section_name || 'Unknown';
+  };
+
+  const getSubjectName = (subjectId: string) => {
+    return subjects.find(s => s.id === subjectId)?.subject_name || 'Unknown';
   };
 
   const getSectionsByClass = (classId: string) => {
@@ -283,7 +338,7 @@ export default function AcademicsManagement() {
       </div>
 
       <Tabs defaultValue="classes" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="classes">
             <BookOpen className="w-4 h-4 mr-2" />
             Classes
@@ -298,7 +353,11 @@ export default function AcademicsManagement() {
           </TabsTrigger>
           <TabsTrigger value="students">
             <UserCheck className="w-4 h-4 mr-2" />
-            Student Assignment
+            Students
+          </TabsTrigger>
+          <TabsTrigger value="teachers">
+            <UserCog className="w-4 h-4 mr-2" />
+            Teachers
           </TabsTrigger>
         </TabsList>
 
@@ -790,6 +849,172 @@ export default function AcademicsManagement() {
                 {(classes.length === 0 || sections.length === 0) && (
                   <p className="text-sm text-muted-foreground mt-2">
                     Create classes and sections first
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Teacher Assignment Tab - HEART OF THE SYSTEM */}
+        <TabsContent value="teachers">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Teacher Assignment</CardTitle>
+                  <CardDescription>
+                    Assign teachers to subjects for specific class-section combinations (Academic Year: {CURRENT_ACADEMIC_YEAR})
+                  </CardDescription>
+                </div>
+                <Dialog open={teacherDialog} onOpenChange={setTeacherDialog}>
+                  <DialogTrigger asChild>
+                    <Button disabled={classes.length === 0 || sections.length === 0 || subjects.length === 0 || teachers.length === 0}>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Assign Teacher
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Assign Teacher to Subject-Class-Section</DialogTitle>
+                      <DialogDescription>
+                        Map a teacher to teach a specific subject for a class-section combination
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleAssignTeacher}>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="teacher">Teacher *</Label>
+                          <Select
+                            value={teacherForm.teacher_id}
+                            onValueChange={(value) => setTeacherForm({ ...teacherForm, teacher_id: value })}
+                            required
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select teacher" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {teachers.map((teacher) => (
+                                <SelectItem key={teacher.id} value={teacher.id}>
+                                  {teacher.full_name} ({teacher.email})
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="class">Class *</Label>
+                          <Select
+                            value={teacherForm.class_id}
+                            onValueChange={(value) => {
+                              setTeacherForm({ ...teacherForm, class_id: value, section_id: '', subject_id: '' });
+                            }}
+                            required
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select class" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {classes.map((cls) => (
+                                <SelectItem key={cls.id} value={cls.id}>
+                                  {cls.class_name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="section">Section *</Label>
+                          <Select
+                            value={teacherForm.section_id}
+                            onValueChange={(value) => setTeacherForm({ ...teacherForm, section_id: value })}
+                            disabled={!teacherForm.class_id}
+                            required
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select section" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {getSectionsByClass(teacherForm.class_id).map((section) => (
+                                <SelectItem key={section.id} value={section.id}>
+                                  {section.section_name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="subject">Subject *</Label>
+                          <Select
+                            value={teacherForm.subject_id}
+                            onValueChange={(value) => setTeacherForm({ ...teacherForm, subject_id: value })}
+                            disabled={!teacherForm.class_id}
+                            required
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select subject" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {getSubjectsByClass(teacherForm.class_id).map((subject) => (
+                                <SelectItem key={subject.id} value={subject.id}>
+                                  {subject.subject_name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button type="submit">Assign Teacher</Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {teacherAssignments.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Teacher</TableHead>
+                        <TableHead>Subject</TableHead>
+                        <TableHead>Class</TableHead>
+                        <TableHead>Section</TableHead>
+                        <TableHead>Academic Year</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {teacherAssignments.map((assignment) => (
+                        <TableRow key={assignment.id}>
+                          <TableCell className="font-medium">
+                            {assignment.teacher?.full_name || 'Unknown Teacher'}
+                          </TableCell>
+                          <TableCell>{getSubjectName(assignment.subject_id)}</TableCell>
+                          <TableCell>{getClassName(assignment.class_id)}</TableCell>
+                          <TableCell>{getSectionName(assignment.section_id)}</TableCell>
+                          <TableCell>{assignment.academic_year}</TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteTeacherAssignment(assignment.id)}
+                            >
+                              <Trash2 className="w-4 h-4 text-destructive" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    No teacher assignments yet. Create classes, sections, subjects, and add teachers first.
                   </p>
                 )}
               </div>

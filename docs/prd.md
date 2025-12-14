@@ -38,8 +38,7 @@ A comprehensive online exam conducting and management system for educational ins
 - **School-based isolation**: Can only view and manage users (teachers and students) from their assigned school
 - **Visibility Rules**:
   - ✅ Can view: Teachers from their own school, Students from their own school
-  - ❌ Cannot view: Users from other schools
-\n### 2.3 Teacher
+  - ❌ Cannot view: Users from other schools\n\n### 2.3 Teacher
 - View assigned classes, sections, and subjects
 - View students of assigned sections only
 - Question creation (for assigned school and subjects only)
@@ -132,8 +131,7 @@ Admin can create and manage schools with the following details:
 - Teachers can only view performance of students from their assigned sections
 - Students can only view their own reports\n- School name, address, and code displayed on report header
 
-#### 4.2.5 Search and Filter
-- All user lists, question banks, exams, and reports are automatically filtered by school and role-based visibility rules
+#### 4.2.5 Search and Filter\n- All user lists, question banks, exams, and reports are automatically filtered by school and role-based visibility rules
 - Search functionality respects school-based isolation and role permissions
 - Dropdown lists and selection options show only school-relevant and role-appropriate data
 
@@ -183,7 +181,8 @@ After Principal login, the dashboard displays four main cards:
 - View current class-section assignments with edit and reassign options
 - Students without class-section assignment are listed separately for easy identification
 
-### 5.3 Teachers Card - Teacher Management\n
+### 5.3 Teachers Card - Teacher Management
+
 #### 5.3.1 Teacher Accounts
 - **Note**: Teacher accounts are already created via Sign-Up process and mapped to school by Admin
 - Principal can view all teachers in their assigned school
@@ -260,7 +259,7 @@ After Teacher login, the dashboard displays:
   - Subject (from assigned subjects)
   - Class (from assigned classes)
   - Marks\n  - Difficulty Level
-- Correct Answer (for MCQ and True/False)
+  - Correct Answer (for MCQ and True/False)
 - View and edit existing questions
 - Questions are automatically linked to teacher's school
 
@@ -287,7 +286,8 @@ After Teacher login, the dashboard displays:
   - Duration
 - Submit for Principal approval
 - View scheduled exams with status (Pending/Approved/Rejected)
-\n#### 6.2.6 Exam Conduct
+
+#### 6.2.6 Exam Conduct
 - Teacher can conduct exams for their assigned sections
 - Monitor student participation during exam
 - View real-time exam progress
@@ -323,11 +323,11 @@ After Student login, the dashboard displays:
 - Student can view all teachers assigned to their class and section
 - Teacher list displays:\n  - Teacher Name
   - Subject\n  - Contact Information (if available)
-\n#### 7.2.4 View Tests
+
+#### 7.2.4 View Tests
 - Student can view upcoming and past exams assigned to their class and section
 - Exam list displays:
-  - Exam Name
-  - Subject
+  - Exam Name\n  - Subject
   - Exam Date and Time
   - Duration
   - Status (Upcoming/Completed/Missed)
@@ -390,8 +390,7 @@ After Student login, the dashboard displays:
 - Detailed analysis:\n  - Subject-wise performance\n  - Question-wise analysis\n- School name, address, and code displayed on report header
 - **School isolation**: Reports filtered by school for Principal and Teacher access
 - **Student access**: Students can only view their own reports
-
-### 8.5 User Registration and Approval Workflow
+\n### 8.5 User Registration and Approval Workflow
 - When a new user creates an account (signup), they will be assigned 'Pending Approval' status
 - During registration, user must select school from dropdown list
 - New users with 'Pending Approval' status will be displayed separately in'Pending Users' list (not in Active Users list)
@@ -444,7 +443,8 @@ After Student login, the dashboard displays:
   - View student class-section assignments
 - Exam schedule review and approval (within assigned school only)
 - Student report access (filtered by assigned school)
-- Teacher performance monitoring (within assigned school only)\n- Edit own profile with Save button
+- Teacher performance monitoring (within assigned school only)
+- Edit own profile with Save button
 - View school details (read-only)
 - **School-based access**: All data and user lists filtered by assigned school
 - **Visibility**: Can view teachers and students from assigned school only
@@ -486,39 +486,73 @@ After Student login, the dashboard displays:
 - **School filtering**: Principal views show only teachers and students from their assigned school; Teacher views show only students from their assigned sections\n
 ### 8.12 Principal Dashboard - Total Teachers Card Feature
 - **Total Teachers Card**: Displays the total count of teachers in the Principal's assigned school
-- **Click Functionality**: When Principal clicks on the'Total Teachers' card, the system opens a 'Teachers List' page\n- **Data Fetching Rule**: \n  - Fetch all teachers using school_id (not logged-in user ID)
+- **Click Functionality**: When Principal clicks on the'Total Teachers' card, the system opens a 'Teachers Management' page with tabbed interface
+- **Data Fetching Rule**: \n  - Fetch all teachers using school_id (not logged-in user ID)
   - Display all teachers registered under the same school
   - Show complete teacher list regardless of which teacher is currently logged in
-- **Teachers List Page - Display Fields**:
-  - Teacher Name\n  - Subject
-  - Phone Number
+- **Teachers Management Page - Tab Structure**:
+  - **Tab 1: Teachers List**
+    - Display Fields: Teacher Name, Subject, Phone Number\n    - Enable search functionality
+    - Enable sort functionality
+    - Display total count of teachers at the top
+  - **Tab 2: Active Teachers**
+    - Display only teachers with 'Active' status
+    - Same display fields and functionality as Tab 1
+  - **Tab 3: Pending Teachers**
+    - Display only teachers with 'Pending Approval' status
+    - Same display fields and functionality as Tab 1\n  - **Tab 4: Suspended Teachers**
+    - Display only teachers with 'Suspended' status
+    - Same display fields and functionality as Tab 1\n  - **Tab 5: Teacher Assignment**
+    - **Purpose**: Interface for Principal to assign teachers to subjects, classes, and sections
+    - **Display Components**:
+      - Teacher selection dropdown (filtered by school)
+      - Subject selection dropdown (filtered by school subjects)
+      - Class selection dropdown (filtered by school classes)
+      - Section multi-select dropdown (filtered by selected class)
+      - 'Assign' button to save the mapping
+    - **Current Assignments Table**:
+      - Columns: Teacher Name, Subject, Class, Sections (comma-separated), Actions (Edit/Delete)
+      - Filter options by teacher, subject, or class
+      - Search functionality
+      - Sort functionality\n    - **Assignment Rules**:
+      - One teacher can be assigned to multiple subject-class-section combinations
+      - Same teacher can teach different subjects to different classes\n      - Multiple teachers can be assigned to same subject in different sections
+    - **Edit Assignment**:
+      - Click 'Edit' button to modify existing assignment
+      - Pre-populate form with current assignment details
+      - Save changes with 'Update' button
+    - **Delete Assignment**:
+      - Click 'Delete' button to remove teacher assignment
+      - Confirmation dialog before deletion
 - **Access Control**:
-  - Only Principal/Headmaster can view this list
-  - Teachers cannot view other teachers\n  - Data is school-wise, not user-wise
+  - Only Principal/Headmaster can view and manage this interface
+  - Teachers cannot view other teachers or access assignment interface
+  - Data is school-wise, not user-wise
 - **UX Requirements**:
-  - Page header:'All Teachers of This School'
-  - Enable search functionality
-  - Enable sort functionality
-  - Display total count of teachers at the top of the page
+  - Page header:'Teachers Management - [School Name]'
+  - Tab navigation at the top of the page
+  - Active tab highlighted with primary color
+  - Responsive design for all screen sizes
+  - Loading indicators during data fetch
+  - Success/error messages for assignment operations
 \n### 8.13 Principal Dashboard - Total Students Card Feature
 - **Total Students Card**: Displays the total count of students in the Principal's assigned school
-- **Click Functionality**: When Principal clicks on the 'Total Students' card, the system opens a 'Students List' page
-- **Data Fetching Rule**: 
+- **Click Functionality**: When Principal clicks on the 'Total Students' card, the system opens a 'Students List' page\n- **Data Fetching Rule**: 
   - Fetch all students using school_id (not logged-in user ID)
   - Display all students registered under the same school
   - Show complete student list regardless of which student is currently logged in
 - **Students List Page - Display Fields**:
-  - Student Name
-  - Class\n  - Phone Number
+  - Student Name\n  - Class\n  - Phone Number
 - **Access Control**:
   - Only Principal/Headmaster can view this list
   - Teachers and Students cannot view this complete list
-  - Data is school-wise, not user-wise\n- **UX Requirements**:\n  - Page header: 'All Students of This School'
+  - Data is school-wise, not user-wise
+- **UX Requirements**:
+  - Page header: 'All Students of This School'
   - Enable search functionality
   - Enable sort functionality
   - Display total count of students at the top of the page
-
-## 9. Language Support
+\n## 9. Language Support
 
 ### 9.1 UI Language\n- **UI Language: English Only**
 - All user interface elements (buttons, menus, labels, navigation, forms, tables, headers) will be displayed in English\n- This includes all management interfaces, dashboards, and system pages
@@ -588,7 +622,8 @@ After Student login, the dashboard displays:
 - **Student Navigation Menu Items:**
   - Dashboard
   - My Class
-  - My Section\n  - My Subjects
+  - My Section
+  - My Subjects
   - My Teachers
   - Tests (class-section-filtered)
   - Results\n  - Past Reports
@@ -603,6 +638,8 @@ After Student login, the dashboard displays:
 - **Principal Dashboard Cards**: Four main clickable cards (Academic, Teachers, Students, Test) that open respective management interfaces
 - **Academic Management Interface**: Step-by-step workflow for Class Creation → Section Creation → Subject Creation → Student Mapping
 - **Teacher-Subject-Class-Section Mapping Interface**: Interactive mapping interface with dropdown selections and visual confirmation
+- **Teachers Management Page**: Tabbed interface with five tabs (Teachers List, Active Teachers, Pending Teachers, Suspended Teachers, Teacher Assignment)
+- **Teacher Assignment Tab**: Form-based interface with dropdowns for teacher, subject, class, and section selection, plus table showing current assignments
 \n## 12. Reference Images
 1. screenshot.png - Admin dashboard interface showing side panel navigation with Dashboard and User Management menu items
 2. screenshot.png - User management interface showing Active Users list with Edit and Suspend buttons
