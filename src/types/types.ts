@@ -124,3 +124,79 @@ export interface AttemptWithDetails extends ExamAttempt {
   exam?: Exam;
   student?: Profile;
 }
+
+// Academic Management Types
+export interface Class {
+  id: string;
+  school_id: string;
+  class_name: string;
+  class_code: string;
+  description: string | null;
+  created_at: string;
+}
+
+export interface Section {
+  id: string;
+  class_id: string;
+  section_name: string;
+  section_code: string;
+  created_at: string;
+}
+
+export interface AcademicSubject {
+  id: string;
+  school_id: string;
+  class_id: string;
+  subject_name: string;
+  subject_code: string;
+  description: string | null;
+  created_at: string;
+}
+
+export interface StudentClassSection {
+  id: string;
+  student_id: string;
+  class_id: string;
+  section_id: string;
+  academic_year: string;
+  created_at: string;
+}
+
+export interface TeacherAssignment {
+  id: string;
+  teacher_id: string;
+  subject_id: string;
+  class_id: string;
+  section_id: string;
+  academic_year: string;
+  created_at: string;
+}
+
+// Extended types with relations
+export interface ClassWithSections extends Class {
+  sections?: Section[];
+  subjects?: AcademicSubject[];
+}
+
+export interface SectionWithDetails extends Section {
+  class?: Class;
+  students_count?: number;
+  teachers_count?: number;
+}
+
+export interface AcademicSubjectWithDetails extends AcademicSubject {
+  class?: Class;
+}
+
+export interface StudentClassSectionWithDetails extends StudentClassSection {
+  student?: Profile;
+  class?: Class;
+  section?: Section;
+}
+
+export interface TeacherAssignmentWithDetails extends TeacherAssignment {
+  teacher?: Profile;
+  subject?: AcademicSubject;
+  class?: Class;
+  section?: Section;
+}

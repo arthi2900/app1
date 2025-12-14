@@ -6,7 +6,7 @@
 Online Exam Management System
 
 ### 1.2 Application Purpose
-A comprehensive online exam conducting and management system for educational institutions. Features include school management, question paper creation, exam conduct, automatic evaluation, and detailed reporting with school-based data isolation.
+A comprehensive online exam conducting and management system for educational institutions. Features include school management, academic structure setup (class, section, subject), teacher-subject-class-section mapping, question paper creation, exam conduct, automatic evaluation, and detailed reporting with school-based data isolation.
 
 ## 2. User Roles\n
 ### 2.1 Admin\n- Complete system administration
@@ -20,7 +20,16 @@ A comprehensive online exam conducting and management system for educational ins
 - **Full management rights**: Create, edit, suspend, delete all users and schools
 
 ### 2.2 Principal
-- Teacher management (within assigned school only)
+- **Academic Management** (within assigned school only):
+  - Class creation\n  - Section creation
+  - Subject creation (class-wise)
+  - Student class-section mapping
+- **Teacher Management** (within assigned school only):
+  - View teacher accounts
+  - Teacher-subject-class-section mapping\n  - View class-section overview with assigned teachers per subject
+- **Student Management** (within assigned school only):
+  - View students list
+  - View student class-section assignments
 - Exam schedule approval (within assigned school only)
 - Student report viewing (within assigned school only)
 - Teacher performance monitoring (within assigned school only)
@@ -29,19 +38,27 @@ A comprehensive online exam conducting and management system for educational ins
 - **School-based isolation**: Can only view and manage users (teachers and students) from their assigned school
 - **Visibility Rules**:
   - ✅ Can view: Teachers from their own school, Students from their own school
-  - ❌ Cannot view: Users from other schools\n\n### 2.3 Teacher
-- Question creation (for assigned school only)
+  - ❌ Cannot view: Users from other schools
+\n### 2.3 Teacher
+- View assigned classes, sections, and subjects
+- View students of assigned sections only
+- Question creation (for assigned school and subjects only)
 - Question paper preparation (for assigned school only)
+- Test schedule creation (for assigned classes and sections only)
 - Exam conduct (for assigned school only)
-- Student performance viewing (within assigned school only)
+- Student performance viewing (within assigned sections only)
+- Result entry and analysis (for assigned students only)
 - Profile editing capability
 - Linked to specific school from school master list
-- **School-based isolation**: Can only view and interact with students from their assigned school
+- **School-based isolation**: Can only view and interact with students from their assigned sections
 - **Visibility Rules**:
-  - ✅ Can view: Students from their own school\n  - ❌ Cannot view: Principal (even from the same school), Other teachers (even from the same school), Users from other schools
+  - ✅ Can view: Students from their assigned sections
+  - ❌ Cannot view: Principal (even from the same school), Other teachers (even from the same school), Users from other schools
 
 ### 2.4 Student
+- View my class, section, subjects, and teachers
 - Exam participation (for assigned school only)
+- View tests assigned to my class and section
 - Result viewing (own results only)
 - Access to past exam reports (own reports only)
 - Profile editing capability\n- Linked to specific school from school master list
@@ -58,7 +75,8 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - Profile picture (optional)\n- Account status (Pending Approval/Active/Suspended)
 \n## 3. School Management Module
 
-### 3.1 School Master\nAdmin can create and manage schools with the following details:
+### 3.1 School Master
+Admin can create and manage schools with the following details:
 \n#### 3.1.1 School Information Fields
 - School Name (unique, mandatory)
 - Assignment (optional, selected from existing School Name)\n- School Address (mandatory)
@@ -73,8 +91,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 \n#### 3.1.2 School Management Features
 - Create new school with all mandatory fields
 - Edit existing school information
-- View complete school list
-- Search and filter schools by name, code, or affiliation
+- View complete school list\n- Search and filter schools by name, code, or affiliation
 - Auto-generate unique School Code/ID upon school creation
 - Link Principal from existing user database (dropdown selection)
 - Define subject list for each school
@@ -96,7 +113,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 \n#### 4.2.1 User Visibility Rules
 - **Admin**: Can view all users from all schools
 - **Principal**: Can only view teachers and students from assigned school
-- **Teacher**: Can only view students from assigned school (cannot view Principal or other teachers)
+- **Teacher**: Can only view students from assigned sections (cannot view Principal or other teachers)
 - **Student**: Can only view their own profile and personal information (cannot view other students, teachers, or Principal)
 
 #### 4.2.2 Question Bank Isolation
@@ -105,63 +122,284 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - Cross-school question sharing is not allowed (unless explicitly enabled by Admin)
 
 #### 4.2.3 Exam Isolation
-- Exams are school-specific
-- Teachers can only create exams for their assigned school
-- Students can only see and participate in exams from their assigned school
-- Exam schedules are filtered by school\n
+- Exams are school-specific and class-section-specific
+- Teachers can only create exams for their assigned classes and sections
+- Students can only see and participate in exams assigned to their class and section
+- Exam schedules are filtered by school, class, and section
+
 #### 4.2.4 Report Isolation
 - Principals can only view reports of students from their assigned school
-- Teachers can only view performance of students from their assigned school
-- Students can only view their own reports
-- School name, address, and code displayed on report header
+- Teachers can only view performance of students from their assigned sections
+- Students can only view their own reports\n- School name, address, and code displayed on report header
 
-#### 4.2.5 Search and Filter\n- All user lists, question banks, exams, and reports are automatically filtered by school and role-based visibility rules
+#### 4.2.5 Search and Filter
+- All user lists, question banks, exams, and reports are automatically filtered by school and role-based visibility rules
 - Search functionality respects school-based isolation and role permissions
 - Dropdown lists and selection options show only school-relevant and role-appropriate data
 
 ### 4.3 School Group Interconnection
 - All users within same school are interconnected based on role-specific visibility\n- Principal oversees all teachers and students in their school
-- Teachers can view student lists and performance within their school (but not Principal or other teachers)
+- Teachers can view student lists and performance within their assigned sections (but not Principal or other teachers)
 - Students can only access their own information\n- Communication and notifications are school-scoped and role-appropriate
 
-## 5. Key Features
+## 5. Principal Dashboard - Academic Management Module
 
-### 5.1 Question Bank\n- Subject-wise question storage
-- Question types:\n  - MCQ (Multiple Choice Questions)
-  - True/False\n  - Short Answer
+### 5.1 Principal Dashboard Overview
+After Principal login, the dashboard displays four main cards:
+- **Academic Card**: Manage academic structure (classes, sections, subjects, student mapping)
+- **Teachers Card**: Manage teacher accounts and teacher-subject-class-section mapping\n- **Students Card**: View and manage students\n- **Test Card**: Manage exam schedules and approvals
+
+### 5.2 Academic Card - Academic Structure Management
+
+#### 5.2.1 Class Creation
+- Principal can create classes for their assigned school
+- Class information fields:\n  - Class Name (e.g., Class 6, Class 7, Class 8, etc.)
+  - Class Code (auto-generated or manual entry)
+  - Academic Year (e.g., 2024-2025)\n- Class list view with edit and delete options
+- Classes are school-specific and isolated\n
+#### 5.2.2 Section Creation
+- Principal can create sections for each class
+- Section information fields:\n  - Section Name (e.g., Section A, Section B, Section C)
+  - Class (dropdown selection from created classes)
+  - Maximum Students (optional)
+- Section list view with class-wise filtering
+- Sections are linked to specific classes within the school
+
+#### 5.2.3 Subject Creation (Class-wise)
+- Principal can create subjects for each class
+- Subject information fields:
+  - Subject Name (e.g., Mathematics, Science, English)\n  - Class (dropdown selection from created classes)
+  - Subject Code (auto-generated or manual entry)
+  - Subject Type (Core/Elective/Optional)
+- Subject list view with class-wise filtering
+- Subjects are class-specific and school-specific
+
+#### 5.2.4 Student Class-Section Mapping
+- Principal can assign students to specific class and section
+- **Note**: Student accounts are already created via Sign-Up process, only class-section assignment is done here
+- Mapping interface:\n  - Student selection (dropdown or search from existing students in the school)
+  - Class selection (dropdown)\n  - Section selection (dropdown, filtered by selected class)
+  - Academic Year\n- Bulk assignment option for multiple students
+- View current class-section assignments with edit and reassign options
+- Students without class-section assignment are listed separately for easy identification
+
+### 5.3 Teachers Card - Teacher Management\n
+#### 5.3.1 Teacher Accounts
+- **Note**: Teacher accounts are already created via Sign-Up process and mapped to school by Admin
+- Principal can view all teachers in their assigned school
+- Teacher list displays:
+  - Teacher Name
+  - Subject specialization
+  - Phone Number
+  - Account Status (Active/Pending/Suspended)
+\n#### 5.3.2 Teacher-Subject-Class-Section Mapping (Heart of the System)
+- Principal assigns teachers to specific subjects, classes, and sections
+- Mapping interface:
+  - Teacher selection (dropdown from school teachers)
+  - Subject selection (dropdown from school subjects)
+  - Class selection (dropdown from school classes)
+  - Section selection (multi-select, filtered by selected class)
+- One teacher can be assigned to multiple subject-class-section combinations
+- View current teacher assignments with edit and delete options
+- **This mapping is the core of the system**: It determines which students a teacher can view and which exams they can create
+
+#### 5.3.3 Class-Section Overview
+- Principal can view class-section overview showing:
+  - Class and Section name
+  - Assigned Teachers per Subject
+  - Students List in that section
+- Detailed view with subject-wise teacher assignments
+- Student count per section
+- Quick access to edit teacher assignments or student mappings
+
+### 5.4 Students Card - Student Management
+- Principal can view all students in their assigned school
+- Student list displays:
+  - Student Name
+  - Class and Section
+  - Phone Number
+  - Account Status (Active/Pending/Suspended)\n- Filter and search options by class, section, or name
+- Click on student to view detailed profile and academic records
+\n### 5.5 Test Card - Exam Management
+- Principal can view and approve exam schedules created by teachers
+- Exam list displays:
+  - Exam Name
+  - Subject
+  - Class and Section
+  - Exam Date and Time
+  - Created By (Teacher Name)
+  - Status (Pending Approval/Approved/Rejected)
+- Approve or reject exam schedules\n- View exam details and question paper preview
+\n## 6. Teacher Dashboard and Functions
+
+### 6.1 Teacher Login - Dashboard Overview
+After Teacher login, the dashboard displays:
+- **Assigned Classes**: List of classes assigned to the teacher
+- **Assigned Sections**: List of sections assigned to the teacher
+- **Assigned Subjects**: List of subjects assigned to the teacher
+- **Students of Assigned Sections**: List of students in the assigned sections only
+\n### 6.2 Teacher Functions
+
+#### 6.2.1 View Assigned Classes, Sections, and Subjects
+- Teacher can view all their assigned classes, sections, and subjects\n- Dashboard displays summary cards with counts
+- Detailed view with class-section-subject combinations
+
+#### 6.2.2 View Students of Assigned Sections Only
+- Teacher can only view students who are in their assigned sections
+- Student list displays:
+  - Student Name
+  - Class and Section\n  - Roll Number
+  - Contact Number
+- Filter and search options by class, section, or name
+- **Visibility Rule**: Teacher cannot view students from other sections or other teachers
+
+#### 6.2.3 Question Bank Management
+- Teacher can create and manage questions for their assigned subjects
+- Question types: MCQ, True/False, Short Answer\n- Question fields:
+  - Question Text
+  - Subject (from assigned subjects)
+  - Class (from assigned classes)
+  - Marks\n  - Difficulty Level
+- Correct Answer (for MCQ and True/False)
+- View and edit existing questions
+- Questions are automatically linked to teacher's school
+
+#### 6.2.4 Question Paper Creation
+- Teacher can create question papers for their assigned subjects and classes
+- Question paper fields:\n  - Paper Name
+  - Subject (from assigned subjects)
+  - Class (from assigned classes)
+  - Section (from assigned sections, multi-select)
+  - Total Marks
+  - Duration\n- Select questions from question bank (filtered by subject and class)
+- Preview question paper before finalizing
+- Submit for Principal approval
+
+#### 6.2.5 Test Schedule Creation
+- Teacher can schedule exams for their assigned classes and sections
+- Test schedule fields:
+  - Exam Name
+  - Subject (from assigned subjects)
+  - Class (from assigned classes)
+  - Section (from assigned sections, multi-select)
+  - Question Paper (select from created question papers)
+  - Exam Date and Time
+  - Duration
+- Submit for Principal approval
+- View scheduled exams with status (Pending/Approved/Rejected)
+\n#### 6.2.6 Exam Conduct
+- Teacher can conduct exams for their assigned sections
+- Monitor student participation during exam
+- View real-time exam progress
+- Handle exam-related queries\n
+#### 6.2.7 Result Entry and Analysis\n- Teacher can enter marks for students in their assigned sections
+- View student performance analysis:\n  - Subject-wise performance
+  - Question-wise analysis
+  - Class average and section average
+- Generate reports for assigned students
+\n#### 6.2.8 Profile Settings
+- Teacher can edit their own profile information
+- View school details (read-only)
+\n## 7. Student Dashboard and Functions\n
+### 7.1 Student Login - Dashboard Overview
+After Student login, the dashboard displays:
+- **My Class**: Student's assigned class\n- **My Section**: Student's assigned section
+- **My Subjects**: List of subjects for the student's class
+- **My Teachers**: List of teachers assigned to the student's class and section
+- **Tests**: Upcoming and past exams
+- **Results**: Student's exam results
+
+### 7.2 Student Functions
+
+#### 7.2.1 View My Class and Section
+- Student can view their assigned class and section
+- Display class and section name prominently on dashboard
+\n#### 7.2.2 View My Subjects
+- Student can view all subjects for their class
+- Subject list displays:
+  - Subject Name
+  - Subject Code
+  - Subject Type (Core/Elective/Optional)\n\n#### 7.2.3 View My Teachers
+- Student can view all teachers assigned to their class and section
+- Teacher list displays:\n  - Teacher Name
+  - Subject\n  - Contact Information (if available)
+\n#### 7.2.4 View Tests
+- Student can view upcoming and past exams assigned to their class and section
+- Exam list displays:
+  - Exam Name
+  - Subject
+  - Exam Date and Time
+  - Duration
+  - Status (Upcoming/Completed/Missed)
+- Click on exam to view details or start exam (if scheduled)
+
+#### 7.2.5 Exam Participation
+- Student can participate in exams assigned to their class and section
+- Exam interface:
+  - Question display with navigation\n  - Answer input (MCQ selection, text input for short answer)
+  - Timer display
+  - Submit button
+- Auto-submit after time expires
+
+#### 7.2.6 View Results
+- Student can view their exam results
+- Result display:
+  - Exam Name
+  - Subject\n  - Marks Obtained
+  - Total Marks
+  - Percentage
+  - Pass/Fail Status
+- Detailed analysis:\n  - Subject-wise performance\n  - Question-wise analysis\n  - Correct and incorrect answers
+
+#### 7.2.7 Access Past Exam Reports
+- Student can access their past exam reports
+- Report list with filter options by subject, date, or exam name
+- Download or print report option
+
+#### 7.2.8 Profile Settings
+- Student can edit their own profile information
+- View school details (read-only)
+
+## 8. Key Features\n
+### 8.1 Question Bank
+- Subject-wise question storage\n- Question types:\n  - MCQ (Multiple Choice Questions)
+  - True/False
+  - Short Answer
 - For each question:\n  - Marks allocation
   - Difficulty level indication
   - Subject reference
   - School reference (questions linked to specific school)
 - **School-based filtering**: Teachers only see questions from their school
-\n### 5.2 Exam Paper Generation
+
+### 8.2 Exam Paper Generation
 - Automatic selection from question bank (school-specific)
 - Manual question selection option (school-specific)
 - Question paper preview feature
-- Question paper approval process\n- School-specific question papers
+- Question paper approval process
+- School-specific question papers
 - **School isolation**: Only questions from same school are available for selection
 
-### 5.3 Exam Conduct\n- Exam time scheduling (school-specific)
+### 8.3 Exam Conduct
+- Exam time scheduling (school-specific, class-section-specific)
 - Student login system\n- Exam writing interface
 - Auto-submit after time expires
-- **School isolation**: Students only see exams from their assigned school
-\n### 5.4 Student Report
-- Automatic marks calculation
+- **School isolation**: Students only see exams assigned to their class and section
+
+### 8.4 Student Report\n- Automatic marks calculation
 - Pass/Fail status display
-- Detailed analysis:\n  - Subject-wise performance
-  - Question-wise analysis
-- School name, address, and code displayed on report header
+- Detailed analysis:\n  - Subject-wise performance\n  - Question-wise analysis\n- School name, address, and code displayed on report header
 - **School isolation**: Reports filtered by school for Principal and Teacher access
 - **Student access**: Students can only view their own reports
 
-### 5.5 User Registration and Approval Workflow
-- When a new user creates an account (signup), they will be assigned 'Pending Approval' status\n- During registration, user must select school from dropdown list
-- New users with'Pending Approval' status will be displayed separately in'Pending Users' list (not in Active Users list)
+### 8.5 User Registration and Approval Workflow
+- When a new user creates an account (signup), they will be assigned 'Pending Approval' status
+- During registration, user must select school from dropdown list
+- New users with 'Pending Approval' status will be displayed separately in'Pending Users' list (not in Active Users list)
 - Admin must review and approve new user accounts
 - Only after Admin approval, user status changes to 'Active' and they are moved to Active Users list
 - This prevents unauthorized users from accessing the system
 
-### 5.6 Password Reset/Recovery Feature
+### 8.6 Password Reset/Recovery Feature
 - **Forgot Password Link**: Available on login page for all users
 - **Password Reset Process**:
   - User clicks 'Forgot Password' link on login page
@@ -180,7 +418,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
   - Email verification required\n  - Password strength validation
   - Notification email sent after successful password change
 
-### 5.7 Admin Functions
+### 8.7 Admin Functions
 - Create and manage schools in School Master
 - Create user accounts for all roles\n- Assign school to each user during account creation (via dropdown)
 - Link Principal to school during school creation/editing
@@ -193,24 +431,40 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - Suspend user accounts with Suspend button
 - Approve pending users with Approve button
 - **Cross-school access**: Admin can view and manage all schools and users
-- **Full management rights**: Create, edit, suspend, delete\n
-### 5.8 Principal Functions
+- **Full management rights**: Create, edit, suspend, delete\n\n### 8.8 Principal Functions
+- **Academic Management**:
+  - Class creation\n  - Section creation
+  - Subject creation (class-wise)
+  - Student class-section mapping
+- **Teacher Management**:
+  - View teacher accounts
+  - Teacher-subject-class-section mapping\n  - View class-section overview with assigned teachers per subject
+- **Student Management**:
+  - View students list
+  - View student class-section assignments
 - Exam schedule review and approval (within assigned school only)
-- Student report access (filtered by assigned school)\n- Teacher performance monitoring (within assigned school only)\n- Edit own profile with Save button
+- Student report access (filtered by assigned school)
+- Teacher performance monitoring (within assigned school only)\n- Edit own profile with Save button
 - View school details (read-only)
 - **School-based access**: All data and user lists filtered by assigned school
 - **Visibility**: Can view teachers and students from assigned school only
 
-### 5.9 Teacher Functions
-- Question creation and management (for assigned school subjects only)
+### 8.9 Teacher Functions
+- View assigned classes, sections, and subjects
+- View students of assigned sections only\n- Question creation and management (for assigned school subjects only)
 - Question paper preparation (for assigned school only)
+- Test schedule creation (for assigned classes and sections only)
 - Exam conduct and monitoring (for assigned school only)
-- Student performance viewing (within assigned school only)
+- Student performance viewing (within assigned sections only)
+- Result entry and analysis (for assigned students only)
 - Edit own profile with Save button
 - View school details (read-only)\n- **School-based access**: All data and user lists filtered by assigned school
-- **Visibility**: Can view students from assigned school only (cannot view Principal or other teachers)
-\n### 5.10 Student Functions
+- **Visibility**: Can view students from assigned sections only (cannot view Principal or other teachers)
+
+### 8.10 Student Functions
+- View my class, section, subjects, and teachers
 - Exam writing (for assigned school only)
+- View tests assigned to my class and section
 - Result viewing (own results only)
 - Access to past exam reports (own reports only)
 - View school name, address, and code in profile
@@ -218,7 +472,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - **School-based access**: Only see exams and personal information from assigned school
 - **Visibility**: Can only view their own profile details and personal exam data (cannot view other students, teachers, or Principal)
 
-### 5.11 User Profile Management
+### 8.11 User Profile Management
 - Edit button: Available for all users to modify their profile information
 - Save button: Saves changes made to profile information
 - Approve button: Available only for Admin role to approve pending user registrations
@@ -229,12 +483,10 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
   - Suspended: Users whose accounts have been suspended, cannot login
 - Each status displayed in separate tabs/views for easy management
 - Admin can filter and manage users based on their status
-- **School filtering**: Principal views show only teachers and students from their assigned school; Teacher views show only students from their assigned school
-
-### 5.12 Principal Dashboard - Total Teachers Card Feature
+- **School filtering**: Principal views show only teachers and students from their assigned school; Teacher views show only students from their assigned sections\n
+### 8.12 Principal Dashboard - Total Teachers Card Feature
 - **Total Teachers Card**: Displays the total count of teachers in the Principal's assigned school
-- **Click Functionality**: When Principal clicks on the'Total Teachers' card, the system opens a 'Teachers List' page
-- **Data Fetching Rule**: \n  - Fetch all teachers using school_id (not logged-in user ID)
+- **Click Functionality**: When Principal clicks on the'Total Teachers' card, the system opens a 'Teachers List' page\n- **Data Fetching Rule**: \n  - Fetch all teachers using school_id (not logged-in user ID)
   - Display all teachers registered under the same school
   - Show complete teacher list regardless of which teacher is currently logged in
 - **Teachers List Page - Display Fields**:
@@ -248,7 +500,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
   - Enable search functionality
   - Enable sort functionality
   - Display total count of teachers at the top of the page
-\n### 5.13 Principal Dashboard - Total Students Card Feature
+\n### 8.13 Principal Dashboard - Total Students Card Feature
 - **Total Students Card**: Displays the total count of students in the Principal's assigned school
 - **Click Functionality**: When Principal clicks on the 'Total Students' card, the system opens a 'Students List' page
 - **Data Fetching Rule**: 
@@ -257,63 +509,59 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
   - Show complete student list regardless of which student is currently logged in
 - **Students List Page - Display Fields**:
   - Student Name
-  - Class
-  - Phone Number
+  - Class\n  - Phone Number
 - **Access Control**:
   - Only Principal/Headmaster can view this list
   - Teachers and Students cannot view this complete list
-  - Data is school-wise, not user-wise
-- **UX Requirements**:
-  - Page header: 'All Students of This School'
+  - Data is school-wise, not user-wise\n- **UX Requirements**:\n  - Page header: 'All Students of This School'
   - Enable search functionality
-  - Enable sort functionality\n  - Display total count of students at the top of the page
+  - Enable sort functionality
+  - Display total count of students at the top of the page
 
-## 6. Language Support
+## 9. Language Support
 
-### 6.1 UI Language
-- **UI Language: English Only**
+### 9.1 UI Language\n- **UI Language: English Only**
 - All user interface elements (buttons, menus, labels, navigation, forms, tables, headers) will be displayed in English\n- This includes all management interfaces, dashboards, and system pages
-\n### 6.2 Chat/Communication Language
+\n### 9.2 Chat/Communication Language
 - Users can communicate in any language they prefer for chat, messages, or communication features
 - Chat language is flexible and not restricted to English
-\n### 6.3 Language Rule Summary
+\n### 9.3 Language Rule Summary
 - **UI = Always English**
 - **Chat/Communication = Any Language**
-\n## 7. Future Scope Features
+\n## 10. Future Scope Features
 
-### 7.1 Audit Logs
+### 10.1 Audit Logs
 - User activity logging\n- Track who did what and when
 - School-based activity filtering
-\n### 7.2 Backup & Restore
+\n### 10.2 Backup & Restore
 - Question bank backup (school-wise)
 - Exam data backup (school-wise)
 - School data backup\n- Restore functionality
 
-### 7.3 Notifications
+### 10.3 Notifications
 - Exam schedule notifications (school-specific)
 - Result notifications (school-specific)
 - New user registration notifications for Admin
 - School-related updates
 - Password reset confirmation notifications
 
-### 7.4 Analytics Dashboard
+### 10.4 Analytics Dashboard
 - Student performance analysis (school-wise)
 - Teacher performance analysis (school-wise)
 - Subject-wise analysis (school-wise)
 - School-wise performance comparison (Admin only)
 - Board/Affiliation-wise comparison (Admin only)
 
-## 8. Design Style\n
-### 8.1 Color Scheme
+## 11. Design Style\n
+### 11.1 Color Scheme
 - Primary color: Blue (#2563EB) - conveys trust and educational appearance
 - Secondary color: Green (#10B981) - for success and positive actions
 - Warning color: Red (#EF4444) - for errors and warnings
 - Pending status color: Orange (#F59E0B) - for pending approval indication
-\n### 8.2 Visual Details
+\n### 11.2 Visual Details
 - Soft rounded corners (8px radius) - modern and friendly appearance
 - Subtle shadow effects - depth and hierarchy perception
-- Clear borders - for content sections
-\n### 8.3 Overall Layout
+- Clear borders - for content sections\n\n### 11.3 Overall Layout
 - Side panel navigation - fixed left sidebar (240px width) with collapsible toggle button
 - **Admin Navigation Menu Items:**
   - Dashboard (with grid icon)
@@ -324,19 +572,26 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
   - Reports & Analytics (with chart icon)
   - System Settings (with gear icon)
 - **Principal Navigation Menu Items:**
-  - Dashboard\n  - Teacher Management (school-filtered)
-  - Exam Schedules (school-filtered)
-  - Student Reports (school-filtered)
+  - Dashboard\n  - Academic (school-filtered) - with sub-menu: Class Creation, Section Creation, Subject Creation, Student Mapping
+  - Teachers (school-filtered) - with sub-menu: Teacher Accounts, Teacher-Subject-Class-Section Mapping, Class-Section Overview
+  - Students (school-filtered)\n  - Test (school-filtered) - Exam Approvals\n  - Reports (school-filtered)
   - Profile Settings\n- **Teacher Navigation Menu Items:**
   - Dashboard
+  - Assigned Classes\n  - Assigned Sections\n  - Assigned Subjects\n  - Students (section-filtered)
   - Question Bank (school-filtered)
-  - Create Exam Paper (school-filtered)
+  - Create Question Paper (school-filtered)
+  - Test Schedule (school-filtered)
   - Conduct Exam (school-filtered)
-  - Student Performance (school-filtered)
+  - Results (section-filtered)
+  - Analysis (section-filtered)
   - Profile Settings
 - **Student Navigation Menu Items:**
   - Dashboard
-  - My Exams (school-filtered)\n  - Results\n  - Past Reports
+  - My Class
+  - My Section\n  - My Subjects
+  - My Teachers
+  - Tests (class-section-filtered)
+  - Results\n  - Past Reports
   - Profile Settings
 - Card-based design - for information grouping in main content area
 - Responsive grid layout - for various screen sizes
@@ -345,9 +600,10 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - School management interface with create, edit, and view options
 - Password reset page with clean form layout and clear instructions
 - **School-based filtering indicators**: Visual badges or labels showing current school context for non-Admin users
-- **Principal Dashboard Cards**: Clickable cards including'Total Teachers' card and 'Total Students' card that open detailed list views
-
-## 9. Reference Images
+- **Principal Dashboard Cards**: Four main clickable cards (Academic, Teachers, Students, Test) that open respective management interfaces
+- **Academic Management Interface**: Step-by-step workflow for Class Creation → Section Creation → Subject Creation → Student Mapping
+- **Teacher-Subject-Class-Section Mapping Interface**: Interactive mapping interface with dropdown selections and visual confirmation
+\n## 12. Reference Images
 1. screenshot.png - Admin dashboard interface showing side panel navigation with Dashboard and User Management menu items
 2. screenshot.png - User management interface showing Active Users list with Edit and Suspend buttons
 3. screenshot.png - Login page interface with username, password fields and Forgot Password link

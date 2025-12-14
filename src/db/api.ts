@@ -12,6 +12,13 @@ import type {
   ExamWithDetails,
   QuestionWithSubject,
   AttemptWithDetails,
+  Class,
+  Section,
+  AcademicSubject,
+  StudentClassSection,
+  TeacherAssignment,
+  StudentClassSectionWithDetails,
+  TeacherAssignmentWithDetails,
 } from '@/types/types';
 
 // Profile APIs
@@ -531,5 +538,240 @@ export const examAnswerApi = {
       .maybeSingle();
     if (error) throw error;
     return data;
+  },
+};
+
+// Academic Management APIs
+export const academicApi = {
+  // Class APIs
+  async getClassesBySchoolId(schoolId: string): Promise<Class[]> {
+    const { data, error } = await supabase
+      .from('classes')
+      .select('*')
+      .eq('school_id', schoolId)
+      .order('class_code', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async createClass(classData: Omit<Class, 'id' | 'created_at'>): Promise<Class | null> {
+    const { data, error } = await supabase
+      .from('classes')
+      .insert(classData)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateClass(id: string, updates: Partial<Class>): Promise<Class | null> {
+    const { data, error } = await supabase
+      .from('classes')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async deleteClass(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('classes')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  // Section APIs
+  async getSectionsByClassId(classId: string): Promise<Section[]> {
+    const { data, error } = await supabase
+      .from('sections')
+      .select('*')
+      .eq('class_id', classId)
+      .order('section_code', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async createSection(sectionData: Omit<Section, 'id' | 'created_at'>): Promise<Section | null> {
+    const { data, error } = await supabase
+      .from('sections')
+      .insert(sectionData)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateSection(id: string, updates: Partial<Section>): Promise<Section | null> {
+    const { data, error } = await supabase
+      .from('sections')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async deleteSection(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('sections')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  // Subject APIs
+  async getSubjectsBySchoolId(schoolId: string): Promise<AcademicSubject[]> {
+    const { data, error } = await supabase
+      .from('subjects')
+      .select('*')
+      .eq('school_id', schoolId)
+      .order('subject_name', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getSubjectsByClassId(classId: string): Promise<AcademicSubject[]> {
+    const { data, error } = await supabase
+      .from('subjects')
+      .select('*')
+      .eq('class_id', classId)
+      .order('subject_name', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async createSubject(subjectData: Omit<AcademicSubject, 'id' | 'created_at'>): Promise<AcademicSubject | null> {
+    const { data, error } = await supabase
+      .from('subjects')
+      .insert(subjectData)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateSubject(id: string, updates: Partial<AcademicSubject>): Promise<AcademicSubject | null> {
+    const { data, error } = await supabase
+      .from('subjects')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async deleteSubject(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('subjects')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  // Student Class Section APIs
+  async getStudentClassSection(studentId: string, academicYear: string): Promise<StudentClassSection | null> {
+    const { data, error } = await supabase
+      .from('student_class_sections')
+      .select('*')
+      .eq('student_id', studentId)
+      .eq('academic_year', academicYear)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async getStudentsByClassSection(classId: string, sectionId: string, academicYear: string): Promise<StudentClassSectionWithDetails[]> {
+    const { data, error } = await supabase
+      .from('student_class_sections')
+      .select(`
+        *,
+        student:profiles!student_class_sections_student_id_fkey(*),
+        class:classes!student_class_sections_class_id_fkey(*),
+        section:sections!student_class_sections_section_id_fkey(*)
+      `)
+      .eq('class_id', classId)
+      .eq('section_id', sectionId)
+      .eq('academic_year', academicYear)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async assignStudentToClassSection(assignment: Omit<StudentClassSection, 'id' | 'created_at'>): Promise<StudentClassSection | null> {
+    const { data, error } = await supabase
+      .from('student_class_sections')
+      .upsert(assignment, { onConflict: 'student_id,academic_year' })
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async removeStudentFromClassSection(studentId: string, academicYear: string): Promise<void> {
+    const { error } = await supabase
+      .from('student_class_sections')
+      .delete()
+      .eq('student_id', studentId)
+      .eq('academic_year', academicYear);
+    if (error) throw error;
+  },
+
+  // Teacher Assignment APIs
+  async getTeacherAssignments(teacherId: string, academicYear: string): Promise<TeacherAssignmentWithDetails[]> {
+    const { data, error } = await supabase
+      .from('teacher_assignments')
+      .select(`
+        *,
+        teacher:profiles!teacher_assignments_teacher_id_fkey(*),
+        subject:subjects!teacher_assignments_subject_id_fkey(*),
+        class:classes!teacher_assignments_class_id_fkey(*),
+        section:sections!teacher_assignments_section_id_fkey(*)
+      `)
+      .eq('teacher_id', teacherId)
+      .eq('academic_year', academicYear)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getAssignmentsByClassSection(classId: string, sectionId: string, academicYear: string): Promise<TeacherAssignmentWithDetails[]> {
+    const { data, error } = await supabase
+      .from('teacher_assignments')
+      .select(`
+        *,
+        teacher:profiles!teacher_assignments_teacher_id_fkey(*),
+        subject:subjects!teacher_assignments_subject_id_fkey(*),
+        class:classes!teacher_assignments_class_id_fkey(*),
+        section:sections!teacher_assignments_section_id_fkey(*)
+      `)
+      .eq('class_id', classId)
+      .eq('section_id', sectionId)
+      .eq('academic_year', academicYear)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async createTeacherAssignment(assignment: Omit<TeacherAssignment, 'id' | 'created_at'>): Promise<TeacherAssignment | null> {
+    const { data, error } = await supabase
+      .from('teacher_assignments')
+      .insert(assignment)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async deleteTeacherAssignment(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('teacher_assignments')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
   },
 };
