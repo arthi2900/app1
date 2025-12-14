@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, ClipboardList } from 'lucide-react';
+import { Users, ClipboardList, BookOpen } from 'lucide-react';
 import { profileApi, examApi } from '@/db/api';
 import { useAuth } from '@/hooks/useAuth';
 import SchoolProfile from '@/components/principal/SchoolProfile';
@@ -43,6 +43,15 @@ export default function PrincipalDashboard() {
   };
 
   const statCards = [
+    {
+      title: 'Academic Management',
+      value: 'Setup',
+      icon: BookOpen,
+      color: 'text-blue-600',
+      onClick: () => navigate('/principal/academics'),
+      clickable: true,
+      description: 'Manage classes, sections & subjects',
+    },
     {
       title: 'Total Teachers',
       value: stats.totalTeachers,
@@ -88,7 +97,7 @@ export default function PrincipalDashboard() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
@@ -105,7 +114,7 @@ export default function PrincipalDashboard() {
                 <div className="text-2xl font-bold">{stat.value}</div>
                 {stat.clickable && (
                   <p className="text-xs text-muted-foreground mt-1">
-                    Click to view details
+                    {(stat as any).description || 'Click to view details'}
                   </p>
                 )}
               </CardContent>

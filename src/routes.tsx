@@ -10,6 +10,7 @@ import SchoolManagement from './pages/admin/SchoolManagement';
 import PrincipalDashboard from './pages/principal/PrincipalDashboard';
 import TeachersList from './pages/principal/TeachersList';
 import StudentsList from './pages/principal/StudentsList';
+import AcademicsManagement from './pages/principal/AcademicsManagement';
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
 import QuestionBank from './pages/teacher/QuestionBank';
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -110,6 +111,16 @@ const routes: RouteConfig[] = [
     element: (
       <ProtectedRoute allowedRoles={['principal']}>
         <StudentsList />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Academic Management',
+    path: '/principal/academics',
+    element: (
+      <ProtectedRoute allowedRoles={['principal']}>
+        <AcademicsManagement />
       </ProtectedRoute>
     ),
     visible: false,
