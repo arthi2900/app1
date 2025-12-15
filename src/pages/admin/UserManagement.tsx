@@ -432,13 +432,25 @@ export default function UserManagement() {
           </p>
         </div>
         <div className="flex gap-4">
-          <Badge variant="outline" className="text-lg px-4 py-2 bg-yellow-50 text-yellow-700 border-yellow-300">
+          <Badge 
+            variant="outline" 
+            className="text-lg px-4 py-2 bg-yellow-50 text-yellow-700 border-yellow-300 cursor-pointer hover:bg-yellow-100 transition-colors"
+            onClick={() => setActiveTab('pending')}
+          >
             Pending: {pendingProfiles.length}
           </Badge>
-          <Badge variant="secondary" className="text-lg px-4 py-2">
+          <Badge 
+            variant="secondary" 
+            className="text-lg px-4 py-2 cursor-pointer hover:bg-secondary/80 transition-colors"
+            onClick={() => setActiveTab('active')}
+          >
             Active: {activeProfiles.length}
           </Badge>
-          <Badge variant="destructive" className="text-lg px-4 py-2">
+          <Badge 
+            variant="destructive" 
+            className="text-lg px-4 py-2 cursor-pointer hover:bg-destructive/80 transition-colors"
+            onClick={() => setActiveTab('suspended')}
+          >
             Suspended: {suspendedProfiles.length}
           </Badge>
         </div>
