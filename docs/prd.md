@@ -9,8 +9,8 @@ Online Exam Management System
 A comprehensive online exam conducting and management system for educational institutions. Features include school management, academic structure setup (class, section, subject), teacher-subject-class-section mapping, question paper creation, exam conduct, automatic evaluation, and detailed reporting with school-based data isolation.
 
 ## 2. User Roles\n
-### 2.1 Admin\n- Complete system administration
-- School management (create, edit, view schools)
+### 2.1 Admin
+- Complete system administration\n- School management (create, edit, view schools)
 - User account creation and management
 - New user approval management
 - Role-based Access Control setup
@@ -38,7 +38,8 @@ A comprehensive online exam conducting and management system for educational ins
 - **School-based isolation**: Can only view and manage users (teachers and students) from their assigned school
 - **Visibility Rules**:
   - ✅ Can view: Teachers from their own school, Students from their own school
-  - ❌ Cannot view: Users from other schools\n\n### 2.3 Teacher
+  - ❌ Cannot view: Users from other schools
+\n### 2.3 Teacher
 - View assigned classes, sections, and subjects
 - View students of assigned sections only
 - Question creation (for assigned school and subjects only)
@@ -90,7 +91,8 @@ Admin can create and manage schools with the following details:
 \n#### 3.1.2 School Management Features
 - Create new school with all mandatory fields
 - Edit existing school information
-- View complete school list\n- Search and filter schools by name, code, or affiliation
+- View complete school list
+- Search and filter schools by name, code, or affiliation
 - Auto-generate unique School Code/ID upon school creation
 - Link Principal from existing user database (dropdown selection)
 - Define subject list for each school
@@ -323,8 +325,7 @@ After Student login, the dashboard displays:
 - Student can view all teachers assigned to their class and section
 - Teacher list displays:\n  - Teacher Name
   - Subject\n  - Contact Information (if available)
-
-#### 7.2.4 View Tests
+\n#### 7.2.4 View Tests
 - Student can view upcoming and past exams assigned to their class and section
 - Exam list displays:
   - Exam Name\n  - Subject
@@ -361,8 +362,7 @@ After Student login, the dashboard displays:
 - View school details (read-only)
 
 ## 8. Key Features\n
-### 8.1 Question Bank
-- Subject-wise question storage\n- Question types:\n  - MCQ (Multiple Choice Questions)
+### 8.1 Question Bank\n- Subject-wise question storage\n- Question types:\n  - MCQ (Multiple Choice Questions)
   - True/False
   - Short Answer
 - For each question:\n  - Marks allocation
@@ -390,7 +390,8 @@ After Student login, the dashboard displays:
 - Detailed analysis:\n  - Subject-wise performance\n  - Question-wise analysis\n- School name, address, and code displayed on report header
 - **School isolation**: Reports filtered by school for Principal and Teacher access
 - **Student access**: Students can only view their own reports
-\n### 8.5 User Registration and Approval Workflow
+
+### 8.5 User Registration and Approval Workflow
 - When a new user creates an account (signup), they will be assigned 'Pending Approval' status
 - During registration, user must select school from dropdown list
 - New users with 'Pending Approval' status will be displayed separately in'Pending Users' list (not in Active Users list)
@@ -548,15 +549,26 @@ After Student login, the dashboard displays:
   - Teachers and Students cannot view this complete list
   - Data is school-wise, not user-wise
 - **UX Requirements**:
-  - Page header: 'All Students of This School'
-  - Enable search functionality
+  - Page header: 'All Students of This School'\n  - Enable search functionality
   - Enable sort functionality
   - Display total count of students at the top of the page
-\n## 9. Language Support
+\n### 8.14 Admin Dashboard - Updated Card Display
+- **Admin Dashboard Cards**: The Admin Dashboard displays only three cards:
+  - **Total Users**: Displays the total count of all users in the system
+  - **Total Questions**: Displays the total count of all questions in the question bank
+  - **Total Exams**: Displays the total count of all exams in the system\n- **Removed Card**: The 'Total Subjects' card has been completely removed from the Admin Dashboard
+- **Implementation Notes**:
+  - Remove all code related to fetching subjects count from AdminDashboard.tsx
+  - Remove API calls for subjects data\n  - Remove state variables for subjects count
+  - Remove UI components displaying subjects card
+  - Update dashboard layout to display only three cards in appropriate grid format
+
+## 9. Language Support
 
 ### 9.1 UI Language\n- **UI Language: English Only**
 - All user interface elements (buttons, menus, labels, navigation, forms, tables, headers) will be displayed in English\n- This includes all management interfaces, dashboards, and system pages
-\n### 9.2 Chat/Communication Language
+
+### 9.2 Chat/Communication Language
 - Users can communicate in any language they prefer for chat, messages, or communication features
 - Chat language is flexible and not restricted to English
 \n### 9.3 Language Rule Summary
@@ -640,9 +652,10 @@ After Student login, the dashboard displays:
 - **Teacher-Subject-Class-Section Mapping Interface**: Interactive mapping interface with dropdown selections and visual confirmation
 - **Teachers Management Page**: Tabbed interface with five tabs (Teachers List, Active Teachers, Pending Teachers, Suspended Teachers, Teacher Assignment)
 - **Teacher Assignment Tab**: Form-based interface with dropdowns for teacher, subject, class, and section selection, plus table showing current assignments
+- **Admin Dashboard Layout**: Three-card grid layout displaying Total Users, Total Questions, and Total Exams cards only
 \n## 12. Reference Images
 1. screenshot.png - Admin dashboard interface showing side panel navigation with Dashboard and User Management menu items
 2. screenshot.png - User management interface showing Active Users list with Edit and Suspend buttons
 3. screenshot.png - Login page interface with username, password fields and Forgot Password link
-4. screenshot.png - School edit form showing school information fields including name, address, contact details, affiliation, class range, and subjects
+4. screenshot-2.png - School edit form showing school information fields including name, address, contact details, affiliation, class range, and subjects
 5. image.png - Principal dashboard showing 'All Teachers of This School' page with teachers list and search functionality

@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, BookOpen, FileQuestion, ClipboardList } from 'lucide-react';
-import { profileApi, subjectApi, questionApi, examApi } from '@/db/api';
+import { Users, FileQuestion, ClipboardList } from 'lucide-react';
+import { profileApi, questionApi, examApi } from '@/db/api';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
     totalUsers: 0,
-    totalSubjects: 0,
     totalQuestions: 0,
     totalExams: 0,
   });
@@ -20,23 +19,20 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       console.log('Admin Dashboard: Loading stats...');
-      const [profiles, subjects, questions, exams] = await Promise.all([
+      const [profiles, questions, exams] = await Promise.all([
         profileApi.getAllProfiles(),
-        subjectApi.getAllSubjects(),
         questionApi.getAllQuestions(),
         examApi.getAllExams(),
       ]);
 
       console.log('Admin Dashboard Stats:', {
         profiles: profiles.length,
-        subjects: subjects.length,
         questions: questions.length,
         exams: exams.length,
       });
 
       setStats({
         totalUsers: profiles.length,
-        totalSubjects: subjects.length,
         totalQuestions: questions.length,
         totalExams: exams.length,
       });
@@ -53,12 +49,6 @@ export default function AdminDashboard() {
       value: stats.totalUsers,
       icon: Users,
       color: 'text-primary',
-    },
-    {
-      title: 'Total Subjects',
-      value: stats.totalSubjects,
-      icon: BookOpen,
-      color: 'text-secondary',
     },
     {
       title: 'Total Questions',
@@ -94,7 +84,7 @@ export default function AdminDashboard() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
