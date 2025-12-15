@@ -53,7 +53,7 @@ export default function PrincipalDashboard() {
       description: 'Manage classes, sections & subjects',
     },
     {
-      title: 'Total Teachers',
+      title: 'Teachers',
       value: stats.totalTeachers,
       icon: Users,
       color: 'text-primary',
@@ -61,7 +61,7 @@ export default function PrincipalDashboard() {
       clickable: true,
     },
     {
-      title: 'Total Students',
+      title: 'Students',
       value: stats.totalStudents,
       icon: Users,
       color: 'text-secondary',
