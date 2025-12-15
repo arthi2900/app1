@@ -17,13 +17,22 @@ export default function AdminDashboard() {
   }, []);
 
   const loadStats = async () => {
+    setLoading(true);
     try {
+      console.log('Admin Dashboard: Loading stats...');
       const [profiles, subjects, questions, exams] = await Promise.all([
         profileApi.getAllProfiles(),
         subjectApi.getAllSubjects(),
         questionApi.getAllQuestions(),
         examApi.getAllExams(),
       ]);
+
+      console.log('Admin Dashboard Stats:', {
+        profiles: profiles.length,
+        subjects: subjects.length,
+        questions: questions.length,
+        exams: exams.length,
+      });
 
       setStats({
         totalUsers: profiles.length,
@@ -32,7 +41,7 @@ export default function AdminDashboard() {
         totalExams: exams.length,
       });
     } catch (error) {
-      console.error('Error loading stats:', error);
+      console.error('Error loading admin stats:', error);
     } finally {
       setLoading(false);
     }
