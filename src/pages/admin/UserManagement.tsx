@@ -27,7 +27,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Users, Edit, Ban, CheckCircle, UserCheck, UserX, Clock, Key } from 'lucide-react';
 import { profileApi, schoolApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
@@ -500,21 +500,6 @@ export default function UserManagement() {
       )}
 
       <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'pending' | 'active' | 'suspended')}>
-        <TabsList>
-          <TabsTrigger value="pending">
-            <Clock className="w-4 h-4 mr-2" />
-            Pending Users ({pendingProfiles.length})
-          </TabsTrigger>
-          <TabsTrigger value="active">
-            <Users className="w-4 h-4 mr-2" />
-            Active Users ({activeProfiles.length})
-          </TabsTrigger>
-          <TabsTrigger value="suspended">
-            <Ban className="w-4 h-4 mr-2" />
-            Suspended Users ({suspendedProfiles.length})
-          </TabsTrigger>
-        </TabsList>
-
         <TabsContent value="pending" className="mt-6">
           <Card>
             <CardHeader>
