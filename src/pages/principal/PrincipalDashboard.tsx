@@ -69,7 +69,7 @@ export default function PrincipalDashboard() {
       clickable: true,
     },
     {
-      title: 'Total Exams',
+      title: 'Exams',
       value: stats.totalExams,
       icon: ClipboardList,
       color: 'text-accent',
