@@ -17,18 +17,20 @@ export default function PrincipalDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadStats();
-  }, []);
+    if (profile?.school_id) {
+      loadStats();
+    }
+  }, [profile?.school_id]);
 
   const loadStats = async () => {
+    if (!profile?.school_id) return;
+
     try {
-      const [profiles, exams] = await Promise.all([
-        profileApi.getAllProfiles(),
+      const [teachers, students, exams] = await Promise.all([
+        profileApi.getTeachersBySchoolId(profile.school_id),
+        profileApi.getStudentsBySchoolId(profile.school_id),
         examApi.getAllExams(),
       ]);
-
-      const teachers = profiles.filter((p) => p.role === 'teacher');
-      const students = profiles.filter((p) => p.role === 'student');
 
       setStats({
         totalTeachers: teachers.length,
