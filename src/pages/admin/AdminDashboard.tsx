@@ -1,13 +1,26 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, FileQuestion, ClipboardList } from 'lucide-react';
-import { profileApi, questionApi, examApi } from '@/db/api';
+import { Building2, Users, GraduationCap, BookOpen } from 'lucide-react';
+import { profileApi, schoolApi, academicApi, subjectApi } from '@/db/api';
+
+interface UserStats {
+  admins: number;
+  principals: number;
+  teachers: number;
+  students: number;
+}
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
-    totalUsers: 0,
-    totalQuestions: 0,
-    totalExams: 0,
+    totalSchools: 0,
+    totalClasses: 0,
+    totalSubjects: 0,
+    userStats: {
+      admins: 0,
+      principals: 0,
+      teachers: 0,
+      students: 0,
+    } as UserStats,
   });
   const [loading, setLoading] = useState(true);
 
@@ -19,22 +32,32 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       console.log('Admin Dashboard: Loading stats...');
-      const [profiles, questions, exams] = await Promise.all([
+      const [profiles, schools, classes, subjects] = await Promise.all([
         profileApi.getAllProfiles(),
-        questionApi.getAllQuestions(),
-        examApi.getAllExams(),
+        schoolApi.getAllSchools(),
+        academicApi.getAllClasses(),
+        subjectApi.getAllSubjects(),
       ]);
 
+      const userStats: UserStats = {
+        admins: profiles.filter(p => p.role === 'admin').length,
+        principals: profiles.filter(p => p.role === 'principal').length,
+        teachers: profiles.filter(p => p.role === 'teacher').length,
+        students: profiles.filter(p => p.role === 'student').length,
+      };
+
       console.log('Admin Dashboard Stats:', {
-        profiles: profiles.length,
-        questions: questions.length,
-        exams: exams.length,
+        schools: schools.length,
+        classes: classes.length,
+        subjects: subjects.length,
+        users: userStats,
       });
 
       setStats({
-        totalUsers: profiles.length,
-        totalQuestions: questions.length,
-        totalExams: exams.length,
+        totalSchools: schools.length,
+        totalClasses: classes.length,
+        totalSubjects: subjects.length,
+        userStats,
       });
     } catch (error) {
       console.error('Error loading admin stats:', error);
@@ -43,24 +66,37 @@ export default function AdminDashboard() {
     }
   };
 
+  const totalUsers = stats.userStats.admins + stats.userStats.principals + 
+                     stats.userStats.teachers + stats.userStats.students;
+
   const statCards = [
     {
-      title: 'Total Users',
-      value: stats.totalUsers,
-      icon: Users,
+      title: 'Total Schools',
+      value: stats.totalSchools,
+      icon: Building2,
       color: 'text-primary',
+      description: 'Registered schools',
     },
     {
-      title: 'Total Questions',
-      value: stats.totalQuestions,
-      icon: FileQuestion,
+      title: 'Total Users',
+      value: totalUsers,
+      icon: Users,
+      color: 'text-secondary',
+      description: `${stats.userStats.admins} Admins, ${stats.userStats.principals} Principals, ${stats.userStats.teachers} Teachers, ${stats.userStats.students} Students`,
+    },
+    {
+      title: 'Total Classes',
+      value: stats.totalClasses,
+      icon: GraduationCap,
       color: 'text-accent',
+      description: 'Classes across all schools',
     },
     {
-      title: 'Total Exams',
-      value: stats.totalExams,
-      icon: ClipboardList,
+      title: 'Total Subjects',
+      value: stats.totalSubjects,
+      icon: BookOpen,
       color: 'text-chart-3',
+      description: 'Subjects offered',
     },
   ];
 
@@ -84,7 +120,7 @@ export default function AdminDashboard() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
@@ -95,6 +131,7 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stat.value}</div>
+                <p className="text-xs text-muted-foreground mt-1">{stat.description}</p>
               </CardContent>
             </Card>
           );

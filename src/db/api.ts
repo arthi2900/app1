@@ -543,6 +543,15 @@ export const examAnswerApi = {
 // Academic Management APIs
 export const academicApi = {
   // Class APIs
+  async getAllClasses(): Promise<Class[]> {
+    const { data, error } = await supabase
+      .from('classes')
+      .select('*')
+      .order('class_code', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
   async getClassesBySchoolId(schoolId: string): Promise<Class[]> {
     const { data, error } = await supabase
       .from('classes')
