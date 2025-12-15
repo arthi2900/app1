@@ -217,7 +217,7 @@ export default function QuestionBank() {
                       <SelectContent>
                         {subjects.map((subject) => (
                           <SelectItem key={subject.id} value={subject.id}>
-                            {subject.name}
+                            {subject.subject_name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -357,7 +357,7 @@ export default function QuestionBank() {
                       {question.question_text}
                     </TableCell>
                     <TableCell>
-                      {subjects.find((s) => s.id === question.subject_id)?.name || '-'}
+                      {subjects.find((s) => s.id === question.subject_id)?.subject_name || '-'}
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline">

@@ -36,10 +36,11 @@ export interface School {
 
 export interface Subject {
   id: string;
-  name: string;
-  code: string;
+  school_id: string | null;
+  class_id: string | null;
+  subject_name: string;
+  subject_code: string;
   description: string | null;
-  created_by: string | null;
   created_at: string;
 }
 

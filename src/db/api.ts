@@ -230,16 +230,15 @@ export const subjectApi = {
     const { data, error } = await supabase
       .from('subjects')
       .select('*')
-      .order('name', { ascending: true });
+      .order('subject_name', { ascending: true });
     if (error) throw error;
     return Array.isArray(data) ? data : [];
   },
 
   async createSubject(subject: Omit<Subject, 'id' | 'created_at'>): Promise<Subject | null> {
-    const user = await supabase.auth.getUser();
     const { data, error } = await supabase
       .from('subjects')
-      .insert({ ...subject, created_by: user.data.user?.id })
+      .insert(subject)
       .select()
       .maybeSingle();
     if (error) throw error;
