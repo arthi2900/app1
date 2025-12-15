@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Building2, Users, GraduationCap, BookOpen } from 'lucide-react';
-import { profileApi, schoolApi, academicApi, subjectApi } from '@/db/api';
+import { Building2, Users } from 'lucide-react';
+import { profileApi, schoolApi } from '@/db/api';
 
 interface UserStats {
   admins: number;
@@ -13,8 +13,6 @@ interface UserStats {
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
     totalSchools: 0,
-    totalClasses: 0,
-    totalSubjects: 0,
     userStats: {
       admins: 0,
       principals: 0,
@@ -32,11 +30,9 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       console.log('Admin Dashboard: Loading stats...');
-      const [profiles, schools, classes, subjects] = await Promise.all([
+      const [profiles, schools] = await Promise.all([
         profileApi.getAllProfiles(),
         schoolApi.getAllSchools(),
-        academicApi.getAllClasses(),
-        subjectApi.getAllSubjects(),
       ]);
 
       const userStats: UserStats = {
@@ -48,15 +44,11 @@ export default function AdminDashboard() {
 
       console.log('Admin Dashboard Stats:', {
         schools: schools.length,
-        classes: classes.length,
-        subjects: subjects.length,
         users: userStats,
       });
 
       setStats({
         totalSchools: schools.length,
-        totalClasses: classes.length,
-        totalSubjects: subjects.length,
         userStats,
       });
     } catch (error) {
@@ -84,20 +76,6 @@ export default function AdminDashboard() {
       color: 'text-secondary',
       description: `${stats.userStats.admins} Admins, ${stats.userStats.principals} Principals, ${stats.userStats.teachers} Teachers, ${stats.userStats.students} Students`,
     },
-    {
-      title: 'Total Classes',
-      value: stats.totalClasses,
-      icon: GraduationCap,
-      color: 'text-accent',
-      description: 'Classes across all schools',
-    },
-    {
-      title: 'Total Subjects',
-      value: stats.totalSubjects,
-      icon: BookOpen,
-      color: 'text-chart-3',
-      description: 'Subjects offered',
-    },
   ];
 
   if (loading) {
@@ -120,7 +98,7 @@ export default function AdminDashboard() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2">
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
