@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookOpen, Users, FileQuestion, Award } from 'lucide-react';
 
@@ -13,16 +11,6 @@ export default function Home() {
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           A comprehensive platform for conducting and managing online exams efficiently
         </p>
-        <div className="flex gap-4 justify-center pt-4">
-          <Link to="/login">
-            <Button size="lg">Login</Button>
-          </Link>
-          <Link to="/register">
-            <Button size="lg" variant="outline">
-              Register
-            </Button>
-          </Link>
-        </div>
       </section>
 
       <section className="grid gap-6 md:grid-cols-2 2xl:grid-cols-4">
@@ -85,16 +73,6 @@ export default function Home() {
             </p>
           </CardContent>
         </Card>
-      </section>
-
-      <section className="bg-muted/30 rounded-lg p-8 text-center">
-        <h2 className="text-3xl font-bold mb-4">Get Started Today</h2>
-        <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-          Join our platform and experience seamless online exam management
-        </p>
-        <Link to="/register">
-          <Button size="lg">Create Account</Button>
-        </Link>
       </section>
     </div>
   );
