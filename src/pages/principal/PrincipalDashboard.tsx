@@ -1,26 +1,26 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, ClipboardList, BookOpen } from 'lucide-react';
+import { Users, ClipboardList, BookOpen, UserCheck, GraduationCap } from 'lucide-react';
 import { profileApi, examApi } from '@/db/api';
 import { useAuth } from '@/hooks/useAuth';
 import SchoolProfile from '@/components/principal/SchoolProfile';
+import type { Profile } from '@/types/types';
 
 export default function PrincipalDashboard() {
   const navigate = useNavigate();
   const { profile } = useAuth();
-  const [stats, setStats] = useState({
-    totalTeachers: 0,
-    totalStudents: 0,
-    totalExams: 0,
-  });
+  const [teachers, setTeachers] = useState<Profile[]>([]);
+  const [students, setStudents] = useState<Profile[]>([]);
+  const [totalExams, setTotalExams] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadStats();
+    loadData();
   }, [profile?.school_id]);
 
-  const loadStats = async () => {
+  // புதிய தரவு ஏற்றும் செயல்பாடு - ஆசிரியர்கள் மற்றும் மாணவர்களை தனித்தனியாக சேமிக்கிறது
+  const loadData = async () => {
     if (!profile?.school_id) {
       setLoading(false);
       return;
@@ -28,22 +28,25 @@ export default function PrincipalDashboard() {
 
     setLoading(true);
     try {
-      console.log('Loading stats for school_id:', profile.school_id);
-      const [teachers, students, exams] = await Promise.all([
+      console.log('பள்ளி ID-க்கான தரவு ஏற்றுகிறது:', profile.school_id);
+      
+      // ஆசிரியர்கள், மாணவர்கள் மற்றும் தேர்வுகளை ஒரே நேரத்தில் பெறுதல்
+      const [teachersData, studentsData, examsData] = await Promise.all([
         profileApi.getTeachersBySchoolId(profile.school_id),
         profileApi.getStudentsBySchoolId(profile.school_id),
         examApi.getAllExams(),
       ]);
 
-      console.log('Teachers:', teachers.length, 'Students:', students.length, 'Exams:', exams.length);
+      console.log('ஆசிரியர்கள்:', teachersData.length, 'மாணவர்கள்:', studentsData.length, 'தேர்வுகள்:', examsData.length);
 
-      setStats({
-        totalTeachers: teachers.length,
-        totalStudents: students.length,
-        totalExams: exams.length,
-      });
+      setTeachers(teachersData);
+      setStudents(studentsData);
+      setTotalExams(examsData.length);
     } catch (error) {
-      console.error('Error loading stats:', error);
+      console.error('தரவு ஏற்றுவதில் பிழை:', error);
+      setTeachers([]);
+      setStudents([]);
+      setTotalExams(0);
     } finally {
       setLoading(false);
     }
@@ -60,24 +63,8 @@ export default function PrincipalDashboard() {
       description: 'Manage classes, sections & subjects',
     },
     {
-      title: 'Teachers',
-      value: stats.totalTeachers,
-      icon: Users,
-      color: 'text-primary',
-      onClick: () => navigate('/principal/teachers'),
-      clickable: true,
-    },
-    {
-      title: 'Students',
-      value: stats.totalStudents,
-      icon: Users,
-      color: 'text-secondary',
-      onClick: () => navigate('/principal/students'),
-      clickable: true,
-    },
-    {
       title: 'Exams',
-      value: stats.totalExams,
+      value: totalExams,
       icon: ClipboardList,
       color: 'text-accent',
       clickable: false,
@@ -89,7 +76,7 @@ export default function PrincipalDashboard() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">ஏற்றுகிறது...</p>
         </div>
       </div>
     );
@@ -128,6 +115,40 @@ export default function PrincipalDashboard() {
             </Card>
           );
         })}
+
+        {/* புதிய ஆசிரியர்கள் கார்டு - தமிழில் */}
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => navigate('/principal/teachers')}
+        >
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">ஆசிரியர்கள்</CardTitle>
+            <UserCheck className="w-5 h-5 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{teachers.length}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              விவரங்களைப் பார்க்க கிளிக் செய்யவும்
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* புதிய மாணவர்கள் கார்டு - தமிழில் */}
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => navigate('/principal/students')}
+        >
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">மாணவர்கள்</CardTitle>
+            <GraduationCap className="w-5 h-5 text-secondary" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{students.length}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              விவரங்களைப் பார்க்க கிளிக் செய்யவும்
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       {profile && <SchoolProfile principalId={profile.id} />}
