@@ -129,6 +129,7 @@ export const profileApi = {
       `)
       .eq('role', 'teacher')
       .eq('school_id', schoolId)
+      .eq('approved', true)
       .order('full_name', { ascending: true });
     if (error) throw error;
     
@@ -151,6 +152,7 @@ export const profileApi = {
       `)
       .eq('role', 'student')
       .eq('school_id', schoolId)
+      .eq('approved', true)
       .order('full_name', { ascending: true });
     if (error) throw error;
     
