@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -11,6 +12,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
   Table,
   TableBody,
   TableCell,
@@ -18,7 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ArrowLeft, Search, Users, GraduationCap } from 'lucide-react';
+import { ArrowLeft, Search, Users, GraduationCap, Pencil } from 'lucide-react';
 import { profileApi, academicApi } from '@/db/api';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -59,6 +68,18 @@ export default function StudentsList() {
   const [schoolName, setSchoolName] = useState<string>('');
   const [classes, setClasses] = useState<Class[]>([]);
   const [sections, setSections] = useState<Section[]>([]);
+  
+  // Edit dialog state
+  const [editDialog, setEditDialog] = useState(false);
+  const [editingStudent, setEditingStudent] = useState<StudentWithClassSection | null>(null);
+  const [editForm, setEditForm] = useState({
+    full_name: '',
+    email: '',
+    phone: '',
+    class_id: '',
+    section_id: '',
+  });
+  const [editSections, setEditSections] = useState<Section[]>([]);
 
   useEffect(() => {
     loadData();
@@ -184,6 +205,94 @@ export default function StudentsList() {
     return sortOrder === 'asc' ? ' ↑' : ' ↓';
   };
 
+  const handleEditStudent = async (student: StudentWithClassSection) => {
+    setEditingStudent(student);
+    setEditForm({
+      full_name: student.full_name || '',
+      email: student.email || '',
+      phone: student.phone || '',
+      class_id: student.class_id || '',
+      section_id: student.section_id || '',
+    });
+    
+    // Load sections for the student's class
+    if (student.class_id) {
+      try {
+        const sectionsData = await academicApi.getSectionsByClassId(student.class_id);
+        setEditSections(sectionsData);
+      } catch (error) {
+        console.error('Error loading sections:', error);
+      }
+    }
+    
+    setEditDialog(true);
+  };
+
+  const handleEditClassChange = async (classId: string) => {
+    setEditForm({ ...editForm, class_id: classId, section_id: '' });
+    
+    if (classId) {
+      try {
+        const sectionsData = await academicApi.getSectionsByClassId(classId);
+        setEditSections(sectionsData);
+      } catch (error) {
+        console.error('Error loading sections:', error);
+      }
+    } else {
+      setEditSections([]);
+    }
+  };
+
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!editingStudent) return;
+
+    try {
+      // Update profile information
+      await profileApi.updateProfile(editingStudent.id, {
+        full_name: editForm.full_name,
+        email: editForm.email,
+        phone: editForm.phone,
+      });
+
+      // Update class/section assignment if changed
+      if (editForm.class_id && editForm.section_id) {
+        await academicApi.assignStudentToClassSection({
+          student_id: editingStudent.id,
+          class_id: editForm.class_id,
+          section_id: editForm.section_id,
+          academic_year: '2024-2025',
+        });
+      }
+
+      toast({
+        title: 'Success',
+        description: 'Student information updated successfully',
+      });
+
+      setEditDialog(false);
+      setEditingStudent(null);
+      setEditForm({
+        full_name: '',
+        email: '',
+        phone: '',
+        class_id: '',
+        section_id: '',
+      });
+      
+      // Reload data to reflect changes
+      loadData();
+    } catch (error) {
+      console.error('Error updating student:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update student information',
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -300,6 +409,7 @@ export default function StudentsList() {
                       Phone{getSortIcon('phone')}
                     </TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead className="w-[100px]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -330,6 +440,15 @@ export default function StudentsList() {
                             ? 'Active'
                             : 'Pending'}
                         </span>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEditStudent(student)}
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -375,6 +494,103 @@ export default function StudentsList() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Edit Student Dialog */}
+      <Dialog open={editDialog} onOpenChange={setEditDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Student Information</DialogTitle>
+            <DialogDescription>
+              Update student details and class/section assignment
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSaveEdit}>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-full-name">Full Name</Label>
+                <Input
+                  id="edit-full-name"
+                  value={editForm.full_name}
+                  onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
+                  placeholder="Enter full name"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="edit-email">Email</Label>
+                <Input
+                  id="edit-email"
+                  type="email"
+                  value={editForm.email}
+                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                  placeholder="Enter email"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="edit-phone">Phone</Label>
+                <Input
+                  id="edit-phone"
+                  value={editForm.phone}
+                  onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                  placeholder="Enter phone number"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="edit-class">Class</Label>
+                <Select
+                  value={editForm.class_id}
+                  onValueChange={handleEditClassChange}
+                >
+                  <SelectTrigger id="edit-class">
+                    <SelectValue placeholder="Select class" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {classes.map((cls) => (
+                      <SelectItem key={cls.id} value={cls.id}>
+                        {cls.class_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="edit-section">Section</Label>
+                <Select
+                  value={editForm.section_id}
+                  onValueChange={(value) => setEditForm({ ...editForm, section_id: value })}
+                  disabled={!editForm.class_id || editSections.length === 0}
+                >
+                  <SelectTrigger id="edit-section">
+                    <SelectValue placeholder="Select section" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {editSections.map((section) => (
+                      <SelectItem key={section.id} value={section.id}>
+                        {section.section_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setEditDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit">Save Changes</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
