@@ -163,6 +163,55 @@ export const profileApi = {
       schools: undefined
     }));
   },
+
+  async getStudentsWithClassSection(schoolId: string, academicYear: string = '2024-2025'): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select(`
+        *,
+        schools!profiles_school_id_fkey (
+          school_name
+        ),
+        student_class_sections!student_class_sections_student_id_fkey (
+          id,
+          academic_year,
+          class:classes!student_class_sections_class_id_fkey (
+            id,
+            class_name,
+            class_code
+          ),
+          section:sections!student_class_sections_section_id_fkey (
+            id,
+            section_name,
+            section_code
+          )
+        )
+      `)
+      .eq('role', 'student')
+      .eq('school_id', schoolId)
+      .eq('approved', true)
+      .order('full_name', { ascending: true});
+    if (error) throw error;
+    
+    const profiles = Array.isArray(data) ? data : [];
+    return profiles.map((profile: any) => {
+      const classSection = profile.student_class_sections?.find(
+        (scs: any) => scs.academic_year === academicYear
+      );
+      return {
+        ...profile,
+        school_name: profile.schools?.school_name || null,
+        class_name: classSection?.class?.class_name || null,
+        class_code: classSection?.class?.class_code || null,
+        class_id: classSection?.class?.id || null,
+        section_name: classSection?.section?.section_name || null,
+        section_code: classSection?.section?.section_code || null,
+        section_id: classSection?.section?.id || null,
+        schools: undefined,
+        student_class_sections: undefined
+      };
+    });
+  },
 };
 
 // School APIs

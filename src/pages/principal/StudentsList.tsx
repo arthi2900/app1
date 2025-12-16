@@ -4,6 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   Table,
   TableBody,
   TableCell,
@@ -12,32 +19,66 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ArrowLeft, Search, Users, GraduationCap } from 'lucide-react';
-import { profileApi } from '@/db/api';
+import { profileApi, academicApi } from '@/db/api';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import type { Profile } from '@/types/types';
+import type { Class, Section } from '@/types/types';
+
+interface StudentWithClassSection {
+  id: string;
+  username: string;
+  full_name: string | null;
+  email: string | null;
+  phone: string | null;
+  school_name: string | null;
+  school_id: string | null;
+  role: string;
+  approved: boolean;
+  suspended: boolean;
+  created_at: string;
+  class_name: string | null;
+  class_code: string | null;
+  class_id: string | null;
+  section_name: string | null;
+  section_code: string | null;
+  section_id: string | null;
+}
 
 export default function StudentsList() {
   const navigate = useNavigate();
-  const { profile, refreshProfile } = useAuth();
+  const { profile } = useAuth();
   const { toast } = useToast();
-  const [students, setStudents] = useState<Profile[]>([]);
-  const [filteredStudents, setFilteredStudents] = useState<Profile[]>([]);
+  const [students, setStudents] = useState<StudentWithClassSection[]>([]);
+  const [filteredStudents, setFilteredStudents] = useState<StudentWithClassSection[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedClass, setSelectedClass] = useState<string>('all');
+  const [selectedSection, setSelectedSection] = useState<string>('all');
   const [sortField, setSortField] = useState<'full_name' | 'phone'>('full_name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [schoolName, setSchoolName] = useState<string>('');
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [sections, setSections] = useState<Section[]>([]);
 
   useEffect(() => {
-    loadStudents();
+    loadData();
   }, []);
 
   useEffect(() => {
     filterAndSortStudents();
-  }, [students, searchQuery, sortField, sortOrder]);
+  }, [students, searchQuery, selectedClass, selectedSection, sortField, sortOrder]);
 
-  const loadStudents = async () => {
+  useEffect(() => {
+    // Load sections when class changes
+    if (selectedClass && selectedClass !== 'all') {
+      loadSections(selectedClass);
+    } else {
+      setSections([]);
+      setSelectedSection('all');
+    }
+  }, [selectedClass]);
+
+  const loadData = async () => {
     try {
       // Fetch fresh profile data
       const currentProfile = await profileApi.getCurrentProfile();
@@ -55,10 +96,16 @@ export default function StudentsList() {
       // Store school name for display
       setSchoolName(currentProfile.school_name || 'Your School');
 
-      const data = await profileApi.getStudentsBySchoolId(currentProfile.school_id);
-      setStudents(data);
+      // Load students with class/section info and classes
+      const [studentsData, classesData] = await Promise.all([
+        profileApi.getStudentsWithClassSection(currentProfile.school_id),
+        academicApi.getClassesBySchoolId(currentProfile.school_id),
+      ]);
+
+      setStudents(studentsData);
+      setClasses(classesData);
     } catch (error) {
-      console.error('Error loading students:', error);
+      console.error('Error loading data:', error);
       toast({
         title: 'Error',
         description: 'Failed to load students list',
@@ -66,6 +113,15 @@ export default function StudentsList() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadSections = async (classId: string) => {
+    try {
+      const sectionsData = await academicApi.getSectionsByClassId(classId);
+      setSections(sectionsData);
+    } catch (error) {
+      console.error('Error loading sections:', error);
     }
   };
 
@@ -82,6 +138,16 @@ export default function StudentsList() {
           student.phone?.toLowerCase().includes(query) ||
           student.email?.toLowerCase().includes(query)
       );
+    }
+
+    // Apply class filter
+    if (selectedClass && selectedClass !== 'all') {
+      filtered = filtered.filter((student) => student.class_id === selectedClass);
+    }
+
+    // Apply section filter
+    if (selectedSection && selectedSection !== 'all') {
+      filtered = filtered.filter((student) => student.section_id === selectedSection);
     }
 
     // Apply sorting
@@ -149,23 +215,55 @@ export default function StudentsList() {
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <GraduationCap className="w-5 h-5 text-secondary" />
-              <CardTitle>
-                Students List ({filteredStudents.length} of {students.length})
-              </CardTitle>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="w-5 h-5 text-secondary" />
+                <CardTitle>
+                  Students List ({filteredStudents.length} of {students.length})
+                </CardTitle>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="relative">
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="relative flex-1 min-w-[250px]">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   placeholder="Search by name, phone, email..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-[300px]"
+                  className="pl-10"
                 />
               </div>
+              <Select value={selectedClass} onValueChange={setSelectedClass}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select Class" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Classes</SelectItem>
+                  {classes.map((cls) => (
+                    <SelectItem key={cls.id} value={cls.id}>
+                      {cls.class_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select 
+                value={selectedSection} 
+                onValueChange={setSelectedSection}
+                disabled={selectedClass === 'all' || sections.length === 0}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select Section" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Sections</SelectItem>
+                  {sections.map((section) => (
+                    <SelectItem key={section.id} value={section.id}>
+                      {section.section_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </CardHeader>
@@ -192,6 +290,8 @@ export default function StudentsList() {
                       Student Name{getSortIcon('full_name')}
                     </TableHead>
                     <TableHead>Username</TableHead>
+                    <TableHead>Class</TableHead>
+                    <TableHead>Section</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead
                       className="cursor-pointer hover:bg-muted/50"
@@ -210,6 +310,8 @@ export default function StudentsList() {
                         {student.full_name || 'N/A'}
                       </TableCell>
                       <TableCell>{student.username}</TableCell>
+                      <TableCell>{student.class_name || 'Not Assigned'}</TableCell>
+                      <TableCell>{student.section_name || 'Not Assigned'}</TableCell>
                       <TableCell>{student.email || 'N/A'}</TableCell>
                       <TableCell>{student.phone || 'N/A'}</TableCell>
                       <TableCell>
