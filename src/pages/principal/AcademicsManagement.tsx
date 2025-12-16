@@ -864,7 +864,7 @@ export default function AcademicsManagement() {
                 <div>
                   <CardTitle>Teacher Assignment</CardTitle>
                   <CardDescription>
-                    Assign teachers to subjects for specific class-section combinations (Academic Year: {CURRENT_ACADEMIC_YEAR})
+                    Assign teachers to subjects for specific class-section combinations
                   </CardDescription>
                 </div>
                 <Dialog open={teacherDialog} onOpenChange={setTeacherDialog}>
