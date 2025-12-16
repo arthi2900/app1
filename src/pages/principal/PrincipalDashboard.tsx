@@ -19,7 +19,7 @@ export default function PrincipalDashboard() {
     loadData();
   }, [profile?.school_id]);
 
-  // புதிய தரவு ஏற்றும் செயல்பாடு - ஆசிரியர்கள் மற்றும் மாணவர்களை தனித்தனியாக சேமிக்கிறது
+  // Load data function - stores teachers and students separately
   const loadData = async () => {
     if (!profile?.school_id) {
       setLoading(false);
@@ -28,22 +28,22 @@ export default function PrincipalDashboard() {
 
     setLoading(true);
     try {
-      console.log('பள்ளி ID-க்கான தரவு ஏற்றுகிறது:', profile.school_id);
+      console.log('Loading data for school_id:', profile.school_id);
       
-      // ஆசிரியர்கள், மாணவர்கள் மற்றும் தேர்வுகளை ஒரே நேரத்தில் பெறுதல்
+      // Fetch teachers, students and exams in parallel
       const [teachersData, studentsData, examsData] = await Promise.all([
         profileApi.getTeachersBySchoolId(profile.school_id),
         profileApi.getStudentsBySchoolId(profile.school_id),
         examApi.getAllExams(),
       ]);
 
-      console.log('ஆசிரியர்கள்:', teachersData.length, 'மாணவர்கள்:', studentsData.length, 'தேர்வுகள்:', examsData.length);
+      console.log('Teachers:', teachersData.length, 'Students:', studentsData.length, 'Exams:', examsData.length);
 
       setTeachers(teachersData);
       setStudents(studentsData);
       setTotalExams(examsData.length);
     } catch (error) {
-      console.error('தரவு ஏற்றுவதில் பிழை:', error);
+      console.error('Error loading data:', error);
       setTeachers([]);
       setStudents([]);
       setTotalExams(0);
@@ -76,7 +76,7 @@ export default function PrincipalDashboard() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">ஏற்றுகிறது...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -116,36 +116,36 @@ export default function PrincipalDashboard() {
           );
         })}
 
-        {/* புதிய ஆசிரியர்கள் கார்டு - தமிழில் */}
+        {/* New Teachers Card */}
         <Card
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => navigate('/principal/teachers')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">ஆசிரியர்கள்</CardTitle>
+            <CardTitle className="text-sm font-medium">Teachers</CardTitle>
             <UserCheck className="w-5 h-5 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{teachers.length}</div>
             <p className="text-xs text-muted-foreground mt-1">
-              விவரங்களைப் பார்க்க கிளிக் செய்யவும்
+              Click to view details
             </p>
           </CardContent>
         </Card>
 
-        {/* புதிய மாணவர்கள் கார்டு - தமிழில் */}
+        {/* New Students Card */}
         <Card
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => navigate('/principal/students')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">மாணவர்கள்</CardTitle>
+            <CardTitle className="text-sm font-medium">Students</CardTitle>
             <GraduationCap className="w-5 h-5 text-secondary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{students.length}</div>
             <p className="text-xs text-muted-foreground mt-1">
-              விவரங்களைப் பார்க்க கிளிக் செய்யவும்
+              Click to view details
             </p>
           </CardContent>
         </Card>
