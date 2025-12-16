@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileQuestion, ClipboardList, BookOpen } from 'lucide-react';
-import { questionApi, examApi, subjectApi } from '@/db/api';
+import { FileQuestion, ClipboardList } from 'lucide-react';
+import { questionApi, examApi } from '@/db/api';
 
 export default function TeacherDashboard() {
   const [stats, setStats] = useState({
     totalQuestions: 0,
     totalExams: 0,
-    totalSubjects: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -17,16 +16,14 @@ export default function TeacherDashboard() {
 
   const loadStats = async () => {
     try {
-      const [questions, exams, subjects] = await Promise.all([
+      const [questions, exams] = await Promise.all([
         questionApi.getAllQuestions(),
         examApi.getAllExams(),
-        subjectApi.getAllSubjects(),
       ]);
 
       setStats({
         totalQuestions: questions.length,
         totalExams: exams.length,
-        totalSubjects: subjects.length,
       });
     } catch (error) {
       console.error('Error loading stats:', error);
@@ -47,12 +44,6 @@ export default function TeacherDashboard() {
       value: stats.totalExams,
       icon: ClipboardList,
       color: 'text-secondary',
-    },
-    {
-      title: 'Total Subjects',
-      value: stats.totalSubjects,
-      icon: BookOpen,
-      color: 'text-accent',
     },
   ];
 
@@ -76,7 +67,7 @@ export default function TeacherDashboard() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2">
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
