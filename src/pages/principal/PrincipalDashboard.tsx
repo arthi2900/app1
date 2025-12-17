@@ -126,7 +126,6 @@ export default function PrincipalDashboard() {
             <UserCheck className="w-5 h-5 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{teachers.length}</div>
             <p className="text-xs text-muted-foreground mt-1">
               Click to view details
             </p>
@@ -143,7 +142,6 @@ export default function PrincipalDashboard() {
             <GraduationCap className="w-5 h-5 text-secondary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{students.length}</div>
             <p className="text-xs text-muted-foreground mt-1">
               Click to view details
             </p>
