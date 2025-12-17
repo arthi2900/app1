@@ -985,7 +985,6 @@ export default function AcademicsManagement() {
                         <TableHead>Subject</TableHead>
                         <TableHead>Class</TableHead>
                         <TableHead>Section</TableHead>
-                        <TableHead>Academic Year</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -998,7 +997,6 @@ export default function AcademicsManagement() {
                           <TableCell>{getSubjectName(assignment.subject_id)}</TableCell>
                           <TableCell>{getClassName(assignment.class_id)}</TableCell>
                           <TableCell>{getSectionName(assignment.section_id)}</TableCell>
-                          <TableCell>{assignment.academic_year}</TableCell>
                           <TableCell className="text-right">
                             <Button
                               variant="ghost"
