@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { BookOpen } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { schoolApi } from '@/db/api';
+import type { School } from '@/types/types';
 
 export default function Register() {
   const [username, setUsername] = useState('');
@@ -16,10 +19,32 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [schoolName, setSchoolName] = useState('');
+  const [schools, setSchools] = useState<School[]>([]);
+  const [loadingSchools, setLoadingSchools] = useState(true);
   const [loading, setLoading] = useState(false);
   const { signUp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    loadSchools();
+  }, []);
+
+  const loadSchools = async () => {
+    try {
+      const data = await schoolApi.getAllSchools();
+      setSchools(data);
+    } catch (error) {
+      console.error('Error loading schools:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load schools list',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoadingSchools(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,15 +165,28 @@ export default function Register() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="schoolName">School Name *</Label>
-              <Input
-                id="schoolName"
-                type="text"
-                placeholder="Enter your school name"
+              <Select
                 value={schoolName}
-                onChange={(e) => setSchoolName(e.target.value)}
-                disabled={loading}
-                required
-              />
+                onValueChange={setSchoolName}
+                disabled={loading || loadingSchools}
+              >
+                <SelectTrigger id="schoolName">
+                  <SelectValue placeholder={loadingSchools ? "Loading schools..." : "Select your school"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {schools.length === 0 && !loadingSchools ? (
+                    <SelectItem value="no-schools" disabled>
+                      No schools available
+                    </SelectItem>
+                  ) : (
+                    schools.map((school) => (
+                      <SelectItem key={school.id} value={school.school_name}>
+                        {school.school_name}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="username">Username *</Label>
