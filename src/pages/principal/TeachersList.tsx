@@ -3,6 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -11,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ArrowLeft, Search, Users } from 'lucide-react';
+import { ArrowLeft, Search, Users, Pencil } from 'lucide-react';
 import { profileApi } from '@/db/api';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -28,6 +37,16 @@ export default function TeachersList() {
   const [sortField, setSortField] = useState<'full_name' | 'phone'>('full_name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [schoolName, setSchoolName] = useState<string>('');
+  
+  // Edit dialog state
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingTeacher, setEditingTeacher] = useState<Profile | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    full_name: '',
+    email: '',
+    phone: '',
+  });
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     loadTeachers();
@@ -118,6 +137,64 @@ export default function TeachersList() {
     return sortOrder === 'asc' ? ' ↑' : ' ↓';
   };
 
+  const handleEditClick = (teacher: Profile) => {
+    setEditingTeacher(teacher);
+    setEditFormData({
+      full_name: teacher.full_name || '',
+      email: teacher.email || '',
+      phone: teacher.phone || '',
+    });
+    setEditDialogOpen(true);
+  };
+
+  const handleEditSave = async () => {
+    if (!editingTeacher) return;
+
+    if (!editFormData.full_name.trim()) {
+      toast({
+        title: 'Error',
+        description: 'Full name is required',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (editFormData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editFormData.email)) {
+      toast({
+        title: 'Error',
+        description: 'Please enter a valid email address',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await profileApi.updateProfile(editingTeacher.id, {
+        full_name: editFormData.full_name.trim(),
+        email: editFormData.email.trim() || null,
+        phone: editFormData.phone.trim() || null,
+      });
+
+      toast({
+        title: 'Success',
+        description: 'Teacher information updated successfully',
+      });
+
+      setEditDialogOpen(false);
+      setEditingTeacher(null);
+      loadTeachers(); // Reload the list
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to update teacher information',
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -204,6 +281,7 @@ export default function TeachersList() {
                       </button>
                     </TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -238,6 +316,16 @@ export default function TeachersList() {
                             </span>
                           )}
                         </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEditClick(teacher)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -288,6 +376,70 @@ export default function TeachersList() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Edit Teacher Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Edit Teacher</DialogTitle>
+            <DialogDescription>
+              Update teacher information. Username cannot be changed.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-full-name">Full Name *</Label>
+              <Input
+                id="edit-full-name"
+                value={editFormData.full_name}
+                onChange={(e) =>
+                  setEditFormData({ ...editFormData, full_name: e.target.value })
+                }
+                placeholder="Enter full name"
+                disabled={saving}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-email">Email</Label>
+              <Input
+                id="edit-email"
+                type="email"
+                value={editFormData.email}
+                onChange={(e) =>
+                  setEditFormData({ ...editFormData, email: e.target.value })
+                }
+                placeholder="Enter email address"
+                disabled={saving}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-phone">Phone Number</Label>
+              <Input
+                id="edit-phone"
+                type="tel"
+                value={editFormData.phone}
+                onChange={(e) =>
+                  setEditFormData({ ...editFormData, phone: e.target.value })
+                }
+                placeholder="Enter phone number"
+                disabled={saving}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setEditDialogOpen(false)}
+              disabled={saving}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleEditSave} disabled={saving}>
+              {saving ? 'Saving...' : 'Save Changes'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
