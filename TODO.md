@@ -79,6 +79,9 @@
 - [x] Set minimum 2 options requirement for MCQ
 - [x] Add validation for class and subject selection
 - [x] Update form layout and user experience
+- [x] Fix error handling for better debugging
+- [x] Add "No Assignments" state with helpful message
+- [x] Improve error messages with specific details
 - [x] Test and validate (lint check passed)
 
 ## Notes

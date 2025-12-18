@@ -69,6 +69,7 @@ export default function QuestionBank() {
           description: 'Failed to load profile',
           variant: 'destructive',
         });
+        setLoading(false);
         return;
       }
 
@@ -89,10 +90,11 @@ export default function QuestionBank() {
       // Load all subjects (will be filtered by class selection)
       const subjectsData = await subjectApi.getAllSubjects();
       setSubjects(subjectsData);
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error loading data:', error);
       toast({
         title: 'Error',
-        description: 'Failed to load data',
+        description: error.message || 'Failed to load data',
         variant: 'destructive',
       });
     } finally {
@@ -235,6 +237,29 @@ export default function QuestionBank() {
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading...</p>
         </div>
+      </div>
+    );
+  }
+
+  // Show message if teacher has no assignments
+  if (!loading && classes.length === 0) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">Question Bank</h1>
+          <p className="text-muted-foreground mt-2">Manage your exam questions</p>
+        </div>
+        <Card>
+          <CardContent className="py-12">
+            <div className="flex flex-col items-center justify-center text-center">
+              <FileQuestion className="w-16 h-16 text-muted-foreground mb-4" />
+              <h3 className="text-xl font-semibold mb-2">No Class Assignments</h3>
+              <p className="text-muted-foreground max-w-md">
+                You don't have any class or subject assignments yet. Please contact your principal or administrator to assign you to classes and subjects before creating questions.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
