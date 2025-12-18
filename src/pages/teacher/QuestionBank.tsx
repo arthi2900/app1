@@ -285,19 +285,6 @@ export default function QuestionBank() {
                 <DialogDescription>Fill in the question details below</DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="question">Question</Label>
-                  <Input
-                    id="question"
-                    value={formData.question_text}
-                    onChange={(e) =>
-                      setFormData({ ...formData, question_text: e.target.value })
-                    }
-                    placeholder="Enter question text"
-                    required
-                  />
-                </div>
-
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="class">Class</Label>
@@ -341,6 +328,19 @@ export default function QuestionBank() {
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="question">Question</Label>
+                  <Input
+                    id="question"
+                    value={formData.question_text}
+                    onChange={(e) =>
+                      setFormData({ ...formData, question_text: e.target.value })
+                    }
+                    placeholder="Enter question text"
+                    required
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">

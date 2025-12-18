@@ -87,6 +87,7 @@
 - [x] Identify and fix subjects table structure conflict
 - [x] Create migration 00013 to fix subjects table
 - [x] Document the issue and solution comprehensively
+- [x] Reorder form fields for better UX (Class → Subject → Question)
 - [x] Test and validate (lint check passed)
 
 ## Critical Issue Fixed: Subjects Table Conflict
