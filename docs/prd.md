@@ -9,7 +9,8 @@ Online Exam Management System
 A comprehensive online exam conducting and management system for educational institutions. Features include school management, academic structure setup (class, section, subject), teacher-subject-class-section mapping, question paper creation, exam conduct, automatic evaluation, and detailed reporting with school-based data isolation.
 
 ## 2. User Roles\n
-### 2.1 Admin\n- Complete system administration\n- School management (create, edit, view schools)
+### 2.1 Admin\n- Complete system administration
+- School management (create, edit, view schools)
 - User account creation and management
 - New user approval management
 - Role-based Access Control setup
@@ -266,13 +267,15 @@ After Teacher login, the dashboard displays:\n- **Assigned Classes**: List of cl
 
 #### 6.2.3 Question Bank Management
 - Teacher can create and manage questions for their assigned subjects
-- Question types: MCQ, True/False, Short Answer\n- Question fields:
-  - Question Text
-  - Subject (from assigned subjects)
-  - Class (from assigned classes)
-  - Marks\n  - Difficulty Level
+- Question types: MCQ, True/False, Short Answer\n- **Updated Question Form Fields**:
+  - **Add Class** (new field): Dropdown list displaying only the classes assigned to the teacher
+  - **Add Subject** (modified field): Dropdown list displaying only the subjects for the classes assigned to the teacher (filtered based on selected class)
+  - Question Text\n  - Marks
+  - Difficulty Level
   - Correct Answer (for MCQ and True/False)
-- View and edit existing questions
+- **Field Dependencies**:
+  - When teacher selects a class from'Add Class' dropdown, the 'Add Subject' dropdown automatically filters and displays only subjects assigned to that specific class
+  - Both dropdowns are populated based on teacher's assignments (teacher-subject-class-section mapping)\n- View and edit existing questions
 - Questions are automatically linked to teacher's school
 
 #### 6.2.4 Question Paper Creation
@@ -287,8 +290,7 @@ After Teacher login, the dashboard displays:\n- **Assigned Classes**: List of cl
 - Submit for Principal approval
 
 #### 6.2.5 Test Schedule Creation
-- Teacher can schedule exams for their assigned classes and sections
-- Test schedule fields:
+- Teacher can schedule exams for their assigned classes and sections\n- Test schedule fields:
   - Exam Name
   - Subject (from assigned subjects)
   - Class (from assigned classes)
@@ -312,14 +314,16 @@ After Teacher login, the dashboard displays:\n- **Assigned Classes**: List of cl
 \n#### 6.2.8 Profile Settings
 - Teacher can edit their own profile information
 - View school details (read-only)
-\n## 7. Student Dashboard and Functions\n
+\n## 7. Student Dashboard and Functions
+
 ### 7.1 Student Login - Dashboard Overview
 After Student login, the dashboard displays:
 - **My Class**: Student's assigned class\n- **My Section**: Student's assigned section
 - **My Subjects**: List of subjects for the student's class
 - **My Teachers**: List of teachers assigned to the student's class and section
 - **Tests**: Upcoming and past exams
-- **Results**: Student's exam results\n\n### 7.2 Student Functions
+- **Results**: Student's exam results
+\n### 7.2 Student Functions
 
 #### 7.2.1 View My Class and Section
 - Student can view their assigned class and section
@@ -336,8 +340,7 @@ After Student login, the dashboard displays:
 \n#### 7.2.4 View Tests
 - Student can view upcoming and past exams assigned to their class and section
 - Exam list displays:
-  - Exam Name
-  - Subject
+  - Exam Name\n  - Subject
   - Exam Date and Time
   - Duration
   - Status (Upcoming/Completed/Missed)
@@ -375,13 +378,15 @@ After Student login, the dashboard displays:
 - Subject-wise question storage\n- Question types:\n  - MCQ (Multiple Choice Questions)
   - True/False
   - Short Answer
-- For each question:\n  - Marks allocation
+- For each question:\n  - **Class assignment** (new): Questions are now linked to specific classes
+  - **Subject assignment** (modified): Questions are linked to subjects within specific classes
+  - Marks allocation
   - Difficulty level indication
-  - Subject reference
   - School reference (questions linked to specific school)
 - **School-based filtering**: Teachers only see questions from their school
-
-### 8.2 Exam Paper Generation
+- **Class-based filtering**: Teachers only see classes assigned to them in question creation form
+- **Subject-based filtering**: Teachers only see subjects for their assigned classes in question creation form
+\n### 8.2 Exam Paper Generation
 - Automatic selection from question bank (school-specific)
 - Manual question selection option (school-specific)
 - Question paper preview feature
@@ -397,14 +402,10 @@ After Student login, the dashboard displays:
 
 ### 8.4 Student Report\n- Automatic marks calculation
 - Pass/Fail status display
-- Detailed analysis:
-  - Subject-wise performance
-  - Question-wise analysis
-- School name, address, and code displayed on report header
+- Detailed analysis:\n  - Subject-wise performance\n  - Question-wise analysis\n- School name, address, and code displayed on report header
 - **School isolation**: Reports filtered by school for Principal and Teacher access
 - **Student access**: Students can only view their own reports
-
-### 8.5 User Registration and Approval Workflow
+\n### 8.5 User Registration and Approval Workflow
 - When a new user creates an account (signup), they will be assigned 'Pending Approval' status
 - **School Name Field**: During registration, user must select school from dropdown list (populated from School Master created by Admin)
 - New users with 'Pending Approval' status will be displayed separately in'Pending Users' list (not in Active Users list)
@@ -481,6 +482,7 @@ After Student login, the dashboard displays:
 - View assigned classes, sections, and subjects
 - View students of assigned sections only
 - Question creation and management (for assigned school subjects only)
+- **Updated question creation form**: Includes'Add Class' dropdown (showing only assigned classes) and 'Add Subject' dropdown (showing only subjects for selected class)
 - Question paper preparation (for assigned school only)
 - Test schedule creation (for assigned classes and sections only)
 - Exam conduct and monitoring (for assigned school only)
@@ -506,7 +508,8 @@ After Student login, the dashboard displays:
 - Save button: Saves changes made to profile information
 - Approve button: Available only for Admin role to approve pending user registrations (integrated into Pending status button)
 - Suspend button: Available only for Admin role to suspend user accounts (integrated into Active status button)
-- User status categories:\n  - Pending Approval: New users awaiting admin approval, cannot login
+- User status categories:
+  - Pending Approval: New users awaiting admin approval, cannot login
   - Active: Approved users with full system access
   - Suspended: Users whose accounts have been suspended, cannot login
 - **Status-based button navigation**: Admin views display three status buttons (Pending, Active, Suspended) at top of User Management page for quick filtering, with relevant actions integrated into each button
@@ -540,7 +543,8 @@ After Student login, the dashboard displays:
       - Teacher selection dropdown (filtered by school)
       - Subject selection dropdown (filtered by school subjects)
       - Class selection dropdown (filtered by school classes)
-      - Section multi-select dropdown (filtered by selected class)\n      - **Academic Year field removed**: No longer displayed in assignment form
+      - Section multi-select dropdown (filtered by selected class)
+      - **Academic Year field removed**: No longer displayed in assignment form
       - 'Assign' button to save the mapping
     - **Current Assignments Table**:
       - Columns: Teacher Name, Subject, Class, Sections (comma-separated), Actions (Edit/Delete)
@@ -693,6 +697,7 @@ After Student login, the dashboard displays:
 - **Students List Page**: Enhanced search interface with text search bar and additional Class and Section dropdown filters\n- **Registration Form**: School Name field displayed as dropdown populated from School Master list
 - **Landing Page**: Simplified design with Login/Register buttons and Get Started section removed
 - **Pending Users Display**: School Name column in Pending Users section displays the actual school name selected during registration
+- **Add Question Form (Teacher)**: Updated form layout with 'Add Class' dropdown (first field) showing only classes assigned to the teacher, followed by 'Add Subject' dropdown showing only subjects for the selected class (dynamically filtered based on class selection)
 \n## 12. Reference Images
 1. screenshot.png - Admin dashboard interface showing side panel navigation with Dashboard and User Management menu items
 2. screenshot.png - User management interface showing status-based button navigation (Pending, Active, Suspended) with annotation indicating action buttons should be integrated into status buttons and search/filter options for Role and School Name, plus filtered records count display requirement
@@ -703,3 +708,4 @@ After Student login, the dashboard displays:
 7. screenshot.png - Academic Management page showing Teacher Assignment tab with annotation 'Not Required' indicating Academic Year field should be removed
 8. screenshot.png - Registration form showing School Name text input field with annotation requesting dropdown populated from School Master list
 9. screenshot.png - Teachers List page showing 'Edit' text with annotation requesting Edit button or pencil icon for editing purpose, plus search and filter functionality\n10. screenshot.png - Landing page showing Login/Register buttons and Get Started section with annotation 'No Need' indicating these elements should be removed
+11. screenshot.png - Add Question form showing 'Question' field and 'Subject' field with annotations: 'you must list only the classes assigned to the teachers in the school' (pointing to new'Add Class' field requirement) and 'you must list only the subject for the classes assigned to the teachers in the school' (pointing to modified 'Add Subject' field requirement), with'No Need' annotation indicating removal of certain fields

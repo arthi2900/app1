@@ -29,24 +29,28 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Trash2, FileQuestion } from 'lucide-react';
-import { questionApi, subjectApi } from '@/db/api';
+import { questionApi, subjectApi, academicApi, profileApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
-import type { Question, Subject } from '@/types/types';
+import type { Question, Subject, Class, TeacherAssignmentWithDetails, Profile } from '@/types/types';
 
 export default function QuestionBank() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [teacherAssignments, setTeacherAssignments] = useState<TeacherAssignmentWithDetails[]>([]);
+  const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
     question_text: '',
+    class_id: '',
     subject_id: '',
     question_type: 'mcq' as 'mcq' | 'true_false' | 'short_answer',
     difficulty: 'medium' as 'easy' | 'medium' | 'hard',
     marks: 1,
-    options: ['', '', '', ''],
+    options: ['', ''],
     correct_answer: '',
   });
 
@@ -56,11 +60,34 @@ export default function QuestionBank() {
 
   const loadData = async () => {
     try {
-      const [questionsData, subjectsData] = await Promise.all([
-        questionApi.getAllQuestions(),
-        subjectApi.getAllSubjects(),
-      ]);
+      const profile = await profileApi.getCurrentProfile();
+      setCurrentProfile(profile);
+
+      if (!profile) {
+        toast({
+          title: 'Error',
+          description: 'Failed to load profile',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      // Get teacher assignments for current academic year
+      const assignments = await academicApi.getTeacherAssignments(profile.id, '2024-2025');
+      setTeacherAssignments(assignments);
+
+      // Extract unique classes from assignments
+      const uniqueClasses = Array.from(
+        new Map(assignments.map(a => [a.class_id, a.class])).values()
+      );
+      setClasses(uniqueClasses);
+
+      // Load all questions
+      const questionsData = await questionApi.getAllQuestions();
       setQuestions(questionsData);
+
+      // Load all subjects (will be filtered by class selection)
+      const subjectsData = await subjectApi.getAllSubjects();
       setSubjects(subjectsData);
     } catch (error) {
       toast({
@@ -76,7 +103,7 @@ export default function QuestionBank() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.question_text || !formData.subject_id || !formData.correct_answer) {
+    if (!formData.question_text || !formData.class_id || !formData.subject_id || !formData.correct_answer) {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields',
@@ -135,13 +162,57 @@ export default function QuestionBank() {
   const resetForm = () => {
     setFormData({
       question_text: '',
+      class_id: '',
       subject_id: '',
       question_type: 'mcq',
       difficulty: 'medium',
       marks: 1,
-      options: ['', '', '', ''],
+      options: ['', ''],
       correct_answer: '',
     });
+  };
+
+  // Get subjects for selected class that are assigned to the teacher
+  const getAvailableSubjects = () => {
+    if (!formData.class_id) return [];
+    
+    const assignedSubjectIds = teacherAssignments
+      .filter(a => a.class_id === formData.class_id)
+      .map(a => a.subject_id);
+    
+    return subjects.filter(s => 
+      s.class_id === formData.class_id && 
+      assignedSubjectIds.includes(s.id)
+    );
+  };
+
+  // Add option field
+  const addOption = () => {
+    setFormData({
+      ...formData,
+      options: [...formData.options, '']
+    });
+  };
+
+  // Remove option field
+  const removeOption = (index: number) => {
+    if (formData.options.length <= 2) {
+      toast({
+        title: 'Error',
+        description: 'At least 2 options are required',
+        variant: 'destructive',
+      });
+      return;
+    }
+    const newOptions = formData.options.filter((_, i) => i !== index);
+    setFormData({ ...formData, options: newOptions });
+  };
+
+  // Update option value
+  const updateOption = (index: number, value: string) => {
+    const newOptions = [...formData.options];
+    newOptions[index] = value;
+    setFormData({ ...formData, options: newOptions });
   };
 
   const getDifficultyColor = (level: string) => {
@@ -204,18 +275,40 @@ export default function QuestionBank() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
+                    <Label htmlFor="class">Class</Label>
+                    <Select
+                      value={formData.class_id}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, class_id: value, subject_id: '' })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select class" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {classes.map((cls) => (
+                          <SelectItem key={cls.id} value={cls.id}>
+                            {cls.class_name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
                     <Label htmlFor="subject">Subject</Label>
                     <Select
                       value={formData.subject_id}
                       onValueChange={(value) =>
                         setFormData({ ...formData, subject_id: value })
                       }
+                      disabled={!formData.class_id}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select subject" />
                       </SelectTrigger>
                       <SelectContent>
-                        {subjects.map((subject) => (
+                        {getAvailableSubjects().map((subject) => (
                           <SelectItem key={subject.id} value={subject.id}>
                             {subject.subject_name}
                           </SelectItem>
@@ -223,7 +316,9 @@ export default function QuestionBank() {
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
 
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="type">Question Type</Label>
                     <Select
@@ -241,6 +336,20 @@ export default function QuestionBank() {
                         <SelectItem value="short_answer">Short Answer</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="marks">Marks</Label>
+                    <Input
+                      id="marks"
+                      type="number"
+                      min="1"
+                      value={formData.marks}
+                      onChange={(e) =>
+                        setFormData({ ...formData, marks: parseInt(e.target.value) })
+                      }
+                      required
+                    />
                   </div>
                 </div>
 
@@ -263,36 +372,41 @@ export default function QuestionBank() {
                       </SelectContent>
                     </Select>
                   </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="marks">Marks</Label>
-                    <Input
-                      id="marks"
-                      type="number"
-                      min="1"
-                      value={formData.marks}
-                      onChange={(e) =>
-                        setFormData({ ...formData, marks: parseInt(e.target.value) })
-                      }
-                      required
-                    />
-                  </div>
                 </div>
 
                 {formData.question_type === 'mcq' && (
                   <div className="space-y-2">
-                    <Label>Options</Label>
+                    <div className="flex items-center justify-between">
+                      <Label>Options</Label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={addOption}
+                        className="gap-2"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add Option
+                      </Button>
+                    </div>
                     {formData.options.map((option, index) => (
-                      <Input
-                        key={index}
-                        value={option}
-                        onChange={(e) => {
-                          const newOptions = [...formData.options];
-                          newOptions[index] = e.target.value;
-                          setFormData({ ...formData, options: newOptions });
-                        }}
-                        placeholder={`Option ${index + 1}`}
-                      />
+                      <div key={index} className="flex gap-2">
+                        <Input
+                          value={option}
+                          onChange={(e) => updateOption(index, e.target.value)}
+                          placeholder={`Option ${index + 1}`}
+                        />
+                        {formData.options.length > 2 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeOption(index)}
+                          >
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                          </Button>
+                        )}
+                      </div>
                     ))}
                   </div>
                 )}

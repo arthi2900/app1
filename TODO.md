@@ -72,6 +72,15 @@
 - [x] Show active filters summary
 - [x] Test and validate (lint check passed)
 
+## Latest Enhancement: Question Bank Form Improvements
+- [x] Add Class dropdown showing only classes assigned to the teacher
+- [x] Add Subject dropdown showing only subjects for selected class assigned to teacher
+- [x] Implement dynamic options (Add/Remove) for MCQ questions
+- [x] Set minimum 2 options requirement for MCQ
+- [x] Add validation for class and subject selection
+- [x] Update form layout and user experience
+- [x] Test and validate (lint check passed)
+
 ## Notes
 - Language: Tamil for UI, English for code
 - Color scheme: Blue (#2563EB), Green (#10B981), Red (#EF4444)
