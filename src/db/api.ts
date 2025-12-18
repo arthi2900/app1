@@ -5,6 +5,7 @@ import type {
   Subject,
   Question,
   QuestionWithSubject,
+  Lesson,
   Class,
   Section,
   AcademicSubject,
@@ -359,6 +360,54 @@ export const questionApi = {
 
   async deleteQuestion(id: string): Promise<void> {
     const { error } = await supabase.from('questions').delete().eq('id', id);
+    if (error) throw error;
+  },
+};
+
+// Lesson APIs
+export const lessonApi = {
+  async getAllLessons(): Promise<Lesson[]> {
+    const { data, error } = await supabase
+      .from('lessons')
+      .select('*')
+      .order('lesson_name', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getLessonsBySubject(subjectId: string): Promise<Lesson[]> {
+    const { data, error } = await supabase
+      .from('lessons')
+      .select('*')
+      .eq('subject_id', subjectId)
+      .order('lesson_name', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async createLesson(lesson: Omit<Lesson, 'id' | 'created_at'>): Promise<Lesson | null> {
+    const { data, error } = await supabase
+      .from('lessons')
+      .insert(lesson)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateLesson(id: string, updates: Partial<Lesson>): Promise<Lesson | null> {
+    const { data, error } = await supabase
+      .from('lessons')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async deleteLesson(id: string): Promise<void> {
+    const { error } = await supabase.from('lessons').delete().eq('id', id);
     if (error) throw error;
   },
 };

@@ -45,18 +45,28 @@ export interface Subject {
 export interface Question {
   id: string;
   subject_id: string;
+  lesson_id: string | null;
   question_text: string;
   question_type: QuestionType;
   options: string[] | null;
   correct_answer: string;
   marks: number;
   difficulty: DifficultyLevel;
+  bank_name: string | null;
   created_by: string | null;
   created_at: string;
 }
 
 export interface QuestionWithSubject extends Question {
   subjects?: Subject;
+}
+
+export interface Lesson {
+  id: string;
+  subject_id: string;
+  lesson_name: string;
+  lesson_code: string | null;
+  created_at: string;
 }
 
 // Academic Management Types
