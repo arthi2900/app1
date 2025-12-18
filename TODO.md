@@ -108,6 +108,14 @@ The system now provides:
 
 ## Latest Changes
 
+### UI Fix: Display All 4 MCQ Options (2025-12-18)
+- [x] Changed default MCQ options from 2 to 4
+- [x] Updated form reset to show 4 options
+- [x] Changed minimum options requirement from 2 to 4
+- [x] Updated delete button visibility (only show when > 4 options)
+- [x] Improved user experience for question creation
+- [x] Lint check passed
+
 ### Migration 00015: Restore Teacher Assignments Foreign Key (2025-12-18)
 - [x] Identified missing foreign key relationship error
 - [x] Cleaned up 3 orphaned teacher assignment records

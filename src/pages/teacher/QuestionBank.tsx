@@ -50,7 +50,7 @@ export default function QuestionBank() {
     question_type: 'mcq' as 'mcq' | 'true_false' | 'short_answer',
     difficulty: 'medium' as 'easy' | 'medium' | 'hard',
     marks: 1,
-    options: ['', ''],
+    options: ['', '', '', ''],
     correct_answer: '',
   });
 
@@ -169,7 +169,7 @@ export default function QuestionBank() {
       question_type: 'mcq',
       difficulty: 'medium',
       marks: 1,
-      options: ['', ''],
+      options: ['', '', '', ''],
       correct_answer: '',
     });
   };
@@ -198,10 +198,10 @@ export default function QuestionBank() {
 
   // Remove option field
   const removeOption = (index: number) => {
-    if (formData.options.length <= 2) {
+    if (formData.options.length <= 4) {
       toast({
         title: 'Error',
-        description: 'At least 2 options are required',
+        description: 'At least 4 options are required',
         variant: 'destructive',
       });
       return;
@@ -421,7 +421,7 @@ export default function QuestionBank() {
                           onChange={(e) => updateOption(index, e.target.value)}
                           placeholder={`Option ${index + 1}`}
                         />
-                        {formData.options.length > 2 && (
+                        {formData.options.length > 4 && (
                           <Button
                             type="button"
                             variant="ghost"
