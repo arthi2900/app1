@@ -118,7 +118,7 @@ export interface ExamWithDetails extends Exam {
 }
 
 export interface QuestionWithSubject extends Question {
-  subject?: Subject;
+  subjects?: Subject;
 }
 
 export interface AttemptWithDetails extends ExamAttempt {

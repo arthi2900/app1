@@ -318,7 +318,15 @@ export const questionApi = {
   async getAllQuestions(): Promise<QuestionWithSubject[]> {
     const { data, error } = await supabase
       .from('questions')
-      .select('*, subject:subjects(*)')
+      .select(`
+        *,
+        subjects (
+          id,
+          subject_name,
+          subject_code,
+          class_id
+        )
+      `)
       .order('created_at', { ascending: false });
     if (error) throw error;
     return Array.isArray(data) ? data : [];

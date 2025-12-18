@@ -82,6 +82,8 @@
 - [x] Fix error handling for better debugging
 - [x] Add "No Assignments" state with helpful message
 - [x] Improve error messages with specific details
+- [x] Fix Supabase query relationship syntax error
+- [x] Update TypeScript types to match query results
 - [x] Test and validate (lint check passed)
 
 ## Notes
