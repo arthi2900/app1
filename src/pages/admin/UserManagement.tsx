@@ -28,7 +28,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
-import { Users, Edit, Ban, CheckCircle, UserCheck, UserX, Clock, Key } from 'lucide-react';
+import { Users, Edit, Ban, CheckCircle, UserCheck, UserX, Clock, Key, Search, X } from 'lucide-react';
 import { profileApi, schoolApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
 import type { Profile, UserRole, School } from '@/types/types';
@@ -55,6 +55,9 @@ export default function UserManagement() {
   const [newPassword, setNewPassword] = useState('');
   const [generatedPassword, setGeneratedPassword] = useState('');
   const [activeTab, setActiveTab] = useState<'pending' | 'active' | 'suspended'>('pending');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [roleFilter, setRoleFilter] = useState<string>('all');
+  const [schoolFilter, setSchoolFilter] = useState<string>('all');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -315,9 +318,25 @@ export default function UserManagement() {
     return variantMap[role] || 'outline';
   };
 
-  const pendingProfiles = profiles.filter(p => !p.approved);
-  const activeProfiles = profiles.filter(p => p.approved && !p.suspended);
-  const suspendedProfiles = profiles.filter(p => p.suspended);
+  const filterProfiles = (profilesList: Profile[]) => {
+    return profilesList.filter(profile => {
+      const matchesSearch = 
+        searchQuery === '' ||
+        profile.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        profile.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        profile.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        profile.school_name?.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesRole = roleFilter === 'all' || profile.role === roleFilter;
+      const matchesSchool = schoolFilter === 'all' || profile.school_id === schoolFilter;
+      
+      return matchesSearch && matchesRole && matchesSchool;
+    });
+  };
+
+  const pendingProfiles = filterProfiles(profiles.filter(p => !p.approved));
+  const activeProfiles = filterProfiles(profiles.filter(p => p.approved && !p.suspended));
+  const suspendedProfiles = filterProfiles(profiles.filter(p => p.suspended));
 
   const renderPendingUserRow = (profile: Profile) => {
     return (
@@ -498,6 +517,83 @@ export default function UserManagement() {
           </CardContent>
         </Card>
       )}
+
+      {/* Search and Filter Section */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex flex-col xl:flex-row gap-4">
+            {/* Search Input */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                placeholder="Search by username, name, email, or school..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-10"
+              />
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0"
+                  onClick={() => setSearchQuery('')}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              )}
+            </div>
+
+            {/* Role Filter */}
+            <div className="w-full xl:w-48">
+              <Select value={roleFilter} onValueChange={setRoleFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Filter by Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Roles</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="principal">Principal</SelectItem>
+                  <SelectItem value="teacher">Teacher</SelectItem>
+                  <SelectItem value="student">Student</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* School Filter */}
+            <div className="w-full xl:w-64">
+              <Select value={schoolFilter} onValueChange={setSchoolFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Filter by School" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Schools</SelectItem>
+                  {schools.map((school) => (
+                    <SelectItem key={school.id} value={school.id}>
+                      {school.school_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Clear Filters Button */}
+            {(searchQuery || roleFilter !== 'all' || schoolFilter !== 'all') && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSearchQuery('');
+                  setRoleFilter('all');
+                  setSchoolFilter('all');
+                }}
+                className="xl:w-auto"
+              >
+                <X className="w-4 h-4 mr-2" />
+                Clear Filters
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'pending' | 'active' | 'suspended')}>
         <TabsContent value="pending" className="mt-6">

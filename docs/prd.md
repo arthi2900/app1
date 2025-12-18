@@ -25,8 +25,7 @@ A comprehensive online exam conducting and management system for educational ins
   - Student class-section mapping
 - **Teacher Management** (within assigned school only):
   - View teacher accounts
-  - Teacher-subject-class-section mapping
-  - View class-section overview with assigned teachers per subject
+  - Teacher-subject-class-section mapping\n  - View class-section overview with assigned teachers per subject
   - Edit teacher profiles
 - **Student Management** (within assigned school only):
   - View students list
@@ -147,8 +146,7 @@ Admin can create and manage schools with the following details:
 After Principal login, the dashboard displays four main cards:
 - **Academic Management**: Manage academic structure (classes, sections, subjects, student mapping)
 - **Teachers**: Manage teacher accounts and teacher-subject-class-section mapping\n- **Students**: View and manage students\n- **Exams**: Manage exam schedules and approvals
-
-**UI Language Requirement**: All card titles, labels, and UI text on Principal Dashboard must be displayed in English only. Card titles should be 'Academic Management', 'Teachers', 'Students', and 'Exams' (not in Tamil or any other language).
+\n**UI Language Requirement**: All card titles, labels, and UI text on Principal Dashboard must be displayed in English only. Card titles should be 'Academic Management', 'Teachers', 'Students', and 'Exams' (not in Tamil or any other language).
 
 ### 5.2 Academic Card - Academic Structure Management
 
@@ -195,7 +193,15 @@ After Principal login, the dashboard displays four main cards:
   - Phone Number
   - Account Status (Active/Pending/Suspended)
   - **Edit Action**: Edit button or pencil icon for each teacher row to enable profile editing
-\n#### 5.3.2 Teacher-Subject-Class-Section Mapping (Heart of the System)
+- **Enhanced Search and Filter Functionality**:
+  - Text search bar for searching by teacher name, phone number, or email
+  - Additional dropdown filters:\n    - Subject filter (dropdown showing all subjects in the school)
+    - Status filter (dropdown with options: All, Active, Pending, Suspended)
+  - Combined search capability (text search + subject filter + status filter)
+  - Real-time filtering as user types or selects filter options
+  - Clear filters button to reset all search and filter criteria
+
+#### 5.3.2 Teacher-Subject-Class-Section Mapping (Heart of the System)
 - Principal assigns teachers to specific subjects, classes, and sections
 - Mapping interface:
   - Teacher selection (dropdown from school teachers)
@@ -291,13 +297,13 @@ After Teacher login, the dashboard displays:\n- **Assigned Classes**: List of cl
   - Exam Date and Time
   - Duration
 - Submit for Principal approval
-- View scheduled exams with status (Pending/Approved/Rejected)\n
-#### 6.2.6 Exam Conduct
+- View scheduled exams with status (Pending/Approved/Rejected)
+\n#### 6.2.6 Exam Conduct
 - Teacher can conduct exams for their assigned sections
-- Monitor student participation during exam
-- View real-time exam progress
+- Monitor student participation during exam\n- View real-time exam progress
 - Handle exam-related queries\n
-#### 6.2.7 Result Entry and Analysis\n- Teacher can enter marks for students in their assigned sections
+#### 6.2.7 Result Entry and Analysis
+- Teacher can enter marks for students in their assigned sections
 - View student performance analysis:\n  - Subject-wise performance
   - Question-wise analysis
   - Class average and section average
@@ -313,8 +319,7 @@ After Student login, the dashboard displays:
 - **My Subjects**: List of subjects for the student's class
 - **My Teachers**: List of teachers assigned to the student's class and section
 - **Tests**: Upcoming and past exams
-- **Results**: Student's exam results
-\n### 7.2 Student Functions
+- **Results**: Student's exam results\n\n### 7.2 Student Functions
 
 #### 7.2.1 View My Class and Section
 - Student can view their assigned class and section
@@ -331,7 +336,8 @@ After Student login, the dashboard displays:
 \n#### 7.2.4 View Tests
 - Student can view upcoming and past exams assigned to their class and section
 - Exam list displays:
-  - Exam Name\n  - Subject
+  - Exam Name
+  - Subject
   - Exam Date and Time
   - Duration
   - Status (Upcoming/Completed/Missed)
@@ -348,8 +354,8 @@ After Student login, the dashboard displays:
 #### 7.2.6 View Results
 - Student can view their exam results
 - Result display:
-  - Exam Name
-  - Subject\n  - Marks Obtained
+  - Exam Name\n  - Subject
+  - Marks Obtained
   - Total Marks
   - Percentage
   - Pass/Fail Status
@@ -438,10 +444,18 @@ After Student login, the dashboard displays:
   - Clicking each button filters and displays corresponding user list below
   - Each button shows real-time count of users in that status
   - **Button Actions**: Each status button includes relevant action buttons (Approve for Pending, Edit and Suspend for Active, Edit for Suspended)
+  - **Enhanced Search and Filter for Active Users**:
+    - Text search bar for searching by username, full name, or email
+    - Additional dropdown filters:\n      - Role filter (dropdown with options: All, Admin, Principal, Teacher, Student)
+      - School Name filter (dropdown populated from School Master list, with'All Schools' option)
+    - Combined search capability (text search + role filter + school name filter)
+    - Real-time filtering as user types or selects filter options
+    - Clear filters button to reset all search and filter criteria\n    - Filter options displayed prominently above the Active Users table
 - Edit user profiles with Save button
 - Suspend user accounts with Suspend button
 - Approve pending users with Approve button
-- **Cross-school access**: Admin can view and manage all schools and users\n- **Full management rights**: Create, edit, suspend, delete\n\n### 8.8 Principal Functions
+- **Cross-school access**: Admin can view and manage all schools and users
+- **Full management rights**: Create, edit, suspend, delete\n\n### 8.8 Principal Functions
 - **Academic Management**:
   - Class creation\n  - Section creation
   - Subject creation (class-wise)
@@ -462,8 +476,8 @@ After Student login, the dashboard displays:
 - **Visibility**: Can view teachers and students from assigned school only
 
 ### 8.9 Teacher Functions
-- View assigned classes, sections, and subjects\n- View students of assigned sections only
-- Question creation and management (for assigned school subjects only)
+- View assigned classes, sections, and subjects
+- View students of assigned sections only\n- Question creation and management (for assigned school subjects only)
 - Question paper preparation (for assigned school only)
 - Test schedule creation (for assigned classes and sections only)
 - Exam conduct and monitoring (for assigned school only)
@@ -502,10 +516,15 @@ After Student login, the dashboard displays:
 - **Teachers Management Page - Tab Structure**:
   - **Tab 1: Teachers List**
     - Display Fields: Teacher Name, Subject, Phone Number\n    - **Edit Action**: Edit button or pencil icon for each teacher row
-    - Enable search functionality
-    - Enable sort functionality
-    - Display total count of teachers at the top
-  - **Tab 2: Active Teachers**
+    - **Enhanced Search and Filter Functionality**:
+      - Text search bar for searching by teacher name, phone number, or email
+      - Additional dropdown filters:
+        - Subject filter (dropdown showing all subjects in the school)
+        - Status filter (dropdown with options: All, Active, Pending, Suspended)
+      - Combined search capability (text search + subject filter + status filter)
+      - Real-time filtering as user types or selects filter options
+      - Clear filters button to reset all search and filter criteria
+    - Enable sort functionality\n    - Display total count of teachers at the top\n  - **Tab 2: Active Teachers**
     - Display only teachers with 'Active' status
     - Same display fields and functionality as Tab 1
   - **Tab 3: Pending Teachers**
@@ -524,8 +543,8 @@ After Student login, the dashboard displays:
       - Columns: Teacher Name, Subject, Class, Sections (comma-separated), Actions (Edit/Delete)
       - **Academic Year column removed**: No longer displayed in assignments table
       - Filter options by teacher, subject, or class
-      - Search functionality
-      - Sort functionality\n    - **Assignment Rules**:
+      - Search functionality\n      - Sort functionality
+    - **Assignment Rules**:
       - One teacher can be assigned to multiple subject-class-section combinations
       - Same teacher can teach different subjects to different classes\n      - Multiple teachers can be assigned to same subject in different sections
     - **Edit Assignment**:
@@ -566,11 +585,13 @@ After Student login, the dashboard displays:
   - Enable search functionality with class and section filters
   - Enable sort functionality
   - Display total count of students at the top of the page
-\n### 8.14 Admin Dashboard - Updated Card Display
+
+### 8.14 Admin Dashboard - Updated Card Display
 - **Admin Dashboard Cards**: The Admin Dashboard displays only three cards:
   - **Total Users**: Displays the total count of all users in the system
   - **Total Questions**: Displays the total count of all questions in the question bank
-  - **Total Exams**: Displays the total count of all exams in the system\n- **Removed Card**: The 'Total Subjects' card has been completely removed from the Admin Dashboard
+  - **Total Exams**: Displays the total count of all exams in the system
+- **Removed Card**: The 'Total Subjects' card has been completely removed from the Admin Dashboard
 - **Implementation Notes**:
   - Remove all code related to fetching subjects count from AdminDashboard.tsx
   - Remove API calls for subjects data\n  - Remove state variables for subjects count
@@ -656,30 +677,27 @@ After Student login, the dashboard displays:
   - My Class
   - My Section
   - My Subjects
-  - My Teachers
-  - Tests (class-section-filtered)
+  - My Teachers\n  - Tests (class-section-filtered)
   - Results\n  - Past Reports
   - Profile Settings
 - Card-based design - for information grouping in main content area
 - Responsive grid layout - for various screen sizes
 - Main content area adjusts dynamically based on side panel state (collapsed/expanded)
-- **Admin User Management Interface**: Status-based button navigation at top of page showing three clickable buttons (Pending: [count], Active: [count], Suspended: [count]) with integrated action buttons (Approve for Pending, Edit and Suspend for Active, Edit for Suspended)\n- School management interface with create, edit, and view options
+- **Admin User Management Interface**: Status-based button navigation at top of page showing three clickable buttons (Pending: [count], Active: [count], Suspended: [count]) with integrated action buttons (Approve for Pending, Edit and Suspend for Active, Edit for Suspended), plus search and filter options (text search + Role filter + School Name filter) for Active Users section
+- School management interface with create, edit, and view options
 - Password reset page with clean form layout and clear instructions
 - **School-based filtering indicators**: Visual badges or labels showing current school context for non-Admin users
-- **Principal Dashboard Cards**: Four main clickable cards (Academic Management, Teachers, Students, Exams) that open respective management interfaces, all displayed in English
-- **Academic Management Interface**: Step-by-step workflow for Class Creation → Section Creation → Subject Creation → Student Mapping\n- **Teacher-Subject-Class-Section Mapping Interface**: Interactive mapping interface with dropdown selections (without Academic Year field) and visual confirmation\n- **Teachers Management Page**: Tabbed interface with five tabs (Teachers List, Active Teachers, Pending Teachers, Suspended Teachers, Teacher Assignment), with Edit button or pencil icon for each teacher row\n- **Teacher Assignment Tab**: Form-based interface with dropdowns for teacher, subject, class, and section selection (Academic Year field removed), plus table showing current assignments (Academic Year column removed)
+- **Principal Dashboard Cards**: Four main clickable cards (Academic Management, Teachers, Students, Exams) that open respective management interfaces, all displayed in English\n- **Academic Management Interface**: Step-by-step workflow for Class Creation → Section Creation → Subject Creation → Student Mapping\n- **Teacher-Subject-Class-Section Mapping Interface**: Interactive mapping interface with dropdown selections (without Academic Year field) and visual confirmation\n- **Teachers Management Page**: Tabbed interface with five tabs (Teachers List, Active Teachers, Pending Teachers, Suspended Teachers, Teacher Assignment), with Edit button or pencil icon for each teacher row, plus enhanced search and filter options (text search + Subject filter + Status filter) in Teachers List tab
+- **Teacher Assignment Tab**: Form-based interface with dropdowns for teacher, subject, class, and section selection (Academic Year field removed), plus table showing current assignments (Academic Year column removed)
 - **Admin Dashboard Layout**: Three-card grid layout displaying Total Users, Total Questions, and Total Exams cards only
-- **Students List Page**: Enhanced search interface with text search bar and additional Class and Section dropdown filters
-- **Registration Form**: School Name field displayed as dropdown populated from School Master list
+- **Students List Page**: Enhanced search interface with text search bar and additional Class and Section dropdown filters\n- **Registration Form**: School Name field displayed as dropdown populated from School Master list
 - **Landing Page**: Simplified design with Login/Register buttons and Get Started section removed
 \n## 12. Reference Images
 1. screenshot.png - Admin dashboard interface showing side panel navigation with Dashboard and User Management menu items
-2. screenshot.png - User management interface showing status-based button navigation (Pending, Active, Suspended) with annotation indicating action buttons should be integrated into status buttons
-3. screenshot.png - Login page interface with username, password fields and Forgot Password link
-4. screenshot-2.png - School edit form showing school information fields including name, address, contact details, affiliation, class range, and subjects
+2. screenshot.png - User management interface showing status-based button navigation (Pending, Active, Suspended) with annotation indicating action buttons should be integrated into status buttons and search/filter options for Role and School Name\n3. screenshot.png - Login page interface with username, password fields and Forgot Password link
+4. screenshot.png - School edit form showing school information fields including name, address, contact details, affiliation, class range, and subjects
 5. screenshot.png - Principal dashboard showing Tamil text with annotation'need all UNI in english' indicating requirement for English-only UI
 6. screenshot.png -'All Students of This School' page with students list and annotation requesting additional search filters for Class and Section
 7. screenshot.png - Academic Management page showing Teacher Assignment tab with annotation 'Not Required' indicating Academic Year field should be removed
 8. screenshot.png - Registration form showing School Name text input field with annotation requesting dropdown populated from School Master list
-9. screenshot.png - Teachers List page showing 'Edit' text with annotation requesting Edit button or pencil icon for editing purpose
-10. screenshot.png - Landing page showing Login/Register buttons and Get Started section with annotation 'No Need' indicating these elements should be removed
+9. screenshot.png - Teachers List page showing 'Edit' text with annotation requesting Edit button or pencil icon for editing purpose, plus search and filter functionality\n10. screenshot.png - Landing page showing Login/Register buttons and Get Started section with annotation 'No Need' indicating these elements should be removed
