@@ -90,16 +90,18 @@
 - [x] Reorder form fields for better UX (Class → Subject → Question)
 - [x] Test and validate (lint check passed)
 
-## Critical Issue Fixed: Subjects Table Conflict
-**Problem**: Two conflicting subjects table definitions caused empty subject dropdown
+## Critical Issue Fixed: Subjects Table Conflict & Relationship Error
+**Problem**: Two conflicting subjects table definitions caused empty subject dropdown and "Could not find a relationship between 'questions' and 'subjects'" error
 **Root Cause**: Migration 00001 created old structure, migration 00012 tried to create new structure but `CREATE TABLE IF NOT EXISTS` prevented update
 **Solution**: Migration 00013 drops and recreates subjects table with correct structure
-**Impact**: All subjects, questions, and exams will be deleted (acceptable for development phase)
+**Status**: ✅ Migration 00013 applied successfully on 2025-12-18
+**Impact**: All subjects, questions, and exams deleted (acceptable for development phase)
+**Result**: Relationship error resolved, Question Bank page now loads without errors
 **Next Steps**: 
-  1. Apply migration 00013
+  1. ✅ Migration 00013 applied
   2. Principal recreates subjects for each class
   3. Principal verifies teacher assignments
-  4. Teachers create questions
+  4. Teachers create questions with working dropdown
 
 ## Notes
 - Language: Tamil for UI, English for code
