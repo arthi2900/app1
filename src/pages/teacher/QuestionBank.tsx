@@ -127,11 +127,11 @@ export default function QuestionBank() {
 
       toast({
         title: 'Success',
-        description: 'Question added successfully',
+        description: 'Question added successfully. You can add another question.',
       });
 
-      setDialogOpen(false);
-      loadData();
+      partialResetForm(); // Keep Class and Subject, clear other fields
+      loadData(); // Refresh the question list
     } catch (error: any) {
       toast({
         title: 'Failed to add question',
@@ -171,6 +171,19 @@ export default function QuestionBank() {
       options: ['', '', '', ''],
       correct_answer: '',
     });
+  };
+
+  // Partial reset - keeps Class and Subject for batch entry
+  const partialResetForm = () => {
+    setFormData(prev => ({
+      ...prev,
+      question_text: '',
+      question_type: 'mcq',
+      difficulty: 'medium',
+      marks: 1,
+      options: ['', '', '', ''],
+      correct_answer: '',
+    }));
   };
 
   // Get subjects for selected class that are assigned to the teacher
@@ -459,9 +472,9 @@ export default function QuestionBank() {
                   variant="outline"
                   onClick={() => setDialogOpen(false)}
                 >
-                  Cancel
+                  Done
                 </Button>
-                <Button type="submit">Add</Button>
+                <Button type="submit">Add Question</Button>
               </DialogFooter>
             </form>
           </DialogContent>

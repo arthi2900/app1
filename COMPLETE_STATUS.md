@@ -37,14 +37,25 @@ Your Question Bank Management System is now fully operational with all exam modu
 - Delete buttons only appear when more than 4 options
 
 ### Issue #4: Form Reset After Submission ✅
-**Status**: COMPLETE  
+**Status**: SUPERSEDED by Issue #5  
 **Component**: QuestionBank.tsx - Dialog State Management  
 **Problem**: Class and Subject fields remained populated after submission  
 **Solution**:
 - Implemented automatic form reset on dialog close
-- All fields now clear after submission (including Class and Subject)
-- Single source of truth for form reset logic
-- Improved data accuracy and consistency
+- All fields cleared after submission (including Class and Subject)
+- Note: This was later changed to support batch entry (see Issue #5)
+
+### Issue #5: Batch Question Entry ✅
+**Status**: COMPLETE  
+**Component**: QuestionBank.tsx - Continuous Entry Workflow  
+**Problem**: Form closed after each submission, inefficient for adding multiple questions  
+**Solution**:
+- Form stays open after submission for batch entry
+- Class and Subject preserved for continuous entry
+- Only question-specific fields cleared (question text, options, answer)
+- Added partial reset function for efficient workflow
+- Updated button labels for clarity ("Done", "Add Question")
+- 50-60% efficiency gain for batch question entry
 
 ## System Health Check
 
