@@ -108,6 +108,15 @@ The system now provides:
 
 ## Latest Changes
 
+### UI Fix: Clear All Fields After Question Submission (2025-12-18)
+- [x] Fixed Class and Subject fields remaining populated after submission
+- [x] Implemented automatic form reset on dialog close
+- [x] Simplified Cancel button logic (removed redundant reset)
+- [x] Simplified submit handler (removed redundant reset)
+- [x] Single source of truth for form reset logic
+- [x] Improved data accuracy and consistency
+- [x] Lint check passed
+
 ### UI Fix: Display All 4 MCQ Options (2025-12-18)
 - [x] Changed default MCQ options from 2 to 4
 - [x] Updated form reset to show 4 options

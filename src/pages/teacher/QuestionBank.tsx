@@ -131,7 +131,6 @@ export default function QuestionBank() {
       });
 
       setDialogOpen(false);
-      resetForm();
       loadData();
     } catch (error: any) {
       toast({
@@ -271,7 +270,12 @@ export default function QuestionBank() {
           <h1 className="text-3xl font-bold">Question Bank</h1>
           <p className="text-muted-foreground mt-2">Manage your exam questions</p>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <Dialog open={dialogOpen} onOpenChange={(open) => {
+          setDialogOpen(open);
+          if (!open) {
+            resetForm();
+          }
+        }}>
           <DialogTrigger asChild>
             <Button className="gap-2">
               <Plus className="w-4 h-4" />
@@ -453,10 +457,7 @@ export default function QuestionBank() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => {
-                    setDialogOpen(false);
-                    resetForm();
-                  }}
+                  onClick={() => setDialogOpen(false)}
                 >
                   Cancel
                 </Button>
