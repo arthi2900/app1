@@ -108,6 +108,14 @@ The system now provides:
 
 ## Latest Changes
 
+### Migration 00015: Restore Teacher Assignments Foreign Key (2025-12-18)
+- [x] Identified missing foreign key relationship error
+- [x] Cleaned up 3 orphaned teacher assignment records
+- [x] Restored teacher_assignments_subject_id_fkey constraint
+- [x] Verified all foreign key relationships intact
+- [x] Question Bank page now loads without errors
+- [x] Lint check passed
+
 ### Migration 00014: Remove Exam Modules (2025-12-18)
 - [x] Drop exam_answers table
 - [x] Drop exam_attempts table

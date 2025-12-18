@@ -1,8 +1,31 @@
-# ✅ Exam Modules Successfully Removed
+# ✅ Exam Modules Successfully Removed + Foreign Key Fixed
 
 ## Status: COMPLETE ✅
 
-All exam-related functionality has been successfully removed from the Question Bank Management System.
+All exam-related functionality has been successfully removed from the Question Bank Management System, and a critical foreign key relationship has been restored.
+
+## Latest Fix (Migration 00015)
+
+### Problem Identified
+After removing exam modules, the Question Bank page showed an error:
+```
+Could not find a relationship between 'teacher_assignments' and 'subjects'
+```
+
+### Root Cause
+When migration 00013 dropped the subjects table with CASCADE, it also dropped the foreign key constraint from `teacher_assignments` to `subjects`. The constraint was never recreated, breaking the relationship needed for the Question Bank page.
+
+### Solution Applied
+**Migration 00015**: Restore Teacher Assignments Foreign Key
+1. Cleaned up 3 orphaned teacher assignment records (referencing deleted subjects)
+2. Recreated the foreign key constraint: `teacher_assignments_subject_id_fkey`
+3. Verified all foreign key relationships are intact
+
+### Result
+✅ Question Bank page now loads without errors
+✅ Teacher assignments properly linked to subjects
+✅ All database relationships restored
+✅ Lint check passed (95 files, 0 errors)
 
 ## Summary of Changes
 
