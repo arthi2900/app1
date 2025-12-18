@@ -62,7 +62,7 @@ export function useAuth() {
     fullName?: string, 
     email?: string,
     phone?: string,
-    schoolName?: string
+    schoolId?: string
   ) => {
     const authEmail = `${username}@miaoda.com`;
     const { data, error } = await supabase.auth.signUp({
@@ -76,7 +76,7 @@ export function useAuth() {
       if (fullName) updates.full_name = fullName;
       if (email) updates.email = email;
       if (phone) updates.phone = phone;
-      if (schoolName) updates.school_name = schoolName;
+      if (schoolId) updates.school_id = schoolId;
       
       if (Object.keys(updates).length > 0) {
         await profileApi.updateProfile(data.user.id, updates);

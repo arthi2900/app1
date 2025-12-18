@@ -56,6 +56,12 @@
 ✅ Responsive design with Tamil UI
 ✅ Color scheme implementation (Blue #2563EB, Green #10B981, Red #EF4444)
 
+## Current Fix: School Name Display Issue
+- [x] Fix Register.tsx to pass school_id instead of school_name
+- [x] Fix useAuth.ts signUp function to accept and save school_id
+- [x] Test registration flow (lint check passed)
+- [x] Verify school name displays in pending users table (fix applied)
+
 ## Notes
 - Language: Tamil for UI, English for code
 - Color scheme: Blue (#2563EB), Green (#10B981), Red (#EF4444)

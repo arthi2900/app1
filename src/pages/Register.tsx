@@ -18,7 +18,7 @@ export default function Register() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [schoolName, setSchoolName] = useState('');
+  const [schoolId, setSchoolId] = useState('');
   const [schools, setSchools] = useState<School[]>([]);
   const [loadingSchools, setLoadingSchools] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -49,7 +49,7 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!username.trim() || !password || !confirmPassword || !fullName.trim() || !schoolName.trim()) {
+    if (!username.trim() || !password || !confirmPassword || !fullName.trim() || !schoolId.trim()) {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields',
@@ -96,7 +96,7 @@ export default function Register() {
 
     setLoading(true);
     try {
-      await signUp(username, password, fullName, email || undefined, phone || undefined, schoolName);
+      await signUp(username, password, fullName, email || undefined, phone || undefined, schoolId);
       toast({
         title: 'Success',
         description: 'Registration successful',
@@ -166,8 +166,8 @@ export default function Register() {
             <div className="space-y-2">
               <Label htmlFor="schoolName">School Name *</Label>
               <Select
-                value={schoolName}
-                onValueChange={setSchoolName}
+                value={schoolId}
+                onValueChange={setSchoolId}
                 disabled={loading || loadingSchools}
               >
                 <SelectTrigger id="schoolName">
@@ -180,7 +180,7 @@ export default function Register() {
                     </SelectItem>
                   ) : (
                     schools.map((school) => (
-                      <SelectItem key={school.id} value={school.school_name}>
+                      <SelectItem key={school.id} value={school.id}>
                         {school.school_name}
                       </SelectItem>
                     ))
