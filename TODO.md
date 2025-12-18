@@ -84,7 +84,21 @@
 - [x] Improve error messages with specific details
 - [x] Fix Supabase query relationship syntax error
 - [x] Update TypeScript types to match query results
+- [x] Identify and fix subjects table structure conflict
+- [x] Create migration 00013 to fix subjects table
+- [x] Document the issue and solution comprehensively
 - [x] Test and validate (lint check passed)
+
+## Critical Issue Fixed: Subjects Table Conflict
+**Problem**: Two conflicting subjects table definitions caused empty subject dropdown
+**Root Cause**: Migration 00001 created old structure, migration 00012 tried to create new structure but `CREATE TABLE IF NOT EXISTS` prevented update
+**Solution**: Migration 00013 drops and recreates subjects table with correct structure
+**Impact**: All subjects, questions, and exams will be deleted (acceptable for development phase)
+**Next Steps**: 
+  1. Apply migration 00013
+  2. Principal recreates subjects for each class
+  3. Principal verifies teacher assignments
+  4. Teachers create questions
 
 ## Notes
 - Language: Tamil for UI, English for code
