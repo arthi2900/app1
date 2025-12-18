@@ -1,7 +1,7 @@
 # Search and Filter Feature - User Management
 
 ## Overview
-Added comprehensive search and filter functionality to the User Management page, allowing administrators to quickly find and filter users by multiple criteria.
+Added comprehensive search and filter functionality to the User Management page, allowing administrators to quickly find and filter users by multiple criteria. Includes a filtered records count display showing the number of matching results.
 
 ## Features Implemented
 
@@ -38,6 +38,17 @@ Added comprehensive search and filter functionality to the User Management page,
 - **One-Click Reset**: Clears all filters (search, role, school) at once
 - **Visual Feedback**: Clear indication of active filters
 
+### 5. Filtered Records Count (NEW)
+- **Dynamic Count Display**: Shows the number of records matching current filters
+- **Active Filters Summary**: Displays which filters are currently applied
+- **Smart Formatting**: 
+  - Shows "1 record found" or "X records found"
+  - Displays search query in quotes
+  - Shows selected role and school
+  - Separates multiple filters with bullet points (•)
+- **Conditional Display**: Only appears when filters are active
+- **Tab-Aware**: Updates count based on active tab (Pending/Active/Suspended)
+
 ## User Interface
 
 ### Layout
@@ -45,8 +56,16 @@ Added comprehensive search and filter functionality to the User Management page,
 ┌─────────────────────────────────────────────────────────────┐
 │  [Search Input with Icon]  [Role Filter]  [School Filter]  │
 │                                          [Clear Filters]     │
+│                                                              │
+│  [Badge: X records found] Searching for "query" • Role: ... │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+### Filtered Records Count Examples
+- `5 records found` Searching for "ram"
+- `12 records found` Role: Teacher
+- `3 records found` School: GHS IRULAKURICHI
+- `8 records found` Searching for "student" • Role: Student • School: GHS SATHAPADI
 
 ### Responsive Design
 - **Desktop (xl+)**: All filters in a single row

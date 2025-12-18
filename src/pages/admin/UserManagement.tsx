@@ -592,6 +592,24 @@ export default function UserManagement() {
               </Button>
             )}
           </div>
+
+          {/* Filtered Records Count */}
+          {(searchQuery || roleFilter !== 'all' || schoolFilter !== 'all') && (
+            <div className="mt-4 flex items-center gap-2 text-sm">
+              <Badge variant="secondary" className="px-3 py-1">
+                {activeTab === 'pending' && `${pendingProfiles.length} ${pendingProfiles.length === 1 ? 'record' : 'records'} found`}
+                {activeTab === 'active' && `${activeProfiles.length} ${activeProfiles.length === 1 ? 'record' : 'records'} found`}
+                {activeTab === 'suspended' && `${suspendedProfiles.length} ${suspendedProfiles.length === 1 ? 'record' : 'records'} found`}
+              </Badge>
+              <span className="text-muted-foreground">
+                {searchQuery && `Searching for "${searchQuery}"`}
+                {searchQuery && (roleFilter !== 'all' || schoolFilter !== 'all') && ' • '}
+                {roleFilter !== 'all' && `Role: ${getRoleLabel(roleFilter)}`}
+                {roleFilter !== 'all' && schoolFilter !== 'all' && ' • '}
+                {schoolFilter !== 'all' && `School: ${schools.find(s => s.id === schoolFilter)?.school_name || 'Unknown'}`}
+              </span>
+            </div>
+          )}
         </CardContent>
       </Card>
 

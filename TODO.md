@@ -68,6 +68,8 @@
 - [x] Add school filter dropdown (All Schools + list of schools)
 - [x] Add clear filters button
 - [x] Implement responsive design for filters
+- [x] Add filtered records count display
+- [x] Show active filters summary
 - [x] Test and validate (lint check passed)
 
 ## Notes
