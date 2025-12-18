@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { BookOpen, User, LogOut, LayoutDashboard, Users, FileQuestion, ClipboardList, Award, Building2 } from 'lucide-react';
+import { BookOpen, User, LogOut, LayoutDashboard, Users, FileQuestion, Building2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Header() {
@@ -50,24 +50,22 @@ export default function Header() {
     if (profile.role === 'principal') {
       links.push(
         { to: '/principal', label: 'Dashboard', icon: LayoutDashboard },
-        { to: '/principal/approvals', label: 'Approvals', icon: ClipboardList },
-        { to: '/principal/reports', label: 'Reports', icon: Award }
+        { to: '/principal/teachers', label: 'Teachers', icon: Users },
+        { to: '/principal/students', label: 'Students', icon: Users },
+        { to: '/principal/academics', label: 'Academics', icon: BookOpen }
       );
     }
 
     if (profile.role === 'teacher') {
       links.push(
         { to: '/teacher', label: 'Dashboard', icon: LayoutDashboard },
-        { to: '/teacher/questions', label: 'Question Bank', icon: FileQuestion },
-        { to: '/teacher/exams', label: 'Exams', icon: ClipboardList }
+        { to: '/teacher/questions', label: 'Question Bank', icon: FileQuestion }
       );
     }
 
     if (profile.role === 'student') {
       links.push(
-        { to: '/student', label: 'Dashboard', icon: LayoutDashboard },
-        { to: '/student/exams', label: 'Exams', icon: ClipboardList },
-        { to: '/student/results', label: 'Results', icon: Award }
+        { to: '/student', label: 'Dashboard', icon: LayoutDashboard }
       );
     }
 

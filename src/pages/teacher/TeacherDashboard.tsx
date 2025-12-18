@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileQuestion, ClipboardList } from 'lucide-react';
-import { questionApi, examApi } from '@/db/api';
+import { FileQuestion } from 'lucide-react';
+import { questionApi } from '@/db/api';
 
 export default function TeacherDashboard() {
   const [stats, setStats] = useState({
     totalQuestions: 0,
-    totalExams: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -16,14 +15,10 @@ export default function TeacherDashboard() {
 
   const loadStats = async () => {
     try {
-      const [questions, exams] = await Promise.all([
-        questionApi.getAllQuestions(),
-        examApi.getAllExams(),
-      ]);
+      const questions = await questionApi.getAllQuestions();
 
       setStats({
         totalQuestions: questions.length,
-        totalExams: exams.length,
       });
     } catch (error) {
       console.error('Error loading stats:', error);
@@ -38,12 +33,6 @@ export default function TeacherDashboard() {
       value: stats.totalQuestions,
       icon: FileQuestion,
       color: 'text-primary',
-    },
-    {
-      title: 'Total Exams',
-      value: stats.totalExams,
-      icon: ClipboardList,
-      color: 'text-secondary',
     },
   ];
 
@@ -63,7 +52,7 @@ export default function TeacherDashboard() {
       <div>
         <h1 className="text-3xl font-bold">Teacher Dashboard</h1>
         <p className="text-muted-foreground mt-2">
-          Manage questions and exams
+          Manage your question bank
         </p>
       </div>
 
@@ -90,7 +79,7 @@ export default function TeacherDashboard() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            Welcome to the teacher section. Here you can create questions, manage exams, and view student results.
+            Welcome to the teacher section. Here you can create and manage questions for your subjects.
           </p>
         </CardContent>
       </Card>

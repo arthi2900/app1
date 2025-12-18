@@ -14,7 +14,6 @@ import AcademicsManagement from './pages/principal/AcademicsManagement';
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
 import QuestionBank from './pages/teacher/QuestionBank';
 import StudentDashboard from './pages/student/StudentDashboard';
-import StudentExams from './pages/student/StudentExams';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 interface RouteConfig {
@@ -151,16 +150,6 @@ const routes: RouteConfig[] = [
     element: (
       <ProtectedRoute allowedRoles={['student']}>
         <StudentDashboard />
-      </ProtectedRoute>
-    ),
-    visible: false,
-  },
-  {
-    name: 'Student Exams',
-    path: '/student/exams',
-    element: (
-      <ProtectedRoute allowedRoles={['student']}>
-        <StudentExams />
       </ProtectedRoute>
     ),
     visible: false,

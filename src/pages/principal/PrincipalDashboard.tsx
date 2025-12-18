@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, ClipboardList, BookOpen, UserCheck, GraduationCap } from 'lucide-react';
-import { profileApi, examApi } from '@/db/api';
+import { BookOpen, UserCheck, GraduationCap } from 'lucide-react';
+import { profileApi } from '@/db/api';
 import { useAuth } from '@/hooks/useAuth';
 import SchoolProfile from '@/components/principal/SchoolProfile';
 import type { Profile } from '@/types/types';
@@ -12,7 +12,6 @@ export default function PrincipalDashboard() {
   const { profile } = useAuth();
   const [teachers, setTeachers] = useState<Profile[]>([]);
   const [students, setStudents] = useState<Profile[]>([]);
-  const [totalExams, setTotalExams] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,23 +29,20 @@ export default function PrincipalDashboard() {
     try {
       console.log('Loading data for school_id:', profile.school_id);
       
-      // Fetch teachers, students and exams in parallel
-      const [teachersData, studentsData, examsData] = await Promise.all([
+      // Fetch teachers and students in parallel
+      const [teachersData, studentsData] = await Promise.all([
         profileApi.getTeachersBySchoolId(profile.school_id),
         profileApi.getStudentsBySchoolId(profile.school_id),
-        examApi.getAllExams(),
       ]);
 
-      console.log('Teachers:', teachersData.length, 'Students:', studentsData.length, 'Exams:', examsData.length);
+      console.log('Teachers:', teachersData.length, 'Students:', studentsData.length);
 
       setTeachers(teachersData);
       setStudents(studentsData);
-      setTotalExams(examsData.length);
     } catch (error) {
       console.error('Error loading data:', error);
       setTeachers([]);
       setStudents([]);
-      setTotalExams(0);
     } finally {
       setLoading(false);
     }
@@ -61,13 +57,6 @@ export default function PrincipalDashboard() {
       onClick: () => navigate('/principal/academics'),
       clickable: true,
       description: 'Manage classes, sections & subjects',
-    },
-    {
-      title: 'Exams',
-      value: totalExams,
-      icon: ClipboardList,
-      color: 'text-accent',
-      clickable: false,
     },
   ];
 
@@ -157,7 +146,7 @@ export default function PrincipalDashboard() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            Welcome to the principal section. Here you can approve exams, view reports, and monitor system activities.
+            Welcome to the principal section. Here you can manage teachers, students, and academic settings.
           </p>
         </CardContent>
       </Card>
