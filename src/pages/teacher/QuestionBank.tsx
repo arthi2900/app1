@@ -94,15 +94,27 @@ export default function QuestionBank() {
 
       // Load all questions
       const questionsData = await questionApi.getAllQuestions();
-      setQuestions(questionsData);
+      
+      // Filter questions based on teacher's assigned subjects
+      // Teachers can only see questions from classes and subjects they are assigned to
+      // This is determined by matching the question's subject_id with the teacher's assignments
+      const assignedSubjectIds = assignments.map(a => a.subject_id);
+      const filteredQuestions = questionsData.filter(q => 
+        assignedSubjectIds.includes(q.subject_id)
+      );
+      setQuestions(filteredQuestions);
 
       // Load all subjects (will be filtered by class selection)
       const subjectsData = await subjectApi.getAllSubjects();
       setSubjects(subjectsData);
 
-      // Load all lessons
+      // Load all lessons and filter by assigned subjects
+      // Only show lessons from subjects the teacher is assigned to
       const lessonsData = await lessonApi.getAllLessons();
-      setLessons(lessonsData);
+      const filteredLessons = lessonsData.filter(l => 
+        assignedSubjectIds.includes(l.subject_id)
+      );
+      setLessons(filteredLessons);
     } catch (error: any) {
       console.error('Error loading data:', error);
       toast({
@@ -343,7 +355,18 @@ export default function QuestionBank() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Question Bank</h1>
-          <p className="text-muted-foreground mt-2">Manage your exam questions</p>
+          <p className="text-muted-foreground mt-2">
+            Manage questions for your assigned classes and subjects
+          </p>
+          {teacherAssignments.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {teacherAssignments.map((assignment, index) => (
+                <Badge key={index} variant="secondary" className="text-xs">
+                  {assignment.class.class_name} - {assignment.subject.subject_name}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
         <Dialog open={dialogOpen} onOpenChange={(open) => {
           setDialogOpen(open);
@@ -645,13 +668,19 @@ export default function QuestionBank() {
 
       <Card>
         <CardHeader>
-          <CardTitle>All Questions</CardTitle>
+          <CardTitle>Question Bank ({questions.length})</CardTitle>
+          <p className="text-sm text-muted-foreground mt-1">
+            Showing questions from your assigned classes and subjects only
+          </p>
         </CardHeader>
         <CardContent>
           {questions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <FileQuestion className="w-12 h-12 text-muted-foreground mb-4" />
               <p className="text-lg font-medium">No questions yet</p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Start creating questions for your assigned classes and subjects
+              </p>
             </div>
           ) : (
             <Table>
