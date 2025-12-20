@@ -58,6 +58,7 @@ export interface Question {
   marks: number;
   difficulty: DifficultyLevel;
   bank_name: string | null;
+  image_url: string | null;
   created_by: string | null;
   created_at: string;
 }
