@@ -28,7 +28,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Trash2, FileQuestion, BookOpen } from 'lucide-react';
+import { Plus, Trash2, FileQuestion, BookOpen, LayoutGrid, LayoutList, Pencil } from 'lucide-react';
 import { questionApi, subjectApi, academicApi, profileApi, lessonApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
 import type { Question, Subject, Class, Lesson, TeacherAssignmentWithDetails, Profile } from '@/types/types';
@@ -42,7 +42,10 @@ export default function QuestionBank() {
   const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [lessonDialogOpen, setLessonDialogOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'row' | 'card'>('row');
+  const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -181,6 +184,71 @@ export default function QuestionBank() {
     } catch (error: any) {
       toast({
         title: 'Failed to delete question',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleEdit = (question: Question) => {
+    setEditingQuestion(question);
+    
+    // Find the subject to get class_id
+    const subject = subjects.find(s => s.id === question.subject_id);
+    
+    setFormData({
+      question_text: question.question_text,
+      class_id: subject?.class_id || '',
+      subject_id: question.subject_id,
+      lesson_id: question.lesson_id || '',
+      question_type: question.question_type,
+      difficulty: question.difficulty,
+      marks: question.marks,
+      options: question.options || ['', '', '', ''],
+      correct_answer: question.correct_answer,
+    });
+    
+    setEditDialogOpen(true);
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!editingQuestion) return;
+
+    if (!formData.question_text || !formData.subject_id) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fill in all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      await questionApi.updateQuestion(editingQuestion.id, {
+        question_text: formData.question_text,
+        subject_id: formData.subject_id,
+        lesson_id: formData.lesson_id && formData.lesson_id !== 'none' ? formData.lesson_id : null,
+        question_type: formData.question_type,
+        difficulty: formData.difficulty,
+        marks: formData.marks,
+        options: formData.question_type === 'mcq' ? formData.options.filter(o => o.trim()) : null,
+        correct_answer: formData.correct_answer,
+      });
+
+      toast({
+        title: 'Success',
+        description: 'Question updated successfully',
+      });
+
+      setEditDialogOpen(false);
+      setEditingQuestion(null);
+      resetForm();
+      loadData();
+    } catch (error: any) {
+      toast({
+        title: 'Failed to update question',
         description: error.message,
         variant: 'destructive',
       });
@@ -612,6 +680,243 @@ export default function QuestionBank() {
           </DialogContent>
         </Dialog>
 
+        {/* Edit Question Dialog */}
+        <Dialog open={editDialogOpen} onOpenChange={(open) => {
+          setEditDialogOpen(open);
+          if (!open) {
+            setEditingQuestion(null);
+            resetForm();
+          }
+        }}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <form onSubmit={handleUpdate}>
+              <DialogHeader>
+                <DialogTitle>Edit Question</DialogTitle>
+                <DialogDescription>Update the question details below</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-class">Class</Label>
+                    <Select
+                      value={formData.class_id}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, class_id: value, subject_id: '' })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select class" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {classes.map((cls) => (
+                          <SelectItem key={cls.id} value={cls.id}>
+                            {cls.class_name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-subject">Subject</Label>
+                    <Select
+                      value={formData.subject_id}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, subject_id: value, lesson_id: '' })
+                      }
+                      disabled={!formData.class_id}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select subject" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getAvailableSubjects().map((subject) => (
+                          <SelectItem key={subject.id} value={subject.id}>
+                            {subject.subject_name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-lesson">Lesson (Optional)</Label>
+                  <Select
+                    value={formData.lesson_id}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, lesson_id: value })
+                    }
+                    disabled={!formData.subject_id}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select lesson (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">No Lesson</SelectItem>
+                      {getAvailableLessons().map((lesson) => (
+                        <SelectItem key={lesson.id} value={lesson.id}>
+                          {lesson.lesson_name}
+                          {lesson.lesson_code && ` (${lesson.lesson_code})`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-question">Question Text</Label>
+                  <Input
+                    id="edit-question"
+                    value={formData.question_text}
+                    onChange={(e) =>
+                      setFormData({ ...formData, question_text: e.target.value })
+                    }
+                    placeholder="Enter your question"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-type">Question Type</Label>
+                    <Select
+                      value={formData.question_type}
+                      onValueChange={(value: 'mcq' | 'true_false' | 'short_answer') =>
+                        setFormData({ ...formData, question_type: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="mcq">Multiple Choice</SelectItem>
+                        <SelectItem value="true_false">True/False</SelectItem>
+                        <SelectItem value="short_answer">Short Answer</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-difficulty">Difficulty</Label>
+                    <Select
+                      value={formData.difficulty}
+                      onValueChange={(value: 'easy' | 'medium' | 'hard') =>
+                        setFormData({ ...formData, difficulty: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="easy">Easy</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="hard">Hard</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-marks">Marks</Label>
+                    <Input
+                      id="edit-marks"
+                      type="number"
+                      min="1"
+                      value={formData.marks}
+                      onChange={(e) =>
+                        setFormData({ ...formData, marks: parseInt(e.target.value) })
+                      }
+                      required
+                    />
+                  </div>
+                </div>
+
+                {formData.question_type === 'mcq' && (
+                  <div className="space-y-2">
+                    <Label>Options</Label>
+                    {formData.options.map((option, index) => (
+                      <Input
+                        key={index}
+                        value={option}
+                        onChange={(e) => {
+                          const newOptions = [...formData.options];
+                          newOptions[index] = e.target.value;
+                          setFormData({ ...formData, options: newOptions });
+                        }}
+                        placeholder={`Option ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-answer">Correct Answer</Label>
+                  {formData.question_type === 'mcq' ? (
+                    <Select
+                      value={formData.correct_answer}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, correct_answer: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select correct answer" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {formData.options
+                          .filter((opt) => opt.trim())
+                          .map((option, index) => (
+                            <SelectItem key={index} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  ) : formData.question_type === 'true_false' ? (
+                    <Select
+                      value={formData.correct_answer}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, correct_answer: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select correct answer" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="True">True</SelectItem>
+                        <SelectItem value="False">False</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      id="edit-answer"
+                      value={formData.correct_answer}
+                      onChange={(e) =>
+                        setFormData({ ...formData, correct_answer: e.target.value })
+                      }
+                      placeholder="Enter correct answer"
+                      required
+                    />
+                  )}
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setEditDialogOpen(false);
+                    setEditingQuestion(null);
+                    resetForm();
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit">Update Question</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+
         {/* Lesson Creation Dialog */}
         <Dialog open={lessonDialogOpen} onOpenChange={setLessonDialogOpen}>
           <DialogContent>
@@ -668,10 +973,32 @@ export default function QuestionBank() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Question Bank ({questions.length})</CardTitle>
-          <p className="text-sm text-muted-foreground mt-1">
-            Showing questions from your assigned classes and subjects only
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Question Bank ({questions.length})</CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                Showing questions from your assigned classes and subjects only
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant={viewMode === 'row' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('row')}
+              >
+                <LayoutList className="w-4 h-4 mr-2" />
+                Row View
+              </Button>
+              <Button
+                variant={viewMode === 'card' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('card')}
+              >
+                <LayoutGrid className="w-4 h-4 mr-2" />
+                Card View
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {questions.length === 0 ? (
@@ -682,7 +1009,7 @@ export default function QuestionBank() {
                 Start creating questions for your assigned classes and subjects
               </p>
             </div>
-          ) : (
+          ) : viewMode === 'row' ? (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -732,18 +1059,125 @@ export default function QuestionBank() {
                     </TableCell>
                     <TableCell>{question.marks}</TableCell>
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDelete(question.id)}
-                      >
-                        <Trash2 className="w-4 h-4 text-destructive" />
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEdit(question)}
+                        >
+                          <Pencil className="w-4 h-4 text-primary" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDelete(question.id)}
+                        >
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {questions.map((question) => (
+                <Card key={question.id} className="relative">
+                  <CardHeader>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1">
+                        <Badge variant="secondary" className="mb-2">
+                          {question.bank_name || '-'}
+                        </Badge>
+                        <CardTitle className="text-base line-clamp-2">
+                          {question.question_text}
+                        </CardTitle>
+                      </div>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEdit(question)}
+                        >
+                          <Pencil className="w-4 h-4 text-primary" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDelete(question.id)}
+                        >
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Subject</p>
+                        <p className="font-medium">
+                          {subjects.find((s) => s.id === question.subject_id)?.subject_name || '-'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Lesson</p>
+                        <p className="font-medium">
+                          {question.lesson_id 
+                            ? lessons.find((l) => l.id === question.lesson_id)?.lesson_name || '-'
+                            : '-'
+                          }
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Type</p>
+                        <Badge variant="outline" className="mt-1">
+                          {question.question_type === 'mcq' && 'Multiple Choice'}
+                          {question.question_type === 'true_false' && 'True/False'}
+                          {question.question_type === 'short_answer' && 'Short Answer'}
+                        </Badge>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Difficulty</p>
+                        <Badge className={`${getDifficultyColor(question.difficulty)} mt-1`}>
+                          {question.difficulty === 'easy' && 'Easy'}
+                          {question.difficulty === 'medium' && 'Medium'}
+                          {question.difficulty === 'hard' && 'Hard'}
+                        </Badge>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Marks</p>
+                        <p className="font-medium">{question.marks}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Correct Answer</p>
+                        <p className="font-medium truncate">{question.correct_answer}</p>
+                      </div>
+                    </div>
+                    
+                    {question.question_type === 'mcq' && question.options && question.options.length > 0 && (
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-2">Options</p>
+                        <div className="space-y-1">
+                          {question.options.map((option, idx) => (
+                            <div 
+                              key={idx} 
+                              className={`text-sm p-2 rounded border ${
+                                option === question.correct_answer 
+                                  ? 'bg-green-50 border-green-200 text-green-900' 
+                                  : 'bg-muted'
+                              }`}
+                            >
+                              <span className="font-medium">{String.fromCharCode(65 + idx)}.</span> {option}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           )}
         </CardContent>
       </Card>
