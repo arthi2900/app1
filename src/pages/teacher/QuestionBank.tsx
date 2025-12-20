@@ -28,10 +28,11 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Trash2, FileQuestion, BookOpen, LayoutGrid, LayoutList, Pencil } from 'lucide-react';
+import { Plus, Trash2, FileQuestion, BookOpen, LayoutGrid, LayoutList, Pencil, Upload } from 'lucide-react';
 import { questionApi, subjectApi, academicApi, profileApi, lessonApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
 import type { Question, Subject, Class, Lesson, TeacherAssignmentWithDetails, Profile, MatchPair } from '@/types/types';
+import { supabase } from '@/db/supabase';
 
 export default function QuestionBank() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -46,6 +47,7 @@ export default function QuestionBank() {
   const [lessonDialogOpen, setLessonDialogOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'row' | 'card'>('row');
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -136,6 +138,94 @@ export default function QuestionBank() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: 'Invalid File Type',
+        description: 'Please upload an image file (JPEG, PNG, GIF, or WebP)',
+        variant: 'destructive',
+      });
+      event.target.value = ''; // Reset input
+      return;
+    }
+
+    // Validate file size (max 1MB)
+    const maxSize = 1 * 1024 * 1024; // 1MB in bytes
+    if (file.size > maxSize) {
+      toast({
+        title: 'File Too Large',
+        description: 'Image must be smaller than 1MB. Please choose a smaller file.',
+        variant: 'destructive',
+      });
+      event.target.value = ''; // Reset input
+      return;
+    }
+
+    // Validate filename (no Chinese characters)
+    const chineseRegex = /[\u4e00-\u9fa5]/;
+    if (chineseRegex.test(file.name)) {
+      toast({
+        title: 'Invalid Filename',
+        description: 'Filename must not contain Chinese characters. Please rename the file.',
+        variant: 'destructive',
+      });
+      event.target.value = ''; // Reset input
+      return;
+    }
+
+    setUploadingImage(true);
+
+    try {
+      // Generate unique filename
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      // Upload to Supabase Storage
+      const { data, error } = await supabase.storage
+        .from('app-85wc5xzx8yyp_question_images')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('app-85wc5xzx8yyp_question_images')
+        .getPublicUrl(data.path);
+
+      // Update form data with the public URL
+      setFormData({ ...formData, image_url: urlData.publicUrl });
+
+      toast({
+        title: 'Success',
+        description: 'Image uploaded successfully',
+      });
+
+      // Reset file input
+      event.target.value = '';
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      toast({
+        title: 'Upload Failed',
+        description: error.message || 'Failed to upload image. Please try again.',
+        variant: 'destructive',
+      });
+      event.target.value = ''; // Reset input
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -748,14 +838,39 @@ export default function QuestionBank() {
 
                 <div className="space-y-2">
                   <Label htmlFor="image-url">Image/Clip Art (Optional)</Label>
-                  <Input
-                    id="image-url"
-                    value={formData.image_url}
-                    onChange={(e) =>
-                      setFormData({ ...formData, image_url: e.target.value })
-                    }
-                    placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
-                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="image-url"
+                      value={formData.image_url}
+                      onChange={(e) =>
+                        setFormData({ ...formData, image_url: e.target.value })
+                      }
+                      placeholder="Enter image URL or upload a file"
+                      className="flex-1"
+                    />
+                    <div className="relative">
+                      <input
+                        type="file"
+                        id="file-upload"
+                        accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        disabled={uploadingImage}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => document.getElementById('file-upload')?.click()}
+                        disabled={uploadingImage}
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        {uploadingImage ? 'Uploading...' : 'Upload'}
+                      </Button>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Max file size: 1MB. Supported formats: JPEG, PNG, GIF, WebP
+                  </p>
                   {formData.image_url && (
                     <div className="mt-2 border rounded-lg p-2 bg-muted">
                       <p className="text-sm text-muted-foreground mb-2">Image Preview:</p>
@@ -1206,14 +1321,39 @@ export default function QuestionBank() {
 
                 <div className="space-y-2">
                   <Label htmlFor="edit-image-url">Image/Clip Art (Optional)</Label>
-                  <Input
-                    id="edit-image-url"
-                    value={formData.image_url}
-                    onChange={(e) =>
-                      setFormData({ ...formData, image_url: e.target.value })
-                    }
-                    placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
-                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="edit-image-url"
+                      value={formData.image_url}
+                      onChange={(e) =>
+                        setFormData({ ...formData, image_url: e.target.value })
+                      }
+                      placeholder="Enter image URL or upload a file"
+                      className="flex-1"
+                    />
+                    <div className="relative">
+                      <input
+                        type="file"
+                        id="edit-file-upload"
+                        accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        disabled={uploadingImage}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => document.getElementById('edit-file-upload')?.click()}
+                        disabled={uploadingImage}
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        {uploadingImage ? 'Uploading...' : 'Upload'}
+                      </Button>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Max file size: 1MB. Supported formats: JPEG, PNG, GIF, WebP
+                  </p>
                   {formData.image_url && (
                     <div className="mt-2 border rounded-lg p-2 bg-muted">
                       <p className="text-sm text-muted-foreground mb-2">Image Preview:</p>
