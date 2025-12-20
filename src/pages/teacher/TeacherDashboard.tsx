@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileQuestion } from 'lucide-react';
-import { questionApi } from '@/db/api';
+import { FileQuestion, BookOpen, GraduationCap } from 'lucide-react';
+import { questionApi, academicApi, profileApi } from '@/db/api';
+import { useToast } from '@/hooks/use-toast';
 
 export default function TeacherDashboard() {
   const [stats, setStats] = useState({
     totalQuestions: 0,
+    totalSubjects: 0,
+    totalClasses: 0,
   });
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     loadStats();
@@ -15,13 +19,44 @@ export default function TeacherDashboard() {
 
   const loadStats = async () => {
     try {
+      // Get current user profile
+      const profile = await profileApi.getCurrentProfile();
+      if (!profile) {
+        throw new Error('Profile not found');
+      }
+
+      // Get teacher assignments for current academic year
+      const assignments = await academicApi.getTeacherAssignments(profile.id, '2024-2025');
+      
+      // Extract assigned subject IDs
+      const assignedSubjectIds = assignments.map(a => a.subject_id);
+      
+      // Get unique class count
+      const uniqueClasses = Array.from(
+        new Map(assignments.map(a => [a.class_id, a.class])).values()
+      );
+
+      // Load all questions and filter by assigned subjects
       const questions = await questionApi.getAllQuestions();
+      
+      // Filter questions based on teacher's assigned subjects
+      // This ensures the dashboard count matches the Question Bank page
+      const filteredQuestions = questions.filter(q => 
+        assignedSubjectIds.includes(q.subject_id)
+      );
 
       setStats({
-        totalQuestions: questions.length,
+        totalQuestions: filteredQuestions.length,
+        totalSubjects: assignedSubjectIds.length,
+        totalClasses: uniqueClasses.length,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading stats:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to load dashboard statistics',
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }
@@ -29,10 +64,25 @@ export default function TeacherDashboard() {
 
   const statCards = [
     {
-      title: 'Total Questions',
+      title: 'My Questions',
       value: stats.totalQuestions,
       icon: FileQuestion,
       color: 'text-primary',
+      description: 'Questions from your assigned subjects',
+    },
+    {
+      title: 'Assigned Subjects',
+      value: stats.totalSubjects,
+      icon: BookOpen,
+      color: 'text-secondary',
+      description: 'Subjects you are teaching',
+    },
+    {
+      title: 'Assigned Classes',
+      value: stats.totalClasses,
+      icon: GraduationCap,
+      color: 'text-accent',
+      description: 'Classes you are assigned to',
     },
   ];
 
@@ -52,11 +102,11 @@ export default function TeacherDashboard() {
       <div>
         <h1 className="text-3xl font-bold">Teacher Dashboard</h1>
         <p className="text-muted-foreground mt-2">
-          Manage your question bank
+          Overview of your assigned classes, subjects, and question bank
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-3">
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
@@ -67,6 +117,9 @@ export default function TeacherDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stat.value}</div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {stat.description}
+                </p>
               </CardContent>
             </Card>
           );
@@ -79,7 +132,7 @@ export default function TeacherDashboard() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            Welcome to the teacher section. Here you can create and manage questions for your subjects.
+            Welcome to the teacher dashboard. Here you can view statistics about your assigned classes and subjects, and manage questions for your question bank. The question count shown above reflects only the questions from your assigned subjects.
           </p>
         </CardContent>
       </Card>
