@@ -1,6 +1,11 @@
 export type UserRole = 'admin' | 'principal' | 'teacher' | 'student';
-export type QuestionType = 'mcq' | 'true_false' | 'short_answer';
+export type QuestionType = 'mcq' | 'true_false' | 'short_answer' | 'match_following' | 'multiple_response';
 export type DifficultyLevel = 'easy' | 'medium' | 'hard';
+
+export interface MatchPair {
+  left: string;
+  right: string;
+}
 
 export interface Profile {
   id: string;
@@ -48,7 +53,7 @@ export interface Question {
   lesson_id: string | null;
   question_text: string;
   question_type: QuestionType;
-  options: string[] | null;
+  options: string[] | MatchPair[] | null;
   correct_answer: string;
   marks: number;
   difficulty: DifficultyLevel;
