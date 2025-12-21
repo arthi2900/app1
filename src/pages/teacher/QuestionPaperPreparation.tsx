@@ -99,11 +99,6 @@ export default function QuestionPaperPreparation() {
       setSelectedClass(draftPaper.class_id);
       setSelectedSubject(draftPaper.subject_id);
 
-      // Load the questions for this paper
-      const paperQuestions = await academicApi.getQuestionPaperQuestions(draftPaper.id);
-      const questionIds = paperQuestions.map(pq => pq.question_id);
-      setSelectedQuestions(new Set(questionIds));
-
       // Load subjects for the selected class
       if (profile?.id) {
         const subjectsData = await subjectApi.getTeacherAssignedSubjects(profile.id, draftPaper.class_id);
@@ -111,10 +106,24 @@ export default function QuestionPaperPreparation() {
       }
 
       // Load questions for the selected subject
+      let allQuestions: Question[] = [];
       if (draftPaper.subject_id) {
         const questions = await questionApi.getTeacherQuestionsBySubject(draftPaper.subject_id);
-        setAvailableQuestions(Array.isArray(questions) ? questions : []);
+        allQuestions = Array.isArray(questions) ? questions : [];
+        setAvailableQuestions(allQuestions);
       }
+
+      // Load the questions for this paper
+      const paperQuestions = await academicApi.getQuestionPaperQuestions(draftPaper.id);
+      const questionIds = paperQuestions.map(pq => pq.question_id);
+      setSelectedQuestions(new Set(questionIds));
+
+      // Generate preview with the selected questions
+      const selectedQuestionsForPreview = allQuestions.filter(q => questionIds.includes(q.id));
+      setPreviewQuestions(selectedQuestionsForPreview);
+
+      // Move to step 3 (Preview)
+      setCurrentStep(3);
 
       toast.success('Draft paper loaded successfully');
     } catch (error) {
