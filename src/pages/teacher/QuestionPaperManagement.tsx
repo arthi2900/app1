@@ -139,6 +139,11 @@ export default function QuestionPaperManagement() {
     setPaperQuestions(questions);
   };
 
+  const handleEditDraft = (paper: QuestionPaperWithDetails) => {
+    // Navigate to question paper preparation page with the draft paper data
+    navigate('/teacher/question-paper', { state: { draftPaper: paper } });
+  };
+
   const handleDeletePaper = async (paperId: string) => {
     if (!confirm('Are you sure you want to delete this question paper?')) {
       return;
@@ -209,7 +214,9 @@ export default function QuestionPaperManagement() {
         <Card>
           <CardHeader>
             <CardTitle>Your Question Papers</CardTitle>
-            <CardDescription>View, shuffle, and manage your question papers</CardDescription>
+            <CardDescription>
+              View, shuffle, and manage your question papers. Click on any draft to continue editing or generate the final paper.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
@@ -226,14 +233,18 @@ export default function QuestionPaperManagement() {
               </TableHeader>
               <TableBody>
                 {questionPapers.map((paper) => (
-                  <TableRow key={paper.id}>
+                  <TableRow 
+                    key={paper.id}
+                    className={paper.status === 'draft' ? 'cursor-pointer hover:bg-muted/50' : ''}
+                    onClick={() => paper.status === 'draft' && handleEditDraft(paper)}
+                  >
                     <TableCell className="font-medium">{paper.title}</TableCell>
                     <TableCell>{paper.class?.class_name || 'N/A'}</TableCell>
                     <TableCell>{paper.subject?.subject_name || 'N/A'}</TableCell>
                     <TableCell>{getStatusBadge(paper.status)}</TableCell>
                     <TableCell>{paper.total_marks}</TableCell>
                     <TableCell>{new Date(paper.created_at).toLocaleDateString()}</TableCell>
-                    <TableCell>
+                    <TableCell onClick={(e) => e.stopPropagation()}>
                       <div className="flex gap-2">
                         {/* Preview Button */}
                         <Dialog>

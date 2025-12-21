@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,14 +12,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { Loader2, FileText, Eye, Save, Download, ArrowLeft, ArrowRight } from 'lucide-react';
 import { profileApi, academicApi, subjectApi, questionApi } from '@/db/api';
-import type { Profile, Class, Subject, Question, QuestionPaper } from '@/types/types';
+import type { Profile, Class, Subject, Question, QuestionPaper, QuestionPaperWithDetails } from '@/types/types';
 
 export default function QuestionPaperPreparation() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [draftPaperId, setDraftPaperId] = useState<string | null>(null);
 
   // Step 1: Basic Details
   const [classes, setClasses] = useState<Class[]>([]);
@@ -68,6 +70,12 @@ export default function QuestionPaperPreparation() {
         ]);
         setClasses(Array.isArray(classesData) ? classesData : []);
         setQuestionBankNames(Array.isArray(bankNames) ? bankNames : []);
+
+        // Check if we're editing a draft paper
+        const draftPaper = (location.state as { draftPaper?: QuestionPaperWithDetails })?.draftPaper;
+        if (draftPaper) {
+          await loadDraftPaper(draftPaper);
+        }
       } else {
         // For non-teachers (shouldn't happen, but fallback)
         const classesData = await academicApi.getAllClasses();
@@ -78,6 +86,40 @@ export default function QuestionPaperPreparation() {
       toast.error('Failed to load data');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadDraftPaper = async (draftPaper: QuestionPaperWithDetails) => {
+    try {
+      // Set draft paper ID for updating instead of creating new
+      setDraftPaperId(draftPaper.id);
+      
+      // Set basic details
+      setPaperTitle(draftPaper.title);
+      setSelectedClass(draftPaper.class_id);
+      setSelectedSubject(draftPaper.subject_id);
+
+      // Load the questions for this paper
+      const paperQuestions = await academicApi.getQuestionPaperQuestions(draftPaper.id);
+      const questionIds = paperQuestions.map(pq => pq.question_id);
+      setSelectedQuestions(new Set(questionIds));
+
+      // Load subjects for the selected class
+      if (profile?.id) {
+        const subjectsData = await subjectApi.getTeacherAssignedSubjects(profile.id, draftPaper.class_id);
+        setSubjects(Array.isArray(subjectsData) ? subjectsData : []);
+      }
+
+      // Load questions for the selected subject
+      if (draftPaper.subject_id) {
+        const questions = await questionApi.getTeacherQuestionsBySubject(draftPaper.subject_id);
+        setAvailableQuestions(Array.isArray(questions) ? questions : []);
+      }
+
+      toast.success('Draft paper loaded successfully');
+    } catch (error) {
+      console.error('Error loading draft paper:', error);
+      toast.error('Failed to load draft paper');
     }
   };
 
@@ -175,22 +217,48 @@ export default function QuestionPaperPreparation() {
     try {
       setSaving(true);
 
-      // Create the question paper
-      const paperData = {
-        school_id: profile.school_id,
-        class_id: selectedClass,
-        subject_id: selectedSubject,
-        title: paperTitle,
-        status: status,
-        shuffle_questions: false,
-        shuffle_mcq_options: false,
-        created_by: profile.id,
-      };
+      let paperId: string;
 
-      const createdPaper = await academicApi.createQuestionPaper(paperData);
-      
-      if (!createdPaper) {
-        throw new Error('Failed to create question paper');
+      if (draftPaperId) {
+        // Update existing draft
+        const updateData = {
+          title: paperTitle,
+          status: status,
+        };
+        
+        const updatedPaper = await academicApi.updateQuestionPaper(draftPaperId, updateData);
+        
+        if (!updatedPaper) {
+          throw new Error('Failed to update question paper');
+        }
+        
+        paperId = draftPaperId;
+
+        // Delete existing questions and re-add them
+        const existingQuestions = await academicApi.getQuestionPaperQuestions(draftPaperId);
+        for (const pq of existingQuestions) {
+          await academicApi.removeQuestionFromPaper(pq.id);
+        }
+      } else {
+        // Create new question paper
+        const paperData = {
+          school_id: profile.school_id,
+          class_id: selectedClass,
+          subject_id: selectedSubject,
+          title: paperTitle,
+          status: status,
+          shuffle_questions: false,
+          shuffle_mcq_options: false,
+          created_by: profile.id,
+        };
+
+        const createdPaper = await academicApi.createQuestionPaper(paperData);
+        
+        if (!createdPaper) {
+          throw new Error('Failed to create question paper');
+        }
+        
+        paperId = createdPaper.id;
       }
 
       // Add all selected questions to the paper
@@ -199,14 +267,14 @@ export default function QuestionPaperPreparation() {
       for (let i = 0; i < selectedQuestionsArray.length; i++) {
         const question = selectedQuestionsArray[i];
         await academicApi.addQuestionToPaper({
-          question_paper_id: createdPaper.id,
+          question_paper_id: paperId,
           question_id: question.id,
           display_order: i + 1,
           shuffled_options: null,
         });
       }
 
-      return createdPaper;
+      return { id: paperId };
     } catch (error) {
       console.error('Error saving question paper:', error);
       throw error;
@@ -219,8 +287,8 @@ export default function QuestionPaperPreparation() {
     try {
       const paper = await saveQuestionPaper('draft');
       if (paper) {
-        toast.success('Question paper saved as draft successfully');
-        navigate('/teacher/dashboard');
+        toast.success(draftPaperId ? 'Draft updated successfully' : 'Question paper saved as draft successfully');
+        navigate('/teacher/question-paper-management');
       }
     } catch (error) {
       console.error('Error saving draft:', error);
@@ -232,8 +300,8 @@ export default function QuestionPaperPreparation() {
     try {
       const paper = await saveQuestionPaper('final');
       if (paper) {
-        toast.success('Question paper generated successfully');
-        navigate('/teacher/dashboard');
+        toast.success(draftPaperId ? 'Question paper updated and finalized successfully' : 'Question paper generated successfully');
+        navigate('/teacher/question-paper-management');
       }
     } catch (error) {
       console.error('Error generating paper:', error);
