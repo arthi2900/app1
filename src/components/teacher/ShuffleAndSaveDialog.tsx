@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2, Shuffle } from 'lucide-react';
+import { Loader2, Shuffle, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { academicApi, profileApi } from '@/db/api';
 import type { QuestionPaperWithDetails, Question } from '@/types/types';
@@ -19,13 +19,18 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [newTitle, setNewTitle] = useState(`${paper.title} (Shuffled)`);
-  const [shuffleQuestions, setShuffleQuestions] = useState(true);
-  const [shuffleMcqOptions, setShuffleMcqOptions] = useState(true);
+  const [shuffleQuestions, setShuffleQuestions] = useState(false);
+  const [shuffleMcqOptions, setShuffleMcqOptions] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewGenerated, setPreviewGenerated] = useState(false);
 
   useEffect(() => {
     if (open) {
       loadQuestions();
+      setShuffleQuestions(false);
+      setShuffleMcqOptions(false);
+      setShowPreview(false);
+      setPreviewGenerated(false);
     }
   }, [open]);
 
@@ -52,9 +57,23 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
     return shuffled;
   };
 
+  const handleGeneratePreview = () => {
+    if (!shuffleQuestions && !shuffleMcqOptions) {
+      toast.error('Please select at least one shuffle option');
+      return;
+    }
+    setShowPreview(true);
+    setPreviewGenerated(true);
+  };
+
   const handleSaveShuffled = async () => {
-    if (!newTitle.trim()) {
-      toast.error('Please enter a title for the shuffled paper');
+    if (!shuffleQuestions && !shuffleMcqOptions) {
+      toast.error('Please select at least one shuffle option');
+      return;
+    }
+
+    if (!previewGenerated) {
+      toast.error('Please generate a preview first');
       return;
     }
 
@@ -72,6 +91,17 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
         toast.error('User profile not found');
         return;
       }
+
+      // Generate title based on shuffle options
+      let titleSuffix = '(Shuffled)';
+      if (shuffleQuestions && shuffleMcqOptions) {
+        titleSuffix = '(Shuffled - Q&A)';
+      } else if (shuffleQuestions) {
+        titleSuffix = '(Shuffled - Questions)';
+      } else if (shuffleMcqOptions) {
+        titleSuffix = '(Shuffled - Options)';
+      }
+      const newTitle = `${paper.title} ${titleSuffix}`;
 
       // Prepare questions array (shuffle if needed)
       let processedQuestions = [...questions];
@@ -148,7 +178,10 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
 
       toast.success('Shuffled question paper saved successfully');
       setOpen(false);
-      setNewTitle(`${paper.title} (Shuffled)`);
+      setShuffleQuestions(false);
+      setShuffleMcqOptions(false);
+      setShowPreview(false);
+      setPreviewGenerated(false);
       if (onSuccess) {
         onSuccess();
       }
@@ -167,11 +200,11 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
           <Shuffle className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Shuffle and Save Question Paper</DialogTitle>
+          <DialogTitle>Shuffle Question Paper</DialogTitle>
           <DialogDescription>
-            Create a shuffled copy of "{paper.title}" with a new name
+            Create a shuffled version of "{paper.title}"
           </DialogDescription>
         </DialogHeader>
 
@@ -182,52 +215,81 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
           </div>
         ) : (
           <>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="new-title">New Paper Title</Label>
-                <Input
-                  id="new-title"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="Enter new title"
-                  disabled={saving}
-                />
-              </div>
+            <div className="space-y-6 py-4">
+              {/* Shuffle Options Card */}
+              <div className="border rounded-lg p-6 space-y-4">
+                <h3 className="text-lg font-semibold">Shuffle Options</h3>
+                
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                    <Checkbox
+                      id="shuffle-questions"
+                      checked={shuffleQuestions}
+                      onCheckedChange={(checked) => {
+                        setShuffleQuestions(checked as boolean);
+                        setPreviewGenerated(false);
+                      }}
+                      disabled={saving}
+                      className="mt-1"
+                    />
+                    <div className="flex-1">
+                      <Label htmlFor="shuffle-questions" className="cursor-pointer font-medium">
+                        Shuffle Questions - Randomize question order
+                      </Label>
+                    </div>
+                  </div>
 
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="shuffle-questions"
-                    checked={shuffleQuestions}
-                    onCheckedChange={(checked) => setShuffleQuestions(checked as boolean)}
-                    disabled={saving}
-                  />
-                  <Label htmlFor="shuffle-questions" className="cursor-pointer">
-                    Shuffle question order
-                  </Label>
+                  <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                    <Checkbox
+                      id="shuffle-mcq"
+                      checked={shuffleMcqOptions}
+                      onCheckedChange={(checked) => {
+                        setShuffleMcqOptions(checked as boolean);
+                        setPreviewGenerated(false);
+                      }}
+                      disabled={saving}
+                      className="mt-1"
+                    />
+                    <div className="flex-1">
+                      <Label htmlFor="shuffle-mcq" className="cursor-pointer font-medium">
+                        Shuffle MCQ Options - Randomize answer options (correct answer will be tracked)
+                      </Label>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="shuffle-mcq"
-                    checked={shuffleMcqOptions}
-                    onCheckedChange={(checked) => setShuffleMcqOptions(checked as boolean)}
-                    disabled={saving}
-                  />
-                  <Label htmlFor="shuffle-mcq" className="cursor-pointer">
-                    Shuffle MCQ options
-                  </Label>
-                </div>
+                <Button
+                  onClick={handleGeneratePreview}
+                  disabled={saving || (!shuffleQuestions && !shuffleMcqOptions)}
+                  className="w-full"
+                  variant="default"
+                >
+                  <Eye className="mr-2 h-4 w-4" />
+                  Generate Shuffled Preview
+                </Button>
               </div>
 
-              <div className="bg-muted p-3 rounded-lg text-sm">
-                <p className="font-medium mb-1">Preview:</p>
-                <p className="text-muted-foreground">
-                  {questions.length} questions will be copied
-                  {shuffleQuestions && ' in shuffled order'}
-                  {shuffleMcqOptions && ', with shuffled MCQ options'}
-                </p>
-              </div>
+              {/* Preview Section */}
+              {showPreview && (
+                <div className="bg-muted p-4 rounded-lg space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Eye className="h-5 w-5 text-primary" />
+                    <p className="font-semibold">Preview:</p>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {questions.length} questions will be copied
+                    {shuffleQuestions && shuffleMcqOptions && ' with shuffled question order and MCQ options'}
+                    {shuffleQuestions && !shuffleMcqOptions && ' with shuffled question order'}
+                    {!shuffleQuestions && shuffleMcqOptions && ' with shuffled MCQ options'}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    New paper will be saved as: <span className="font-medium">
+                      {paper.title} {shuffleQuestions && shuffleMcqOptions ? '(Shuffled - Q&A)' : 
+                       shuffleQuestions ? '(Shuffled - Questions)' : '(Shuffled - Options)'}
+                    </span>
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end gap-2">
@@ -240,7 +302,7 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
               </Button>
               <Button
                 onClick={handleSaveShuffled}
-                disabled={saving || !newTitle.trim()}
+                disabled={saving || !previewGenerated}
               >
                 {saving ? (
                   <>
