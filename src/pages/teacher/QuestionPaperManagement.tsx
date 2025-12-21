@@ -133,6 +133,12 @@ export default function QuestionPaperManagement() {
     window.print();
   };
 
+  const handlePreviewPaper = async (paper: QuestionPaperWithDetails) => {
+    setSelectedPaper(paper);
+    const questions = await loadPaperQuestions(paper.id);
+    setPaperQuestions(questions);
+  };
+
   const handleDeletePaper = async (paperId: string) => {
     if (!confirm('Are you sure you want to delete this question paper?')) {
       return;
@@ -229,6 +235,81 @@ export default function QuestionPaperManagement() {
                     <TableCell>{new Date(paper.created_at).toLocaleDateString()}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
+                        {/* Preview Button */}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handlePreviewPaper(paper)}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle>Question Paper Preview</DialogTitle>
+                              <DialogDescription>
+                                Preview of "{paper.title}"
+                              </DialogDescription>
+                            </DialogHeader>
+
+                            <div className="space-y-4">
+                              <Card>
+                                <CardHeader>
+                                  <CardTitle className="text-lg">{paper.title}</CardTitle>
+                                  <CardDescription>
+                                    Class: {paper.class?.class_name || 'N/A'} | Subject: {paper.subject?.subject_name || 'N/A'} | Total Marks: {paper.total_marks}
+                                  </CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                  {paperQuestions.length === 0 ? (
+                                    <p className="text-center text-muted-foreground py-8">No questions found</p>
+                                  ) : (
+                                    paperQuestions.map((question, index) => (
+                                      <div key={question.id} className="border-b pb-4 last:border-b-0">
+                                        <div className="flex items-start justify-between mb-2">
+                                          <h3 className="font-medium">
+                                            Q{index + 1}. {question.question_text}
+                                          </h3>
+                                          <Badge className={getDifficultyColor(question.difficulty)}>
+                                            {question.marks} marks
+                                          </Badge>
+                                        </div>
+
+                                        {(question.question_type === 'mcq' || question.question_type === 'multiple_response') &&
+                                          Array.isArray(question.options) && (
+                                            <div className="ml-4 space-y-1 mt-2">
+                                              {(question.options as string[]).map((option, idx) => (
+                                                <div key={idx} className="text-sm">
+                                                  {String.fromCharCode(65 + idx)}. {option}
+                                                </div>
+                                              ))}
+                                            </div>
+                                          )}
+
+                                        {question.question_type === 'true_false' && (
+                                          <div className="ml-4 space-y-1 mt-2">
+                                            <div className="text-sm">A. True</div>
+                                            <div className="text-sm">B. False</div>
+                                          </div>
+                                        )}
+                                      </div>
+                                    ))
+                                  )}
+
+                                  <div className="flex justify-end gap-2 pt-4">
+                                    <Button variant="outline" onClick={handleExportPDF}>
+                                      <Download className="mr-2 h-4 w-4" /> Export PDF
+                                    </Button>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+
+                        {/* Shuffle Button */}
                         <Dialog>
                           <DialogTrigger asChild>
                             <Button
@@ -333,6 +414,7 @@ export default function QuestionPaperManagement() {
                           </DialogContent>
                         </Dialog>
 
+                        {/* Delete Button */}
                         <Button
                           variant="outline"
                           size="sm"
