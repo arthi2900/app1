@@ -10,9 +10,12 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Loader2, FileText, Eye, Save, Download, ArrowLeft, ArrowRight } from 'lucide-react';
-import { profileApi, academicApi, subjectApi, questionApi } from '@/db/api';
-import type { Profile, Class, Subject, Question, QuestionPaper, QuestionPaperWithDetails } from '@/types/types';
+import { Loader2, FileText, Eye, Save, Download, ArrowLeft, ArrowRight, Layers, Filter } from 'lucide-react';
+import { profileApi, academicApi, subjectApi, questionApi, lessonApi } from '@/db/api';
+import { TemplateManagementDialog } from '@/components/teacher/TemplateManagementDialog';
+import { VersionGenerationDialog } from '@/components/teacher/VersionGenerationDialog';
+import { SmartSelectionPanel } from '@/components/teacher/SmartSelectionPanel';
+import type { Profile, Class, Subject, Question, QuestionPaper, QuestionPaperWithDetails, QuestionPaperTemplate, Lesson } from '@/types/types';
 
 export default function QuestionPaperPreparation() {
   const navigate = useNavigate();
@@ -40,6 +43,13 @@ export default function QuestionPaperPreparation() {
   // Preview
   const [previewQuestions, setPreviewQuestions] = useState<Question[]>([]);
 
+  // New Enhancement Features
+  const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [versionDialogOpen, setVersionDialogOpen] = useState(false);
+  const [showAnswerKey, setShowAnswerKey] = useState(false);
+  const [filterDifficulty, setFilterDifficulty] = useState<string>('all');
+  const [filterLesson, setFilterLesson] = useState<string>('all');
+
   useEffect(() => {
     loadInitialData();
   }, []);
@@ -51,8 +61,11 @@ export default function QuestionPaperPreparation() {
   }, [selectedClass]);
 
   useEffect(() => {
-    if (selectedSubject && currentStep === 2) {
-      loadQuestions();
+    if (selectedSubject) {
+      loadLessons();
+      if (currentStep === 2) {
+        loadQuestions();
+      }
     }
   }, [selectedSubject, viewMode, selectedBankName, currentStep]);
 
@@ -149,6 +162,16 @@ export default function QuestionPaperPreparation() {
     } catch (error) {
       console.error('Error loading subjects:', error);
       toast.error('Failed to load subjects');
+    }
+  };
+
+  const loadLessons = async () => {
+    try {
+      if (!selectedSubject) return;
+      const lessonsData = await lessonApi.getLessonsBySubject(selectedSubject);
+      setLessons(Array.isArray(lessonsData) ? lessonsData : []);
+    } catch (error) {
+      console.error('Error loading lessons:', error);
     }
   };
 
@@ -346,6 +369,52 @@ export default function QuestionPaperPreparation() {
     window.print();
   };
 
+  // New Enhancement Handlers
+  const handleTemplateSelect = (template: QuestionPaperTemplate) => {
+    setSelectedClass(template.class_id);
+    setSelectedSubject(template.subject_id);
+    setPaperTitle(template.name);
+    toast.success('Template applied! Configure questions in Step 2');
+  };
+
+  const handleAutoSelectQuestions = (questionIds: string[]) => {
+    setSelectedQuestions(new Set(questionIds));
+    toast.success(`${questionIds.length} questions selected`);
+  };
+
+  const handleBulkSelectByDifficulty = (difficulty: string) => {
+    const filtered = availableQuestions.filter(q => q.difficulty === difficulty);
+    const ids = filtered.map(q => q.id);
+    setSelectedQuestions(new Set(ids));
+    toast.success(`Selected ${ids.length} ${difficulty} questions`);
+  };
+
+  const handleBulkSelectByLesson = (lessonId: string) => {
+    const filtered = availableQuestions.filter(q => q.lesson_id === lessonId);
+    const ids = filtered.map(q => q.id);
+    setSelectedQuestions(new Set(ids));
+    toast.success(`Selected ${ids.length} questions from lesson`);
+  };
+
+  const handleClearSelection = () => {
+    setSelectedQuestions(new Set());
+    toast.success('Selection cleared');
+  };
+
+  const getFilteredQuestions = () => {
+    let filtered = availableQuestions;
+
+    if (filterDifficulty !== 'all') {
+      filtered = filtered.filter(q => q.difficulty === filterDifficulty);
+    }
+
+    if (filterLesson !== 'all') {
+      filtered = filtered.filter(q => q.lesson_id === filterLesson);
+    }
+
+    return filtered;
+  };
+
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'easy':
@@ -479,7 +548,14 @@ export default function QuestionPaperPreparation() {
               </div>
             </div>
 
-            <div className="flex justify-end pt-4">
+            <div className="flex items-center justify-between pt-4">
+              <TemplateManagementDialog
+                teacherId={profile?.id || ''}
+                schoolId={profile?.school_id || ''}
+                classes={classes}
+                subjects={subjects}
+                onTemplateSelect={handleTemplateSelect}
+              />
               <Button
                 onClick={handleNextStep}
                 disabled={!selectedClass || !selectedSubject || !paperTitle.trim()}
@@ -493,120 +569,183 @@ export default function QuestionPaperPreparation() {
 
       {/* Step 2: Question Selection */}
       {currentStep === 2 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Select Questions</CardTitle>
-            <CardDescription>Choose questions from your question bank</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'all' | 'bank')}>
-              <TabsList>
-                <TabsTrigger value="all">View All Questions</TabsTrigger>
-                <TabsTrigger value="bank">View by Question Bank</TabsTrigger>
-              </TabsList>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Question Selection */}
+          <div className="lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Select Questions</CardTitle>
+                <CardDescription>Choose questions from your question bank</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'all' | 'bank')}>
+                  <TabsList>
+                    <TabsTrigger value="all">View All Questions</TabsTrigger>
+                    <TabsTrigger value="bank">View by Question Bank</TabsTrigger>
+                  </TabsList>
 
-              <TabsContent value="all" className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">
-                    {availableQuestions.length} questions available
-                  </p>
-                  <Button variant="outline" size="sm" onClick={handleSelectAll}>
-                    {selectedQuestions.size === availableQuestions.length ? 'Deselect All' : 'Select All'}
-                  </Button>
-                </div>
-              </TabsContent>
+                  <TabsContent value="all" className="space-y-4">
+                    {/* Filters */}
+                    <div className="flex flex-wrap gap-3">
+                      <div className="flex items-center gap-2">
+                        <Filter className="h-4 w-4 text-muted-foreground" />
+                        <Select value={filterDifficulty} onValueChange={setFilterDifficulty}>
+                          <SelectTrigger className="w-[140px]">
+                            <SelectValue placeholder="Difficulty" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Difficulty</SelectItem>
+                            <SelectItem value="easy">Easy</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                            <SelectItem value="hard">Hard</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-              <TabsContent value="bank" className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="bank-name">Question Bank Name</Label>
-                  <Select value={selectedBankName} onValueChange={setSelectedBankName}>
-                    <SelectTrigger id="bank-name">
-                      <SelectValue placeholder="Select question bank" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {questionBankNames.map((name) => (
-                        <SelectItem key={name} value={name}>
-                          {name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                      <Select value={filterLesson} onValueChange={setFilterLesson}>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="All Lessons" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Lessons</SelectItem>
+                          {lessons.map((lesson) => (
+                            <SelectItem key={lesson.id} value={lesson.id}>
+                              {lesson.lesson_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">
-                    {availableQuestions.length} questions available
-                  </p>
-                  <Button variant="outline" size="sm" onClick={handleSelectAll}>
-                    {selectedQuestions.size === availableQuestions.length ? 'Deselect All' : 'Select All'}
-                  </Button>
-                </div>
-              </TabsContent>
-            </Tabs>
+                    {/* Bulk Operations */}
+                    <div className="flex flex-wrap gap-2">
+                      <Button variant="outline" size="sm" onClick={handleSelectAll}>
+                        {selectedQuestions.size === availableQuestions.length ? 'Deselect All' : 'Select All'}
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => handleBulkSelectByDifficulty('easy')}>
+                        Select Easy
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => handleBulkSelectByDifficulty('medium')}>
+                        Select Medium
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => handleBulkSelectByDifficulty('hard')}>
+                        Select Hard
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={handleClearSelection}>
+                        Clear
+                      </Button>
+                    </div>
 
-            {loading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-primary" />
-              </div>
-            ) : (
-              <div className="border rounded-lg">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-12">Select</TableHead>
-                      <TableHead>Question</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Difficulty</TableHead>
-                      <TableHead>Marks</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {availableQuestions.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
-                          No questions available
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      availableQuestions.map((question) => (
-                        <TableRow key={question.id}>
-                          <TableCell>
-                            <Checkbox
-                              checked={selectedQuestions.has(question.id)}
-                              onCheckedChange={() => handleQuestionToggle(question.id)}
-                            />
-                          </TableCell>
-                          <TableCell className="max-w-md truncate">{question.question_text}</TableCell>
-                          <TableCell>
-                            <Badge variant="outline">{getQuestionTypeLabel(question.question_type)}</Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge className={getDifficultyColor(question.difficulty)}>
-                              {question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1)}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{question.marks}</TableCell>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-muted-foreground">
+                        {getFilteredQuestions().length} questions available
+                      </p>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="bank" className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="bank-name">Question Bank Name</Label>
+                      <Select value={selectedBankName} onValueChange={setSelectedBankName}>
+                        <SelectTrigger id="bank-name">
+                          <SelectValue placeholder="Select question bank" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {questionBankNames.map((name) => (
+                            <SelectItem key={name} value={name}>
+                              {name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-muted-foreground">
+                        {availableQuestions.length} questions available
+                      </p>
+                      <Button variant="outline" size="sm" onClick={handleSelectAll}>
+                        {selectedQuestions.size === availableQuestions.length ? 'Deselect All' : 'Select All'}
+                      </Button>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+
+                {loading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  </div>
+                ) : (
+                  <div className="border rounded-lg max-h-[500px] overflow-y-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-12">Select</TableHead>
+                          <TableHead>Question</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Difficulty</TableHead>
+                          <TableHead>Marks</TableHead>
                         </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
+                      </TableHeader>
+                      <TableBody>
+                        {getFilteredQuestions().length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                              No questions available
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          getFilteredQuestions().map((question) => (
+                            <TableRow key={question.id}>
+                              <TableCell>
+                                <Checkbox
+                                  checked={selectedQuestions.has(question.id)}
+                                  onCheckedChange={() => handleQuestionToggle(question.id)}
+                                />
+                              </TableCell>
+                              <TableCell className="max-w-md truncate">{question.question_text}</TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{getQuestionTypeLabel(question.question_type)}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge className={getDifficultyColor(question.difficulty)}>
+                                  {question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1)}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{question.marks}</TableCell>
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
 
-            <div className="flex items-center justify-between pt-4">
-              <Button variant="outline" onClick={handlePreviousStep}>
-                <ArrowLeft className="mr-2 h-4 w-4" /> Previous
-              </Button>
-              <div className="text-sm text-muted-foreground">
-                {selectedQuestions.size} question(s) selected | Total Marks: {calculateTotalMarks()}
-              </div>
-              <Button onClick={handleNextStep} disabled={selectedQuestions.size === 0}>
-                Next <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                <div className="flex items-center justify-between pt-4">
+                  <Button variant="outline" onClick={handlePreviousStep}>
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Previous
+                  </Button>
+                  <div className="text-sm text-muted-foreground">
+                    {selectedQuestions.size} question(s) selected | Total Marks: {calculateTotalMarks()}
+                  </div>
+                  <Button onClick={handleNextStep} disabled={selectedQuestions.size === 0}>
+                    Next <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Smart Selection Panel */}
+          <div className="lg:col-span-1">
+            <SmartSelectionPanel
+              availableQuestions={availableQuestions}
+              selectedQuestions={selectedQuestions}
+              lessons={lessons}
+              onAutoSelect={handleAutoSelectQuestions}
+            />
+          </div>
+        </div>
       )}
 
       {/* Step 3: Preview & Save */}
@@ -636,10 +775,25 @@ export default function QuestionPaperPreparation() {
           {previewQuestions.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>Question Paper Preview</CardTitle>
-                <CardDescription>
-                  {paperTitle} | Total Marks: {calculateTotalMarks()}
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Question Paper Preview</CardTitle>
+                    <CardDescription>
+                      {paperTitle} | Total Marks: {calculateTotalMarks()}
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label className="flex items-center gap-2 text-sm cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={showAnswerKey}
+                        onChange={(e) => setShowAnswerKey(e.target.checked)}
+                        className="rounded"
+                      />
+                      Show Answer Key
+                    </label>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent className="space-y-6">
                 {previewQuestions.map((question, index) => (
@@ -670,6 +824,20 @@ export default function QuestionPaperPreparation() {
                         <div className="text-sm">B. False</div>
                       </div>
                     )}
+
+                    {/* Answer Key Display */}
+                    {showAnswerKey && (
+                      <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                        <p className="text-sm font-medium text-primary">
+                          ✓ Answer: {' '}
+                          {question.question_type === 'multiple_response'
+                            ? question.correct_answer.includes(',')
+                              ? question.correct_answer.split(',').map(a => a.trim()).join(', ')
+                              : question.correct_answer
+                            : question.correct_answer || 'Subjective answer required'}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </CardContent>
@@ -681,6 +849,15 @@ export default function QuestionPaperPreparation() {
               <ArrowLeft className="mr-2 h-4 w-4" /> Previous
             </Button>
             <div className="flex gap-2">
+              {draftPaperId && previewQuestions.length > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={() => setVersionDialogOpen(true)}
+                  disabled={saving}
+                >
+                  <Layers className="mr-2 h-4 w-4" /> Generate Versions
+                </Button>
+              )}
               <Button variant="outline" onClick={handleSaveDraft} disabled={saving}>
                 {saving ? (
                   <>
@@ -709,6 +886,17 @@ export default function QuestionPaperPreparation() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Version Generation Dialog */}
+      {draftPaperId && (
+        <VersionGenerationDialog
+          open={versionDialogOpen}
+          onOpenChange={setVersionDialogOpen}
+          paperId={draftPaperId}
+          questions={previewQuestions}
+          paperTitle={paperTitle}
+        />
       )}
     </div>
   );
