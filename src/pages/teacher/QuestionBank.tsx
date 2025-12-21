@@ -58,6 +58,7 @@ export default function QuestionBank() {
     question_type: 'mcq' as 'mcq' | 'true_false' | 'short_answer' | 'match_following' | 'multiple_response',
     difficulty: 'medium' as 'easy' | 'medium' | 'hard',
     marks: 1,
+    negative_marks: 0,
     options: ['', '', '', ''],
     correct_answer: '',
     image_url: '',
@@ -309,6 +310,7 @@ export default function QuestionBank() {
         question_type: formData.question_type,
         difficulty: formData.difficulty,
         marks: formData.marks,
+        negative_marks: formData.negative_marks,
         options: options,
         correct_answer: correctAnswer,
         image_url: formData.image_url.trim() || null,
@@ -397,6 +399,7 @@ export default function QuestionBank() {
       question_type: question.question_type,
       difficulty: question.difficulty,
       marks: question.marks,
+      negative_marks: question.negative_marks,
       options: options,
       correct_answer: correctAnswer,
       image_url: question.image_url || '',
@@ -490,6 +493,7 @@ export default function QuestionBank() {
         question_type: formData.question_type,
         difficulty: formData.difficulty,
         marks: formData.marks,
+        negative_marks: formData.negative_marks,
         options: options,
         correct_answer: correctAnswer,
         image_url: formData.image_url.trim() || null,
@@ -522,6 +526,7 @@ export default function QuestionBank() {
       question_type: 'mcq',
       difficulty: 'medium',
       marks: 1,
+      negative_marks: 0,
       options: ['', '', '', ''],
       correct_answer: '',
       image_url: '',
@@ -544,6 +549,7 @@ export default function QuestionBank() {
       question_type: 'mcq',
       difficulty: 'medium',
       marks: 1,
+      negative_marks: 0,
       options: ['', '', '', ''],
       correct_answer: '',
       image_url: '',
@@ -940,6 +946,24 @@ export default function QuestionBank() {
                       }
                       required
                     />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="negative-marks">Negative Marks</Label>
+                    <Input
+                      id="negative-marks"
+                      type="number"
+                      min="0"
+                      step="0.25"
+                      value={formData.negative_marks}
+                      onChange={(e) =>
+                        setFormData({ ...formData, negative_marks: parseFloat(e.target.value) || 0 })
+                      }
+                      placeholder="0"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Marks deducted for wrong answer (0 = no deduction)
+                    </p>
                   </div>
                 </div>
 
@@ -1443,6 +1467,24 @@ export default function QuestionBank() {
                       required
                     />
                   </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-negative-marks">Negative Marks</Label>
+                    <Input
+                      id="edit-negative-marks"
+                      type="number"
+                      min="0"
+                      step="0.25"
+                      value={formData.negative_marks}
+                      onChange={(e) =>
+                        setFormData({ ...formData, negative_marks: parseFloat(e.target.value) || 0 })
+                      }
+                      placeholder="0"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Marks deducted for wrong answer (0 = no deduction)
+                    </p>
+                  </div>
                 </div>
 
                 {formData.question_type === 'mcq' && (
@@ -1756,6 +1798,7 @@ export default function QuestionBank() {
                   <TableHead>Type</TableHead>
                   <TableHead>Difficulty</TableHead>
                   <TableHead>Marks</TableHead>
+                  <TableHead>Negative Marks</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -1808,6 +1851,7 @@ export default function QuestionBank() {
                       </Badge>
                     </TableCell>
                     <TableCell>{question.marks}</TableCell>
+                    <TableCell>{question.negative_marks}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
                         <Button
@@ -1912,6 +1956,10 @@ export default function QuestionBank() {
                       <div>
                         <p className="text-muted-foreground">Marks</p>
                         <p className="font-medium">{question.marks}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Negative Marks</p>
+                        <p className="font-medium">{question.negative_marks}</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground">Correct Answer</p>

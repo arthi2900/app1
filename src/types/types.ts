@@ -56,6 +56,7 @@ export interface Question {
   options: string[] | MatchPair[] | null;
   correct_answer: string;
   marks: number;
+  negative_marks: number;
   difficulty: DifficultyLevel;
   bank_name: string | null;
   image_url: string | null;
