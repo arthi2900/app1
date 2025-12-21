@@ -259,6 +259,10 @@ export default function QuestionPaperPreparation() {
           shuffle_questions: false,
           shuffle_mcq_options: false,
           created_by: profile.id,
+          template_id: null,
+          difficulty_distribution: { easy: 0, medium: 0, hard: 0 },
+          lesson_coverage: [],
+          has_versions: false,
         };
 
         const createdPaper = await academicApi.createQuestionPaper(paperData);

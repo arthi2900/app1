@@ -17,6 +17,10 @@ import type {
   QuestionPaperQuestion,
   QuestionPaperWithDetails,
   QuestionPaperQuestionWithDetails,
+  QuestionPaperTemplate,
+  QuestionPaperTemplateWithDetails,
+  QuestionPaperVersion,
+  QuestionPaperVersionWithDetails,
   Exam,
   ExamWithDetails,
   ExamAttempt,
@@ -1161,5 +1165,138 @@ export const examAnswerApi = {
       .maybeSingle();
     if (error) throw error;
     return data;
+  },
+};
+
+// Question Paper Template API
+export const questionPaperTemplateApi = {
+  async getTemplatesByTeacher(teacherId: string): Promise<QuestionPaperTemplateWithDetails[]> {
+    const { data, error } = await supabase
+      .from('question_paper_templates')
+      .select(`
+        *,
+        class:classes(*),
+        subject:subjects(*)
+      `)
+      .eq('created_by', teacherId)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getTemplatesBySubject(subjectId: string): Promise<QuestionPaperTemplate[]> {
+    const { data, error } = await supabase
+      .from('question_paper_templates')
+      .select('*')
+      .eq('subject_id', subjectId)
+      .order('name', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getTemplateById(id: string): Promise<QuestionPaperTemplateWithDetails | null> {
+    const { data, error } = await supabase
+      .from('question_paper_templates')
+      .select(`
+        *,
+        class:classes(*),
+        subject:subjects(*)
+      `)
+      .eq('id', id)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async createTemplate(template: Omit<QuestionPaperTemplate, 'id' | 'created_at' | 'updated_at'>): Promise<QuestionPaperTemplate | null> {
+    const { data, error } = await supabase
+      .from('question_paper_templates')
+      .insert(template)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateTemplate(id: string, updates: Partial<QuestionPaperTemplate>): Promise<QuestionPaperTemplate | null> {
+    const { data, error } = await supabase
+      .from('question_paper_templates')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async deleteTemplate(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('question_paper_templates')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+};
+
+// Question Paper Version API
+export const questionPaperVersionApi = {
+  async getVersionsByPaper(paperId: string): Promise<QuestionPaperVersion[]> {
+    const { data, error } = await supabase
+      .from('question_paper_versions')
+      .select('*')
+      .eq('question_paper_id', paperId)
+      .order('version_label', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getVersionById(id: string): Promise<QuestionPaperVersionWithDetails | null> {
+    const { data, error } = await supabase
+      .from('question_paper_versions')
+      .select(`
+        *,
+        question_paper:question_papers(*)
+      `)
+      .eq('id', id)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async createVersion(version: Omit<QuestionPaperVersion, 'id' | 'created_at'>): Promise<QuestionPaperVersion | null> {
+    const { data, error } = await supabase
+      .from('question_paper_versions')
+      .insert(version)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateVersion(id: string, updates: Partial<QuestionPaperVersion>): Promise<QuestionPaperVersion | null> {
+    const { data, error } = await supabase
+      .from('question_paper_versions')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async deleteVersion(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('question_paper_versions')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  async deleteVersionsByPaper(paperId: string): Promise<void> {
+    const { error } = await supabase
+      .from('question_paper_versions')
+      .delete()
+      .eq('question_paper_id', paperId);
+    if (error) throw error;
   },
 };

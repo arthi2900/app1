@@ -155,6 +155,12 @@ export interface TeacherAssignmentWithDetails extends TeacherAssignment {
 // Question Paper Types
 export type QuestionPaperStatus = 'draft' | 'final';
 
+export interface DifficultyDistribution {
+  easy: number;
+  medium: number;
+  hard: number;
+}
+
 export interface QuestionPaper {
   id: string;
   school_id: string;
@@ -166,6 +172,10 @@ export interface QuestionPaper {
   shuffle_mcq_options: boolean;
   total_marks: number;
   created_by: string;
+  template_id: string | null;
+  difficulty_distribution: DifficultyDistribution;
+  lesson_coverage: string[];
+  has_versions: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -257,4 +267,42 @@ export interface ExamAnswer {
 export interface ExamAnswerWithDetails extends ExamAnswer {
   question?: Question | null;
   evaluator?: Profile | null;
+}
+
+// Question Paper Template Types
+export interface QuestionPaperTemplate {
+  id: string;
+  school_id: string;
+  name: string;
+  description: string | null;
+  class_id: string;
+  subject_id: string;
+  difficulty_distribution: DifficultyDistribution;
+  total_marks: number;
+  shuffle_questions: boolean;
+  shuffle_mcq_options: boolean;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface QuestionPaperTemplateWithDetails extends QuestionPaperTemplate {
+  class?: Class;
+  subject?: Subject;
+}
+
+// Question Paper Version Types
+export type VersionLabel = 'A' | 'B' | 'C' | 'D';
+
+export interface QuestionPaperVersion {
+  id: string;
+  question_paper_id: string;
+  version_label: VersionLabel;
+  shuffled_question_order: string[];
+  answer_key: Record<string, string | string[]>;
+  created_at: string;
+}
+
+export interface QuestionPaperVersionWithDetails extends QuestionPaperVersion {
+  question_paper?: QuestionPaper;
 }
