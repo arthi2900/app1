@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileQuestion, BookOpen, GraduationCap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { FileQuestion, BookOpen, GraduationCap, FileText } from 'lucide-react';
 import { questionApi, academicApi, profileApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
 
 export default function TeacherDashboard() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalQuestions: 0,
     totalSubjects: 0,
@@ -125,6 +128,30 @@ export default function TeacherDashboard() {
           );
         })}
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick Actions</CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-4 md:grid-cols-2">
+          <Button
+            onClick={() => navigate('/teacher/questions')}
+            className="h-24 flex flex-col items-center justify-center gap-2"
+            variant="outline"
+          >
+            <FileQuestion className="h-8 w-8" />
+            <span>Manage Question Bank</span>
+          </Button>
+          <Button
+            onClick={() => navigate('/teacher/question-paper')}
+            className="h-24 flex flex-col items-center justify-center gap-2"
+            variant="outline"
+          >
+            <FileText className="h-8 w-8" />
+            <span>Prepare Question Paper</span>
+          </Button>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

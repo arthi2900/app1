@@ -151,3 +151,40 @@ export interface TeacherAssignmentWithDetails extends TeacherAssignment {
   class?: Class;
   section?: Section;
 }
+
+// Question Paper Types
+export type QuestionPaperStatus = 'draft' | 'final';
+
+export interface QuestionPaper {
+  id: string;
+  school_id: string;
+  class_id: string;
+  subject_id: string;
+  title: string;
+  status: QuestionPaperStatus;
+  shuffle_questions: boolean;
+  shuffle_mcq_options: boolean;
+  total_marks: number;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface QuestionPaperQuestion {
+  id: string;
+  question_paper_id: string;
+  question_id: string;
+  display_order: number;
+  shuffled_options: string[] | MatchPair[] | null;
+  created_at: string;
+}
+
+export interface QuestionPaperWithDetails extends QuestionPaper {
+  class?: Class;
+  subject?: Subject;
+  questions?: QuestionPaperQuestionWithDetails[];
+}
+
+export interface QuestionPaperQuestionWithDetails extends QuestionPaperQuestion {
+  question?: Question;
+}

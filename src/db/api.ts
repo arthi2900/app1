@@ -13,6 +13,10 @@ import type {
   TeacherAssignment,
   StudentClassSectionWithDetails,
   TeacherAssignmentWithDetails,
+  QuestionPaper,
+  QuestionPaperQuestion,
+  QuestionPaperWithDetails,
+  QuestionPaperQuestionWithDetails,
 } from '@/types/types';
 
 // Profile APIs
@@ -362,6 +366,52 @@ export const questionApi = {
     const { error } = await supabase.from('questions').delete().eq('id', id);
     if (error) throw error;
   },
+
+  async getTeacherQuestionBankNames(): Promise<string[]> {
+    const user = await supabase.auth.getUser();
+    const { data, error } = await supabase
+      .from('questions')
+      .select('bank_name')
+      .eq('created_by', user.data.user?.id)
+      .not('bank_name', 'is', null)
+      .order('bank_name', { ascending: true });
+    
+    if (error) throw error;
+    
+    const uniqueBankNames = Array.from(new Set(
+      (Array.isArray(data) ? data : [])
+        .map(q => q.bank_name)
+        .filter((name): name is string => name !== null)
+    ));
+    
+    return uniqueBankNames;
+  },
+
+  async getQuestionsByBankName(bankName: string): Promise<Question[]> {
+    const user = await supabase.auth.getUser();
+    const { data, error } = await supabase
+      .from('questions')
+      .select('*')
+      .eq('created_by', user.data.user?.id)
+      .eq('bank_name', bankName)
+      .order('created_at', { ascending: true });
+    
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getTeacherQuestionsBySubject(subjectId: string): Promise<Question[]> {
+    const user = await supabase.auth.getUser();
+    const { data, error } = await supabase
+      .from('questions')
+      .select('*')
+      .eq('created_by', user.data.user?.id)
+      .eq('subject_id', subjectId)
+      .order('created_at', { ascending: true });
+    
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
 };
 
 // Lesson APIs
@@ -653,5 +703,111 @@ export const academicApi = {
       .delete()
       .eq('id', id);
     if (error) throw error;
+  },
+
+  // Question Paper API
+  async getQuestionPapers(status?: 'draft' | 'final'): Promise<QuestionPaperWithDetails[]> {
+    let query = supabase
+      .from('question_papers')
+      .select(`
+        *,
+        class:classes(*),
+        subject:subjects(*)
+      `)
+      .order('created_at', { ascending: false });
+    
+    if (status) {
+      query = query.eq('status', status);
+    }
+    
+    const { data, error } = await query;
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getQuestionPaperById(id: string): Promise<QuestionPaperWithDetails | null> {
+    const { data, error } = await supabase
+      .from('question_papers')
+      .select(`
+        *,
+        class:classes(*),
+        subject:subjects(*)
+      `)
+      .eq('id', id)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async createQuestionPaper(paper: Omit<QuestionPaper, 'id' | 'created_at' | 'updated_at' | 'total_marks'>): Promise<QuestionPaper | null> {
+    const user = await supabase.auth.getUser();
+    const { data, error } = await supabase
+      .from('question_papers')
+      .insert({ ...paper, created_by: user.data.user?.id })
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateQuestionPaper(id: string, updates: Partial<QuestionPaper>): Promise<QuestionPaper | null> {
+    const { data, error } = await supabase
+      .from('question_papers')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async deleteQuestionPaper(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('question_papers')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  async getQuestionPaperQuestions(questionPaperId: string): Promise<QuestionPaperQuestionWithDetails[]> {
+    const { data, error } = await supabase
+      .from('question_paper_questions')
+      .select(`
+        *,
+        question:questions(*)
+      `)
+      .eq('question_paper_id', questionPaperId)
+      .order('display_order', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async addQuestionToPaper(paperQuestion: Omit<QuestionPaperQuestion, 'id' | 'created_at'>): Promise<QuestionPaperQuestion | null> {
+    const { data, error } = await supabase
+      .from('question_paper_questions')
+      .insert(paperQuestion)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async removeQuestionFromPaper(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('question_paper_questions')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  async updateQuestionPaperQuestion(id: string, updates: Partial<QuestionPaperQuestion>): Promise<QuestionPaperQuestion | null> {
+    const { data, error } = await supabase
+      .from('question_paper_questions')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
   },
 };
