@@ -284,6 +284,16 @@ export default function QuestionPaperPreparation() {
   };
 
   const handleSaveDraft = async () => {
+    if (selectedQuestions.size === 0) {
+      toast.error('Please select at least one question');
+      return;
+    }
+
+    if (!paperTitle.trim()) {
+      toast.error('Please enter a paper title');
+      return;
+    }
+
     try {
       const paper = await saveQuestionPaper('draft');
       if (paper) {
@@ -297,6 +307,16 @@ export default function QuestionPaperPreparation() {
   };
 
   const handleGenerateFinal = async () => {
+    if (selectedQuestions.size === 0) {
+      toast.error('Please select at least one question');
+      return;
+    }
+
+    if (!paperTitle.trim()) {
+      toast.error('Please enter a paper title');
+      return;
+    }
+
     try {
       const paper = await saveQuestionPaper('final');
       if (paper) {
