@@ -17,6 +17,12 @@ import type {
   QuestionPaperQuestion,
   QuestionPaperWithDetails,
   QuestionPaperQuestionWithDetails,
+  Exam,
+  ExamWithDetails,
+  ExamAttempt,
+  ExamAttemptWithDetails,
+  ExamAnswer,
+  ExamAnswerWithDetails,
 } from '@/types/types';
 
 // Profile APIs
@@ -805,6 +811,301 @@ export const academicApi = {
       .from('question_paper_questions')
       .update(updates)
       .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+};
+
+// Exam API
+export const examApi = {
+  async getExams(): Promise<ExamWithDetails[]> {
+    const { data, error } = await supabase
+      .from('exams')
+      .select(`
+        *,
+        question_paper:question_papers(*),
+        class:classes(*),
+        subject:subjects(*),
+        teacher:profiles!exams_teacher_id_fkey(*),
+        approver:profiles!exams_approved_by_fkey(*)
+      `)
+      .order('start_time', { ascending: false });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getExamById(id: string): Promise<ExamWithDetails | null> {
+    const { data, error } = await supabase
+      .from('exams')
+      .select(`
+        *,
+        question_paper:question_papers(*),
+        class:classes(*),
+        subject:subjects(*),
+        teacher:profiles!exams_teacher_id_fkey(*),
+        approver:profiles!exams_approved_by_fkey(*)
+      `)
+      .eq('id', id)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async getExamsByTeacher(teacherId: string): Promise<ExamWithDetails[]> {
+    const { data, error } = await supabase
+      .from('exams')
+      .select(`
+        *,
+        question_paper:question_papers(*),
+        class:classes(*),
+        subject:subjects(*),
+        teacher:profiles!exams_teacher_id_fkey(*),
+        approver:profiles!exams_approved_by_fkey(*)
+      `)
+      .eq('teacher_id', teacherId)
+      .order('start_time', { ascending: false });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getPublishedExamsForStudent(classId: string): Promise<ExamWithDetails[]> {
+    const { data, error } = await supabase
+      .from('exams')
+      .select(`
+        *,
+        question_paper:question_papers(*),
+        class:classes(*),
+        subject:subjects(*),
+        teacher:profiles!exams_teacher_id_fkey(*)
+      `)
+      .eq('class_id', classId)
+      .eq('status', 'published')
+      .order('start_time', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async createExam(exam: Omit<Exam, 'id' | 'created_at' | 'updated_at'>): Promise<Exam> {
+    const { data, error } = await supabase
+      .from('exams')
+      .insert(exam)
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateExam(id: string, updates: Partial<Exam>): Promise<Exam | null> {
+    const { data, error } = await supabase
+      .from('exams')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async deleteExam(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('exams')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  async approveExam(examId: string, approverId: string): Promise<Exam | null> {
+    const { data, error } = await supabase
+      .from('exams')
+      .update({
+        status: 'approved',
+        approved_by: approverId,
+        approved_at: new Date().toISOString(),
+      })
+      .eq('id', examId)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async publishExam(examId: string): Promise<Exam | null> {
+    const { data, error } = await supabase
+      .from('exams')
+      .update({ status: 'published' })
+      .eq('id', examId)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+};
+
+// Exam Attempt API
+export const examAttemptApi = {
+  async getAttemptsByExam(examId: string): Promise<ExamAttemptWithDetails[]> {
+    const { data, error } = await supabase
+      .from('exam_attempts')
+      .select(`
+        *,
+        exam:exams(*),
+        student:profiles(*)
+      `)
+      .eq('exam_id', examId)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getAttemptsByStudent(studentId: string): Promise<ExamAttemptWithDetails[]> {
+    const { data, error } = await supabase
+      .from('exam_attempts')
+      .select(`
+        *,
+        exam:exams(
+          *,
+          class:classes(*),
+          subject:subjects(*),
+          teacher:profiles(*)
+        )
+      `)
+      .eq('student_id', studentId)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getAttemptById(id: string): Promise<ExamAttemptWithDetails | null> {
+    const { data, error } = await supabase
+      .from('exam_attempts')
+      .select(`
+        *,
+        exam:exams(
+          *,
+          class:classes(*),
+          subject:subjects(*),
+          teacher:profiles(*)
+        ),
+        student:profiles(*)
+      `)
+      .eq('id', id)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async getOrCreateAttempt(examId: string, studentId: string): Promise<ExamAttempt> {
+    const { data: existing, error: fetchError } = await supabase
+      .from('exam_attempts')
+      .select()
+      .eq('exam_id', examId)
+      .eq('student_id', studentId)
+      .maybeSingle();
+
+    if (fetchError) throw fetchError;
+
+    if (existing) {
+      return existing;
+    }
+
+    const { data, error } = await supabase
+      .from('exam_attempts')
+      .insert({
+        exam_id: examId,
+        student_id: studentId,
+        status: 'not_started',
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async startAttempt(attemptId: string): Promise<ExamAttempt | null> {
+    const { data, error } = await supabase
+      .from('exam_attempts')
+      .update({
+        status: 'in_progress',
+        started_at: new Date().toISOString(),
+      })
+      .eq('id', attemptId)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async submitAttempt(attemptId: string): Promise<ExamAttempt | null> {
+    const { data, error } = await supabase
+      .from('exam_attempts')
+      .update({
+        status: 'submitted',
+        submitted_at: new Date().toISOString(),
+      })
+      .eq('id', attemptId)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async markAsEvaluated(attemptId: string): Promise<ExamAttempt | null> {
+    const { data, error } = await supabase
+      .from('exam_attempts')
+      .update({ status: 'evaluated' })
+      .eq('id', attemptId)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+};
+
+// Exam Answer API
+export const examAnswerApi = {
+  async getAnswersByAttempt(attemptId: string): Promise<ExamAnswerWithDetails[]> {
+    const { data, error } = await supabase
+      .from('exam_answers')
+      .select(`
+        *,
+        question:questions(*),
+        evaluator:profiles(*)
+      `)
+      .eq('attempt_id', attemptId)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async saveAnswer(answer: Omit<ExamAnswer, 'id' | 'created_at' | 'updated_at' | 'is_correct' | 'marks_obtained' | 'evaluated_by' | 'evaluated_at'>): Promise<ExamAnswer> {
+    const { data, error } = await supabase
+      .from('exam_answers')
+      .upsert({
+        attempt_id: answer.attempt_id,
+        question_id: answer.question_id,
+        student_answer: answer.student_answer,
+        marks_allocated: answer.marks_allocated,
+      }, {
+        onConflict: 'attempt_id,question_id',
+      })
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  },
+
+  async evaluateAnswer(answerId: string, marksObtained: number, evaluatorId: string): Promise<ExamAnswer | null> {
+    const { data, error } = await supabase
+      .from('exam_answers')
+      .update({
+        marks_obtained: marksObtained,
+        evaluated_by: evaluatorId,
+        evaluated_at: new Date().toISOString(),
+      })
+      .eq('id', answerId)
       .select()
       .maybeSingle();
     if (error) throw error;

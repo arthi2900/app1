@@ -188,3 +188,73 @@ export interface QuestionPaperWithDetails extends QuestionPaper {
 export interface QuestionPaperQuestionWithDetails extends QuestionPaperQuestion {
   question?: Question;
 }
+
+// Exam Types
+export type ExamStatus = 'draft' | 'pending_approval' | 'approved' | 'published' | 'completed';
+export type AttemptStatus = 'not_started' | 'in_progress' | 'submitted' | 'evaluated';
+
+export interface Exam {
+  id: string;
+  question_paper_id: string;
+  title: string;
+  class_id: string;
+  subject_id: string;
+  teacher_id: string;
+  start_time: string;
+  end_time: string;
+  duration_minutes: number;
+  total_marks: number;
+  passing_marks: number;
+  instructions: string | null;
+  status: ExamStatus;
+  approved_by: string | null;
+  approved_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ExamWithDetails extends Exam {
+  question_paper?: QuestionPaper | null;
+  class?: Class | null;
+  subject?: Subject | null;
+  teacher?: Profile | null;
+  approver?: Profile | null;
+}
+
+export interface ExamAttempt {
+  id: string;
+  exam_id: string;
+  student_id: string;
+  started_at: string | null;
+  submitted_at: string | null;
+  status: AttemptStatus;
+  total_marks_obtained: number;
+  percentage: number;
+  result: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ExamAttemptWithDetails extends ExamAttempt {
+  exam?: ExamWithDetails | null;
+  student?: Profile | null;
+}
+
+export interface ExamAnswer {
+  id: string;
+  attempt_id: string;
+  question_id: string;
+  student_answer: any;
+  is_correct: boolean | null;
+  marks_obtained: number;
+  marks_allocated: number;
+  evaluated_by: string | null;
+  evaluated_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ExamAnswerWithDetails extends ExamAnswer {
+  question?: Question | null;
+  evaluator?: Profile | null;
+}
