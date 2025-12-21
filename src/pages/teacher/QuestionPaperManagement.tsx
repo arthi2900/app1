@@ -5,10 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Loader2, FileText, Shuffle, Eye, Download, Trash2, Plus } from 'lucide-react';
+import { Loader2, FileText, Eye, Download, Trash2, Plus } from 'lucide-react';
 import { academicApi } from '@/db/api';
 import { VersionHistoryDialog } from '@/components/teacher/VersionHistoryDialog';
 import { ShuffleAndSaveDialog } from '@/components/teacher/ShuffleAndSaveDialog';
@@ -21,10 +19,6 @@ export default function QuestionPaperManagement() {
   const [selectedPaper, setSelectedPaper] = useState<QuestionPaperWithDetails | null>(null);
   const [paperQuestions, setPaperQuestions] = useState<Question[]>([]);
   const [paperQuestionsMap, setPaperQuestionsMap] = useState<Record<string, Question[]>>({});
-  const [shuffleQuestions, setShuffleQuestions] = useState(false);
-  const [shuffleMcqOptions, setShuffleMcqOptions] = useState(false);
-  const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
-  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     loadQuestionPapers();
@@ -62,82 +56,6 @@ export default function QuestionPaperManagement() {
       return paperQuestionsMap[paperId];
     }
     return await loadPaperQuestions(paperId);
-  };
-
-  const shuffleArray = <T,>(array: T[]): T[] => {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  };
-
-  const handleShufflePaper = async (paper: QuestionPaperWithDetails) => {
-    setSelectedPaper(paper);
-    const questions = await loadPaperQuestions(paper.id);
-    setPaperQuestions(questions);
-    setShuffleQuestions(false);
-    setShuffleMcqOptions(false);
-    setShuffledQuestions([]);
-    setShowPreview(false);
-  };
-
-  const generateShuffledVersion = () => {
-    let questions: Question[] = [...paperQuestions];
-
-    // Shuffle question order if enabled
-    if (shuffleQuestions) {
-      questions = shuffleArray(questions);
-    }
-
-    // Shuffle MCQ options if enabled
-    if (shuffleMcqOptions) {
-      questions = questions.map(q => {
-        if ((q.question_type === 'mcq' || q.question_type === 'multiple_response') && Array.isArray(q.options)) {
-          const options = q.options as string[];
-          const correctAnswer = q.correct_answer;
-          
-          // Create array of option objects with their original index
-          const optionsWithIndex = options.map((opt, idx) => ({
-            text: opt,
-            originalIndex: idx,
-            isCorrect: Array.isArray(correctAnswer) 
-              ? correctAnswer.includes(opt) 
-              : correctAnswer === opt
-          }));
-          
-          // Shuffle the options
-          const shuffledOptions = shuffleArray(optionsWithIndex);
-          
-          // Extract just the text for display
-          const newOptions = shuffledOptions.map(opt => opt.text);
-          
-          // Update correct answer to reflect new positions
-          let newCorrectAnswer: string | string[];
-          if (Array.isArray(correctAnswer)) {
-            // Multiple correct answers
-            newCorrectAnswer = shuffledOptions
-              .filter(opt => opt.isCorrect)
-              .map(opt => opt.text);
-          } else {
-            // Single correct answer
-            const correctOption = shuffledOptions.find(opt => opt.isCorrect);
-            newCorrectAnswer = correctOption ? correctOption.text : correctAnswer;
-          }
-          
-          return { 
-            ...q, 
-            options: newOptions,
-            correct_answer: newCorrectAnswer
-          } as Question;
-        }
-        return q;
-      });
-    }
-
-    setShuffledQuestions(questions);
-    setShowPreview(true);
   };
 
   const handleExportPDF = () => {
@@ -327,111 +245,6 @@ export default function QuestionPaperManagement() {
                                   </div>
                                 </CardContent>
                               </Card>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-
-                        {/* Shuffle Button */}
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleShufflePaper(paper)}
-                            >
-                              <Shuffle className="h-4 w-4" />
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                            <DialogHeader>
-                              <DialogTitle>Shuffle Question Paper</DialogTitle>
-                              <DialogDescription>
-                                Create a shuffled version of "{paper.title}"
-                              </DialogDescription>
-                            </DialogHeader>
-
-                            <div className="space-y-4">
-                              <Card>
-                                <CardHeader>
-                                  <CardTitle className="text-lg">Shuffle Options</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                  <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                      id="shuffle-questions"
-                                      checked={shuffleQuestions}
-                                      onCheckedChange={(checked) => setShuffleQuestions(checked as boolean)}
-                                    />
-                                    <Label htmlFor="shuffle-questions" className="cursor-pointer">
-                                      Shuffle Questions - Randomize question order
-                                    </Label>
-                                  </div>
-
-                                  <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                      id="shuffle-mcq"
-                                      checked={shuffleMcqOptions}
-                                      onCheckedChange={(checked) => setShuffleMcqOptions(checked as boolean)}
-                                    />
-                                    <Label htmlFor="shuffle-mcq" className="cursor-pointer">
-                                      Shuffle MCQ Options - Randomize answer options (correct answer will be tracked)
-                                    </Label>
-                                  </div>
-
-                                  <Button onClick={generateShuffledVersion} className="mt-4">
-                                    <Eye className="mr-2 h-4 w-4" /> Generate Shuffled Preview
-                                  </Button>
-                                </CardContent>
-                              </Card>
-
-                              {showPreview && shuffledQuestions.length > 0 && (
-                                <Card>
-                                  <CardHeader>
-                                    <CardTitle className="text-lg">Shuffled Preview</CardTitle>
-                                    <CardDescription>
-                                      {paper.title} (Shuffled Version)
-                                    </CardDescription>
-                                  </CardHeader>
-                                  <CardContent className="space-y-6">
-                                    {shuffledQuestions.map((question, index) => (
-                                      <div key={question.id} className="border-b pb-4 last:border-b-0">
-                                        <div className="flex items-start justify-between mb-2">
-                                          <h3 className="font-medium">
-                                            Q{index + 1}. {question.question_text}
-                                          </h3>
-                                          <Badge className={getDifficultyColor(question.difficulty)}>
-                                            {question.marks} marks
-                                          </Badge>
-                                        </div>
-
-                                        {(question.question_type === 'mcq' || question.question_type === 'multiple_response') &&
-                                          Array.isArray(question.options) && (
-                                            <div className="ml-4 space-y-1 mt-2">
-                                              {(question.options as string[]).map((option, idx) => (
-                                                <div key={idx} className="text-sm">
-                                                  {String.fromCharCode(65 + idx)}. {option}
-                                                </div>
-                                              ))}
-                                            </div>
-                                          )}
-
-                                        {question.question_type === 'true_false' && (
-                                          <div className="ml-4 space-y-1 mt-2">
-                                            <div className="text-sm">A. True</div>
-                                            <div className="text-sm">B. False</div>
-                                          </div>
-                                        )}
-                                      </div>
-                                    ))}
-
-                                    <div className="flex justify-end gap-2 pt-4">
-                                      <Button variant="outline" onClick={handleExportPDF}>
-                                        <Download className="mr-2 h-4 w-4" /> Export PDF
-                                      </Button>
-                                    </div>
-                                  </CardContent>
-                                </Card>
-                              )}
                             </div>
                           </DialogContent>
                         </Dialog>
