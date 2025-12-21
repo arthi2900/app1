@@ -14,6 +14,7 @@ import AcademicsManagement from './pages/principal/AcademicsManagement';
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
 import QuestionBank from './pages/teacher/QuestionBank';
 import QuestionPaperPreparation from './pages/teacher/QuestionPaperPreparation';
+import QuestionPaperManagement from './pages/teacher/QuestionPaperManagement';
 import StudentDashboard from './pages/student/StudentDashboard';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
@@ -151,6 +152,16 @@ const routes: RouteConfig[] = [
     element: (
       <ProtectedRoute allowedRoles={['teacher', 'principal']}>
         <QuestionPaperPreparation />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Question Paper Management',
+    path: '/teacher/question-papers',
+    element: (
+      <ProtectedRoute allowedRoles={['teacher', 'principal']}>
+        <QuestionPaperManagement />
       </ProtectedRoute>
     ),
     visible: false,

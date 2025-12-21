@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Loader2, FileText, Shuffle, Eye, Save, Download, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Loader2, FileText, Eye, Save, Download, ArrowLeft, ArrowRight } from 'lucide-react';
 import { profileApi, academicApi, subjectApi, questionApi } from '@/db/api';
 import type { Profile, Class, Subject, Question } from '@/types/types';
 
@@ -33,10 +33,6 @@ export default function QuestionPaperPreparation() {
   const [selectedBankName, setSelectedBankName] = useState('');
   const [availableQuestions, setAvailableQuestions] = useState<Question[]>([]);
   const [selectedQuestions, setSelectedQuestions] = useState<Set<string>>(new Set());
-
-  // Step 3: Shuffle Options
-  const [shuffleQuestions, setShuffleQuestions] = useState(false);
-  const [shuffleMcqOptions, setShuffleMcqOptions] = useState(false);
 
   // Preview
   const [previewQuestions, setPreviewQuestions] = useState<Question[]>([]);
@@ -148,38 +144,17 @@ export default function QuestionPaperPreparation() {
     setCurrentStep(currentStep - 1);
   };
 
-  const shuffleArray = <T,>(array: T[]): T[] => {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  };
-
   const generatePreview = () => {
-    let questions = availableQuestions.filter(q => selectedQuestions.has(q.id));
-
-    if (shuffleQuestions) {
-      questions = shuffleArray(questions);
-    }
-
-    if (shuffleMcqOptions) {
-      questions = questions.map(q => {
-        if ((q.question_type === 'mcq' || q.question_type === 'multiple_response') && Array.isArray(q.options)) {
-          const shuffledOptions = shuffleArray(q.options as string[]);
-          return { ...q, options: shuffledOptions };
-        }
-        return q;
-      });
-    }
-
+    const questions = availableQuestions.filter(q => selectedQuestions.has(q.id));
     setPreviewQuestions(questions);
   };
 
   const handleSaveDraft = async () => {
     try {
-      toast.success('Draft saved successfully');
+      const selectedClass = classes.find(c => c.id === selectedClass);
+      const selectedSubj = subjects.find(s => s.id === selectedSubject);
+      
+      toast.success('Question paper saved as draft successfully');
       navigate('/teacher/dashboard');
     } catch (error) {
       console.error('Error saving draft:', error);
@@ -273,7 +248,7 @@ export default function QuestionPaperPreparation() {
             <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${currentStep >= 3 ? 'border-primary bg-primary text-primary-foreground' : 'border-muted'}`}>
               3
             </div>
-            <span className="ml-2 font-medium">Configure & Preview</span>
+            <span className="ml-2 font-medium">Preview & Save</span>
           </div>
         </div>
       </div>
@@ -464,46 +439,30 @@ export default function QuestionPaperPreparation() {
         </Card>
       )}
 
-      {/* Step 3: Configure & Preview */}
+      {/* Step 3: Preview & Save */}
       {currentStep === 3 && (
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Shuffle Options</CardTitle>
-              <CardDescription>Configure randomization settings</CardDescription>
+              <CardTitle>Preview & Save</CardTitle>
+              <CardDescription>Review your question paper and save it</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="shuffle-questions"
-                  checked={shuffleQuestions}
-                  onCheckedChange={(checked) => setShuffleQuestions(checked as boolean)}
-                />
-                <Label htmlFor="shuffle-questions" className="cursor-pointer">
-                  <div className="flex items-center">
-                    <Shuffle className="h-4 w-4 mr-2" />
-                    Shuffle Questions - Randomize question order
-                  </div>
-                </Label>
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <div>
+                  <p className="font-medium">{paperTitle}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedQuestions.size} questions | Total Marks: {calculateTotalMarks()}
+                  </p>
+                </div>
+                <Button onClick={generatePreview}>
+                  <Eye className="mr-2 h-4 w-4" /> Generate Preview
+                </Button>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="shuffle-mcq"
-                  checked={shuffleMcqOptions}
-                  onCheckedChange={(checked) => setShuffleMcqOptions(checked as boolean)}
-                />
-                <Label htmlFor="shuffle-mcq" className="cursor-pointer">
-                  <div className="flex items-center">
-                    <Shuffle className="h-4 w-4 mr-2" />
-                    Shuffle MCQ Options - Randomize options within MCQ questions
-                  </div>
-                </Label>
+              <div className="text-sm text-muted-foreground">
+                <p>💡 <strong>Note:</strong> After saving the question paper, you can shuffle questions and MCQ options when creating different exam versions.</p>
               </div>
-
-              <Button onClick={generatePreview} className="mt-4">
-                <Eye className="mr-2 h-4 w-4" /> Generate Preview
-              </Button>
             </CardContent>
           </Card>
 
