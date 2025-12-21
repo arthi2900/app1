@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { Loader2, FileText, Shuffle, Eye, Download, Trash2, Plus } from 'lucide-react';
 import { academicApi } from '@/db/api';
 import { VersionHistoryDialog } from '@/components/teacher/VersionHistoryDialog';
+import { ShuffleAndSaveDialog } from '@/components/teacher/ShuffleAndSaveDialog';
 import type { QuestionPaperWithDetails, Question } from '@/types/types';
 
 export default function QuestionPaperManagement() {
@@ -19,6 +20,7 @@ export default function QuestionPaperManagement() {
   const [questionPapers, setQuestionPapers] = useState<QuestionPaperWithDetails[]>([]);
   const [selectedPaper, setSelectedPaper] = useState<QuestionPaperWithDetails | null>(null);
   const [paperQuestions, setPaperQuestions] = useState<Question[]>([]);
+  const [paperQuestionsMap, setPaperQuestionsMap] = useState<Record<string, Question[]>>({});
   const [shuffleQuestions, setShuffleQuestions] = useState(false);
   const [shuffleMcqOptions, setShuffleMcqOptions] = useState(false);
   const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
@@ -46,12 +48,20 @@ export default function QuestionPaperManagement() {
       const questions = await academicApi.getQuestionPaperQuestions(paperId);
       const questionData = questions.map(q => q.question).filter((q): q is Question => q !== null);
       setPaperQuestions(questionData);
+      setPaperQuestionsMap(prev => ({ ...prev, [paperId]: questionData }));
       return questionData;
     } catch (error) {
       console.error('Error loading paper questions:', error);
       toast.error('Failed to load questions');
       return [];
     }
+  };
+
+  const getQuestionsForPaper = async (paperId: string): Promise<Question[]> => {
+    if (paperQuestionsMap[paperId]) {
+      return paperQuestionsMap[paperId];
+    }
+    return await loadPaperQuestions(paperId);
   };
 
   const shuffleArray = <T,>(array: T[]): T[] => {
@@ -425,6 +435,12 @@ export default function QuestionPaperManagement() {
                             </div>
                           </DialogContent>
                         </Dialog>
+
+                        {/* Shuffle and Save Button */}
+                        <ShuffleAndSaveDialog
+                          paper={paper}
+                          onSuccess={loadQuestionPapers}
+                        />
 
                         {/* Version History Button */}
                         {paper.has_versions && (
