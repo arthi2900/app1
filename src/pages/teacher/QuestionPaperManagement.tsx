@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, FileText, Shuffle, Eye, Download, Trash2, Plus } from 'lucide-react';
 import { academicApi } from '@/db/api';
+import { VersionHistoryDialog } from '@/components/teacher/VersionHistoryDialog';
 import type { QuestionPaperWithDetails, Question } from '@/types/types';
 
 export default function QuestionPaperManagement() {
@@ -424,6 +425,15 @@ export default function QuestionPaperManagement() {
                             </div>
                           </DialogContent>
                         </Dialog>
+
+                        {/* Version History Button */}
+                        {paper.has_versions && (
+                          <VersionHistoryDialog
+                            paperId={paper.id}
+                            paperTitle={paper.title}
+                            questions={paper.id === selectedPaper?.id ? paperQuestions : []}
+                          />
+                        )}
 
                         {/* Delete Button */}
                         <Button
