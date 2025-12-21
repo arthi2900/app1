@@ -12,11 +12,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { Loader2, FileText, Eye, Save, Download, ArrowLeft, ArrowRight } from 'lucide-react';
 import { profileApi, academicApi, subjectApi, questionApi } from '@/db/api';
-import type { Profile, Class, Subject, Question } from '@/types/types';
+import type { Profile, Class, Subject, Question, QuestionPaper } from '@/types/types';
 
 export default function QuestionPaperPreparation() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [profile, setProfile] = useState<Profile | null>(null);
 
@@ -149,6 +150,9 @@ export default function QuestionPaperPreparation() {
         toast.error('Please select at least one question');
         return;
       }
+      // Generate preview when moving to step 3
+      const questions = availableQuestions.filter(q => selectedQuestions.has(q.id));
+      setPreviewQuestions(questions);
     }
     setCurrentStep(currentStep + 1);
   };
@@ -162,13 +166,62 @@ export default function QuestionPaperPreparation() {
     setPreviewQuestions(questions);
   };
 
+  const saveQuestionPaper = async (status: 'draft' | 'final') => {
+    if (!profile?.school_id) {
+      toast.error('School information not found');
+      return null;
+    }
+
+    try {
+      setSaving(true);
+
+      // Create the question paper
+      const paperData = {
+        school_id: profile.school_id,
+        class_id: selectedClass,
+        subject_id: selectedSubject,
+        title: paperTitle,
+        status: status,
+        shuffle_questions: false,
+        shuffle_mcq_options: false,
+        created_by: profile.id,
+      };
+
+      const createdPaper = await academicApi.createQuestionPaper(paperData);
+      
+      if (!createdPaper) {
+        throw new Error('Failed to create question paper');
+      }
+
+      // Add all selected questions to the paper
+      const selectedQuestionsArray = availableQuestions.filter(q => selectedQuestions.has(q.id));
+      
+      for (let i = 0; i < selectedQuestionsArray.length; i++) {
+        const question = selectedQuestionsArray[i];
+        await academicApi.addQuestionToPaper({
+          question_paper_id: createdPaper.id,
+          question_id: question.id,
+          display_order: i + 1,
+          shuffled_options: null,
+        });
+      }
+
+      return createdPaper;
+    } catch (error) {
+      console.error('Error saving question paper:', error);
+      throw error;
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleSaveDraft = async () => {
     try {
-      const selectedClass = classes.find(c => c.id === selectedClass);
-      const selectedSubj = subjects.find(s => s.id === selectedSubject);
-      
-      toast.success('Question paper saved as draft successfully');
-      navigate('/teacher/dashboard');
+      const paper = await saveQuestionPaper('draft');
+      if (paper) {
+        toast.success('Question paper saved as draft successfully');
+        navigate('/teacher/dashboard');
+      }
     } catch (error) {
       console.error('Error saving draft:', error);
       toast.error('Failed to save draft');
@@ -177,8 +230,11 @@ export default function QuestionPaperPreparation() {
 
   const handleGenerateFinal = async () => {
     try {
-      toast.success('Question paper generated successfully');
-      navigate('/teacher/dashboard');
+      const paper = await saveQuestionPaper('final');
+      if (paper) {
+        toast.success('Question paper generated successfully');
+        navigate('/teacher/dashboard');
+      }
     } catch (error) {
       console.error('Error generating paper:', error);
       toast.error('Failed to generate question paper');
@@ -468,13 +524,10 @@ export default function QuestionPaperPreparation() {
                     {selectedQuestions.size} questions | Total Marks: {calculateTotalMarks()}
                   </p>
                 </div>
-                <Button onClick={generatePreview}>
-                  <Eye className="mr-2 h-4 w-4" /> Generate Preview
-                </Button>
               </div>
 
               <div className="text-sm text-muted-foreground">
-                <p>💡 <strong>Note:</strong> After saving the question paper, you can shuffle questions and MCQ options when creating different exam versions.</p>
+                <p>💡 <strong>Note:</strong> After saving the question paper, you can use it to schedule exams and create different versions with shuffled questions.</p>
               </div>
             </CardContent>
           </Card>
@@ -523,18 +576,34 @@ export default function QuestionPaperPreparation() {
           )}
 
           <div className="flex items-center justify-between">
-            <Button variant="outline" onClick={handlePreviousStep}>
+            <Button variant="outline" onClick={handlePreviousStep} disabled={saving}>
               <ArrowLeft className="mr-2 h-4 w-4" /> Previous
             </Button>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={handleSaveDraft}>
-                <Save className="mr-2 h-4 w-4" /> Save as Draft
+              <Button variant="outline" onClick={handleSaveDraft} disabled={saving}>
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" /> Save as Draft
+                  </>
+                )}
               </Button>
-              <Button variant="outline" onClick={handleExportPDF}>
+              <Button variant="outline" onClick={handleExportPDF} disabled={saving}>
                 <Download className="mr-2 h-4 w-4" /> Export PDF
               </Button>
-              <Button onClick={handleGenerateFinal}>
-                <FileText className="mr-2 h-4 w-4" /> Generate Final Paper
+              <Button onClick={handleGenerateFinal} disabled={saving}>
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating...
+                  </>
+                ) : (
+                  <>
+                    <FileText className="mr-2 h-4 w-4" /> Generate Final Paper
+                  </>
+                )}
               </Button>
             </div>
           </div>
