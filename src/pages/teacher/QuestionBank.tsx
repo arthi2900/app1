@@ -119,8 +119,8 @@ export default function QuestionBank() {
       );
       setQuestions(filteredQuestions);
 
-      // Load all subjects (will be filtered by class selection)
-      const subjectsData = await subjectApi.getAllSubjects();
+      // Load only subjects assigned to the teacher
+      const subjectsData = await subjectApi.getTeacherAssignedSubjects(profile.id);
       setSubjects(subjectsData);
 
       // Load all lessons and filter by assigned subjects

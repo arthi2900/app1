@@ -290,6 +290,34 @@ export const subjectApi = {
     return Array.isArray(data) ? data : [];
   },
 
+  async getTeacherAssignedSubjects(teacherId: string, classId?: string): Promise<Subject[]> {
+    let query = supabase
+      .from('teacher_assignments')
+      .select('subject:subjects(*)')
+      .eq('teacher_id', teacherId);
+
+    if (classId) {
+      query = query.eq('class_id', classId);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+
+    // Extract unique subjects from assignments
+    const subjectsMap = new Map<string, Subject>();
+    if (Array.isArray(data)) {
+      data.forEach((assignment: any) => {
+        if (assignment.subject && assignment.subject.id) {
+          subjectsMap.set(assignment.subject.id, assignment.subject);
+        }
+      });
+    }
+
+    return Array.from(subjectsMap.values()).sort((a, b) => 
+      a.subject_name.localeCompare(b.subject_name)
+    );
+  },
+
   async createSubject(subject: Omit<Subject, 'id' | 'created_at'>): Promise<Subject | null> {
     const { data, error } = await supabase
       .from('subjects')
@@ -488,6 +516,29 @@ export const academicApi = {
       .order('class_code', { ascending: true });
     if (error) throw error;
     return Array.isArray(data) ? data : [];
+  },
+
+  async getTeacherAssignedClasses(teacherId: string): Promise<Class[]> {
+    const { data, error } = await supabase
+      .from('teacher_assignments')
+      .select('class:classes(*)')
+      .eq('teacher_id', teacherId);
+
+    if (error) throw error;
+
+    // Extract unique classes from assignments
+    const classesMap = new Map<string, Class>();
+    if (Array.isArray(data)) {
+      data.forEach((assignment: any) => {
+        if (assignment.class && assignment.class.id) {
+          classesMap.set(assignment.class.id, assignment.class);
+        }
+      });
+    }
+
+    return Array.from(classesMap.values()).sort((a, b) => 
+      a.class_code.localeCompare(b.class_code)
+    );
   },
 
   async createClass(classData: Omit<Class, 'id' | 'created_at'>): Promise<Class | null> {

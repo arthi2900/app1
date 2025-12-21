@@ -56,17 +56,21 @@ export default function QuestionPaperPreparation() {
   const loadInitialData = async () => {
     try {
       setLoading(true);
-      const [profileData, classesData] = await Promise.all([
-        profileApi.getCurrentProfile(),
-        academicApi.getAllClasses(),
-      ]);
-
+      const profileData = await profileApi.getCurrentProfile();
       setProfile(profileData);
-      setClasses(Array.isArray(classesData) ? classesData : []);
 
-      if (profile?.role === 'teacher') {
-        const bankNames = await questionApi.getTeacherQuestionBankNames();
+      if (profileData?.role === 'teacher' && profileData.id) {
+        // For teachers, load only assigned classes
+        const [classesData, bankNames] = await Promise.all([
+          academicApi.getTeacherAssignedClasses(profileData.id),
+          questionApi.getTeacherQuestionBankNames(),
+        ]);
+        setClasses(Array.isArray(classesData) ? classesData : []);
         setQuestionBankNames(Array.isArray(bankNames) ? bankNames : []);
+      } else {
+        // For non-teachers (shouldn't happen, but fallback)
+        const classesData = await academicApi.getAllClasses();
+        setClasses(Array.isArray(classesData) ? classesData : []);
       }
     } catch (error) {
       console.error('Error loading initial data:', error);
@@ -78,9 +82,18 @@ export default function QuestionPaperPreparation() {
 
   const loadSubjects = async () => {
     try {
-      const subjectsData = await subjectApi.getAllSubjects();
-      const filteredSubjects = subjectsData.filter(s => s.class_id === selectedClass);
-      setSubjects(Array.isArray(filteredSubjects) ? filteredSubjects : []);
+      if (!profile?.id || !selectedClass) return;
+
+      if (profile.role === 'teacher') {
+        // For teachers, load only assigned subjects for the selected class
+        const subjectsData = await subjectApi.getTeacherAssignedSubjects(profile.id, selectedClass);
+        setSubjects(Array.isArray(subjectsData) ? subjectsData : []);
+      } else {
+        // For non-teachers (shouldn't happen, but fallback)
+        const subjectsData = await subjectApi.getAllSubjects();
+        const filteredSubjects = subjectsData.filter(s => s.class_id === selectedClass);
+        setSubjects(Array.isArray(filteredSubjects) ? filteredSubjects : []);
+      }
     } catch (error) {
       console.error('Error loading subjects:', error);
       toast.error('Failed to load subjects');
