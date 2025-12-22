@@ -234,6 +234,42 @@ export default function QuestionPaperManagement() {
                                             <div className="text-sm">B. False</div>
                                           </div>
                                         )}
+
+                                        {question.question_type === 'match_following' &&
+                                          Array.isArray(question.options) && (
+                                            <div className="ml-4 mt-3">
+                                              <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                  <p className="text-sm font-semibold mb-2">Column A</p>
+                                                  <div className="space-y-2">
+                                                    {(question.options as any[]).map((pair: any, idx: number) => (
+                                                      <div key={idx} className="text-sm p-2 rounded border bg-muted">
+                                                        {idx + 1}. {pair.left}
+                                                      </div>
+                                                    ))}
+                                                  </div>
+                                                </div>
+                                                <div>
+                                                  <p className="text-sm font-semibold mb-2">Column B</p>
+                                                  <div className="space-y-2">
+                                                    {(question.options as any[]).map((pair: any, idx: number) => (
+                                                      <div key={idx} className="text-sm p-2 rounded border bg-muted">
+                                                        {String.fromCharCode(65 + idx)}. {pair.right}
+                                                      </div>
+                                                    ))}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          )}
+
+                                        {question.question_type === 'short_answer' && (
+                                          <div className="ml-4 mt-2">
+                                            <div className="text-sm text-muted-foreground italic">
+                                              [Answer space for student]
+                                            </div>
+                                          </div>
+                                        )}
                                       </div>
                                     ))
                                   )}

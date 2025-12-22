@@ -825,6 +825,42 @@ export default function QuestionPaperPreparation() {
                       </div>
                     )}
 
+                    {question.question_type === 'match_following' &&
+                      Array.isArray(question.options) && (
+                        <div className="ml-4 mt-3">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <p className="text-sm font-semibold mb-2">Column A</p>
+                              <div className="space-y-2">
+                                {(question.options as any[]).map((pair: any, idx: number) => (
+                                  <div key={idx} className="text-sm p-2 rounded border bg-muted">
+                                    {idx + 1}. {pair.left}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold mb-2">Column B</p>
+                              <div className="space-y-2">
+                                {(question.options as any[]).map((pair: any, idx: number) => (
+                                  <div key={idx} className="text-sm p-2 rounded border bg-muted">
+                                    {String.fromCharCode(65 + idx)}. {pair.right}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                    {question.question_type === 'short_answer' && (
+                      <div className="ml-4 mt-2">
+                        <div className="text-sm text-muted-foreground italic">
+                          [Answer space for student]
+                        </div>
+                      </div>
+                    )}
+
                     {/* Answer Key Display */}
                     {showAnswerKey && (
                       <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
@@ -834,6 +870,8 @@ export default function QuestionPaperPreparation() {
                             ? question.correct_answer.includes(',')
                               ? question.correct_answer.split(',').map(a => a.trim()).join(', ')
                               : question.correct_answer
+                            : question.question_type === 'match_following'
+                            ? 'See correct pairs in question'
                             : question.correct_answer || 'Subjective answer required'}
                         </p>
                       </div>
