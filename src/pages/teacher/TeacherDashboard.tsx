@@ -156,7 +156,7 @@ export default function TeacherDashboard() {
             variant="outline"
           >
             <FolderOpen className="h-8 w-8" />
-            <span>Manage Papers & Shuffle</span>
+            <span>Question Paper History</span>
           </Button>
         </CardContent>
       </Card>
