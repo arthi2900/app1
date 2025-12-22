@@ -1084,9 +1084,9 @@ export default function QuestionBank() {
 
                 {formData.question_type === 'multiple_response' && (
                   <>
-                    <div className="space-y-2">
+                    <div className="space-y-2 p-4 border-2 border-primary/20 rounded-lg bg-primary/5">
                       <div className="flex items-center justify-between">
-                        <Label>Segment 2: Options (A, B, C, D)</Label>
+                        <Label className="text-base font-semibold text-primary">Segment 2: Options (A, B, C, D)</Label>
                         <Button
                           type="button"
                           variant="outline"
@@ -1107,6 +1107,7 @@ export default function QuestionBank() {
                             value={option}
                             onChange={(e) => updateOption(index, e.target.value)}
                             placeholder={`Option ${String.fromCharCode(65 + index)}`}
+                            className="bg-background"
                           />
                           {formData.options.length > 4 && (
                             <Button
@@ -1122,9 +1123,9 @@ export default function QuestionBank() {
                       ))}
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 p-4 border-2 border-secondary/20 rounded-lg bg-secondary/5">
                       <div className="flex items-center justify-between">
-                        <Label>Segment 3: Answer Options (i, ii, iii, iv)</Label>
+                        <Label className="text-base font-semibold text-secondary">Segment 3: Answer Options (i, ii, iii, iv)</Label>
                         <Button
                           type="button"
                           variant="outline"
@@ -1141,7 +1142,7 @@ export default function QuestionBank() {
                           Add Answer Option
                         </Button>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground font-medium">
                         These are the answer choices students will select from (e.g., "A and C only", "All of the above")
                       </p>
                       {formData.answer_options.map((answerOption, index) => (
@@ -1154,6 +1155,7 @@ export default function QuestionBank() {
                               setFormData({ ...formData, answer_options: newAnswerOptions });
                             }}
                             placeholder={`Answer Option (${['i', 'ii', 'iii', 'iv', 'v', 'vi'][index] || index + 1})`}
+                            className="bg-background"
                           />
                           {formData.answer_options.length > 4 && (
                             <Button
@@ -1605,9 +1607,9 @@ export default function QuestionBank() {
 
                 {formData.question_type === 'multiple_response' && (
                   <>
-                    <div className="space-y-2">
-                      <Label>Segment 2: Options (A, B, C, D)</Label>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="space-y-2 p-4 border-2 border-primary/20 rounded-lg bg-primary/5">
+                      <Label className="text-base font-semibold text-primary">Segment 2: Options (A, B, C, D)</Label>
+                      <p className="text-sm text-muted-foreground font-medium">
                         These are the answer choices that will be labeled A, B, C, D
                       </p>
                       {formData.options.map((option, index) => (
@@ -1620,14 +1622,15 @@ export default function QuestionBank() {
                             setFormData({ ...formData, options: newOptions });
                           }}
                           placeholder={`Option ${String.fromCharCode(65 + index)}`}
+                          className="bg-background"
                         />
                       ))}
                     </div>
 
-                    <div className="space-y-2">
-                      <Label>Segment 3: Answer Options (i, ii, iii, iv)</Label>
-                      <p className="text-sm text-muted-foreground">
-                        These are the answer choices students will select from
+                    <div className="space-y-2 p-4 border-2 border-secondary/20 rounded-lg bg-secondary/5">
+                      <Label className="text-base font-semibold text-secondary">Segment 3: Answer Options (i, ii, iii, iv)</Label>
+                      <p className="text-sm text-muted-foreground font-medium">
+                        These are the answer choices students will select from (e.g., "A and C only", "All of the above")
                       </p>
                       {formData.answer_options.map((answerOption, index) => (
                         <Input
@@ -1639,6 +1642,7 @@ export default function QuestionBank() {
                             setFormData({ ...formData, answer_options: newAnswerOptions });
                           }}
                           placeholder={`Answer Option (${['i', 'ii', 'iii', 'iv', 'v', 'vi'][index] || index + 1})`}
+                          className="bg-background"
                         />
                       ))}
                     </div>
