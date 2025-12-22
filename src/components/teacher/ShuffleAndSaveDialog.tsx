@@ -69,31 +69,72 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
       // Get all existing question papers to find shuffled versions
       const allPapers = await academicApi.getQuestionPapers();
       
-      // Find all shuffled versions of this paper
-      const baseTitle = paper.title.replace(/\s*\(Shuffled\s*[A-Z]\)$/i, '').trim();
-      const shuffledVersions = allPapers.filter(p => {
-        const title = p.title.trim();
-        return title.startsWith(baseTitle) && /\(Shuffled\s*[A-Z]\)$/i.test(title);
-      });
-
-      // Extract the letters used (A, B, C, etc.)
-      const usedLetters = shuffledVersions.map(p => {
-        const match = p.title.match(/\(Shuffled\s*([A-Z])\)$/i);
-        return match ? match[1].toUpperCase() : null;
-      }).filter(Boolean);
-
-      // Find the next available letter
-      let nextLetter = 'A';
-      for (let i = 0; i < 26; i++) {
-        const letter = String.fromCharCode(65 + i); // A=65, B=66, etc.
-        if (!usedLetters.includes(letter)) {
-          nextLetter = letter;
-          break;
+      // Check if current paper is already shuffled
+      const currentTitle = paper.title.trim();
+      const isAlreadyShuffled = /\(Shuffled\s*[A-Z]\d*\)$/i.test(currentTitle);
+      
+      let newTitle = '';
+      
+      if (isAlreadyShuffled) {
+        // Current paper is already shuffled (e.g., "Test 1 (Shuffled A)" or "Test 1 (Shuffled A1)")
+        // Extract the source suffix (e.g., "A" or "A1")
+        const suffixMatch = currentTitle.match(/\(Shuffled\s*([A-Z]\d*)\)$/i);
+        const sourceSuffix = suffixMatch ? suffixMatch[1].toUpperCase() : 'A';
+        
+        // Extract base letter (e.g., "A" from "A1" or "A" from "A")
+        const baseLetter = sourceSuffix.match(/^[A-Z]/)?.[0] || 'A';
+        
+        // Find all versions that came from the same source
+        const baseTitle = currentTitle.replace(/\s*\(Shuffled\s*[A-Z]\d*\)$/i, '').trim();
+        const sameSourceVersions = allPapers.filter(p => {
+          const title = p.title.trim();
+          const pattern = new RegExp(`\\(Shuffled\\s*${baseLetter}\\d+\\)$`, 'i');
+          return title.startsWith(baseTitle) && pattern.test(title);
+        });
+        
+        // Extract the numbers used (1, 2, 3, etc.)
+        const usedNumbers = sameSourceVersions.map(p => {
+          const match = p.title.match(new RegExp(`\\(Shuffled\\s*${baseLetter}(\\d+)\\)$`, 'i'));
+          return match ? parseInt(match[1], 10) : 0;
+        }).filter(n => n > 0);
+        
+        // Find the next available number
+        let nextNumber = 1;
+        while (usedNumbers.includes(nextNumber)) {
+          nextNumber++;
         }
+        
+        // Generate new title with hierarchical suffix
+        newTitle = `${baseTitle} (Shuffled ${baseLetter}${nextNumber})`;
+      } else {
+        // Current paper is original (not shuffled yet)
+        // Find all first-generation shuffled versions (A, B, C, etc.)
+        const baseTitle = currentTitle;
+        const shuffledVersions = allPapers.filter(p => {
+          const title = p.title.trim();
+          return title.startsWith(baseTitle) && /\(Shuffled\s*[A-Z]\)$/i.test(title);
+        });
+        
+        // Extract the letters used (A, B, C, etc.)
+        const usedLetters = shuffledVersions.map(p => {
+          const match = p.title.match(/\(Shuffled\s*([A-Z])\)$/i);
+          return match ? match[1].toUpperCase() : null;
+        }).filter(Boolean);
+        
+        // Find the next available letter
+        let nextLetter = 'A';
+        for (let i = 0; i < 26; i++) {
+          const letter = String.fromCharCode(65 + i); // A=65, B=66, etc.
+          if (!usedLetters.includes(letter)) {
+            nextLetter = letter;
+            break;
+          }
+        }
+        
+        // Generate new title with letter suffix
+        newTitle = `${baseTitle} (Shuffled ${nextLetter})`;
       }
-
-      // Generate preview title
-      const newTitle = `${baseTitle} (Shuffled ${nextLetter})`;
+      
       setPreviewTitle(newTitle);
       setShowPreview(true);
       setPreviewGenerated(true);
