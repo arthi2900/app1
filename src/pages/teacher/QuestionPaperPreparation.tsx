@@ -17,6 +17,12 @@ import { VersionGenerationDialog } from '@/components/teacher/VersionGenerationD
 import { SmartSelectionPanel } from '@/components/teacher/SmartSelectionPanel';
 import type { Profile, Class, Subject, Question, QuestionPaper, QuestionPaperWithDetails, QuestionPaperTemplate, Lesson } from '@/types/types';
 
+// Utility function to remove segment prefix from answer options
+const normalizeAnswerOption = (answer: string): string => {
+  // Remove patterns like "(i) ", "(ii) ", "(iii) ", etc. from the beginning
+  return answer.replace(/^\([ivxIVX]+\)\s*/, '').trim();
+};
+
 export default function QuestionPaperPreparation() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -906,8 +912,8 @@ export default function QuestionPaperPreparation() {
                           ✓ Answer: {' '}
                           {question.question_type === 'multiple_response'
                             ? question.correct_answer.includes(',')
-                              ? question.correct_answer.split(',').map(a => a.trim()).join(', ')
-                              : question.correct_answer
+                              ? question.correct_answer.split(',').map(a => normalizeAnswerOption(a.trim())).join(', ')
+                              : normalizeAnswerOption(question.correct_answer)
                             : question.question_type === 'match_following'
                             ? 'See correct pairs in question'
                             : question.correct_answer || 'Subjective answer required'}

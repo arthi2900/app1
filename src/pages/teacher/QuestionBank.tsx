@@ -34,6 +34,12 @@ import { useToast } from '@/hooks/use-toast';
 import type { Question, Subject, Class, Lesson, TeacherAssignmentWithDetails, Profile, MatchPair } from '@/types/types';
 import { supabase } from '@/db/supabase';
 
+// Utility function to remove segment prefix from answer options
+const normalizeAnswerOption = (answer: string): string => {
+  // Remove patterns like "(i) ", "(ii) ", "(iii) ", etc. from the beginning
+  return answer.replace(/^\([ivxIVX]+\)\s*/, '').trim();
+};
+
 export default function QuestionBank() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -406,6 +412,8 @@ export default function QuestionBank() {
         // Load answer_options for multiple response questions
         answerOptions = Array.isArray(question.answer_options) ? [...question.answer_options] : ['', '', '', ''];
         while (answerOptions.length < 4) answerOptions.push('');
+        // Normalize the correct answer to remove any legacy segment prefixes
+        correctAnswer = normalizeAnswerOption(correctAnswer);
       }
     } else if (question.question_type === 'match_following') {
       if (Array.isArray(question.options)) {
@@ -2075,7 +2083,11 @@ export default function QuestionBank() {
                       </div>
                       <div>
                         <p className="text-muted-foreground">Correct Answer</p>
-                        <p className="font-medium truncate">{question.correct_answer}</p>
+                        <p className="font-medium truncate">
+                          {question.question_type === 'multiple_response' 
+                            ? normalizeAnswerOption(question.correct_answer)
+                            : question.correct_answer}
+                        </p>
                       </div>
                     </div>
                     
@@ -2124,7 +2136,10 @@ export default function QuestionBank() {
                             <p className="text-sm font-medium text-muted-foreground mb-2">Segment 3: Answer Options (i, ii, iii, iv)</p>
                             <div className="space-y-1">
                               {question.answer_options.map((answerOption, idx) => {
-                                const isCorrect = question.correct_answer === answerOption;
+                                // Normalize both values for comparison to handle legacy data with prefixes
+                                const normalizedCorrectAnswer = normalizeAnswerOption(question.correct_answer);
+                                const normalizedAnswerOption = normalizeAnswerOption(answerOption);
+                                const isCorrect = normalizedCorrectAnswer === normalizedAnswerOption;
                                 return (
                                   <div 
                                     key={idx} 
