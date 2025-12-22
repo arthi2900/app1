@@ -99,3 +99,31 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Print styles for question papers */
+@media print {
+  /* Ensure images are visible and properly sized when printing */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid;
+    display: block !important;
+  }
+
+  /* Prevent page breaks inside questions */
+  .border-b {
+    page-break-inside: avoid;
+  }
+
+  /* Hide navigation and buttons when printing */
+  button,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Ensure proper spacing for printed content */
+  .space-y-6 > * + * {
+    margin-top: 1.5rem !important;
+  }
+}

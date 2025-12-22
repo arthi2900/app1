@@ -808,6 +808,20 @@ export default function QuestionPaperPreparation() {
                       </Badge>
                     </div>
 
+                    {/* Question Image */}
+                    {question.image_url && (
+                      <div className="ml-4 mt-2 mb-3">
+                        <img 
+                          src={question.image_url} 
+                          alt="Question illustration" 
+                          className="max-w-md rounded border"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
+
                     {question.question_type === 'mcq' && Array.isArray(question.options) && (
                       <div className="ml-4 space-y-1 mt-2">
                         {(question.options as string[]).map((option, idx) => (
