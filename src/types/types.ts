@@ -54,6 +54,7 @@ export interface Question {
   question_text: string;
   question_type: QuestionType;
   options: string[] | MatchPair[] | null;
+  answer_options: string[] | null; // For multiple_response: answer choices like "(i) A and C only"
   correct_answer: string;
   marks: number;
   negative_marks: number;
@@ -186,6 +187,7 @@ export interface QuestionPaperQuestion {
   question_id: string;
   display_order: number;
   shuffled_options: string[] | MatchPair[] | null;
+  shuffled_answer_options: string[] | null; // For multiple_response: shuffled answer choices
   created_at: string;
 }
 

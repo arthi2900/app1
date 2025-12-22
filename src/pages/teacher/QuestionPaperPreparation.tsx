@@ -307,6 +307,7 @@ export default function QuestionPaperPreparation() {
           question_id: question.id,
           display_order: i + 1,
           shuffled_options: null,
+          shuffled_answer_options: null,
         });
       }
 
@@ -807,16 +808,39 @@ export default function QuestionPaperPreparation() {
                       </Badge>
                     </div>
 
-                    {(question.question_type === 'mcq' || question.question_type === 'multiple_response') &&
-                      Array.isArray(question.options) && (
-                        <div className="ml-4 space-y-1 mt-2">
+                    {question.question_type === 'mcq' && Array.isArray(question.options) && (
+                      <div className="ml-4 space-y-1 mt-2">
+                        {(question.options as string[]).map((option, idx) => (
+                          <div key={idx} className="text-sm">
+                            {String.fromCharCode(65 + idx)}. {option}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {question.question_type === 'multiple_response' && Array.isArray(question.options) && (
+                      <div className="ml-4 mt-2 space-y-3">
+                        {/* Segment 2: Options (A, B, C, D) */}
+                        <div className="space-y-1">
                           {(question.options as string[]).map((option, idx) => (
                             <div key={idx} className="text-sm">
                               {String.fromCharCode(65 + idx)}. {option}
                             </div>
                           ))}
                         </div>
-                      )}
+
+                        {/* Segment 3: Answer Options (i, ii, iii, iv) */}
+                        {question.answer_options && Array.isArray(question.answer_options) && question.answer_options.length > 0 && (
+                          <div className="space-y-1 pt-2 border-t">
+                            {question.answer_options.map((answerOption, idx) => (
+                              <div key={idx} className="text-sm">
+                                ({['i', 'ii', 'iii', 'iv', 'v', 'vi'][idx] || idx + 1}) {answerOption}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     {question.question_type === 'true_false' && (
                       <div className="ml-4 space-y-1 mt-2">

@@ -211,6 +211,7 @@ export default function QuestionPaperManagement() {
                                       
                                       // Use shuffled_options if available, otherwise use original options
                                       const displayOptions = pq.shuffled_options || question.options;
+                                      const displayAnswerOptions = pq.shuffled_answer_options || question.answer_options;
                                       
                                       return (
                                         <div key={pq.id} className="border-b pb-4 last:border-b-0">
@@ -223,16 +224,39 @@ export default function QuestionPaperManagement() {
                                             </Badge>
                                           </div>
 
-                                          {(question.question_type === 'mcq' || question.question_type === 'multiple_response') &&
-                                            Array.isArray(displayOptions) && (
-                                              <div className="ml-4 space-y-1 mt-2">
+                                          {question.question_type === 'mcq' && Array.isArray(displayOptions) && (
+                                            <div className="ml-4 space-y-1 mt-2">
+                                              {(displayOptions as string[]).map((option, idx) => (
+                                                <div key={idx} className="text-sm">
+                                                  {String.fromCharCode(65 + idx)}. {option}
+                                                </div>
+                                              ))}
+                                            </div>
+                                          )}
+
+                                          {question.question_type === 'multiple_response' && Array.isArray(displayOptions) && (
+                                            <div className="ml-4 mt-2 space-y-3">
+                                              {/* Segment 2: Options (A, B, C, D) */}
+                                              <div className="space-y-1">
                                                 {(displayOptions as string[]).map((option, idx) => (
                                                   <div key={idx} className="text-sm">
                                                     {String.fromCharCode(65 + idx)}. {option}
                                                   </div>
                                                 ))}
                                               </div>
-                                            )}
+
+                                              {/* Segment 3: Answer Options (i, ii, iii, iv) */}
+                                              {displayAnswerOptions && Array.isArray(displayAnswerOptions) && displayAnswerOptions.length > 0 && (
+                                                <div className="space-y-1 pt-2 border-t">
+                                                  {displayAnswerOptions.map((answerOption, idx) => (
+                                                    <div key={idx} className="text-sm">
+                                                      ({['i', 'ii', 'iii', 'iv', 'v', 'vi'][idx] || idx + 1}) {answerOption}
+                                                    </div>
+                                                  ))}
+                                                </div>
+                                              )}
+                                            </div>
+                                          )}
 
                                           {question.question_type === 'true_false' && (
                                             <div className="ml-4 space-y-1 mt-2">

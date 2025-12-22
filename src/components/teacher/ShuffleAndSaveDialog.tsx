@@ -182,7 +182,7 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
       // Shuffle MCQ options if needed
       if (shuffleMcqOptions) {
         processedQuestions = processedQuestions.map(q => {
-          if ((q.question_type === 'mcq' || q.question_type === 'multiple_response') && Array.isArray(q.options)) {
+          if (q.question_type === 'mcq' && Array.isArray(q.options)) {
             const options = q.options as string[];
             const correctAnswer = q.correct_answer;
             
@@ -205,6 +205,19 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
               ...q,
               options: shuffledOptions.map(item => item.option),
               correct_answer: newCorrectAnswers || correctAnswer
+            };
+          } else if (q.question_type === 'multiple_response' && Array.isArray(q.options)) {
+            // For multiple_response, shuffle options and answer_options independently
+            const shuffledOptions = shuffleArray(q.options as string[]);
+            const shuffledAnswerOptions = q.answer_options && Array.isArray(q.answer_options) 
+              ? shuffleArray(q.answer_options) 
+              : q.answer_options;
+            
+            return {
+              ...q,
+              options: shuffledOptions,
+              answer_options: shuffledAnswerOptions,
+              // correct_answer remains unchanged as it's one of the answer_options
             };
           }
           return q;
@@ -242,6 +255,12 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
             (question.question_type === 'mcq' || question.question_type === 'multiple_response') && 
             Array.isArray(question.options)
             ? question.options
+            : null,
+          shuffled_answer_options: shuffleMcqOptions && 
+            question.question_type === 'multiple_response' && 
+            question.answer_options &&
+            Array.isArray(question.answer_options)
+            ? question.answer_options
             : null
         });
       }
