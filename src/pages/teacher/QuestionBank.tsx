@@ -894,8 +894,84 @@ export default function QuestionBank() {
                   </Select>
                 </div>
 
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="type">Question Type</Label>
+                    <Select
+                      value={formData.question_type}
+                      onValueChange={(value: any) =>
+                        setFormData({ ...formData, question_type: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="mcq">Multiple Choice (Single Answer)</SelectItem>
+                        <SelectItem value="multiple_response">Multiple Response (Multiple Answers)</SelectItem>
+                        <SelectItem value="true_false">True/False</SelectItem>
+                        <SelectItem value="short_answer">Short Answer</SelectItem>
+                        <SelectItem value="match_following">Match the Following</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="difficulty">Difficulty</Label>
+                    <Select
+                      value={formData.difficulty}
+                      onValueChange={(value: any) =>
+                        setFormData({ ...formData, difficulty: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="easy">Easy</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="hard">Hard</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="marks">Marks</Label>
+                    <Input
+                      id="marks"
+                      type="number"
+                      min="1"
+                      value={formData.marks}
+                      onChange={(e) =>
+                        setFormData({ ...formData, marks: parseInt(e.target.value) })
+                      }
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="negative-marks">Negative Marks</Label>
+                    <Input
+                      id="negative-marks"
+                      type="number"
+                      min="0"
+                      step="0.25"
+                      value={formData.negative_marks}
+                      onChange={(e) =>
+                        setFormData({ ...formData, negative_marks: parseFloat(e.target.value) || 0 })
+                      }
+                      placeholder="0"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Marks deducted for wrong answer (0 = no deduction)
+                    </p>
+                  </div>
+                </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="question">Question</Label>
+                  <Label htmlFor="question">Question Text</Label>
                   <Input
                     id="question"
                     value={formData.question_text}
@@ -975,82 +1051,6 @@ export default function QuestionBank() {
                       />
                     </div>
                   )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="type">Question Type</Label>
-                    <Select
-                      value={formData.question_type}
-                      onValueChange={(value: any) =>
-                        setFormData({ ...formData, question_type: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="mcq">Multiple Choice (Single Answer)</SelectItem>
-                        <SelectItem value="multiple_response">Multiple Response (Multiple Answers)</SelectItem>
-                        <SelectItem value="true_false">True/False</SelectItem>
-                        <SelectItem value="short_answer">Short Answer</SelectItem>
-                        <SelectItem value="match_following">Match the Following</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="marks">Marks</Label>
-                    <Input
-                      id="marks"
-                      type="number"
-                      min="1"
-                      value={formData.marks}
-                      onChange={(e) =>
-                        setFormData({ ...formData, marks: parseInt(e.target.value) })
-                      }
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="negative-marks">Negative Marks</Label>
-                    <Input
-                      id="negative-marks"
-                      type="number"
-                      min="0"
-                      step="0.25"
-                      value={formData.negative_marks}
-                      onChange={(e) =>
-                        setFormData({ ...formData, negative_marks: parseFloat(e.target.value) || 0 })
-                      }
-                      placeholder="0"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Marks deducted for wrong answer (0 = no deduction)
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="difficulty">Difficulty</Label>
-                    <Select
-                      value={formData.difficulty}
-                      onValueChange={(value: any) =>
-                        setFormData({ ...formData, difficulty: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="easy">Easy</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="hard">Hard</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </div>
 
                 {formData.question_type === 'mcq' && (
@@ -1438,6 +1438,82 @@ export default function QuestionBank() {
                   </Select>
                 </div>
 
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-type">Question Type</Label>
+                    <Select
+                      value={formData.question_type}
+                      onValueChange={(value: any) =>
+                        setFormData({ ...formData, question_type: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="mcq">Multiple Choice (Single Answer)</SelectItem>
+                        <SelectItem value="multiple_response">Multiple Response (Multiple Answers)</SelectItem>
+                        <SelectItem value="true_false">True/False</SelectItem>
+                        <SelectItem value="short_answer">Short Answer</SelectItem>
+                        <SelectItem value="match_following">Match the Following</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-difficulty">Difficulty</Label>
+                    <Select
+                      value={formData.difficulty}
+                      onValueChange={(value: 'easy' | 'medium' | 'hard') =>
+                        setFormData({ ...formData, difficulty: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="easy">Easy</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="hard">Hard</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-marks">Marks</Label>
+                    <Input
+                      id="edit-marks"
+                      type="number"
+                      min="1"
+                      value={formData.marks}
+                      onChange={(e) =>
+                        setFormData({ ...formData, marks: parseInt(e.target.value) })
+                      }
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-negative-marks">Negative Marks</Label>
+                    <Input
+                      id="edit-negative-marks"
+                      type="number"
+                      min="0"
+                      step="0.25"
+                      value={formData.negative_marks}
+                      onChange={(e) =>
+                        setFormData({ ...formData, negative_marks: parseFloat(e.target.value) || 0 })
+                      }
+                      placeholder="0"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Marks deducted for wrong answer (0 = no deduction)
+                    </p>
+                  </div>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="edit-question">Question Text</Label>
                   <Input
@@ -1519,80 +1595,6 @@ export default function QuestionBank() {
                       />
                     </div>
                   )}
-                </div>
-
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-type">Question Type</Label>
-                    <Select
-                      value={formData.question_type}
-                      onValueChange={(value: any) =>
-                        setFormData({ ...formData, question_type: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="mcq">Multiple Choice (Single Answer)</SelectItem>
-                        <SelectItem value="multiple_response">Multiple Response (Multiple Answers)</SelectItem>
-                        <SelectItem value="true_false">True/False</SelectItem>
-                        <SelectItem value="short_answer">Short Answer</SelectItem>
-                        <SelectItem value="match_following">Match the Following</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-difficulty">Difficulty</Label>
-                    <Select
-                      value={formData.difficulty}
-                      onValueChange={(value: 'easy' | 'medium' | 'hard') =>
-                        setFormData({ ...formData, difficulty: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="easy">Easy</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="hard">Hard</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-marks">Marks</Label>
-                    <Input
-                      id="edit-marks"
-                      type="number"
-                      min="1"
-                      value={formData.marks}
-                      onChange={(e) =>
-                        setFormData({ ...formData, marks: parseInt(e.target.value) })
-                      }
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-negative-marks">Negative Marks</Label>
-                    <Input
-                      id="edit-negative-marks"
-                      type="number"
-                      min="0"
-                      step="0.25"
-                      value={formData.negative_marks}
-                      onChange={(e) =>
-                        setFormData({ ...formData, negative_marks: parseFloat(e.target.value) || 0 })
-                      }
-                      placeholder="0"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Marks deducted for wrong answer (0 = no deduction)
-                    </p>
-                  </div>
                 </div>
 
                 {formData.question_type === 'mcq' && (
