@@ -206,17 +206,17 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
               options: shuffledOptions.map(item => item.option),
               correct_answer: newCorrectAnswers || correctAnswer
             };
-          } else if (q.question_type === 'multiple_response' && Array.isArray(q.options)) {
-            // For multiple_response, shuffle options and answer_options independently
-            const shuffledOptions = shuffleArray(q.options as string[]);
+          } else if (q.question_type === 'multiple_response') {
+            // For multiple_response, ONLY shuffle Segment 3 (answer_options)
+            // Segment 2 (options A, B, C, D) remains unchanged
             const shuffledAnswerOptions = q.answer_options && Array.isArray(q.answer_options) 
               ? shuffleArray(q.answer_options) 
               : q.answer_options;
             
             return {
               ...q,
-              options: shuffledOptions,
-              answer_options: shuffledAnswerOptions,
+              options: q.options, // Keep Segment 2 unchanged
+              answer_options: shuffledAnswerOptions, // Shuffle only Segment 3
               // correct_answer remains unchanged as it's one of the answer_options
             };
           }
