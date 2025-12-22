@@ -3,13 +3,12 @@
 ## 1. Application Description
 
 ### 1.1 Application Name
-Online School Management System\n
+Online School Management System
+
 ### 1.2 Application Purpose
 A comprehensive school management system for educational institutions. Features include school management, academic structure setup (class, section, subject, lesson), teacher-subject-class-section mapping, question bank management with lesson-level tracking, question paper preparation with shuffle functionality, user management with school-based data isolation.\n
 ## 2. User Roles\n
-### 2.1 Admin
-- Complete system administration
-- School management (create, edit, view schools)\n- User account creation and management
+### 2.1 Admin\n- Complete system administration\n- School management (create, edit, view schools)\n- User account creation and management
 - New user approval management
 - Role-based Access Control setup
 - System configurations\n- Permission management
@@ -57,7 +56,7 @@ A comprehensive school management system for educational institutions. Features 
   - Shuffle questions and MCQ options
   - Preview, save as draft, generate final paper
   - Export as PDF and print
-  - **Save shuffled papers with custom names**
+  - **Save shuffled papers with auto-versioned names (Shuffled A, Shuffled B, etc.)**
 - Profile editing capability
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view and interact with students from their assigned sections
@@ -235,8 +234,7 @@ After Principal login, the dashboard displays four main cards:
   - Student Name
   - Class and Section
   - Phone Number
-  - Account Status (Active/Pending/Suspended)
-- **Enhanced Search Functionality**: \n  - Text search bar for searching by name, phone, or email
+  - Account Status (Active/Pending/Suspended)\n- **Enhanced Search Functionality**: \n  - Text search bar for searching by name, phone, or email
   - Additional dropdown filters for Class and Section
   - Combined search capability (text search + class filter + section filter)
 - Filter and search options by class, section, or name
@@ -359,7 +357,7 @@ The question creation form displays fields in the following order:
 9. **Difficulty** (Dropdown, required)\n   - Options: Easy, Medium, Hard
 10. **Options** (Dynamic fields, conditional)\n   - For Multiple Choice: Four option input fields (Option1, Option 2, Option 3, Option 4) displayed simultaneously
    - For True/False: Two option input fields (True, False) displayed simultaneously
-   - For Match the Following: Two columns of input fields\n     - Left Column: Items to be matched (e.g., Item1, Item 2, Item 3, Item 4)
+   - For Match the Following: Two columns of input fields\n     - Left Column: Items to be matched (e.g., Item 1, Item 2, Item 3, Item 4)
      - Right Column: Matching options (e.g., Option A, Option B, Option C, Option D)
      - All pairs displayed simultaneously (no'Add Pair' button)
    - For Multiple Response MCQ: Four option input fields (Option 1, Option 2, Option 3, Option 4) displayed simultaneously with checkboxes to mark multiple correct answers
@@ -386,8 +384,7 @@ The question creation form displays fields in the following order:
 - **Cancel Button**: Clears the form and closes the dialog
 - **Validation Messages**: Display error messages for missing required fields or invalid inputs
 \n#### 6.3.4 Question Type Specific Details
-\n#####6.3.4.1 Match the Following
-- **Purpose**: Test students' ability to match related items from two columns
+\n#####6.3.4.1 Match the Following\n- **Purpose**: Test students' ability to match related items from two columns
 - **Options Field Structure**:
   - Left Column (Items): Input fields for items to be matched (e.g., 'Alpha decay', 'Beta decay', 'Gamma decay', 'Neutron decay')
   - Right Column (Matching Options): Input fields for matching options (e.g., 'Changes atomic number', 'No change in atomic number', 'Emits helium nucleus', 'Emits electron')
@@ -459,9 +456,11 @@ Each question displayed as a card with the following sections:
 - **Marks**: Positive marks for correct answer\n- **Minus Mark**: Negative marks for incorrect answer (displayed as 'Minus Mark:0.25' or 'No Negative Marking' if zero)
 - **Options** (for Multiple Choice, True/False, Match the Following, and Multiple Response MCQ):
   - For Multiple Choice and True/False: All options listed with option labels (A, B, C, D), correct answer highlighted with checkmark icon and green background
-  - For Match the Following: Two-column layout showing left items and right matches, with correct pairs connected by visual lines or highlighted\n  - For Multiple Response MCQ: All options listed with option labels (A, B, C, D), multiple correct answers highlighted with checkmark icons and green background
+  - For Match the Following: Two-column layout showing left items and right matches, with correct pairs connected by visual lines or highlighted
+  - For Multiple Response MCQ: All options listed with option labels (A, B, C, D), multiple correct answers highlighted with checkmark icons and green background
 - **Correct Answer** (for Short Answer and Essay):
-  - Displayed in separate section with label\n\n**Card Footer**:
+  - Displayed in separate section with label
+\n**Card Footer**:
 - **Edit Button**: Prominent edit button with icon
 - **Delete Button**: Delete button with icon
 - **Created By**: Display creator name (optional)
@@ -478,7 +477,7 @@ Each question displayed as a card with the following sections:
 - **Image Display**:
   - Image thumbnails: 150px width, auto height, maintain aspect ratio
   - Image captions: 12px, italic, gray color
-  - Image gallery: Horizontal scroll or grid layout with8px gap between images
+  - Image gallery: Horizontal scroll or grid layout with 8px gap between images
 - **Minus Mark Display**:
   - Label: 'Minus Mark:' followed by value\n  - Color: Red or orange to indicate negative marking
   - Font size: 14px, regular
@@ -546,13 +545,14 @@ Each question displayed as a card with the following sections:
 - **Future Reports**:
   - Lesson-wise accuracy of students (e.g., 'Students scored 75% on Lesson: Algebra Basics')
   - Lesson-wise difficulty analysis (e.g., 'Lesson: Photosynthesis has 60% Hard questions')
-  - Lesson-wise question distribution (e.g., 'Lesson: Shakespeare Introduction has 10Multiple Choice, 5 Short Answer, 3 Match the Following, 2 Multiple Response MCQ questions')
+  - Lesson-wise question distribution (e.g., 'Lesson: Shakespeare Introduction has 10 Multiple Choice, 5 Short Answer, 3 Match the Following, 2 Multiple Response MCQ questions')
   - Student performance comparison across lessons
   - Class-wise lesson performance trends
   - **Negative marking impact analysis**: Track how negative marking affects student scores
 
 #### 6.5.2 Analytics Dashboard Components
-- Lesson performance heatmap\n- Student accuracy by lesson chart
+- Lesson performance heatmap
+- Student accuracy by lesson chart
 - Question difficulty distribution by lesson
 - Lesson completion rates
 - Comparative analysis across classes and subjects
@@ -589,7 +589,8 @@ ALTER TYPE question_type_enum ADD VALUE IF NOT EXISTS 'Multiple Response MCQ';
 ```sql
 CREATE INDEX IF NOT EXISTS idx_lessons_subject_id ON lessons(subject_id);
 CREATE INDEX IF NOT EXISTS idx_question_bank_lesson_id ON question_bank(lesson_id);
-CREATE INDEX IF NOT EXISTS idx_question_bank_bank_name ON question_bank(bank_name);\nCREATE INDEX IF NOT EXISTS idx_question_bank_images ON question_bank USING GIN (question_images);
+CREATE INDEX IF NOT EXISTS idx_question_bank_bank_name ON question_bank(bank_name);
+CREATE INDEX IF NOT EXISTS idx_question_bank_images ON question_bank USING GIN (question_images);
 CREATE INDEX IF NOT EXISTS idx_question_bank_minus_mark ON question_bank(minus_mark);
 ```\n
 5. **Add Foreign Key Constraint**:
@@ -829,7 +830,7 @@ CREATE INDEX IF NOT EXISTS idx_question_papers_status ON question_papers(status)
   - Total Marks
   - Status (Draft/Final)
   - Created Date
-  - Actions (View, Edit, Delete, Export PDF, Print)
+  - Actions (View, Edit, Delete, Export PDF, Print, **Shuffle and Save**)
 - **Filter Options**:
   - Filter by Class
   - Filter by Subject\n  - Filter by Status (Draft/Final)
@@ -839,6 +840,7 @@ CREATE INDEX IF NOT EXISTS idx_question_papers_status ON question_papers(status)
 - **Delete**: Delete question paper with confirmation dialog
 - **Export PDF**: Generate and download PDF file
 - **Print**: Open print dialog with formatted question paper
+- **Shuffle and Save**: Create a new shuffled version of the question paper with auto-versioned name
 
 ### 7.6 Enhanced Question Paper Features
 
@@ -883,7 +885,8 @@ CREATE INDEX IF NOT EXISTS idx_question_papers_status ON question_papers(status)
 ALTER TABLE question_papers\nADD COLUMN IF NOT EXISTS version_count INTEGER DEFAULT 1,
 ADD COLUMN IF NOT EXISTS version_identifier VARCHAR(10),
 ADD COLUMN IF NOT EXISTS parent_paper_id UUID REFERENCES question_papers(id) ON DELETE CASCADE,
-ADD COLUMN IF NOT EXISTS answer_key JSONB;\n\nCREATE INDEX IF NOT EXISTS idx_question_papers_parent_paper_id ON question_papers(parent_paper_id);\n```
+ADD COLUMN IF NOT EXISTS answer_key JSONB;\n\nCREATE INDEX IF NOT EXISTS idx_question_papers_parent_paper_id ON question_papers(parent_paper_id);
+```
 
 **Implementation Notes**:
 - Parent question paper stores version_count and has NULL parent_paper_id
@@ -905,7 +908,8 @@ ADD COLUMN IF NOT EXISTS answer_key JSONB;\n\nCREATE INDEX IF NOT EXISTS idx_que
   - Subject (auto-populated from current selection)
 - **Template Configuration Stored**:
   - Section-wise marks distribution (e.g., Section A: 20marks, Section B: 30 marks)
-  - Difficulty ratio (e.g., 40% Easy, 40% Medium, 20% Hard)\n  - Question type distribution (e.g., 10 MCQ, 5 Short Answer, 3 Essay)
+  - Difficulty ratio (e.g., 40% Easy, 40% Medium, 20% Hard)
+  - Question type distribution (e.g., 10 MCQ, 5 Short Answer, 3 Essay)
   - Shuffle settings (Shuffle Questions: Yes/No, Shuffle MCQ Options: Yes/No)
   - Formatting preferences (header format, footer format, page layout)
   - Total marks target
@@ -913,8 +917,7 @@ ADD COLUMN IF NOT EXISTS answer_key JSONB;\n\nCREATE INDEX IF NOT EXISTS idx_que
 \n**Template Management Interface**:
 - **Template List View**: Display all saved templates
   - Columns: Template Name, Class, Subject, Total Marks, Total Questions, Created Date, Actions
-  - Actions: Use Template, Edit, Delete, Duplicate
-- **Use Template**: Load template configuration into question paper creation workflow
+  - Actions: Use Template, Edit, Delete, Duplicate\n- **Use Template**: Load template configuration into question paper creation workflow
   - Auto-populate shuffle settings\n  - Display target marks and question distribution
   - Suggest questions based on difficulty ratio and question type distribution
 - **Edit Template**: Modify template configuration
@@ -928,8 +931,7 @@ ADD COLUMN IF NOT EXISTS answer_key JSONB;\n\nCREATE INDEX IF NOT EXISTS idx_que
 4. System suggests questions matching template criteria
 5. Teacher reviews and selects questions
 6. System validates selection against template targets
-7. Teacher proceeds to shuffle options and preview
-\n**Database Schema for Templates**:
+7. Teacher proceeds to shuffle options and preview\n\n**Database Schema for Templates**:
 ```sql
 CREATE TABLE IF NOT EXISTS question_paper_templates (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -940,8 +942,8 @@ CREATE TABLE IF NOT EXISTS question_paper_templates (
   configuration JSONB NOT NULL,
   created_by UUID NOT NULL REFERENCES users.id ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);
-\nCREATE INDEX IF NOT EXISTS idx_templates_school_id ON question_paper_templates(school_id);\nCREATE INDEX IF NOT EXISTS idx_templates_class_id ON question_paper_templates(class_id);
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);\n\nCREATE INDEX IF NOT EXISTS idx_templates_school_id ON question_paper_templates(school_id);\nCREATE INDEX IF NOT EXISTS idx_templates_class_id ON question_paper_templates(class_id);
 CREATE INDEX IF NOT EXISTS idx_templates_subject_id ON question_paper_templates(subject_id);\nCREATE INDEX IF NOT EXISTS idx_templates_created_by ON question_paper_templates(created_by);
 ```
 
@@ -973,7 +975,8 @@ CREATE INDEX IF NOT EXISTS idx_templates_subject_id ON question_paper_templates(
   - Medium: Percentage slider (0-100%)
   - Hard: Percentage slider (0-100%)
   - Total must equal 100%
-  - Default: 40% Easy, 40% Medium, 20% Hard\n- **Target Marks Input**: Number input for total marks (e.g., 50, 100)\n- **Auto-Suggest Button**: Click to generate suggested question list
+  - Default: 40% Easy, 40% Medium, 20% Hard
+- **Target Marks Input**: Number input for total marks (e.g., 50, 100)\n- **Auto-Suggest Button**: Click to generate suggested question list
 - **Suggestion Algorithm**:
   - Calculate number of questions needed for each difficulty level based on ratio and target marks
   - Select questions from teacher's question bank matching difficulty criteria
@@ -1153,7 +1156,7 @@ CREATE INDEX IF NOT EXISTS idx_templates_subject_id ON question_paper_templates(
     - Status (Draft/Final)
     - Created Date
     - Last Modified Date
-    - Actions (View, Edit, Duplicate, Compare, Delete)
+    - Actions (View, Edit, Duplicate, Compare, Delete, **Shuffle and Save**)
 - **Timestamp Display**: Show creation and modification timestamps in user's local timezone
 - **Version Grouping**: Group multiple versions of same paper together
   - Parent paper displayed with expand/collapse icon
@@ -1229,89 +1232,136 @@ ADD COLUMN IF NOT EXISTS modification_history JSONB;\n\nCREATE INDEX IF NOT EXIS
   }\n]
 ```
 
-#### 7.6.7 Save Shuffled Question Paper with Custom Name
+#### 7.6.7 Shuffle and Save with Auto-Versioned Names
 
-**Purpose**: Enable teachers to save shuffled question papers with custom names in Question Paper Management interface, allowing better organization and identification of different shuffled versions.
+**Purpose**: Enable teachers to create multiple shuffled versions of the same question paper with automatically incremented version identifiers (Shuffled A, Shuffled B, Shuffled C, etc.) for better organization and identification.
 
 **Feature Components**:
 
-**Save Shuffled Paper with Custom Name**:
-- **Save As Button**: New button available in Question Paper Management interface
-  - Location: Actions column in Question Paper List table
-  - Label: 'Save As' or 'Save with New Name'
-  - Icon: Save icon with plus symbol or duplicate icon
-  - Availability: Enabled for both Draft and Final status papers
-- **Save As Dialog**:
-  - **Dialog Title**: 'Save Question Paper with New Name'
-  - **Input Fields**:
-    - **New Paper Name** (Text input, required)
-      - Placeholder: 'Enter new paper name (e.g., Class10_English_Version2, Mid-term_Shuffled)'
-      - Validation: Must be unique within teacher's question papers
-      - Character limit: 200 characters
-      - Auto-suggest format: Original_Name + '_Shuffled' or Original_Name + '_Version2'
-    - **Description** (Text area, optional)
-      - Placeholder: 'Add description or notes about this version (optional)'
-      - Character limit: 500 characters
-  - **Shuffle Options** (Checkboxes, optional):
-    - **Re-shuffle Questions**: Apply new shuffle to question order
-    - **Re-shuffle MCQ Options**: Apply new shuffle to MCQ options
-    - Help text: 'Check to apply new shuffle settings before saving'
-  - **Action Buttons**:
-    - **Save Button**: Save paper with new name and optional new shuffle\n    - **Cancel Button**: Close dialog without saving
-\n**Save As Workflow**:
-1. Teacher clicks 'Save As' button in Actions column for any question paper
-2. System opens 'Save As' dialog with input fields
-3. System auto-populates 'New Paper Name' field with suggested name (Original_Name + '_Shuffled')
-4. Teacher can modify the suggested name or enter custom name
-5. Teacher optionally adds description\n6. Teacher optionally checks re-shuffle options to apply new shuffle
-7. Teacher clicks 'Save' button\n8. System validates new paper name for uniqueness
-9. System creates new question paper record with:\n   - New paper name
+**Shuffle and Save Button**:
+- **Location**: Actions column in Question Paper Management interface
+- **Label**: 'Shuffle and Save' or 'Create Shuffled Version'
+- **Icon**: Shuffle icon with save symbol
+- **Availability**: Enabled for both Draft and Final status papers
+- **Tooltip**: 'Create a new shuffled version with auto-versioned name'
+\n**Auto-Versioning Logic**:
+- **First Shuffle**: When user clicks 'Shuffle and Save' for the first time on a paper:\n  - System checks if paper name already contains '(Shuffled)' suffix\n  - If not, append '(Shuffled A)' to original paper name
+  - Example: 'Test1' becomes 'Test 1 (Shuffled A)'
+- **Subsequent Shuffles**: When user clicks 'Shuffle and Save' again on the same paper or its shuffled versions:
+  - System detects existing version identifier (A, B, C, etc.)\n  - Increments version identifier to next letter (A → B, B → C, C → D, etc.)
+  - Example: 'Test 1(Shuffled A)' becomes 'Test 1 (Shuffled B)'
+  - Example: 'Test 1 (Shuffled B)' becomes 'Test 1 (Shuffled C)'
+- **Version Identifier Range**: A to Z (26 versions maximum)
+- **Base Name Extraction**: System extracts base name by removing existing '(Shuffled X)' suffix before appending new version
+  - Example: 'Test 1(Shuffled A)' → Base name: 'Test 1' → New name: 'Test 1 (Shuffled B)'
+
+**Shuffle and Save Dialog**:
+- **Dialog Title**: 'Create Shuffled Version'
+- **Display Components**:
+  - **Current Paper Name**: Display original paper name (read-only)
+  - **New Paper Name**: Display auto-generated new name with version identifier (read-only)
+    - Format: 'Base Name (Shuffled X)' where X is next available letter
+    - Example: 'Test 1 (Shuffled B)'\n  - **Shuffle Options** (Checkboxes, pre-checked by default):
+    - **Shuffle Questions**: Apply new shuffle to question order
+    - **Shuffle MCQ Options**: Apply new shuffle to MCQ options
+    - Help text: 'New shuffle will be applied to create a different version'\n  - **Preview Section**:
+    - Display summary:'X questions will be copied in shuffled order, with shuffled MCQ options'
+    - Show total marks and total questions count
+- **Action Buttons**:
+  - **Create Shuffled Version Button**: Save paper with auto-versioned name and new shuffle
+  - **Cancel Button**: Close dialog without saving
+\n**Shuffle and Save Workflow**:
+1. Teacher clicks 'Shuffle and Save' button in Actions column for any question paper
+2. System opens'Create Shuffled Version' dialog
+3. System auto-generates new paper name with incremented version identifier:\n   - Extract base name by removing existing '(Shuffled X)' suffix
+   - Detect highest existing version letter for this base name
+   - Increment to next letter (A → B, B → C, etc.)
+   - Append '(Shuffled X)' to base name
+4. System displays auto-generated new name in dialog (read-only)
+5. System pre-checks shuffle options (Shuffle Questions and Shuffle MCQ Options)
+6. Teacher reviews auto-generated name and shuffle options
+7. Teacher clicks 'Create Shuffled Version' button
+8. System creates new question paper record with:\n   - Auto-generated paper name with version identifier
    - Same selected questions as original paper
-   - Same class, subject, and metadata
-   - New shuffle applied if re-shuffle options checked
-   - Status: Draft (default) or Final (based on user selection)
+   - New shuffle applied to questions and MCQ options
+   - Same class, subject, and metadata\n   - Status: Draft (default)
    - New created_at timestamp
    - Same created_by (teacher ID)
-10. System displays success message: 'Question paper saved successfully with name: [New Paper Name]'
-11. System refreshes Question Paper List to show new paper
+   - **parent_paper_id**: Reference to original paper (for version tracking)
+9. System displays success message: 'Shuffled version created successfully: [New Paper Name]'
+10. System refreshes Question Paper List to show new shuffled version
 
 **Database Implementation**:
-- **No schema changes required**: Use existing question_papers table
-- **New Record Creation**: Create new row with unique ID and new paper_name
+- **Use existing question_papers table**: No schema changes required
+- **New Record Creation**: Create new row with unique ID and auto-versioned paper_name
 - **Data Duplication**: Copy selected_questions, shuffle settings, and metadata from original paper
-- **Relationship**: No parent-child relationship needed (independent paper)\n
+- **Parent-Child Relationship**: Store parent_paper_id to track version lineage
+  - Original paper: parent_paper_id = NULL
+  - Shuffled versions: parent_paper_id = original paper's ID
+- **Version Tracking**: Query parent_paper_id to find all versions of a paper
+
+**Auto-Versioning Algorithm**:
+```\nFunction generateShuffledVersionName(originalPaperName):
+  1. Extract base name:\n     - If originalPaperName contains '(Shuffled X)' pattern:
+       - Remove '(Shuffled X)' suffix to get base name
+     - Else:
+       - Use originalPaperName as base name
+  \n  2. Query database for all papers with same base name:\n     - Find all papers where paper_name starts with base name
+     - Extract version identifiers (A, B, C, etc.) from paper names
+  
+  3. Determine next version identifier:
+     - If no existing versions found:
+       - Next version = 'A'
+     - Else:\n       - Find highest version letter (e.g., 'B')
+       - Increment to next letter (e.g., 'C')\n       - If highest version is 'Z', display error: 'Maximum26 versions reached'
+  
+  4. Generate new paper name:
+     - Concatenate: base name + ' (Shuffled ' + next version + ')'
+     - Example: 'Test 1' + ' (Shuffled B)' = 'Test 1 (Shuffled B)'\n  
+  5. Return new paper name
+```
+
 **UI Components**:
-- **Save As Button in Actions Column**:\n  - Icon: Duplicate icon or save-as icon
-  - Tooltip: 'Save with new name'
-  - Position: Next to Edit, Delete, Export PDF, Print buttons
-- **Save As Dialog**:
+- **Shuffle and Save Button in Actions Column**:
+  - Icon: Shuffle icon with save symbol
+  - Tooltip: 'Create shuffled version'\n  - Position: Next to View, Edit, Delete, Export PDF, Print buttons
+- **Shuffle and Save Dialog**:
   - Modal dialog with centered layout
-  - Input fields with clear labels and placeholders
-  - Validation error messages displayed inline
-  - Action buttons at bottom (Save, Cancel)
-- **Success Notification**:
+  - Read-only fields for current and new paper names
+  - Pre-checked shuffle options
+  - Preview section with summary
+  - Action buttons at bottom (Create Shuffled Version, Cancel)\n- **Success Notification**:
   - Toast notification or alert message
-  - Display new paper name\n  - Auto-dismiss after 5 seconds
+  - Display new paper name with version identifier
+  - Auto-dismiss after 5 seconds
 \n**Validation Rules**:
-- **New Paper Name**:
-  - Required field
-  - Must be unique within teacher's question papers
-  - Cannot be empty or whitespace only
-  - Maximum 200 characters
-  - Display error message if name already exists: 'A question paper with this name already exists. Please choose a different name.'
-- **Description**:
-  - Optional field\n  - Maximum 500 characters
-\n**Use Cases**:
-1. **Create Multiple Shuffled Versions**: Teacher creates original paper, then uses'Save As' multiple times with re-shuffle enabled to create different shuffled versions (Version1, Version2, Version3)\n2. **Backup Before Editing**: Teacher saves current paper with new name before making major edits to original
-3. **Create Variations**: Teacher creates base paper, then uses 'Save As' to create variations for different sections or classes
-4. **Archive Old Versions**: Teacher saves current paper with date suffix before updating for new academic year
+- **Version Limit**: Maximum 26 versions (A to Z)
+  - Display error message if limit reached: 'Maximum 26 shuffled versions reached for this paper. Please create a new paper.'
+- **Name Uniqueness**: Ensure auto-generated name is unique
+  - If name collision occurs (rare), append timestamp or increment number
+- **Shuffle Options**: At least one shuffle option must be checked
+  - Display error if both options unchecked: 'Please select at least one shuffle option'\n\n**Use Cases**:
+1. **Create First Shuffled Version**: Teacher has paper'Test 1', clicks 'Shuffle and Save', system creates 'Test 1 (Shuffled A)'
+2. **Create Second Shuffled Version**: Teacher clicks 'Shuffle and Save' on'Test 1 (Shuffled A)', system creates 'Test 1 (Shuffled B)'
+3. **Create Third Shuffled Version**: Teacher clicks 'Shuffle and Save' on 'Test 1 (Shuffled B)', system creates 'Test 1 (Shuffled C)'
+4. **Create Multiple Versions from Original**: Teacher clicks 'Shuffle and Save' on original'Test 1' multiple times, system creates 'Test 1 (Shuffled A)', 'Test 1 (Shuffled B)', 'Test 1 (Shuffled C)', etc.
+5. **Version Tracking**: Teacher can view all versions of 'Test 1' grouped together in Question Paper List
 
 **Benefits**:
-- **Better Organization**: Teachers can maintain multiple versions of same paper with descriptive names
-- **Easy Identification**: Custom names help identify purpose or version of each paper
-- **Flexible Workflow**: Teachers can create variations without affecting original paper
-- **Version Control**: Teachers can track different versions with meaningful names
-\n## 8. Teacher Dashboard and Functions
+- **Automatic Naming**: No manual input required, system auto-generates version names
+- **Sequential Versioning**: Clear version progression (A, B, C, etc.)
+- **Easy Identification**: Version identifier in paper name helps identify different shuffled versions
+- **Organized Management**: All versions of same paper grouped together
+- **Prevents Cheating**: Multiple shuffled versions for large classrooms
+- **Time-Saving**: Quick creation of multiple versions without manual naming
+
+**Removal of Manual'Save As' Feature**:
+- **Remove'Save As' Button**: The previous manual'Save As' button with custom name input is removed from the Actions column
+- **Replace with 'Shuffle and Save'**: The new 'Shuffle and Save' button with auto-versioning replaces the manual'Save As' feature
+- **Simplified Workflow**: Teachers no longer need to manually enter custom names for shuffled versions
+- **Consistent Naming**: Auto-versioning ensures consistent naming convention across all shuffled papers
+
+## 8. Teacher Dashboard and Functions
 
 ### 8.1 Teacher Login - Dashboard Overview
 After Teacher login, the dashboard displays:
@@ -1320,8 +1370,7 @@ After Teacher login, the dashboard displays:
 - **Assigned Subjects**: List of subjects assigned to the teacher
 - **Students of Assigned Sections**: List of students in the assigned sections only
 - **Question Bank**: Access to create questions for assigned subjects and lessons with dual view options, image upload capability, and minus mark field
-- **Question Paper Preparation**: Access to create question papers from own question bank\n\n### 8.2 Teacher Functions
-
+- **Question Paper Preparation**: Access to create question papers from own question bank\n\n### 8.2 Teacher Functions\n
 #### 8.2.1 View Assigned Classes, Sections, and Subjects
 - Teacher can view all their assigned classes, sections, and subjects\n- Dashboard displays summary cards with counts
 - Detailed view with class-section-subject combinations
@@ -1335,8 +1384,7 @@ After Teacher login, the dashboard displays:
 - **Visibility Rule**: Teacher cannot view students from other sections or other teachers\n
 #### 8.2.3 Question Bank Access
 - Teacher can create questions for their assigned subjects and lessons
-- Question creation form follows same field order as Principal (Class → Subject → Lesson → Question → Insert Images/Clip Arts → Question Type → Marks → **Minus Mark** → Difficulty → Options → Correct Answer)
-- **Image Upload**: Teachers can insert images/clip arts in questions using local file browser, drag-drop, or URL input
+- Question creation form follows same field order as Principal (Class → Subject → Lesson → Question → Insert Images/Clip Arts → Question Type → Marks → **Minus Mark** → Difficulty → Options → Correct Answer)\n- **Image Upload**: Teachers can insert images/clip arts in questions using local file browser, drag-drop, or URL input
 - **Minus Mark Field**: Teachers can specify negative marking for questions
 - **Dual View Options**:
   - Row View (table format with Minus Mark column)
@@ -1345,7 +1393,7 @@ After Teacher login, the dashboard displays:
 - Questions are automatically filtered by teacher's assigned subjects\n- Edit functionality available in both Row View and Card View (including image editing with local file selection and minus_mark editing)
 - **Support for all question types**: Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ\n
 #### 8.2.4 Question Paper Preparation\n- **Access**: Available from Teacher Dashboard or Navigation Menu
-- **Create New Question Paper**: Click'Create Question Paper' button to start workflow
+- **Create New Question Paper**: Click 'Create Question Paper' button to start workflow
 - **Step1: Basic Details**:
   - Select Class (dropdown)
   - Select Subject (dropdown)
@@ -1355,7 +1403,8 @@ After Teacher login, the dashboard displays:
   - Select questions using checkboxes in row view
   - Preview questions by clicking on rows
   - **Smart Selection**: Use auto-suggest by difficulty distribution, lesson coverage indicator, and real-time marks calculation
-  - **Bulk Operations**: Select all questions from specific lesson, select by difficulty level, batch shuffle\n- **Step 3: Shuffle Options**:
+  - **Bulk Operations**: Select all questions from specific lesson, select by difficulty level, batch shuffle
+- **Step 3: Shuffle Options**:
   - Enable/disable Shuffle Questions
   - Enable/disable Shuffle MCQ Options
   - **Multiple Versions**: Select number of versions to generate (2-5)
@@ -1368,7 +1417,7 @@ After Teacher login, the dashboard displays:
   - View list of created question papers with version history
   - Edit drafts
   - Duplicate papers
-  - **Save As with Custom Name**: Save shuffled papers with custom names for better organization
+  - **Shuffle and Save**: Create shuffled versions with auto-versioned names (Shuffled A, Shuffled B, etc.)
   - Compare versions
   - Delete question papers
   - Export and print final papers
@@ -1376,10 +1425,12 @@ After Teacher login, the dashboard displays:
 #### 8.2.5 Profile Settings
 - Teacher can edit their own profile information
 - View school details (read-only)
-\n## 9. Student Dashboard and Functions\n
+\n## 9. Student Dashboard and Functions
+
 ### 9.1 Student Login - Dashboard Overview
 After Student login, the dashboard displays:
-- **My Class**: Student's assigned class\n- **My Section**: Student's assigned section
+- **My Class**: Student's assigned class
+- **My Section**: Student's assigned section
 - **My Subjects**: List of subjects for the student's class
 - **My Teachers**: List of teachers assigned to the student's class and section
 \n### 9.2 Student Functions
@@ -1404,7 +1455,7 @@ After Student login, the dashboard displays:
 ### 10.1 User Registration and Approval Workflow
 - When a new user creates an account (signup), they will be assigned 'Pending Approval' status
 - **School Name Field**: During registration, user must select school from dropdown list (populated from School Master created by Admin)
-- New users with'Pending Approval' status will be displayed separately in'Pending Users' list (not in Active Users list)
+- New users with'Pending Approval' status will be displayed separately in 'Pending Users' list (not in Active Users list)
 - Admin must review and approve new user accounts\n- Only after Admin approval, user status changes to 'Active' and they are moved to Active Users list
 - This prevents unauthorized users from accessing the system
 - **Pending Users Display Enhancement**: In the Pending Users section, the School Name column must display the actual school name that the user selected during registration (not a dash or empty value)
@@ -1498,16 +1549,15 @@ After Student login, the dashboard displays:
   - **Enhanced Preview**: Side-by-side preview, print preview, student/answer key toggle
   - Preview, save as draft, generate final paper
   - **Save as Template**: Save configuration as reusable template
-  - **Save As with Custom Name**: Save shuffled papers with custom names for better organization
+  - **Shuffle and Save**: Create shuffled versions with auto-versioned names (Shuffled A, Shuffled B, Shuffled C, etc.)
   - Export as PDF and print
-  - Manage question papers (view, edit drafts, duplicate, save as with custom name, compare versions, delete, export, print)
+  - Manage question papers (view, edit drafts, duplicate, shuffle and save with auto-versioning, compare versions, delete, export, print)
   - **Version History**: Track all generated papers, reuse or modify previous papers, compare versions
 - Edit own profile with Save button
 - View school details (read-only)\n- **School-based access**: All data and user lists filtered by assigned school
 - **Visibility**: Can view students from assigned sections only (cannot view Principal or other teachers)
 
-### 10.6 Student Functions
-- View my class, section, subjects, and teachers
+### 10.6 Student Functions\n- View my class, section, subjects, and teachers
 - View school name, address, and code in profile
 - Edit own profile with Save button
 - **School-based access**: Only see personal information from assigned school
@@ -1534,8 +1584,7 @@ After Student login, the dashboard displays:
   - **Tab 1: Teachers List**\n    - Display Fields: Teacher Name, Subject, Phone Number\n    - **Edit Action**: Edit button or pencil icon for each teacher row
     - **Enhanced Search and Filter Functionality**:
       - Text search bar for searching by teacher name, phone number, or email
-      - Additional dropdown filters:
-        - Subject filter (dropdown showing all subjects in the school)
+      - Additional dropdown filters:\n        - Subject filter (dropdown showing all subjects in the school)
         - Status filter (dropdown with options: All, Active, Pending, Suspended)
       - Combined search capability (text search + subject filter + status filter)
       - Real-time filtering as user types or selects filter options
@@ -1575,7 +1624,8 @@ After Student login, the dashboard displays:
   - Teachers cannot view other teachers or access assignment interface
   - Data is school-wise, not user-wise
 - **UX Requirements**:
-  - Page header:'Teachers Management - [School Name]'\n  - Tab navigation at the top of the page
+  - Page header:'Teachers Management - [School Name]'
+  - Tab navigation at the top of the page
   - Active tab highlighted with primary color
   - Responsive design for all screen sizes
   - Loading indicators during data fetch
@@ -1639,8 +1689,7 @@ After Student login, the dashboard displays:
 
 ### 12.3 Notifications
 - New user registration notifications for Admin
-- School-related updates
-- Password reset confirmation notifications
+- School-related updates\n- Password reset confirmation notifications
 
 ### 12.4 Analytics Dashboard
 - User activity analysis (school-wise)
@@ -1691,7 +1740,8 @@ After Student login, the dashboard displays:
   - Dashboard\n  - My Class
   - My Section
   - My Subjects
-  - My Teachers\n  - Profile Settings
+  - My Teachers
+  - Profile Settings
 - Card-based design - for information grouping in main content area
 - Responsive grid layout - for various screen sizes
 - Main content area adjusts dynamically based on side panel state (collapsed/expanded)
@@ -1705,7 +1755,7 @@ After Student login, the dashboard displays:
 - **Question Bank Interface**: \n  - **View Toggle Control**: Toggle button or tab control at top of page to switch between Row View and Card View
   - **Row View**: Compact table layout with sortable columns (including Minus Mark column) and Edit/Delete actions, with color-coded badges for all question types (including Match the Following - Teal, Multiple Response MCQ - Indigo), plus image indicator icon for questions with images
   - **Card View**: Detailed card layout displaying all question information (including Minus Mark display) with prominent Edit and Delete buttons
-    - **Image Display**: Gallery format with thumbnails and captions, click to view full-size\n    - **Minus Mark Display**: Label'Minus Mark:' followed by value in red/orange color, or'No Negative Marking' in gray if zero\n    - **Match the Following Card**: Two-column layout showing left items and right matches with visual lines or highlighting for correct pairs
+    - **Image Display**: Gallery format with thumbnails and captions, click to view full-size\n    - **Minus Mark Display**: Label'Minus Mark:' followed by value in red/orange color, or 'No Negative Marking' in gray if zero\n    - **Match the Following Card**: Two-column layout showing left items and right matches with visual lines or highlighting for correct pairs
     - **Multiple Response MCQ Card**: All options listed with multiple correct answers highlighted with checkmark icons and green background
   - Question creation form with cascading dropdowns (Class → Subject → Lesson) and Minus Mark field after Marks field
   - **Image Upload Section**: 'Add Image' button with multiple selection methods:\n    - Click button to open native file browser for selecting files from local drive (C:, D:, external drives, network drives)
@@ -1725,14 +1775,14 @@ After Student login, the dashboard displays:
     - **Smart Selection Panel**: Collapsible panel with difficulty ratio sliders, target marks input, auto-suggest button, lesson coverage chart, and real-time marks display
     - **Bulk Actions Toolbar**: Select All, Deselect All, Select by Lesson dropdown, Select by Difficulty buttons, Selected Count Display\n  - **Step 3: Shuffle Options**: Checkboxes for Shuffle Questions and Shuffle MCQ Options, plus Number of Versions dropdown (2-5)
   - **Step 4: Output**: Buttons for Preview, Save as Draft, Save as Template, Generate Final Paper, Export PDF, and Print
-    - **Enhanced Preview**: Side-by-side preview, print preview, student/answer key toggle\n  - **Question Paper List**: Table showing all question papers with columns for Paper Name, Version, Class, Subject, Total Questions, Total Marks, Status, Created Date, Last Modified Date, and Actions (View, Edit, Duplicate, **Save As**, Compare, Delete)
-  - **Save As Dialog**: Modal dialog with input fields for New Paper Name, Description, and optional re-shuffle options
+    - **Enhanced Preview**: Side-by-side preview, print preview, student/answer key toggle\n  - **Question Paper List**: Table showing all question papers with columns for Paper Name, Version, Class, Subject, Total Questions, Total Marks, Status, Created Date, Last Modified Date, and Actions (View, Edit, Duplicate, **Shuffle and Save**, Compare, Delete)
+  - **Shuffle and Save Dialog**: Modal dialog with auto-generated new paper name (with version identifier), pre-checked shuffle options, and preview section
   - **Question Paper Preview**: Modal displaying formatted question paper with header, questions, and footer
-  - **PDF Export**: Generate and download PDF file with professional layout\n  - **Print**: Browser print dialog with optimized A4 layout\n  - **Batch Shuffle Panel**: Panel with batch selection checkboxes, shuffle options, and batch shuffle button
+  - **PDF Export**: Generate and download PDF file with professional layout\n  - **Print**: Browser print dialog with optimized A4 layout
+  - **Batch Shuffle Panel**: Panel with batch selection checkboxes, shuffle options, and batch shuffle button
 - **Question Paper Templates Interface**:
   - **Template List Page**: Table showing all saved templates with columns for Template Name, Class, Subject, Total Marks, Total Questions, Created Date, and Actions (Use Template, Edit, Delete, Duplicate)
-  - **Template Creation Form**: Form with Template Name, Template Description, Configuration fields (sections, marks distribution, difficulty ratio, question type distribution, shuffle settings, formatting preferences)
-  - **Use Template Workflow**: Load template configuration into question paper creation workflow with auto-populated settings and suggested questions
+  - **Template Creation Form**: Form with Template Name, Template Description, Configuration fields (sections, marks distribution, difficulty ratio, question type distribution, shuffle settings, formatting preferences)\n  - **Use Template Workflow**: Load template configuration into question paper creation workflow with auto-populated settings and suggested questions
 - **Question Paper History Interface**:
   - **Version History Page**: Table showing all question papers with version grouping, timestamps, and comparison functionality
   - **Comparison View**: Side-by-side comparison of two or more versions with synchronized scrolling and highlighted differences
@@ -1752,9 +1802,9 @@ After Student login, the dashboard displays:
 12. screenshot.png - Question Bank Row View showing Marks column with annotation requesting Minus Mark column to be added after Marks column
 13. screenshot.png - Question Paper Preparation interface showing Class and Subject selection with annotation indicating requirement for question selection in row view format with Question Name and Difficulty columns only
 14. screenshot.png - Question Paper Management interface showing missing Preview button with annotation 'PREVIEW required'\n15. screenshot.png - Question Paper Management interface showing Draft status with annotation 'Not Active'\n16. screenshot.png - Question Paper Preview interface showing inactive Generate Final Paper button with annotation 'Not in action. Please activate this Button'
-17. screenshot.png - Question Paper Management interface showing Actions column with annotation requesting 'Save As' feature to save shuffled papers with custom names
-18. screenshot.png - Question Paper Management interface showing Draft status papers with annotation requesting ability to save shuffled versions with different names
-19. screenshot.png - Question Paper Preview interface with annotation requesting 'Save As' button to save current paper with new name
+17. 1000481349.jpg - Question Paper Management interface showing 'Shuffle and Save Question Paper' dialog with auto-generated new paper name 'test 1 (Shuffled) (Shuffled)', shuffle options checkboxes, preview section, and 'Save Shuffled Paper' button
+18. 1000481348.jpg - Question Paper Management interface showing 'Shuffle Question Paper' dialog with shuffle options checkboxes and 'Generate Shuffled Preview' button
+19. 1000481350.jpg - Question Paper Management interface showing Actions column with annotation 'No need this remove it', indicating removal of manual'Save As' button in favor of auto-versioned 'Shuffle and Save' feature
 \n## 15. Design Style\n
 ### 15.1 Color Scheme
 - Primary color: Blue (#2563EB)\n- Secondary color: Green (#10B981)
@@ -1763,8 +1813,8 @@ After Student login, the dashboard displays:
 - Match the Following badge color: Teal (#14B8A6)\n- Multiple Response MCQ badge color: Indigo (#6366F1)
 - Minus Mark color: Red (#EF4444) or Orange (#F59E0B)
 
-### 15.2 Visual Details
-- Soft rounded corners (8px radius)\n- Subtle shadow effects
+### 15.2 Visual Details\n- Soft rounded corners (8px radius)
+- Subtle shadow effects
 - Clear borders
 \n### 15.3 Overall Layout
 - Side panel navigation with collapsible toggle\n- Card-based design\n- Responsive grid layout

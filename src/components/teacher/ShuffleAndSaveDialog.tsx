@@ -23,6 +23,7 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
   const [shuffleMcqOptions, setShuffleMcqOptions] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [previewGenerated, setPreviewGenerated] = useState(false);
+  const [previewTitle, setPreviewTitle] = useState('');
 
   useEffect(() => {
     if (open) {
@@ -31,6 +32,7 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
       setShuffleMcqOptions(false);
       setShowPreview(false);
       setPreviewGenerated(false);
+      setPreviewTitle('');
     }
   }, [open]);
 
@@ -57,13 +59,48 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
     return shuffled;
   };
 
-  const handleGeneratePreview = () => {
+  const handleGeneratePreview = async () => {
     if (!shuffleQuestions && !shuffleMcqOptions) {
       toast.error('Please select at least one shuffle option');
       return;
     }
-    setShowPreview(true);
-    setPreviewGenerated(true);
+
+    try {
+      // Get all existing question papers to find shuffled versions
+      const allPapers = await academicApi.getQuestionPapers();
+      
+      // Find all shuffled versions of this paper
+      const baseTitle = paper.title.replace(/\s*\(Shuffled\s*[A-Z]\)$/i, '').trim();
+      const shuffledVersions = allPapers.filter(p => {
+        const title = p.title.trim();
+        return title.startsWith(baseTitle) && /\(Shuffled\s*[A-Z]\)$/i.test(title);
+      });
+
+      // Extract the letters used (A, B, C, etc.)
+      const usedLetters = shuffledVersions.map(p => {
+        const match = p.title.match(/\(Shuffled\s*([A-Z])\)$/i);
+        return match ? match[1].toUpperCase() : null;
+      }).filter(Boolean);
+
+      // Find the next available letter
+      let nextLetter = 'A';
+      for (let i = 0; i < 26; i++) {
+        const letter = String.fromCharCode(65 + i); // A=65, B=66, etc.
+        if (!usedLetters.includes(letter)) {
+          nextLetter = letter;
+          break;
+        }
+      }
+
+      // Generate preview title
+      const newTitle = `${baseTitle} (Shuffled ${nextLetter})`;
+      setPreviewTitle(newTitle);
+      setShowPreview(true);
+      setPreviewGenerated(true);
+    } catch (error) {
+      console.error('Error generating preview:', error);
+      toast.error('Failed to generate preview');
+    }
   };
 
   const handleSaveShuffled = async () => {
@@ -72,7 +109,7 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
       return;
     }
 
-    if (!previewGenerated) {
+    if (!previewGenerated || !previewTitle) {
       toast.error('Please generate a preview first');
       return;
     }
@@ -92,16 +129,8 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
         return;
       }
 
-      // Generate title based on shuffle options
-      let titleSuffix = '(Shuffled)';
-      if (shuffleQuestions && shuffleMcqOptions) {
-        titleSuffix = '(Shuffled - Q&A)';
-      } else if (shuffleQuestions) {
-        titleSuffix = '(Shuffled - Questions)';
-      } else if (shuffleMcqOptions) {
-        titleSuffix = '(Shuffled - Options)';
-      }
-      const newTitle = `${paper.title} ${titleSuffix}`;
+      // Use the preview title that was already calculated
+      const newTitle = previewTitle;
 
       // Prepare questions array (shuffle if needed)
       let processedQuestions = [...questions];
@@ -182,6 +211,7 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
       setShuffleMcqOptions(false);
       setShowPreview(false);
       setPreviewGenerated(false);
+      setPreviewTitle('');
       if (onSuccess) {
         onSuccess();
       }
@@ -283,9 +313,8 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
                     {!shuffleQuestions && shuffleMcqOptions && ' with shuffled MCQ options'}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    New paper will be saved as: <span className="font-medium">
-                      {paper.title} {shuffleQuestions && shuffleMcqOptions ? '(Shuffled - Q&A)' : 
-                       shuffleQuestions ? '(Shuffled - Questions)' : '(Shuffled - Options)'}
+                    New paper will be saved as: <span className="font-medium text-primary">
+                      {previewTitle}
                     </span>
                   </p>
                 </div>
