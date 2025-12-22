@@ -10,15 +10,15 @@ import { Loader2, FileText, Eye, Download, Trash2, Plus } from 'lucide-react';
 import { academicApi } from '@/db/api';
 import { VersionHistoryDialog } from '@/components/teacher/VersionHistoryDialog';
 import { ShuffleAndSaveDialog } from '@/components/teacher/ShuffleAndSaveDialog';
-import type { QuestionPaperWithDetails, Question } from '@/types/types';
+import type { QuestionPaperWithDetails, Question, QuestionPaperQuestionWithDetails } from '@/types/types';
 
 export default function QuestionPaperManagement() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [questionPapers, setQuestionPapers] = useState<QuestionPaperWithDetails[]>([]);
   const [selectedPaper, setSelectedPaper] = useState<QuestionPaperWithDetails | null>(null);
-  const [paperQuestions, setPaperQuestions] = useState<Question[]>([]);
-  const [paperQuestionsMap, setPaperQuestionsMap] = useState<Record<string, Question[]>>({});
+  const [paperQuestions, setPaperQuestions] = useState<QuestionPaperQuestionWithDetails[]>([]);
+  const [paperQuestionsMap, setPaperQuestionsMap] = useState<Record<string, QuestionPaperQuestionWithDetails[]>>({});
 
   useEffect(() => {
     loadQuestionPapers();
@@ -40,10 +40,9 @@ export default function QuestionPaperManagement() {
   const loadPaperQuestions = async (paperId: string) => {
     try {
       const questions = await academicApi.getQuestionPaperQuestions(paperId);
-      const questionData = questions.map(q => q.question).filter((q): q is Question => q !== null);
-      setPaperQuestions(questionData);
-      setPaperQuestionsMap(prev => ({ ...prev, [paperId]: questionData }));
-      return questionData;
+      setPaperQuestions(questions);
+      setPaperQuestionsMap(prev => ({ ...prev, [paperId]: questions }));
+      return questions;
     } catch (error) {
       console.error('Error loading paper questions:', error);
       toast.error('Failed to load questions');
@@ -51,7 +50,7 @@ export default function QuestionPaperManagement() {
     }
   };
 
-  const getQuestionsForPaper = async (paperId: string): Promise<Question[]> => {
+  const getQuestionsForPaper = async (paperId: string): Promise<QuestionPaperQuestionWithDetails[]> => {
     if (paperQuestionsMap[paperId]) {
       return paperQuestionsMap[paperId];
     }
@@ -206,72 +205,80 @@ export default function QuestionPaperManagement() {
                                   {paperQuestions.length === 0 ? (
                                     <p className="text-center text-muted-foreground py-8">No questions found</p>
                                   ) : (
-                                    paperQuestions.map((question, index) => (
-                                      <div key={question.id} className="border-b pb-4 last:border-b-0">
-                                        <div className="flex items-start justify-between mb-2">
-                                          <h3 className="font-medium">
-                                            Q{index + 1}. {question.question_text}
-                                          </h3>
-                                          <Badge className={getDifficultyColor(question.difficulty)}>
-                                            {question.marks} marks
-                                          </Badge>
-                                        </div>
+                                    paperQuestions.map((pq, index) => {
+                                      const question = pq.question;
+                                      if (!question) return null;
+                                      
+                                      // Use shuffled_options if available, otherwise use original options
+                                      const displayOptions = pq.shuffled_options || question.options;
+                                      
+                                      return (
+                                        <div key={pq.id} className="border-b pb-4 last:border-b-0">
+                                          <div className="flex items-start justify-between mb-2">
+                                            <h3 className="font-medium">
+                                              Q{index + 1}. {question.question_text}
+                                            </h3>
+                                            <Badge className={getDifficultyColor(question.difficulty)}>
+                                              {question.marks} marks
+                                            </Badge>
+                                          </div>
 
-                                        {(question.question_type === 'mcq' || question.question_type === 'multiple_response') &&
-                                          Array.isArray(question.options) && (
+                                          {(question.question_type === 'mcq' || question.question_type === 'multiple_response') &&
+                                            Array.isArray(displayOptions) && (
+                                              <div className="ml-4 space-y-1 mt-2">
+                                                {(displayOptions as string[]).map((option, idx) => (
+                                                  <div key={idx} className="text-sm">
+                                                    {String.fromCharCode(65 + idx)}. {option}
+                                                  </div>
+                                                ))}
+                                              </div>
+                                            )}
+
+                                          {question.question_type === 'true_false' && (
                                             <div className="ml-4 space-y-1 mt-2">
-                                              {(question.options as string[]).map((option, idx) => (
-                                                <div key={idx} className="text-sm">
-                                                  {String.fromCharCode(65 + idx)}. {option}
-                                                </div>
-                                              ))}
+                                              <div className="text-sm">A. True</div>
+                                              <div className="text-sm">B. False</div>
                                             </div>
                                           )}
 
-                                        {question.question_type === 'true_false' && (
-                                          <div className="ml-4 space-y-1 mt-2">
-                                            <div className="text-sm">A. True</div>
-                                            <div className="text-sm">B. False</div>
-                                          </div>
-                                        )}
-
-                                        {question.question_type === 'match_following' &&
-                                          Array.isArray(question.options) && (
-                                            <div className="ml-4 mt-3">
-                                              <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                  <p className="text-sm font-semibold mb-2">Column A</p>
-                                                  <div className="space-y-2">
-                                                    {(question.options as any[]).map((pair: any, idx: number) => (
-                                                      <div key={idx} className="text-sm p-2 rounded border bg-muted">
-                                                        {idx + 1}. {pair.left}
-                                                      </div>
-                                                    ))}
+                                          {question.question_type === 'match_following' &&
+                                            Array.isArray(displayOptions) && (
+                                              <div className="ml-4 mt-3">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                  <div>
+                                                    <p className="text-sm font-semibold mb-2">Column A</p>
+                                                    <div className="space-y-2">
+                                                      {(displayOptions as any[]).map((pair: any, idx: number) => (
+                                                        <div key={idx} className="text-sm p-2 rounded border bg-muted">
+                                                          {idx + 1}. {pair.left}
+                                                        </div>
+                                                      ))}
+                                                    </div>
                                                   </div>
-                                                </div>
-                                                <div>
-                                                  <p className="text-sm font-semibold mb-2">Column B</p>
-                                                  <div className="space-y-2">
-                                                    {(question.options as any[]).map((pair: any, idx: number) => (
-                                                      <div key={idx} className="text-sm p-2 rounded border bg-muted">
-                                                        {String.fromCharCode(65 + idx)}. {pair.right}
-                                                      </div>
-                                                    ))}
+                                                  <div>
+                                                    <p className="text-sm font-semibold mb-2">Column B</p>
+                                                    <div className="space-y-2">
+                                                      {(displayOptions as any[]).map((pair: any, idx: number) => (
+                                                        <div key={idx} className="text-sm p-2 rounded border bg-muted">
+                                                          {String.fromCharCode(65 + idx)}. {pair.right}
+                                                        </div>
+                                                      ))}
+                                                    </div>
                                                   </div>
                                                 </div>
                                               </div>
+                                            )}
+
+                                          {question.question_type === 'short_answer' && (
+                                            <div className="ml-4 mt-2">
+                                              <div className="text-sm text-muted-foreground italic">
+                                                [Answer space for student]
+                                              </div>
                                             </div>
                                           )}
-
-                                        {question.question_type === 'short_answer' && (
-                                          <div className="ml-4 mt-2">
-                                            <div className="text-sm text-muted-foreground italic">
-                                              [Answer space for student]
-                                            </div>
-                                          </div>
-                                        )}
-                                      </div>
-                                    ))
+                                        </div>
+                                      );
+                                    })
                                   )}
 
                                   <div className="flex justify-end gap-2 pt-4">
@@ -296,7 +303,7 @@ export default function QuestionPaperManagement() {
                           <VersionHistoryDialog
                             paperId={paper.id}
                             paperTitle={paper.title}
-                            questions={paper.id === selectedPaper?.id ? paperQuestions : []}
+                            questions={paper.id === selectedPaper?.id ? paperQuestions.map(pq => pq.question).filter((q): q is Question => q !== null) : []}
                           />
                         )}
 
