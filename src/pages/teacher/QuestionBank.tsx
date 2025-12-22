@@ -1268,7 +1268,7 @@ export default function QuestionBank() {
                           .filter((opt) => opt.trim())
                           .map((answerOption, index) => (
                             <SelectItem key={index} value={answerOption}>
-                              ({['i', 'ii', 'iii', 'iv', 'v', 'vi'][index] || index + 1}) {answerOption}
+                              {answerOption}
                             </SelectItem>
                           ))}
                       </SelectContent>
@@ -1725,7 +1725,7 @@ export default function QuestionBank() {
                           .filter((opt) => opt.trim())
                           .map((answerOption, index) => (
                             <SelectItem key={index} value={answerOption}>
-                              ({['i', 'ii', 'iii', 'iv', 'v', 'vi'][index] || index + 1}) {answerOption}
+                              {answerOption}
                             </SelectItem>
                           ))}
                       </SelectContent>
