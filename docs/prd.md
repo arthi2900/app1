@@ -8,7 +8,8 @@ Online School Management System
 ### 1.2 Application Purpose
 A comprehensive school management system for educational institutions. Features include school management, academic structure setup (class, section, subject, lesson), teacher-subject-class-section mapping, question bank management with lesson-level tracking, question paper preparation with shuffle functionality, user management with school-based data isolation.\n
 ## 2. User Roles\n
-### 2.1 Admin\n- Complete system administration\n- School management (create, edit, view schools)\n- User account creation and management
+### 2.1 Admin\n- Complete system administration
+- School management (create, edit, view schools)\n- User account creation and management
 - New user approval management
 - Role-based Access Control setup
 - System configurations\n- Permission management
@@ -344,8 +345,7 @@ The question creation form displays fields in the following order:
 7. **Marks** (Number input, required)
    - Integer value (e.g., 1, 2, 5, 10)
 8. **Minus Mark** (Number input, optional)
-   - **Label**: 'Minus Mark (Negative Marking)'
-   - **Field Type**: Decimal number input
+   - **Label**: 'Minus Mark (Negative Marking)'\n   - **Field Type**: Decimal number input
    - **Placeholder**: 'Enter negative marks (e.g., 0.25, 0.5, 1.0)'
    - **Validation**: \n     - Accepts decimal values (e.g., 0.25, 0.5, 1.0)
      - Must be zero or positive value (stored as negative in calculations)
@@ -357,7 +357,7 @@ The question creation form displays fields in the following order:
 9. **Difficulty** (Dropdown, required)\n   - Options: Easy, Medium, Hard
 10. **Options** (Dynamic fields, conditional)\n   - For Multiple Choice: Four option input fields (Option1, Option 2, Option 3, Option 4) displayed simultaneously
    - For True/False: Two option input fields (True, False) displayed simultaneously
-   - For Match the Following: Two columns of input fields\n     - Left Column: Items to be matched (e.g., Item 1, Item 2, Item 3, Item 4)
+   - For Match the Following: Two columns of input fields\n     - Left Column: Items to be matched (e.g., Item1, Item 2, Item 3, Item 4)
      - Right Column: Matching options (e.g., Option A, Option B, Option C, Option D)
      - All pairs displayed simultaneously (no'Add Pair' button)
    - For Multiple Response MCQ: Four option input fields (Option 1, Option 2, Option 3, Option 4) displayed simultaneously with checkboxes to mark multiple correct answers
@@ -395,13 +395,12 @@ The question creation form displays fields in the following order:
 
 ##### 6.3.4.2 Multiple Response MCQ
 - **Purpose**: Test students' ability to identify multiple correct answers from given options
-- **Example Question**: 'In which of the following decay processes does the atomic number of the nucleus remain unchanged? (i) Alpha decay (ii) Beta decay (iii) Gamma decay (iv) Neutron decay'
-- **Options Field Structure**:
-  - Four option input fields (Option 1, Option 2, Option 3, Option 4) displayed simultaneously
+- **Example Question**: 'In which of the following decay processes does the atomic number of the nucleus remain unchanged? (i) Alpha decay (ii) Beta decay (iii) Gamma decay (iv) Neutron decay'\n- **Options Field Structure**:\n  - Four option input fields (Option 1, Option 2, Option 3, Option 4) displayed simultaneously
   - Each option has a checkbox to mark as correct answer
   - Multiple checkboxes can be selected\n- **Correct Answer Storage**: JSON array storing multiple correct answers (e.g., ['(ii) Beta decay', '(iii) Gamma decay'])
 - **Display in Card View**: Show all options with multiple correct answers highlighted with checkmark icons and green background
-- **Display in Row View**: Show truncated question text with 'Multiple Response MCQ' badge\n- **Validation**: At least two options must be marked as correct for Multiple Response MCQ type
+- **Display in Row View**: Show truncated question text with 'Multiple Response MCQ' badge
+- **Validation**: At least two options must be marked as correct for Multiple Response MCQ type
 
 ### 6.4 Question Bank Dual View Display
 
@@ -456,11 +455,9 @@ Each question displayed as a card with the following sections:
 - **Marks**: Positive marks for correct answer\n- **Minus Mark**: Negative marks for incorrect answer (displayed as 'Minus Mark:0.25' or 'No Negative Marking' if zero)
 - **Options** (for Multiple Choice, True/False, Match the Following, and Multiple Response MCQ):
   - For Multiple Choice and True/False: All options listed with option labels (A, B, C, D), correct answer highlighted with checkmark icon and green background
-  - For Match the Following: Two-column layout showing left items and right matches, with correct pairs connected by visual lines or highlighted
-  - For Multiple Response MCQ: All options listed with option labels (A, B, C, D), multiple correct answers highlighted with checkmark icons and green background
+  - For Match the Following: Two-column layout showing left items and right matches, with correct pairs connected by visual lines or highlighted\n  - For Multiple Response MCQ: All options listed with option labels (A, B, C, D), multiple correct answers highlighted with checkmark icons and green background
 - **Correct Answer** (for Short Answer and Essay):
-  - Displayed in separate section with label
-\n**Card Footer**:
+  - Displayed in separate section with label\n\n**Card Footer**:
 - **Edit Button**: Prominent edit button with icon
 - **Delete Button**: Delete button with icon
 - **Created By**: Display creator name (optional)
@@ -477,7 +474,7 @@ Each question displayed as a card with the following sections:
 - **Image Display**:
   - Image thumbnails: 150px width, auto height, maintain aspect ratio
   - Image captions: 12px, italic, gray color
-  - Image gallery: Horizontal scroll or grid layout with 8px gap between images
+  - Image gallery: Horizontal scroll or grid layout with8px gap between images
 - **Minus Mark Display**:
   - Label: 'Minus Mark:' followed by value\n  - Color: Red or orange to indicate negative marking
   - Font size: 14px, regular
@@ -545,7 +542,7 @@ Each question displayed as a card with the following sections:
 - **Future Reports**:
   - Lesson-wise accuracy of students (e.g., 'Students scored 75% on Lesson: Algebra Basics')
   - Lesson-wise difficulty analysis (e.g., 'Lesson: Photosynthesis has 60% Hard questions')
-  - Lesson-wise question distribution (e.g., 'Lesson: Shakespeare Introduction has 10 Multiple Choice, 5 Short Answer, 3 Match the Following, 2 Multiple Response MCQ questions')
+  - Lesson-wise question distribution (e.g., 'Lesson: Shakespeare Introduction has 10Multiple Choice, 5 Short Answer, 3 Match the Following, 2 Multiple Response MCQ questions')
   - Student performance comparison across lessons
   - Class-wise lesson performance trends
   - **Negative marking impact analysis**: Track how negative marking affects student scores
@@ -589,8 +586,7 @@ ALTER TYPE question_type_enum ADD VALUE IF NOT EXISTS 'Multiple Response MCQ';
 ```sql
 CREATE INDEX IF NOT EXISTS idx_lessons_subject_id ON lessons(subject_id);
 CREATE INDEX IF NOT EXISTS idx_question_bank_lesson_id ON question_bank(lesson_id);
-CREATE INDEX IF NOT EXISTS idx_question_bank_bank_name ON question_bank(bank_name);
-CREATE INDEX IF NOT EXISTS idx_question_bank_images ON question_bank USING GIN (question_images);
+CREATE INDEX IF NOT EXISTS idx_question_bank_bank_name ON question_bank(bank_name);\nCREATE INDEX IF NOT EXISTS idx_question_bank_images ON question_bank USING GIN (question_images);
 CREATE INDEX IF NOT EXISTS idx_question_bank_minus_mark ON question_bank(minus_mark);
 ```\n
 5. **Add Foreign Key Constraint**:
@@ -719,7 +715,33 @@ SET minus_mark = 0\nWHERE minus_mark IS NULL;
   - Update correct_answer field to match new option index
   - For Multiple Response MCQ, update all correct answer indices
   - Store original option order for reference (optional)
-\n#### 7.2.5 Step 4: Final Question Paper Output
+\n**Updated Shuffle Rules for Multiple Response MCQ**:
+- **Strict Rule for Multiple Response (Multiple Answers) Questions**:
+  - **Only Segment3: Answer Options should be shuffled**
+  - **Segment 1 (Question Serial Number) and Segment 2 (Question Text) must remain unchanged**
+  - **Example**:
+    - Original Question: 'Q4. செழுங்கட சங்க விளையில் செய் உடகுவிள் நிறையண மாறாமல் இருக்கும்? (i) α - சிதைவு (ii) β - சிதைவு (iii) γ - சிதைவு (iv) நியூட்ரான் சிதைவு'
+    - Correct Answer (Original): '(ii) β - சிதைவு, (iii) γ - சிதைவு'\n    - After Shuffle: Only the answer options (i, ii, iii, iv) are shuffled, question serial number (Q4) and question text remain unchanged
+    - Correct Answer (After Shuffle): Updated to match new option positions (e.g., '(i) மற்றும் C சரி' becomes 'மற்றும் C சரி' only if option positions change)
+- **Implementation**:
+  - Detect question type as'Multiple Response MCQ'\n  - Extract Segment 3 (Answer Options) from question structure
+  - Apply shuffle algorithm only to Segment 3\n  - Update correct_answer JSON array to reflect new option positions
+  - Preserve Segment 1 (Serial Number) and Segment 2 (Question Text) without any modification
+- **Validation**:
+  - Verify that only answer options are shuffled
+  - Verify that question serial number and question text remain unchanged
+  - Verify that correct answer indices are updated correctly
+
+**Shuffle Rules for Other Question Types**:
+- **Multiple Choice (Single Answer)**:
+  - Shuffle all four options (A, B, C, D)\n  - Update correct_answer to match new option position
+- **True/False**:
+  - Shuffle True and False options
+  - Update correct_answer to match new option position
+- **Match the Following**:
+  - **Do not shuffle**: Left-right pairing must remain intact\n  - No changes to question structure
+- **Short Answer and Essay**:
+  - **No shuffle applicable**: These question types do not have options\n\n#### 7.2.5 Step 4: Final Question Paper Output
 
 **Preview Question Paper**:
 - **Preview Button**: Opens preview modal showing complete question paper
@@ -742,8 +764,7 @@ SET minus_mark = 0\nWHERE minus_mark IS NULL;
 - **Save Draft Button**: Saves current question paper as draft
 - **Draft Data Stored**:
   - Selected questions (question IDs)
-  - Shuffle settings (questions shuffled, options shuffled)
-  - Class and Subject\n  - Created by (teacher ID)
+  - Shuffle settings (questions shuffled, options shuffled)\n  - Class and Subject\n  - Created by (teacher ID)
   - Draft status
   - Created date and time
 - **Draft List**: Teachers can view and manage saved drafts
@@ -754,7 +775,8 @@ SET minus_mark = 0\nWHERE minus_mark IS NULL;
 - **Final Paper Data**:
   - All selected questions with shuffled order (if shuffle enabled)
   - Question paper metadata (class, subject, total marks, date)
-  - Teacher information (created by)\n  - Final status (not editable after generation)
+  - Teacher information (created by)
+  - Final status (not editable after generation)
 - **Final Paper Storage**: Saved in question_papers table
 \n**Export as PDF**:
 - **Export PDF Button**: Generates PDF file of question paper
@@ -791,7 +813,8 @@ SET minus_mark = 0\nWHERE minus_mark IS NULL;
 - total_marks (Integer, calculated)\n- total_questions (Integer, calculated)
 - status (Enum: Draft, Final)\n- created_by (Foreign Key → users.id)
 - created_at (Timestamp)
-- updated_at (Timestamp)\n\n#### 7.3.2 Foreign Key Relationships
+- updated_at (Timestamp)
+\n#### 7.3.2 Foreign Key Relationships
 - school_id → schools.id (CASCADE on delete)
 - class_id → classes.id (CASCADE on delete)
 - subject_id → subjects.id (CASCADE on delete)
@@ -817,7 +840,7 @@ CREATE INDEX IF NOT EXISTS idx_question_papers_status ON question_papers(status)
 - **Backend Validation**: Server-side validation to ensure teacher can only access own data
 - **SQL Queries**: All queries include WHERE created_by = :teacher_id filter
 - **API Endpoints**: Protected with authentication and authorization middleware
-- **Error Handling**: Return 403 Forbidden if teacher attempts to access other teachers' data
+- **Error Handling**: Return403 Forbidden if teacher attempts to access other teachers' data
 
 ### 7.5 Question Paper Management Interface
 
@@ -859,6 +882,7 @@ CREATE INDEX IF NOT EXISTS idx_question_papers_status ON question_papers(status)
 - **Shuffle Requirements**:
   - Each version must have different shuffled question order (if Shuffle Questions is enabled)
   - Each version must have different shuffled MCQ options (if Shuffle MCQ Options is enabled)
+  - **For Multiple Response MCQ: Only Segment 3 (Answer Options) is shuffled, Segment 1 (Serial Number) and Segment 2 (Question Text) remain unchanged**
   - Shuffle algorithm ensures no two versions are identical
 
 **Answer Key Generation**:
@@ -867,9 +891,8 @@ CREATE INDEX IF NOT EXISTS idx_question_papers_status ON question_papers(status)
   - Version identifier (e.g., 'Answer Key - Version A')
   - Question number with correct answer
   - For MCQ: Display correct option letter (A, B, C, D) after shuffling
-  - For Multiple Response MCQ: Display all correct option letters
-  - For Match the Following: Display correct pairs
-  - For Short Answer/Essay: Display model answer text
+  - For Multiple Response MCQ: Display all correct option letters after shuffling (reflecting new positions in Segment 3)
+  - For Match the Following: Display correct pairs\n  - For Short Answer/Essay: Display model answer text
 - **Answer Key Storage**: Stored in separate table or JSON field in question_papers table
 - **Answer Key Export**: Export all answer keys as separate PDF files or combined PDF with page breaks
 
@@ -885,12 +908,10 @@ CREATE INDEX IF NOT EXISTS idx_question_papers_status ON question_papers(status)
 ALTER TABLE question_papers\nADD COLUMN IF NOT EXISTS version_count INTEGER DEFAULT 1,
 ADD COLUMN IF NOT EXISTS version_identifier VARCHAR(10),
 ADD COLUMN IF NOT EXISTS parent_paper_id UUID REFERENCES question_papers(id) ON DELETE CASCADE,
-ADD COLUMN IF NOT EXISTS answer_key JSONB;\n\nCREATE INDEX IF NOT EXISTS idx_question_papers_parent_paper_id ON question_papers(parent_paper_id);
-```
+ADD COLUMN IF NOT EXISTS answer_key JSONB;\n\nCREATE INDEX IF NOT EXISTS idx_question_papers_parent_paper_id ON question_papers(parent_paper_id);\n```
 
 **Implementation Notes**:
-- Parent question paper stores version_count and has NULL parent_paper_id
-- Child versions reference parent via parent_paper_id
+- Parent question paper stores version_count and has NULL parent_paper_id\n- Child versions reference parent via parent_paper_id
 - Each version has unique version_identifier (A, B, C, D, E)
 - Answer keys stored in answer_key JSONB column for each version
 \n#### 7.6.2 Question Paper Templates
@@ -908,8 +929,7 @@ ADD COLUMN IF NOT EXISTS answer_key JSONB;\n\nCREATE INDEX IF NOT EXISTS idx_que
   - Subject (auto-populated from current selection)
 - **Template Configuration Stored**:
   - Section-wise marks distribution (e.g., Section A: 20marks, Section B: 30 marks)
-  - Difficulty ratio (e.g., 40% Easy, 40% Medium, 20% Hard)
-  - Question type distribution (e.g., 10 MCQ, 5 Short Answer, 3 Essay)
+  - Difficulty ratio (e.g., 40% Easy, 40% Medium, 20% Hard)\n  - Question type distribution (e.g., 10 MCQ, 5 Short Answer, 3 Essay)
   - Shuffle settings (Shuffle Questions: Yes/No, Shuffle MCQ Options: Yes/No)
   - Formatting preferences (header format, footer format, page layout)
   - Total marks target
@@ -931,7 +951,8 @@ ADD COLUMN IF NOT EXISTS answer_key JSONB;\n\nCREATE INDEX IF NOT EXISTS idx_que
 4. System suggests questions matching template criteria
 5. Teacher reviews and selects questions
 6. System validates selection against template targets
-7. Teacher proceeds to shuffle options and preview\n\n**Database Schema for Templates**:
+7. Teacher proceeds to shuffle options and preview
+\n**Database Schema for Templates**:
 ```sql
 CREATE TABLE IF NOT EXISTS question_paper_templates (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -942,8 +963,8 @@ CREATE TABLE IF NOT EXISTS question_paper_templates (
   configuration JSONB NOT NULL,
   created_by UUID NOT NULL REFERENCES users.id ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);\n\nCREATE INDEX IF NOT EXISTS idx_templates_school_id ON question_paper_templates(school_id);\nCREATE INDEX IF NOT EXISTS idx_templates_class_id ON question_paper_templates(class_id);
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);
+\nCREATE INDEX IF NOT EXISTS idx_templates_school_id ON question_paper_templates(school_id);\nCREATE INDEX IF NOT EXISTS idx_templates_class_id ON question_paper_templates(class_id);
 CREATE INDEX IF NOT EXISTS idx_templates_subject_id ON question_paper_templates(subject_id);\nCREATE INDEX IF NOT EXISTS idx_templates_created_by ON question_paper_templates(created_by);
 ```
 
@@ -975,8 +996,7 @@ CREATE INDEX IF NOT EXISTS idx_templates_subject_id ON question_paper_templates(
   - Medium: Percentage slider (0-100%)
   - Hard: Percentage slider (0-100%)
   - Total must equal 100%
-  - Default: 40% Easy, 40% Medium, 20% Hard
-- **Target Marks Input**: Number input for total marks (e.g., 50, 100)\n- **Auto-Suggest Button**: Click to generate suggested question list
+  - Default: 40% Easy, 40% Medium, 20% Hard\n- **Target Marks Input**: Number input for total marks (e.g., 50, 100)\n- **Auto-Suggest Button**: Click to generate suggested question list
 - **Suggestion Algorithm**:
   - Calculate number of questions needed for each difficulty level based on ratio and target marks
   - Select questions from teacher's question bank matching difficulty criteria
@@ -1045,6 +1065,7 @@ CREATE INDEX IF NOT EXISTS idx_templates_subject_id ON question_paper_templates(
 - **Highlight Differences**: Visual indicators showing shuffled questions and options
   - Shuffled questions highlighted with light blue background
   - Shuffled MCQ options highlighted with light yellow background
+  - **For Multiple Response MCQ: Only Segment 3 (Answer Options) highlighted as shuffled, Segment 1 and 2 remain unchanged**
 - **Toggle View**: Switch between side-by-side view and single view
 - **Version Selector**: Dropdown to select which version to preview (for multiple versions)
 \n**Print Preview with Actual Paper Formatting**:
@@ -1074,7 +1095,8 @@ CREATE INDEX IF NOT EXISTS idx_templates_subject_id ON question_paper_templates(
 - **Answer Key View**:
   - Display questions with correct answers highlighted
   - For MCQ: Highlight correct option with green background and checkmark icon
-  - For Multiple Response MCQ: Highlight all correct options\n  - For Match the Following: Show correct pairs with connecting lines
+  - For Multiple Response MCQ: Highlight all correct options (reflecting shuffled positions in Segment 3)
+  - For Match the Following: Show correct pairs with connecting lines
   - For Short Answer/Essay: Display model answer text
   - Show marks allocation for each question
   - Show minus marks (if applicable)
@@ -1096,7 +1118,8 @@ CREATE INDEX IF NOT EXISTS idx_templates_subject_id ON question_paper_templates(
 **Purpose**: Enable efficient question selection through bulk operations for faster question paper creation.
 
 **Bulk Operation Features**:
-\n**Select All Questions from Specific Lesson**:
+
+**Select All Questions from Specific Lesson**:
 - **Lesson Filter Dropdown**: Dropdown showing all lessons in selected subject
 - **Select All by Lesson Button**: Button next to each lesson in dropdown
 - **Action**: Click button to select all questions from that lesson\n- **Visual Feedback**: Selected questions highlighted in table
@@ -1177,7 +1200,8 @@ CREATE INDEX IF NOT EXISTS idx_templates_subject_id ON question_paper_templates(
 - **Reuse Template from Paper**: Convert existing paper into template
   - Click 'Save as Template' button in Actions column
   - Extract configuration from paper\n  - Save as reusable template
-\n**Compare Different Versions**:\n- **Compare Versions Interface**: Side-by-side comparison of two or more versions
+\n**Compare Different Versions**:
+- **Compare Versions Interface**: Side-by-side comparison of two or more versions
 - **Version Selection**:
   - Select two or more versions from version history table
   - Click 'Compare' button to open comparison view
@@ -1186,6 +1210,7 @@ CREATE INDEX IF NOT EXISTS idx_templates_subject_id ON question_paper_templates(
   - Synchronized scrolling for easy comparison
   - Highlight differences:\n    - Different question order highlighted
     - Different MCQ option order highlighted
+    - **For Multiple Response MCQ: Only Segment 3 differences highlighted**
     - Different shuffle settings highlighted
   - Comparison Summary:
     - Total Marks comparison
@@ -1198,8 +1223,7 @@ CREATE INDEX IF NOT EXISTS idx_templates_subject_id ON question_paper_templates(
 - **Version History Page**: Dedicated page accessible from Teacher Dashboard
   - Navigation Menu Item: 'Question Paper History'
   - Version History Table with filters and search
-  - Comparison Interface
-- **Filters and Search**:
+  - Comparison Interface\n- **Filters and Search**:
   - Filter by Class
   - Filter by Subject\n  - Filter by Status (Draft/Final/All)
   - Filter by Date Range (Created Date, Last Modified Date)
@@ -1250,8 +1274,7 @@ ADD COLUMN IF NOT EXISTS modification_history JSONB;\n\nCREATE INDEX IF NOT EXIS
 - **Subsequent Shuffles**: When user clicks 'Shuffle and Save' again on the same paper or its shuffled versions:
   - System detects existing version identifier (A, B, C, etc.)\n  - Increments version identifier to next letter (A → B, B → C, C → D, etc.)
   - Example: 'Test 1(Shuffled A)' becomes 'Test 1 (Shuffled B)'
-  - Example: 'Test 1 (Shuffled B)' becomes 'Test 1 (Shuffled C)'
-- **Version Identifier Range**: A to Z (26 versions maximum)
+- Example: 'Test 1 (Shuffled B)' becomes 'Test 1 (Shuffled C)'\n- **Version Identifier Range**: A to Z (26 versions maximum)
 - **Base Name Extraction**: System extracts base name by removing existing '(Shuffled X)' suffix before appending new version
   - Example: 'Test 1(Shuffled A)' → Base name: 'Test 1' → New name: 'Test 1 (Shuffled B)'
 
@@ -1261,19 +1284,17 @@ ADD COLUMN IF NOT EXISTS modification_history JSONB;\n\nCREATE INDEX IF NOT EXIS
   - **Current Paper Name**: Display original paper name (read-only)
   - **New Paper Name**: Display auto-generated new name with version identifier (read-only)
     - Format: 'Base Name (Shuffled X)' where X is next available letter
-    - Example: 'Test 1 (Shuffled B)'\n  - **Shuffle Options** (Checkboxes, pre-checked by default):
+    - Example: 'Test 1(Shuffled B)'\n  - **Shuffle Options** (Checkboxes, pre-checked by default):
     - **Shuffle Questions**: Apply new shuffle to question order
     - **Shuffle MCQ Options**: Apply new shuffle to MCQ options
-    - Help text: 'New shuffle will be applied to create a different version'\n  - **Preview Section**:
-    - Display summary:'X questions will be copied in shuffled order, with shuffled MCQ options'
-    - Show total marks and total questions count
+    - Help text: 'New shuffle will be applied to create a different version. For Multiple Response MCQ, only answer options (Segment 3) will be shuffled.'
+  - **Preview Section**:
+    - Display summary:'X questions will be copied in shuffled order, with shuffled MCQ options'\n    - Show total marks and total questions count
 - **Action Buttons**:
-  - **Create Shuffled Version Button**: Save paper with auto-versioned name and new shuffle
-  - **Cancel Button**: Close dialog without saving
+  - **Create Shuffled Version Button**: Save paper with auto-versioned name and new shuffle\n  - **Cancel Button**: Close dialog without saving
 \n**Shuffle and Save Workflow**:
 1. Teacher clicks 'Shuffle and Save' button in Actions column for any question paper
-2. System opens'Create Shuffled Version' dialog
-3. System auto-generates new paper name with incremented version identifier:\n   - Extract base name by removing existing '(Shuffled X)' suffix
+2. System opens'Create Shuffled Version' dialog\n3. System auto-generates new paper name with incremented version identifier:\n   - Extract base name by removing existing '(Shuffled X)' suffix
    - Detect highest existing version letter for this base name
    - Increment to next letter (A → B, B → C, etc.)
    - Append '(Shuffled X)' to base name
@@ -1284,6 +1305,7 @@ ADD COLUMN IF NOT EXISTS modification_history JSONB;\n\nCREATE INDEX IF NOT EXIS
 8. System creates new question paper record with:\n   - Auto-generated paper name with version identifier
    - Same selected questions as original paper
    - New shuffle applied to questions and MCQ options
+   - **For Multiple Response MCQ: Only Segment 3 (Answer Options) shuffled, Segment 1 and 2 unchanged**
    - Same class, subject, and metadata\n   - Status: Draft (default)
    - New created_at timestamp
    - Same created_by (teacher ID)
@@ -1353,8 +1375,7 @@ ADD COLUMN IF NOT EXISTS modification_history JSONB;\n\nCREATE INDEX IF NOT EXIS
 - **Easy Identification**: Version identifier in paper name helps identify different shuffled versions
 - **Organized Management**: All versions of same paper grouped together
 - **Prevents Cheating**: Multiple shuffled versions for large classrooms
-- **Time-Saving**: Quick creation of multiple versions without manual naming
-
+- **Time-Saving**: Quick creation of multiple versions without manual naming\n
 **Removal of Manual'Save As' Feature**:
 - **Remove'Save As' Button**: The previous manual'Save As' button with custom name input is removed from the Actions column
 - **Replace with 'Shuffle and Save'**: The new 'Shuffle and Save' button with auto-versioning replaces the manual'Save As' feature
@@ -1408,6 +1429,9 @@ After Teacher login, the dashboard displays:
   - Enable/disable Shuffle Questions
   - Enable/disable Shuffle MCQ Options
   - **Multiple Versions**: Select number of versions to generate (2-5)
+  - **Shuffle Rules**:
+    - **For Multiple Response MCQ: Only Segment 3 (Answer Options) is shuffled**
+    - **For other question types: Apply respective shuffling rules**
 - **Step 4: Output**:
   - **Enhanced Preview**: Side-by-side preview, print preview, student/answer key toggle
   - Save as Draft\n  - **Save as Template**: Save configuration as reusable template
@@ -1429,8 +1453,7 @@ After Teacher login, the dashboard displays:
 
 ### 9.1 Student Login - Dashboard Overview
 After Student login, the dashboard displays:
-- **My Class**: Student's assigned class
-- **My Section**: Student's assigned section
+- **My Class**: Student's assigned class\n- **My Section**: Student's assigned section
 - **My Subjects**: List of subjects for the student's class
 - **My Teachers**: List of teachers assigned to the student's class and section
 \n### 9.2 Student Functions
@@ -1456,7 +1479,8 @@ After Student login, the dashboard displays:
 - When a new user creates an account (signup), they will be assigned 'Pending Approval' status
 - **School Name Field**: During registration, user must select school from dropdown list (populated from School Master created by Admin)
 - New users with'Pending Approval' status will be displayed separately in 'Pending Users' list (not in Active Users list)
-- Admin must review and approve new user accounts\n- Only after Admin approval, user status changes to 'Active' and they are moved to Active Users list
+- Admin must review and approve new user accounts
+- Only after Admin approval, user status changes to 'Active' and they are moved to Active Users list
 - This prevents unauthorized users from accessing the system
 - **Pending Users Display Enhancement**: In the Pending Users section, the School Name column must display the actual school name that the user selected during registration (not a dash or empty value)
 
@@ -1545,6 +1569,9 @@ After Student login, the dashboard displays:
   - **Smart Selection**: Auto-suggest by difficulty distribution, lesson coverage, real-time marks calculation
   - **Bulk Operations**: Select by lesson, select by difficulty, batch shuffle
   - Shuffle questions and MCQ options
+  - **Shuffle Rules**:
+    - **For Multiple Response MCQ: Only Segment 3 (Answer Options) is shuffled, Segment 1 and 2 remain unchanged**
+    - **For other question types: Apply respective shuffling rules (Multiple Choice, True/False, Match the Following, Short Answer, Essay)**
   - **Multiple Versions**: Generate 2-5 versions with auto-generated answer keys
   - **Enhanced Preview**: Side-by-side preview, print preview, student/answer key toggle
   - Preview, save as draft, generate final paper
@@ -1570,8 +1597,7 @@ After Student login, the dashboard displays:
 - Suspend button: Available only for Admin role to suspend user accounts (integrated into Active status button)
 - User status categories:
   - Pending Approval: New users awaiting admin approval, cannot login
-  - Active: Approved users with full system access
-  - Suspended: Users whose accounts have been suspended, cannot login
+  - Active: Approved users with full system access\n  - Suspended: Users whose accounts have been suspended, cannot login
 - **Status-based button navigation**: Admin views display three status buttons (Pending, Active, Suspended) at top of User Management page for quick filtering, with relevant actions integrated into each button
 - Admin can filter and manage users based on their status by clicking corresponding button
 - **School filtering**: Principal views show only teachers and students from their assigned school; Teacher views show only students from their assigned sections\n\n### 10.8 Principal Dashboard - Total Teachers Card Feature
@@ -1624,8 +1650,7 @@ After Student login, the dashboard displays:
   - Teachers cannot view other teachers or access assignment interface
   - Data is school-wise, not user-wise
 - **UX Requirements**:
-  - Page header:'Teachers Management - [School Name]'
-  - Tab navigation at the top of the page
+  - Page header:'Teachers Management - [School Name]'\n  - Tab navigation at the top of the page
   - Active tab highlighted with primary color
   - Responsive design for all screen sizes
   - Loading indicators during data fetch
@@ -1755,7 +1780,7 @@ After Student login, the dashboard displays:
 - **Question Bank Interface**: \n  - **View Toggle Control**: Toggle button or tab control at top of page to switch between Row View and Card View
   - **Row View**: Compact table layout with sortable columns (including Minus Mark column) and Edit/Delete actions, with color-coded badges for all question types (including Match the Following - Teal, Multiple Response MCQ - Indigo), plus image indicator icon for questions with images
   - **Card View**: Detailed card layout displaying all question information (including Minus Mark display) with prominent Edit and Delete buttons
-    - **Image Display**: Gallery format with thumbnails and captions, click to view full-size\n    - **Minus Mark Display**: Label'Minus Mark:' followed by value in red/orange color, or 'No Negative Marking' in gray if zero\n    - **Match the Following Card**: Two-column layout showing left items and right matches with visual lines or highlighting for correct pairs
+    - **Image Display**: Gallery format with thumbnails and captions, click to view full-size\n    - **Minus Mark Display**: Label'Minus Mark:' followed by value in red/orange color, or'No Negative Marking' in gray if zero\n    - **Match the Following Card**: Two-column layout showing left items and right matches with visual lines or highlighting for correct pairs
     - **Multiple Response MCQ Card**: All options listed with multiple correct answers highlighted with checkmark icons and green background
   - Question creation form with cascading dropdowns (Class → Subject → Lesson) and Minus Mark field after Marks field
   - **Image Upload Section**: 'Add Image' button with multiple selection methods:\n    - Click button to open native file browser for selecting files from local drive (C:, D:, external drives, network drives)
@@ -1774,9 +1799,10 @@ After Student login, the dashboard displays:
   - **Step 2: Question Selection**: Row view table with Select checkbox, Question Name, and Difficulty columns only
     - **Smart Selection Panel**: Collapsible panel with difficulty ratio sliders, target marks input, auto-suggest button, lesson coverage chart, and real-time marks display
     - **Bulk Actions Toolbar**: Select All, Deselect All, Select by Lesson dropdown, Select by Difficulty buttons, Selected Count Display\n  - **Step 3: Shuffle Options**: Checkboxes for Shuffle Questions and Shuffle MCQ Options, plus Number of Versions dropdown (2-5)
+    - **Shuffle Rules Display**: Help text indicating'For Multiple Response MCQ, only answer options (Segment 3) will be shuffled. Question serial number and question text remain unchanged.'
   - **Step 4: Output**: Buttons for Preview, Save as Draft, Save as Template, Generate Final Paper, Export PDF, and Print
     - **Enhanced Preview**: Side-by-side preview, print preview, student/answer key toggle\n  - **Question Paper List**: Table showing all question papers with columns for Paper Name, Version, Class, Subject, Total Questions, Total Marks, Status, Created Date, Last Modified Date, and Actions (View, Edit, Duplicate, **Shuffle and Save**, Compare, Delete)
-  - **Shuffle and Save Dialog**: Modal dialog with auto-generated new paper name (with version identifier), pre-checked shuffle options, and preview section
+  - **Shuffle and Save Dialog**: Modal dialog with auto-generated new paper name (with version identifier), pre-checked shuffle options, and preview section with help text about Multiple Response MCQ shuffle rules
   - **Question Paper Preview**: Modal displaying formatted question paper with header, questions, and footer
   - **PDF Export**: Generate and download PDF file with professional layout\n  - **Print**: Browser print dialog with optimized A4 layout
   - **Batch Shuffle Panel**: Panel with batch selection checkboxes, shuffle options, and batch shuffle button
@@ -1785,7 +1811,7 @@ After Student login, the dashboard displays:
   - **Template Creation Form**: Form with Template Name, Template Description, Configuration fields (sections, marks distribution, difficulty ratio, question type distribution, shuffle settings, formatting preferences)\n  - **Use Template Workflow**: Load template configuration into question paper creation workflow with auto-populated settings and suggested questions
 - **Question Paper History Interface**:
   - **Version History Page**: Table showing all question papers with version grouping, timestamps, and comparison functionality
-  - **Comparison View**: Side-by-side comparison of two or more versions with synchronized scrolling and highlighted differences
+  - **Comparison View**: Side-by-side comparison of two or more versions with synchronized scrolling and highlighted differences (including Multiple Response MCQ Segment 3 differences)
   - **Filters and Search**: Filter by Class, Subject, Status, Date Range, and text search by paper name
 \n## 14. Reference Images
 1. screenshot.png - Admin dashboard interface showing side panel navigation with Dashboard and User Management menu items
@@ -1805,7 +1831,8 @@ After Student login, the dashboard displays:
 17. 1000481349.jpg - Question Paper Management interface showing 'Shuffle and Save Question Paper' dialog with auto-generated new paper name 'test 1 (Shuffled) (Shuffled)', shuffle options checkboxes, preview section, and 'Save Shuffled Paper' button
 18. 1000481348.jpg - Question Paper Management interface showing 'Shuffle Question Paper' dialog with shuffle options checkboxes and 'Generate Shuffled Preview' button
 19. 1000481350.jpg - Question Paper Management interface showing Actions column with annotation 'No need this remove it', indicating removal of manual'Save As' button in favor of auto-versioned 'Shuffle and Save' feature
-\n## 15. Design Style\n
+20. screenshot.png - Question Paper Preview showing Multiple Response MCQ question with annotation indicating 'need to reset Serial number in this type of questions only' and highlighting that only Segment 3 (Answer Options) should be shuffled while Segment 1 (Serial Number) and Segment 2 (Question Text) remain unchanged
+21. screenshot.png - Question Edit interface showing Multiple Response MCQ question with annotation 'in MCQ (Multiple) questions, the correct Answer must be written only'மற்றும் C சரி' instead of '(ii) B மற்றும் C சரி'. Only than can we shuffle this type of Question', indicating that correct answer format should exclude option prefixes to enable proper shuffling of Segment 3\n\n## 15. Design Style\n
 ### 15.1 Color Scheme
 - Primary color: Blue (#2563EB)\n- Secondary color: Green (#10B981)
 - Warning color: Red (#EF4444)
@@ -1813,8 +1840,8 @@ After Student login, the dashboard displays:
 - Match the Following badge color: Teal (#14B8A6)\n- Multiple Response MCQ badge color: Indigo (#6366F1)
 - Minus Mark color: Red (#EF4444) or Orange (#F59E0B)
 
-### 15.2 Visual Details\n- Soft rounded corners (8px radius)
-- Subtle shadow effects
+### 15.2 Visual Details
+- Soft rounded corners (8px radius)\n- Subtle shadow effects
 - Clear borders
 \n### 15.3 Overall Layout
 - Side panel navigation with collapsible toggle\n- Card-based design\n- Responsive grid layout

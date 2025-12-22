@@ -219,6 +219,44 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
               answer_options: shuffledAnswerOptions, // Shuffle only Segment 3
               // correct_answer remains unchanged as it's one of the answer_options
             };
+          } else if (q.question_type === 'match_following' && Array.isArray(q.options)) {
+            // For match_following, shuffle only the right-side items
+            // Left-side items remain in their original order
+            const matchPairs = q.options as { left: string; right: string }[];
+            
+            // Extract right items and shuffle them
+            const rightItems = matchPairs.map(pair => pair.right);
+            const shuffledRightItems = shuffleArray(rightItems);
+            
+            // Create new match pairs with original left items and shuffled right items
+            const shuffledMatchPairs = matchPairs.map((pair, idx) => ({
+              left: pair.left,
+              right: shuffledRightItems[idx]
+            }));
+            
+            // Parse the original correct answer mapping
+            let correctMatches: Record<string, string> = {};
+            try {
+              correctMatches = JSON.parse(q.correct_answer);
+            } catch (e) {
+              console.error('Error parsing correct_answer for match_following:', e);
+            }
+            
+            // Update the correct answer mapping based on new positions
+            const newCorrectMatches: Record<string, string> = {};
+            Object.entries(correctMatches).forEach(([leftItem, correctRightItem]) => {
+              // Find the new position of the correct right item
+              const newIndex = shuffledRightItems.indexOf(correctRightItem);
+              if (newIndex !== -1) {
+                newCorrectMatches[leftItem] = shuffledRightItems[newIndex];
+              }
+            });
+            
+            return {
+              ...q,
+              options: shuffledMatchPairs,
+              correct_answer: JSON.stringify(newCorrectMatches)
+            };
           }
           return q;
         });
@@ -252,7 +290,7 @@ export function ShuffleAndSaveDialog({ paper, onSuccess }: ShuffleAndSaveDialogP
           question_id: question.id,
           display_order: i + 1,
           shuffled_options: shuffleMcqOptions && 
-            (question.question_type === 'mcq' || question.question_type === 'multiple_response') && 
+            (question.question_type === 'mcq' || question.question_type === 'multiple_response' || question.question_type === 'match_following') && 
             Array.isArray(question.options)
             ? question.options
             : null,
