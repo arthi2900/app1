@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { examApi, academicApi, profileApi } from '@/db/api';
 import { ArrowLeft, Calendar, Clock, FileText } from 'lucide-react';
 import type { QuestionPaper, Class, Subject, ExamStatus } from '@/types/types';
+import { convertISTInputToUTC } from '@/utils/timezone';
 
 export default function CreateExam() {
   const navigate = useNavigate();
@@ -87,8 +88,12 @@ export default function CreateExam() {
       const selectedPaper = questionPapers.find(p => p.id === formData.questionPaperId);
       if (!selectedPaper) throw new Error('Question paper not found');
 
-      const startDateTime = new Date(`${formData.startDate}T${formData.startTime}`);
-      const endDateTime = new Date(`${formData.endDate}T${formData.endTime}`);
+      // Convert IST input to UTC for storage
+      const startTimeUTC = convertISTInputToUTC(formData.startDate, formData.startTime);
+      const endTimeUTC = convertISTInputToUTC(formData.endDate, formData.endTime);
+      
+      const startDateTime = new Date(startTimeUTC);
+      const endDateTime = new Date(endTimeUTC);
 
       if (endDateTime <= startDateTime) {
         throw new Error('End time must be after start time');
@@ -100,8 +105,8 @@ export default function CreateExam() {
         class_id: formData.classId,
         subject_id: formData.subjectId,
         teacher_id: teacherId,
-        start_time: startDateTime.toISOString(),
-        end_time: endDateTime.toISOString(),
+        start_time: startTimeUTC,
+        end_time: endTimeUTC,
         duration_minutes: formData.durationMinutes,
         total_marks: selectedPaper.total_marks,
         passing_marks: formData.passingMarks,

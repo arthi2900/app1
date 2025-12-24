@@ -100,3 +100,27 @@ export function getExamRemainingTime(
   const totalSeconds = durationMinutes * 60;
   return Math.max(0, totalSeconds - elapsedSeconds);
 }
+
+/**
+ * Convert IST date/time input to UTC ISO string
+ * Used when teacher enters exam date/time in IST
+ * 
+ * Example: If teacher enters "2025-12-25" and "10:00" (meaning 10:00 AM IST)
+ * This should return "2025-12-25T04:30:00.000Z" (10:00 AM IST = 4:30 AM UTC)
+ */
+export function convertISTInputToUTC(dateStr: string, timeStr: string): string {
+  // Parse the date and time components
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  
+  // Create a UTC timestamp with these components (treating them as IST)
+  // Month is 0-indexed in Date.UTC
+  const istTimestamp = Date.UTC(year, month - 1, day, hours, minutes, 0, 0);
+  
+  // The above created a UTC timestamp, but we want to treat the input as IST
+  // So we need to subtract the IST offset to get the actual UTC time
+  // IST is UTC+5:30, so when it's 10:00 in IST, it's 04:30 in UTC
+  const utcTimestamp = istTimestamp - IST_OFFSET_MS;
+  
+  return new Date(utcTimestamp).toISOString();
+}

@@ -104,11 +104,12 @@ export default function TakeExam() {
       });
       setAnswers(answersMap);
 
-      // Calculate remaining time in IST
+      // Calculate remaining time in UTC
       const remainingSeconds = getExamRemainingTime(
         attemptData.started_at || attemptData.created_at,
         examData.duration_minutes
       );
+      
       setTimeRemaining(remainingSeconds);
     } catch (error: any) {
       toast({
