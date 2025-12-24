@@ -31,22 +31,22 @@ BEGIN
   SELECT * INTO exam_record FROM exams WHERE id = exam_uuid;
   
   IF NOT FOUND THEN
-    RETURN jsonb_build_object('can_take', false, 'reason', 'परीक्षा नहीं मिली');
+    RETURN jsonb_build_object('can_take', false, 'reason', 'தேர்வு கிடைக்கவில்லை');
   END IF;
   
   -- Check if exam is published
   IF exam_record.status != 'published' THEN
-    RETURN jsonb_build_object('can_take', false, 'reason', 'परीक्षा प्रकाशित नहीं है');
+    RETURN jsonb_build_object('can_take', false, 'reason', 'தேர்வு வெளியிடப்படவில்லை');
   END IF;
   
   -- Check if exam has started (compare in IST)
   IF (exam_record.start_time AT TIME ZONE 'Asia/Kolkata') > current_time_ist THEN
-    RETURN jsonb_build_object('can_take', false, 'reason', 'परीक्षा अभी शुरू नहीं हुई है');
+    RETURN jsonb_build_object('can_take', false, 'reason', 'தேர்வு இன்னும் தொடங்கவில்லை');
   END IF;
   
   -- Check if exam has ended (compare in IST)
   IF (exam_record.end_time AT TIME ZONE 'Asia/Kolkata') < current_time_ist THEN
-    RETURN jsonb_build_object('can_take', false, 'reason', 'परीक्षा समाप्त हो गई है');
+    RETURN jsonb_build_object('can_take', false, 'reason', 'தேர்வு முடிந்துவிட்டது');
   END IF;
   
   -- Check if student already has an attempt
@@ -55,12 +55,12 @@ BEGIN
   
   IF FOUND THEN
     IF attempt_record.status = 'submitted' OR attempt_record.status = 'evaluated' THEN
-      RETURN jsonb_build_object('can_take', false, 'reason', 'आपने यह परीक्षा पहले ही जमा कर दी है');
+      RETURN jsonb_build_object('can_take', false, 'reason', 'நீங்கள் ஏற்கனவே இந்த தேர்வை சமர்ப்பித்துவிட்டீர்கள்');
     ELSIF attempt_record.status = 'in_progress' THEN
-      RETURN jsonb_build_object('can_take', true, 'reason', 'अपनी परीक्षा जारी रखें', 'attempt_id', attempt_record.id);
+      RETURN jsonb_build_object('can_take', true, 'reason', 'உங்கள் தேர்வைத் தொடரவும்', 'attempt_id', attempt_record.id);
     END IF;
   END IF;
   
-  RETURN jsonb_build_object('can_take', true, 'reason', 'आप परीक्षा शुरू कर सकते हैं');
+  RETURN jsonb_build_object('can_take', true, 'reason', 'நீங்கள் தேர்வைத் தொடங்கலாம்');
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
