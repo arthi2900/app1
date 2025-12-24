@@ -21,7 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { getCurrentISTTime, hasExamStarted, hasExamEnded, getExamRemainingTime, formatSecondsToTime } from '@/utils/timezone';
+import { hasExamStarted, hasExamEnded, getExamRemainingTime, formatSecondsToTime } from '@/utils/timezone';
 
 export default function TakeExam() {
   const { examId } = useParams<{ examId: string }>();
@@ -76,11 +76,11 @@ export default function TakeExam() {
       let attemptData = await examAttemptApi.getAttemptByStudent(examId, profile.id);
 
       if (!attemptData) {
-        // Create attempt with current IST time
+        // Create attempt with current UTC time (database will store as UTC)
         attemptData = await examAttemptApi.createAttempt({
           exam_id: examId,
           student_id: profile.id,
-          started_at: getCurrentISTTime().toISOString(),
+          started_at: new Date().toISOString(),
           submitted_at: null,
           status: 'in_progress',
           total_marks_obtained: 0,

@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { examApi, profileApi, academicApi } from '@/db/api';
 import { Calendar, Clock, FileText, PlayCircle, CheckCircle2 } from 'lucide-react';
 import type { ExamWithDetails } from '@/types/types';
-import { getCurrentISTTime, hasExamStarted, hasExamEnded, formatISTDateTime } from '@/utils/timezone';
+import { hasExamStarted, hasExamEnded, formatISTDateTime } from '@/utils/timezone';
 
 export default function StudentExams() {
   const navigate = useNavigate();

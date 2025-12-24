@@ -5,13 +5,16 @@
 // IST is UTC+5:30
 export const IST_OFFSET_HOURS = 5;
 export const IST_OFFSET_MINUTES = 30;
+export const IST_OFFSET_MS = (IST_OFFSET_HOURS * 60 + IST_OFFSET_MINUTES) * 60 * 1000;
 export const IST_TIMEZONE = 'Asia/Kolkata';
 
 /**
  * Get current time in IST
  */
 export function getCurrentISTTime(): Date {
-  return new Date(new Date().toLocaleString('en-US', { timeZone: IST_TIMEZONE }));
+  // Get current UTC time and add IST offset
+  const now = new Date();
+  return new Date(now.getTime() + IST_OFFSET_MS);
 }
 
 /**
@@ -19,15 +22,16 @@ export function getCurrentISTTime(): Date {
  */
 export function convertToIST(utcDate: string | Date): Date {
   const date = typeof utcDate === 'string' ? new Date(utcDate) : utcDate;
-  return new Date(date.toLocaleString('en-US', { timeZone: IST_TIMEZONE }));
+  // Add IST offset to UTC time
+  return new Date(date.getTime() + IST_OFFSET_MS);
 }
 
 /**
  * Convert IST time to UTC
  */
 export function convertToUTC(istDate: Date): Date {
-  const utcTime = istDate.getTime() - (IST_OFFSET_HOURS * 60 + IST_OFFSET_MINUTES) * 60 * 1000;
-  return new Date(utcTime);
+  // Subtract IST offset from IST time
+  return new Date(istDate.getTime() - IST_OFFSET_MS);
 }
 
 /**
@@ -52,8 +56,9 @@ export function formatSecondsToTime(seconds: number): string {
  * Format date and time in IST
  */
 export function formatISTDateTime(date: string | Date): string {
-  const istDate = typeof date === 'string' ? convertToIST(date) : date;
-  return istDate.toLocaleString('en-IN', {
+  const utcDate = typeof date === 'string' ? new Date(date) : date;
+  // Format using IST timezone
+  return utcDate.toLocaleString('en-IN', {
     timeZone: IST_TIMEZONE,
     year: 'numeric',
     month: 'long',
@@ -68,8 +73,8 @@ export function formatISTDateTime(date: string | Date): string {
  * Check if exam has started
  */
 export function hasExamStarted(startTime: string | Date): boolean {
-  const now = getCurrentISTTime();
-  const start = convertToIST(startTime);
+  const now = new Date(); // Current UTC time
+  const start = typeof startTime === 'string' ? new Date(startTime) : startTime;
   return now >= start;
 }
 
@@ -77,8 +82,8 @@ export function hasExamStarted(startTime: string | Date): boolean {
  * Check if exam has ended
  */
 export function hasExamEnded(endTime: string | Date): boolean {
-  const now = getCurrentISTTime();
-  const end = convertToIST(endTime);
+  const now = new Date(); // Current UTC time
+  const end = typeof endTime === 'string' ? new Date(endTime) : endTime;
   return now >= end;
 }
 
@@ -89,8 +94,8 @@ export function getExamRemainingTime(
   startedAt: string | Date,
   durationMinutes: number
 ): number {
-  const now = getCurrentISTTime();
-  const started = convertToIST(startedAt);
+  const now = new Date(); // Current UTC time
+  const started = typeof startedAt === 'string' ? new Date(startedAt) : startedAt;
   const elapsedSeconds = getTimeDifferenceInSeconds(started, now);
   const totalSeconds = durationMinutes * 60;
   return Math.max(0, totalSeconds - elapsedSeconds);
