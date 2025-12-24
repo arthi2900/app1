@@ -1,21 +1,15 @@
 /*
-# Set Database Timezone to Indian Standard Time
+# Update Timezone Error Messages to English
 
 ## Changes
-1. Set default timezone to Asia/Kolkata (IST)
-2. Update can_student_take_exam function to use IST
-3. Ensure all time comparisons use IST
+1. Update can_student_take_exam function error messages to English
+2. All user-facing messages now in English
 
 ## Purpose
-- All exam timing should be based on Indian Standard Time
-- Automatic submission should happen based on IST
-- Time displays should show IST
+- Consistent English UI language throughout the application
 */
 
--- Set database timezone to IST
-ALTER DATABASE postgres SET timezone TO 'Asia/Kolkata';
-
--- Update the can_student_take_exam function to explicitly use IST
+-- Update the can_student_take_exam function with English messages
 CREATE OR REPLACE FUNCTION can_student_take_exam(exam_uuid uuid, student_uuid uuid)
 RETURNS jsonb AS $$
 DECLARE

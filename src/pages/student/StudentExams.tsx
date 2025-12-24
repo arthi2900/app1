@@ -63,15 +63,15 @@ export default function StudentExams() {
 
   const getExamStatus = (exam: ExamWithDetails) => {
     if (isExamCompleted(exam)) {
-      return { label: 'समाप्त', variant: 'secondary' as const };
+      return { label: 'Completed', variant: 'secondary' as const };
     }
     if (isExamAvailable(exam)) {
-      return { label: 'उपलब्ध', variant: 'default' as const };
+      return { label: 'Available', variant: 'default' as const };
     }
     if (isExamUpcoming(exam)) {
-      return { label: 'आगामी', variant: 'outline' as const };
+      return { label: 'Upcoming', variant: 'outline' as const };
     }
-    return { label: 'अज्ञात', variant: 'secondary' as const };
+    return { label: 'Unknown', variant: 'secondary' as const };
   };
 
   if (loading) {
@@ -131,22 +131,22 @@ export default function StudentExams() {
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
                       <div className="text-sm">
-                        <p className="text-muted-foreground">शुरुआत</p>
+                        <p className="text-muted-foreground">Start</p>
                         <p className="font-medium">{formatISTDateTime(exam.start_time)}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
                       <div className="text-sm">
-                        <p className="text-muted-foreground">समाप्ति</p>
+                        <p className="text-muted-foreground">End</p>
                         <p className="font-medium">{formatISTDateTime(exam.end_time)}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4 text-muted-foreground" />
                       <div className="text-sm">
-                        <p className="text-muted-foreground">अवधि</p>
-                        <p className="font-medium">{exam.duration_minutes} मिनट</p>
+                        <p className="text-muted-foreground">Duration</p>
+                        <p className="font-medium">{exam.duration_minutes} minutes</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">

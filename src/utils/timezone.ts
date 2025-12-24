@@ -1,5 +1,4 @@
 /**
- * भारतीय मानक समय (IST) के लिए टाइमज़ोन उपयोगिताएँ
  * Timezone utilities for Indian Standard Time (IST)
  */
 
@@ -9,7 +8,6 @@ export const IST_OFFSET_MINUTES = 30;
 export const IST_TIMEZONE = 'Asia/Kolkata';
 
 /**
- * वर्तमान IST समय प्राप्त करें
  * Get current time in IST
  */
 export function getCurrentISTTime(): Date {
@@ -17,7 +15,6 @@ export function getCurrentISTTime(): Date {
 }
 
 /**
- * UTC समय को IST में बदलें
  * Convert UTC time to IST
  */
 export function convertToIST(utcDate: string | Date): Date {
@@ -26,7 +23,6 @@ export function convertToIST(utcDate: string | Date): Date {
 }
 
 /**
- * IST समय को UTC में बदलें
  * Convert IST time to UTC
  */
 export function convertToUTC(istDate: Date): Date {
@@ -35,7 +31,6 @@ export function convertToUTC(istDate: Date): Date {
 }
 
 /**
- * दो समय के बीच सेकंड में अंतर प्राप्त करें
  * Get difference in seconds between two times
  */
 export function getTimeDifferenceInSeconds(startTime: Date, endTime: Date): number {
@@ -43,7 +38,6 @@ export function getTimeDifferenceInSeconds(startTime: Date, endTime: Date): numb
 }
 
 /**
- * सेकंड को समय प्रारूप में बदलें (HH:MM:SS)
  * Format seconds to time format (HH:MM:SS)
  */
 export function formatSecondsToTime(seconds: number): string {
@@ -55,12 +49,11 @@ export function formatSecondsToTime(seconds: number): string {
 }
 
 /**
- * IST में तारीख और समय को प्रारूपित करें
  * Format date and time in IST
  */
 export function formatISTDateTime(date: string | Date): string {
   const istDate = typeof date === 'string' ? convertToIST(date) : date;
-  return istDate.toLocaleString('hi-IN', {
+  return istDate.toLocaleString('en-IN', {
     timeZone: IST_TIMEZONE,
     year: 'numeric',
     month: 'long',
@@ -72,7 +65,6 @@ export function formatISTDateTime(date: string | Date): string {
 }
 
 /**
- * जांचें कि परीक्षा शुरू हो गई है या नहीं
  * Check if exam has started
  */
 export function hasExamStarted(startTime: string | Date): boolean {
@@ -82,7 +74,6 @@ export function hasExamStarted(startTime: string | Date): boolean {
 }
 
 /**
- * जांचें कि परीक्षा समाप्त हो गई है या नहीं
  * Check if exam has ended
  */
 export function hasExamEnded(endTime: string | Date): boolean {
@@ -92,7 +83,6 @@ export function hasExamEnded(endTime: string | Date): boolean {
 }
 
 /**
- * परीक्षा के लिए शेष समय प्राप्त करें (सेकंड में)
  * Get remaining time for exam in seconds
  */
 export function getExamRemainingTime(

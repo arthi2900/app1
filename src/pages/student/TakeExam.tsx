@@ -60,23 +60,23 @@ export default function TakeExam() {
       if (!examId) return;
 
       const profile = await profileApi.getCurrentProfile();
-      if (!profile) throw new Error('प्रोफ़ाइल नहीं मिली');
+      if (!profile) throw new Error('Profile not found');
 
       const examData = await examApi.getExamById(examId);
       setExam(examData);
 
-      // IST में समय की जांच करें (Check time in IST)
+      // Check time in IST
       if (!hasExamStarted(examData.start_time)) {
-        throw new Error('परीक्षा अभी शुरू नहीं हुई है');
+        throw new Error('Exam has not started yet');
       }
       if (hasExamEnded(examData.end_time)) {
-        throw new Error('परीक्षा समाप्त हो गई है');
+        throw new Error('Exam has ended');
       }
 
       let attemptData = await examAttemptApi.getAttemptByStudent(examId, profile.id);
 
       if (!attemptData) {
-        // IST में वर्तमान समय के साथ प्रयास बनाएं (Create attempt with current IST time)
+        // Create attempt with current IST time
         attemptData = await examAttemptApi.createAttempt({
           exam_id: examId,
           student_id: profile.id,
@@ -104,7 +104,7 @@ export default function TakeExam() {
       });
       setAnswers(answersMap);
 
-      // IST में शेष समय की गणना करें (Calculate remaining time in IST)
+      // Calculate remaining time in IST
       const remainingSeconds = getExamRemainingTime(
         attemptData.started_at || attemptData.created_at,
         examData.duration_minutes
@@ -112,8 +112,8 @@ export default function TakeExam() {
       setTimeRemaining(remainingSeconds);
     } catch (error: any) {
       toast({
-        title: 'त्रुटि',
-        description: error.message || 'परीक्षा लोड करने में विफल',
+        title: 'Error',
+        description: error.message || 'Failed to load exam',
         variant: 'destructive',
       });
       navigate('/student/exams');
@@ -145,8 +145,8 @@ export default function TakeExam() {
     try {
       await examAttemptApi.submitAttempt(attempt.id);
       toast({
-        title: 'समय समाप्त!',
-        description: 'आपकी परीक्षा स्वचालित रूप से जमा कर दी गई है',
+        title: 'Time Up!',
+        description: 'Your exam has been automatically submitted',
       });
       navigate(`/student/exams/${examId}/result`);
     } catch (error: any) {
@@ -233,7 +233,7 @@ export default function TakeExam() {
                 <span className="font-mono text-lg font-bold">{formatSecondsToTime(timeRemaining)}</span>
               </div>
               <Button onClick={() => setSubmitDialogOpen(true)}>
-                परीक्षा जमा करें
+                Submit Exam
               </Button>
             </div>
           </div>
