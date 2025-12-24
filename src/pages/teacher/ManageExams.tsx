@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { examApi, profileApi } from '@/db/api';
+import { examApi, profileApi, examAttemptApi } from '@/db/api';
 import { ArrowLeft, Plus, Calendar, Clock, Users, FileText, Trash2 } from 'lucide-react';
 import type { ExamWithDetails } from '@/types/types';
 import {
@@ -24,7 +24,9 @@ export default function ManageExams() {
   const [exams, setExams] = useState<ExamWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [examToDelete, setExamToDelete] = useState<string | null>(null);
+  const [examToDelete, setExamToDelete] = useState<ExamWithDetails | null>(null);
+  const [attemptCount, setAttemptCount] = useState<number>(0);
+  const [checkingAttempts, setCheckingAttempts] = useState(false);
 
   useEffect(() => {
     loadExams();
@@ -48,35 +50,70 @@ export default function ManageExams() {
     }
   };
 
+  const handleDeleteClick = async (exam: ExamWithDetails) => {
+    setCheckingAttempts(true);
+    setExamToDelete(exam);
+    
+    try {
+      // Check if any students have attempted this exam
+      const attempts = await examAttemptApi.getAttemptsByExam(exam.id);
+      const validAttempts = Array.isArray(attempts) ? attempts : [];
+      setAttemptCount(validAttempts.length);
+      
+      if (validAttempts.length > 0) {
+        // Show error toast if students have attempted
+        toast({
+          title: 'தேர்வை நீக்க முடியாது',
+          description: `${validAttempts.length} மாணவர்கள் ஏற்கனவே இந்த தேர்வை எழுதியுள்ளனர்.`,
+          variant: 'destructive',
+        });
+        setExamToDelete(null);
+      } else {
+        // Open confirmation dialog if no attempts
+        setDeleteDialogOpen(true);
+      }
+    } catch (error: any) {
+      toast({
+        title: 'பிழை',
+        description: error.message || 'தேர்வு முயற்சிகளை சரிபார்க்க முடியவில்லை',
+        variant: 'destructive',
+      });
+      setExamToDelete(null);
+    } finally {
+      setCheckingAttempts(false);
+    }
+  };
+
   const handleDelete = async () => {
     if (!examToDelete) return;
 
     try {
-      await examApi.deleteExam(examToDelete);
+      await examApi.deleteExam(examToDelete.id);
       toast({
-        title: 'Success',
-        description: 'Exam deleted successfully',
+        title: 'வெற்றி',
+        description: 'தேர்வு வெற்றிகரமாக நீக்கப்பட்டது',
       });
       loadExams();
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to delete exam',
+        title: 'பிழை',
+        description: error.message || 'தேர்வை நீக்க முடியவில்லை',
         variant: 'destructive',
       });
     } finally {
       setDeleteDialogOpen(false);
       setExamToDelete(null);
+      setAttemptCount(0);
     }
   };
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline', label: string }> = {
-      draft: { variant: 'secondary', label: 'Draft' },
-      pending_approval: { variant: 'outline', label: 'Pending Approval' },
-      approved: { variant: 'default', label: 'Approved' },
-      published: { variant: 'default', label: 'Published' },
-      completed: { variant: 'secondary', label: 'Completed' },
+      draft: { variant: 'secondary', label: 'வரைவு' },
+      pending_approval: { variant: 'outline', label: 'ஒப்புதல் நிலுவையில்' },
+      approved: { variant: 'default', label: 'ஒப்புதல் அளிக்கப்பட்டது' },
+      published: { variant: 'default', label: 'வெளியிடப்பட்டது' },
+      completed: { variant: 'secondary', label: 'முடிந்தது' },
     };
     const config = variants[status] || { variant: 'secondary', label: status };
     return <Badge variant={config.variant}>{config.label}</Badge>;
@@ -97,7 +134,7 @@ export default function ManageExams() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading exams...</p>
+          <p className="text-muted-foreground">தேர்வுகளை ஏற்றுகிறது...</p>
         </div>
       </div>
     );
@@ -111,15 +148,15 @@ export default function ManageExams() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">Manage Exams</h1>
+            <h1 className="text-3xl font-bold">தேர்வுகளை நிர்வகி</h1>
             <p className="text-muted-foreground mt-1">
-              View and manage all your exams
+              உங்கள் அனைத்து தேர்வுகளையும் பார்க்கவும் நிர்வகிக்கவும்
             </p>
           </div>
         </div>
         <Button onClick={() => navigate('/teacher/exams/create')}>
           <Plus className="h-4 w-4 mr-2" />
-          Create Exam
+          தேர்வை உருவாக்கு
         </Button>
       </div>
 
@@ -127,13 +164,13 @@ export default function ManageExams() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <FileText className="h-16 w-16 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No exams found</h3>
+            <h3 className="text-lg font-semibold mb-2">தேர்வுகள் இல்லை</h3>
             <p className="text-muted-foreground text-center mb-4">
-              You haven't created any exams yet. Create your first exam to get started.
+              நீங்கள் இன்னும் எந்த தேர்வையும் உருவாக்கவில்லை. தொடங்க உங்கள் முதல் தேர்வை உருவாக்கவும்.
             </p>
             <Button onClick={() => navigate('/teacher/exams/create')}>
               <Plus className="h-4 w-4 mr-2" />
-              Create Exam
+              தேர்வை உருவாக்கு
             </Button>
           </CardContent>
         </Card>
@@ -159,28 +196,28 @@ export default function ManageExams() {
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <div className="text-sm">
-                      <p className="text-muted-foreground">Start</p>
+                      <p className="text-muted-foreground">தொடக்கம்</p>
                       <p className="font-medium">{formatDateTime(exam.start_time)}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <div className="text-sm">
-                      <p className="text-muted-foreground">End</p>
+                      <p className="text-muted-foreground">முடிவு</p>
                       <p className="font-medium">{formatDateTime(exam.end_time)}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-muted-foreground" />
                     <div className="text-sm">
-                      <p className="text-muted-foreground">Duration</p>
-                      <p className="font-medium">{exam.duration_minutes} minutes</p>
+                      <p className="text-muted-foreground">காலம்</p>
+                      <p className="font-medium">{exam.duration_minutes} நிமிடங்கள்</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4 text-muted-foreground" />
                     <div className="text-sm">
-                      <p className="text-muted-foreground">Total Marks</p>
+                      <p className="text-muted-foreground">மொத்த மதிப்பெண்கள்</p>
                       <p className="font-medium">{exam.total_marks}</p>
                     </div>
                   </div>
@@ -193,19 +230,17 @@ export default function ManageExams() {
                     onClick={() => navigate(`/teacher/exams/${exam.id}/results`)}
                   >
                     <Users className="h-4 w-4 mr-2" />
-                    View Results
+                    முடிவுகளைப் பார்க்கவும்
                   </Button>
-                  {exam.status === 'draft' && (
+                  {exam.status !== 'completed' && (
                     <Button
-                      variant="outline"
+                      variant="destructive"
                       size="sm"
-                      onClick={() => {
-                        setExamToDelete(exam.id);
-                        setDeleteDialogOpen(true);
-                      }}
+                      onClick={() => handleDeleteClick(exam)}
+                      disabled={checkingAttempts}
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
+                      {checkingAttempts ? 'சரிபார்க்கிறது...' : 'நீக்கு'}
                     </Button>
                   )}
                 </div>
@@ -218,14 +253,32 @@ export default function ManageExams() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Exam</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this exam? This action cannot be undone.
+            <AlertDialogTitle>⚠️ தேர்வை நீக்கு?</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-4">
+                <p>
+                  நீங்கள் நிச்சயமாக '{examToDelete?.title}' தேர்வை நீக்க விரும்புகிறீர்களா? இந்த செயலை மாற்ற முடியாது.
+                </p>
+                {examToDelete && (
+                  <div className="bg-muted p-4 rounded-lg space-y-2 text-sm">
+                    <p className="font-semibold">தேர்வு விவரங்கள்:</p>
+                    <ul className="space-y-1 ml-4">
+                      <li>• வகுப்பு: {examToDelete.class?.class_name}</li>
+                      <li>• பாடம்: {examToDelete.subject?.subject_name}</li>
+                      <li>• உருவாக்கப்பட்டது: {formatDateTime(examToDelete.created_at)}</li>
+                      <li>• நிலை: {examToDelete.status}</li>
+                      <li>• மாணவர் முயற்சிகள்: {attemptCount}</li>
+                    </ul>
+                  </div>
+                )}
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            <AlertDialogCancel>ரத்து செய்</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              தேர்வை நீக்கு
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

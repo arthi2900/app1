@@ -3,20 +3,19 @@
 ## 1. Application Description
 
 ### 1.1 Application Name
-Online School Management System\n
+Online School Management System
+
 ### 1.2 Application Purpose
-A comprehensive school management system for educational institutions. Features include school management, academic structure setup (class, section, subject, lesson), teacher-subject-class-section mapping, question bank management with lesson-level tracking, question paper preparation with shuffle functionality, question paper history tracking, **online exam creation and management with approval workflow**, user management with school-based data isolation.\n
+A comprehensive school management system for educational institutions. Features include school management, academic structure setup (class, section, subject, lesson), teacher-subject-class-section mapping, question bank management with lesson-level tracking, question paper preparation with shuffle functionality, question paper history tracking, online exam creation and management with approval workflow, user management with school-based data isolation.\n
 ## 2. User Roles\n
-### 2.1 Admin\n- Complete system administration
-- School management (create, edit, view schools)\n- User account creation and management
+### 2.1 Admin\n- Complete system administration\n- School management (create, edit, view schools)\n- User account creation and management
 - New user approval management
 - Role-based Access Control setup
 - System configurations\n- Permission management
 - User profile editing and suspension management
 - **Cross-school visibility**: Admin can view and manage all schools and users across the entire system
 - **Full management rights**: Create, edit, suspend, delete all users and schools
-
-### 2.2 Principal
+\n### 2.2 Principal
 - **Academic Management** (within assigned school only):
   - Class creation\n  - Section creation
   - Subject creation (class-wise)
@@ -38,13 +37,13 @@ A comprehensive school management system for educational institutions. Features 
 - **Question Paper History Access** (within assigned school only):\n  - View all question papers created by teachers in their school
   - Filter and search question paper history
   - Export and print historical question papers
-- **Online Exam Management** (within assigned school only):
-  - **Approve school-level exams created by teachers**
+- **Online Exam Management** (within assigned school only):\n  - **Approve school-level exams created by teachers**
   - **Create exams directly without approval requirement**
   - **Create exams from school question bank without approval**
   - View all online exams (practice and school-level) created by teachers
   - Monitor exam status and student participation
   - Access exam analytics and reports
+  - **Delete exams created by self (with restrictions)**
 - Profile editing capability
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view and manage users (teachers and students) from their assigned school
@@ -66,22 +65,27 @@ A comprehensive school management system for educational institutions. Features 
   - Export as PDF and print
   - **Save shuffled papers with auto-versioned names (Shuffled A, Shuffled B, etc.)**
 - **Question Paper History**:
-  - View all question papers created by self\n  - Filter by class, subject, date range, status
+  - View all question papers created by self
+  - Filter by class, subject, date range, status
   - View, edit, delete, export, print historical papers
   - Create new versions from existing papers
   - Track paper creation and modification history
 - **Online Exam Management**:
   - **Create practice exams (no approval required) to assess student understanding**
   - **Create school-level exams (requires Principal approval before scheduling)**
-  - Configure exam settings (duration, start/end time, passing marks, negative marking)\n  - Publish practice exams directly to assigned sections
-  - Submit school-level exams for Principal approval\n  - Monitor student participation in real-time
-  - View submitted answers and auto-graded results\n  - Manually grade subjective questions (Short Answer, Essay)
-  - Generate exam reports and analytics\n  - Export exam results
+  - Configure exam settings (duration, start/end time, passing marks, negative marking)
+  - Publish practice exams directly to assigned sections
+  - Submit school-level exams for Principal approval
+  - Monitor student participation in real-time
+  - View submitted answers and auto-graded results
+  - Manually grade subjective questions (Short Answer, Essay)\n  - Generate exam reports and analytics
+  - Export exam results\n  - **Delete own exams (with restrictions)**
 - Profile editing capability
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view and interact with students from their assigned sections
 - **Visibility Rules**:
-  - ✅ Can view: Students from their assigned sections, Own question papers, Own online exams\n  - ❌ Cannot view: Principal (even from the same school), Other teachers (even from the same school), Users from other schools, Question papers created by other teachers, Online exams created by other teachers\n
+  - ✅ Can view: Students from their assigned sections, Own question papers, Own online exams
+  - ❌ Cannot view: Principal (even from the same school), Other teachers (even from the same school), Users from other schools, Question papers created by other teachers, Online exams created by other teachers\n
 ### 2.4 Student
 - View my class, section, subjects, and teachers
 - **Online Exam Access**:
@@ -92,7 +96,8 @@ A comprehensive school management system for educational institutions. Features 
   - **View auto-evaluated results for objective questions**
   - View exam results and feedback (after teacher publishes results)
   - **View detailed performance analysis**
-  - Review correct answers (if enabled by teacher)\n- Profile editing capability
+  - Review correct answers (if enabled by teacher)
+- Profile editing capability
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view personal information from their assigned school
 - **Visibility Rules**:
@@ -102,8 +107,10 @@ A comprehensive school management system for educational institutions. Features 
 All users (Admin, Principal, Teacher, Student) will have the following profile information:
 - User name
 - Email address
-- Role\n- School name (mandatory field, selected from dropdown list populated from School Master)\n- Contact number
-- Profile picture (optional)\n- Account status (Pending Approval/Active/Suspended)
+- Role\n- School name (mandatory field, selected from dropdown list populated from School Master)
+- Contact number
+- Profile picture (optional)
+- Account status (Pending Approval/Active/Suspended)
 \n## 3. School Management Module
 
 ### 3.1 School Master
@@ -172,8 +179,7 @@ After Principal login, the dashboard displays seven main cards:
 - Principal can create classes for their assigned school
 - Class information fields:\n  - Class Name (e.g., Class 6, Class 7, Class 8, etc.)
   - Class Code (auto-generated or manual entry)
-  - Academic Year (e.g., 2024-2025)
-- Class list view with edit and delete options
+  - Academic Year (e.g., 2024-2025)\n- Class list view with edit and delete options
 - Classes are school-specific and isolated\n
 #### 5.2.2 Section Creation
 - Principal can create sections for each class
@@ -304,8 +310,7 @@ After Principal login, the dashboard displays seven main cards:
 - View exam overview including:
   - Exam name
   - Exam type badge (Practice/School-Level)
-  - Approval status (for school-level exams: Pending/Approved/Rejected)
-  - Created by (teacher name)
+  - Approval status (for school-level exams: Pending/Approved/Rejected)\n  - Created by (teacher name)
   - Class and Subject
   - Exam duration
   - Start and end date/time
@@ -317,12 +322,15 @@ After Principal login, the dashboard displays seven main cards:
   - View student participation report
   - Export exam results
   - View exam analytics
-- Analytics dashboard showing:\n  - Total exams conducted per teacher
+  - **Delete exam (for self-created exams only, with restrictions)**
+- Analytics dashboard showing:
+  - Total exams conducted per teacher
   - Exams conducted per subject
   - Exams conducted per class
   - Student participation rate
   - Average scores by subject/class
-\n### 5.8 Exam Approvals Card - School-Level Exam Approval Management
+
+### 5.8 Exam Approvals Card - School-Level Exam Approval Management
 **New Feature**: Principal can review and approve school-level exams submitted by teachers
 \n**Approval Dashboard Layout**:
 \n**Pending Approvals Section**:
@@ -431,8 +439,7 @@ After Principal login, the dashboard displays seven main cards:
   - Supports multiple images per question
 - created_by (Foreign Key → users.id)
 - created_at (Timestamp)
-- updated_at (Timestamp)\n
-#### 6.2.2 Foreign Key Relationships
+- updated_at (Timestamp)\n\n#### 6.2.2 Foreign Key Relationships
 - school_id → schools.id (CASCADE on delete)
 - class_id → classes.id (CASCADE on delete)
 - subject_id → subjects.id (CASCADE on delete)
@@ -495,8 +502,7 @@ The question creation form displays fields in the following order:
 - Question list displayed in row format
 
 #### 7.2.3 Step 3: Shuffle Functionality
-- **Shuffle Questions** (Checkbox)
-- **Shuffle MCQ Options** (Checkbox)
+- **Shuffle Questions** (Checkbox)\n- **Shuffle MCQ Options** (Checkbox)
 - **Updated Shuffle Rules for Multiple Response MCQ**: Only Segment 3 (Answer Options) should be shuffled
 
 #### 7.2.4 Step 4: Final Question Paper Output
@@ -761,8 +767,7 @@ The question creation form displays fields in the following order:
 - Notification when paper is successfully created
 - Notification when shuffled version is generated
 - Reminder for draft papers older than 30 days
-
-#### 8.8.2 Principal Notifications
+\n#### 8.8.2 Principal Notifications
 - Daily/weekly summary of papers created by teachers
 - Notification when teacher creates new paper
 - Monthly analytics report
@@ -788,6 +793,7 @@ The question creation form displays fields in the following order:
   - Manual grading interface for subjective questions (Short Answer, Essay)\n  - **Comprehensive exam analytics with detailed performance analysis**
   - Secure exam environment with anti-cheating measures
   - Export and reporting capabilities
+  - **Delete exam functionality with restrictions**
 
 ### 9.2 Online Exam Creation Workflow
 
@@ -925,7 +931,8 @@ Teacher/Principal can choose one of two methods:
 
 **4. Late Submission Settings**
 - **Allow Late Submission** (Toggle switch)
-  - Default: OFF\n  - If enabled: Students can submit after end time with penalty
+  - Default: OFF
+  - If enabled: Students can submit after end time with penalty
 - **Grace Period** (Number input in minutes, conditional)
   - Validation: 5-60 minutes
   - Only shown if 'Allow Late Submission' is enabled
@@ -1114,7 +1121,8 @@ Teacher/Principal can choose one of two methods:
 
 **Columns**:
 - id (UUID, Primary Key)
-- exam_id (Foreign Key → online_exams.id, required)\n- section_id (Foreign Key → sections.id, required)
+- exam_id (Foreign Key → online_exams.id, required)
+- section_id (Foreign Key → sections.id, required)
 - total_students (Integer, calculated)
   - Count of students in section at time of exam creation
 - students_started (Integer, default 0)
@@ -1492,7 +1500,7 @@ Teacher/Principal can choose one of two methods:
   - Action buttons:
     - 'Edit': Open exam in edit mode
     - 'Duplicate': Create a copy of the exam
-    - 'Delete': Delete exam with confirmation
+    - **'Delete': Delete exam with confirmation**
     - 'Publish': Publish exam (opens Step 4preview)
 - Sort options: Last Modified (Recent First/Oldest First), Name A-Z
 - Search: By exam name\n\n**Pending Approval Tab** (New):
@@ -1527,6 +1535,7 @@ Teacher/Principal can choose one of two methods:
   - Approval badge (for school-level exams): 'Approved by [Principal Name]'
   - Action buttons:\n    - 'View Details': Open exam details page\n    - 'Edit': Edit exam settings (limited editing allowed)
     - 'Cancel Exam': Cancel scheduled exam with confirmation
+    - **'Delete': Delete exam with confirmation (only if no students have started)**
     - 'Notify Students': Send reminder notification to students
 - Sort options: Start Date (Nearest First/Farthest First), Name A-Z
 - Filter: By Class, By Subject, By Exam Type
@@ -1555,10 +1564,11 @@ Teacher/Principal can choose one of two methods:
 - Auto-refresh every 30 seconds to show live updates
 - Sort options: End Date (Nearest First), Name A-Z
 - Filter: By Class, By Subject, By Exam Type
-
-**Completed Exams Tab**:\n- List of exams past end datetime or manually ended
-- Each exam card shows:
-  - Exam name\n  - Exam type badge (Practice/School-Level)
+- **Note**: Delete button not available for ongoing exams
+\n**Completed Exams Tab**:
+- List of exams past end datetime or manually ended
+- Each exam card shows:\n  - Exam name
+  - Exam type badge (Practice/School-Level)
   - Class and Subject
   - Sections with student count
   - End date and time
@@ -1578,9 +1588,9 @@ Teacher/Principal can choose one of two methods:
   - Action buttons:
     - 'View Results': Open results and analytics page
     - 'Grade Answers': Open manual grading interface (if pending)
-    - 'Publish Results': Publish results to students (if not published)
-    - 'Export Results': Download results as Excel/CSV
+    - 'Publish Results': Publish results to students (if not published)\n    - 'Export Results': Download results as Excel/CSV
     - 'View Analytics': Open detailed analytics dashboard
+    - **'Delete': Delete exam with confirmation (only if no students have attempted or after results are published and archived)**
 - Sort options: End Date (Recent First/Oldest First), Name A-Z
 - Filter: By Class, By Subject, By Exam Type, By Grading Status (Fully Graded/Pending Grading)
 
@@ -1592,8 +1602,7 @@ Teacher/Principal can choose one of two methods:
 \n**Overview Cards** (Top section):
 - Total Students Assigned: 58
 - Students Started: 45 (77%)
-  - Green progress bar
-- Students In Progress: 30 (52%)
+  - Green progress bar\n- Students In Progress: 30 (52%)
   - Orange progress bar
 - Students Completed: 15 (26%)
   - Purple progress bar
@@ -1635,8 +1644,7 @@ Teacher/Principal can choose one of two methods:
   - 'View Full Activity Log': Open detailed activity log
   - 'Flag for Review': Mark student for manual review
   - 'Send Message': Send message to student (future feature)
-  - 'Close'\n
-**Live Updates**:
+  - 'Close'\n\n**Live Updates**:
 - Dashboard refreshes automatically every 10 seconds
 - Visual notification when student starts exam
 - Visual notification when student submits exam
@@ -1655,8 +1663,7 @@ Teacher/Principal can choose one of two methods:
 - Fully Graded: 38 students (66%)
   - All questions graded (objective + subjective)
 - Average Score (Auto-graded): 65%
-- Average Score (Fully Graded): 72%
-
+- Average Score (Fully Graded): 72%\n
 **Grading Mode Selection**:
 - Two modes available:
   - **Student-wise Grading**: Grade all questions for one student at a time
@@ -1684,7 +1691,8 @@ Teacher/Principal can choose one of two methods:
     - Word count\n  - Marks input field:\n    - Number input (0 to maximum marks)
     - Validation: Cannot exceed maximum marks
     - Decimal marks allowed (e.g., 3.5 out of 5)
-  - Feedback text area (optional):\n    - Teacher can provide specific feedback for this answer
+  - Feedback text area (optional):
+    - Teacher can provide specific feedback for this answer
     - Character limit: 500 characters
   - 'Save Marks' button (for this question)\n- Navigation buttons:
   - 'Previous Question': Move to previous subjective question
@@ -1751,8 +1759,7 @@ Teacher/Principal can choose one of two methods:
   - Determine pass_fail_status
   - Update attempt_status to 'Graded'
   - Set pending_manual_grading to false
-- Teacher can publish results after grading
-
+- Teacher can publish results after grading\n
 **Publish Results**:
 - 'Publish Results' button (available after grading)
 - Options:
@@ -1768,8 +1775,7 @@ Teacher/Principal can choose one of two methods:
 **Analytics Dashboard**:
 - Accessible from 'View Analytics' button on completed exams
 \n**Dashboard Layout**:
-
-**Overview Section** (Top cards):
+\n**Overview Section** (Top cards):
 - Total Students: 58
 - Students Completed: 55 (95%)
 - Students Not Attempted: 3 (5%)\n- Average Score: 72.5%
@@ -1909,6 +1915,7 @@ Teacher/Principal can choose one of two methods:
   - Average score (for completed exams)
   - Action buttons:\n    - 'View Details': Open exam details page
     - 'View Analytics': Open analytics dashboard (for completed exams)
+    - **'Delete': Delete exam (for self-created exams only, with restrictions)**
 - Filter options:\n  - By Teacher (dropdown showing all teachers)
   - By Class (dropdown)\n  - By Subject (dropdown)\n  - By Exam Type (dropdown: All, Practice, School-Level)
   - By Status (dropdown: All, Draft, Pending Approval, Approved, Scheduled, Ongoing, Completed, Cancelled, Rejected)\n  - By Date Range (date picker: From Date, To Date)
@@ -1937,6 +1944,7 @@ Teacher/Principal can choose one of two methods:
     - 'View Details': Open exam details page
 - Auto-refresh every 30 seconds
 - Filter: By Teacher, By Class, By Subject, By Exam Type\n- Sort: End Date (Nearest First), Teacher Name A-Z
+- **Note**: Delete button not available for ongoing exams
 
 **Completed Exams Tab**:
 - List of exams past end datetime
@@ -1952,6 +1960,7 @@ Teacher/Principal can choose one of two methods:
   - Action buttons:
     - 'View Results': Open results summary\n    - 'View Analytics': Open detailed analytics dashboard
     - 'Export Results': Download results as Excel/CSV
+    - **'Delete': Delete exam (for self-created exams only, with restrictions)**
 - Filter: By Teacher, By Class, By Subject, By Exam Type, By Date Range
 - Sort: End Date (Recent First/Oldest First), Average Score (High to Low), Teacher Name A-Z
 \n**Exam Details Page** (Principal view):
@@ -2084,8 +2093,12 @@ Teacher/Principal can choose one of two methods:
 - Cannot view exams created by other teachers or principal
 - Cannot view students from sections not assigned to them
 - Cannot edit or delete exams after students have started attempting\n- Can extend exam time or end exam early for own exams
-- Cannot edit school-level exams while in'Pending Approval' status\n
-#### 9.7.2 Student Access Rules
+- Cannot edit school-level exams while in'Pending Approval' status\n- **Can delete own exams with following restrictions**:
+  - **Draft exams**: Can be deleted anytime
+  - **Scheduled exams**: Can be deleted only if no students have started\n  - **Ongoing exams**: Cannot be deleted
+  - **Completed exams**: Can be deleted only after results are published and archived (after 30 days)
+  - **Pending Approval exams**: Can be withdrawn (returns to draft) but not deleted
+\n#### 9.7.2 Student Access Rules
 - Can view only exams assigned to their section (both practice and school-level)
 - Can take exam only during scheduled time window (start to end datetime)
 - Can take exam only once (no retakes)
@@ -2109,9 +2122,12 @@ Teacher/Principal can choose one of two methods:
 - Cannot publish or unpublish results for teacher-created exams
 - Cannot extend exam time or end exam early for teacher-created exams
 - Read-only access to teacher-created exam data
-- Full control over self-created exams
-
-#### 9.7.4 Data Isolation\n- All exam data is school-scoped\n- Backend validation ensures:\n  - Teachers can only access own exams
+- Full control over self-created exams\n- **Can delete self-created exams with following restrictions**:
+  - **Draft exams**: Can be deleted anytime
+  - **Scheduled exams**: Can be deleted only if no students have started
+  - **Ongoing exams**: Cannot be deleted
+  - **Completed exams**: Can be deleted only after results are published and archived (after 30 days)
+\n#### 9.7.4 Data Isolation\n- All exam data is school-scoped\n- Backend validation ensures:\n  - Teachers can only access own exams
   - Students can only access exams assigned to their section
   - Principal can only access exams from their assigned school
 - Cross-school data access is prevented at database level
@@ -2125,7 +2141,7 @@ Teacher/Principal can choose one of two methods:
 **Notification Types**:
 - **Exam Assigned**: When teacher publishes new exam
   - Message: 'New [Practice/School-Level] exam assigned: [Exam Name] for [Subject]. Starts on [Date] at [Time].'
-  - Action: 'View Exam Details'\n- **Exam Reminder (24 hours before)**: 24hours before exam start time
+  - Action: 'View Exam Details'\n- **Exam Reminder (24 hours before)**: 24 hours before exam start time
   - Message: 'Reminder: [Exam Name] starts tomorrow at [Time]. Duration: [X] minutes.'
   - Action: 'View Exam Details'
 - **Exam Reminder (1 hour before)**: 1 hour before exam start time
@@ -2186,7 +2202,7 @@ Teacher/Principal can choose one of two methods:
   - Message: 'You have [X] school-level exams pending approval.'
   - Action: 'View Approvals'
 - **Daily Exam Summary**: Daily summary of exams conducted (sent at end of day)
-  - Message: 'Daily Summary: [X] exams conducted today. [Y] students participated. Average score: [Z]%.'
+  - Message:'Daily Summary: [X] exams conducted today. [Y] students participated. Average score: [Z]%.'
   - Action: 'View Analytics'
 - **Weekly Participation Report**: Weekly summary of student participation rates (sent every Monday)
   - Message: 'Weekly Report: [X] exams conducted this week. Participation rate: [Y]%. [Z] students did not attempt any exam.'
@@ -2217,7 +2233,7 @@ Teacher/Principal can choose one of two methods:
 - On subsequent tab switches:
   - Increment suspicious activity count
   - Log each occurrence
-- After3 tab switches:
+- After 3 tab switches:
   - Show warning: 'Multiple tab switches detected. Your exam may be flagged for review.'
 - Limitations:
   - Cannot prevent tab switches, only detect and log\n  - May not work on all browsers
@@ -2233,8 +2249,7 @@ Teacher/Principal can choose one of two methods:
 - Limitations:
   - Can be bypassed by disabling JavaScript
   - Does not prevent typing from another source
-
-**Screenshot Prevention** (Optional):
+\n**Screenshot Prevention** (Optional):
 - Browser-level screenshot prevention (limited support)
 - CSS property: -webkit-user-select: none (prevents text selection)
 - Watermark overlay with student name and timestamp (future feature)
@@ -2247,7 +2262,8 @@ Teacher/Principal can choose one of two methods:
 - Store in student_exam_attempts table
 - Compare IP addresses if multiple attempts detected
 - Use for identifying suspicious activity
-\n**Device Fingerprinting**:
+
+**Device Fingerprinting**:
 - Capture device information at exam start:\n  - Browser name and version
   - Operating system
   - Screen resolution
@@ -2291,8 +2307,7 @@ Teacher/Principal can choose one of two methods:
   - **Too Fast Completion**: Completing exam in less than 25% of allocated time
 - Increment suspicious_activity_count for each occurrence
 - Flag students with high suspicious activity count (>5) for manual review
-- Teacher can view detailed activity log
-
+- Teacher can view detailed activity log\n
 **Activity Log**:
 - Detailed log of student actions during exam
 - Logged activities:\n  - Exam start time
@@ -2324,8 +2339,7 @@ Teacher/Principal can choose one of two methods:
 - Frontend validation:
   - Exam not shown in student's 'My Exams' list if not assigned\n\n**One-time Access Link** (Optional, future feature):
 - Generate unique access token for each student
-- Token valid only for exam duration
-- Token can be used only once
+- Token valid only for exam duration\n- Token can be used only once
 - Prevents sharing of exam link
 
 **Password Protection** (Optional):
@@ -2337,6 +2351,116 @@ Teacher/Principal can choose one of two methods:
   - After 3 failed attempts: Lock exam for 10 minutes
 - Password stored encrypted in database
 - Teacher can share password via separate channel (email, SMS, in-class)
+\n### 9.10 Exam Deletion Feature
+
+#### 9.10.1 Delete Button Placement
+**Teacher Interface**:
+- Delete button available in following locations:
+  - **Draft Exams Tab**: Delete button for each exam card
+  - **Scheduled Exams Tab**: Delete button for each exam card (with restrictions)
+  - **Completed Exams Tab**: Delete button for each exam card (with restrictions)
+  - **Exam Details Page**: Delete button in action buttons section
+- Delete button styling:
+  - Red color to indicate destructive action
+  - Icon: Trash/Delete icon
+  - Text: 'Delete' or 'Delete Exam'
+\n**Principal Interface**:
+- Delete button available in following locations:
+  - **All Exams Tab**: Delete button for self-created exams only
+  - **Completed Exams Tab**: Delete button for self-created exams only (with restrictions)
+  - **Exam Details Page**: Delete button for self-created exams only
+- Delete button styling: Same as teacher interface
+
+#### 9.10.2 Delete Restrictions and Validation
+\n**For Teachers**:
+- **Draft Exams**:
+  - Can be deleted anytime
+  - No restrictions\n  - Confirmation dialog required
+- **Pending Approval Exams**:
+  - Cannot be deleted directly
+  - Must withdraw exam first (returns to draft status)
+  - Then can be deleted as draft exam
+- **Scheduled Exams**:
+  - Can be deleted only if:\n    - No students have started the exam
+    - Exam has not yet reached start time
+  - Validation check:\n    - Query student_exam_attempts table for this exam_id
+    - If any student has attempt_status != 'Not Started', prevent deletion
+  - Error message: 'Cannot delete exam. Some students have already started this exam.'
+  - Confirmation dialog required with warning
+- **Ongoing Exams**:
+  - Cannot be deleted
+  - Delete button disabled or hidden
+  - Tooltip: 'Cannot delete ongoing exam. Please wait until exam is completed.'
+- **Completed Exams**:\n  - Can be deleted only if:
+    - Results have been published
+    - Exam has been archived (30 days after completion)
+  - Validation check:
+    - Check if results published\n    - Check if 30 days have passed since end_datetime
+  - Error message: 'Cannot delete exam. Results must be published and exam must be archived (30 days after completion).'
+  - Confirmation dialog required with strong warning
+
+**For Principal**:
+- Same restrictions as teachers for self-created exams
+- Cannot delete exams created by teachers
+- Delete button not shown for teacher-created exams
+\n#### 9.10.3 Delete Confirmation Dialog
+**Dialog Layout**:
+- Title: 'Delete Exam?'
+- Warning icon (red exclamation mark)
+- Message:\n  - For Draft: 'Are you sure you want to delete this exam? This action cannot be undone.'
+  - For Scheduled: 'Are you sure you want to delete this scheduled exam? Students will no longer be able to access it. This action cannot be undone.'\n  - For Completed: 'Are you sure you want to delete this completed exam? All student attempts, results, and analytics data will be permanently deleted. This action cannot be undone.'
+- Exam details summary:\n  - Exam name
+  - Class and Subject
+  - Total students (for scheduled/completed)\n  - Students attempted (for completed)
+- Checkbox: 'I understand that this action is permanent and cannot be undone'\n- Action buttons:
+  - 'Cancel': Close dialog without deleting
+  - 'Delete Exam': Confirm deletion (enabled only after checkbox is checked)
+    - Red color to indicate destructive action
+\n#### 9.10.4 Delete Process
+**Backend Workflow**:
+1. Validate user permissions:\n   - Check if user is creator of exam\n   - Check if user has delete permission\n2. Validate exam status and restrictions:
+   - Check exam_status\n   - Check student attempts (for scheduled exams)
+   - Check results published and archive status (for completed exams)
+3. If validation passes:
+   - Delete related records in cascading order:\n     - student_exam_attempts (all attempts for this exam)
+     - exam_sections (section mappings)\n     - online_exams (exam record)
+   - Log deletion action in audit log (future feature)
+4. Return success response
+5. If validation fails:
+   - Return error response with specific reason
+\n**Frontend Workflow**:
+1. User clicks 'Delete' button
+2. Show confirmation dialog
+3. User checks confirmation checkbox
+4. User clicks 'Delete Exam' button
+5. Show loading spinner: 'Deleting exam...'
+6. Send delete request to backend
+7. On success:
+   - Show success message: 'Exam deleted successfully.'
+   - Remove exam from list
+   - Redirect to exams list page
+8. On error:
+   - Show error message with reason
+   - Close dialog\n
+#### 9.10.5 Cascade Deletion
+**Database Cascade Rules**:
+- When exam is deleted from online_exams table:
+  - All records in exam_sections table with matching exam_id are automatically deleted (CASCADE)
+  - All records in student_exam_attempts table with matching exam_id are automatically deleted (CASCADE)\n- Foreign key constraints ensure referential integrity
+\n**Data Loss Warning**:
+- Deletion is permanent and irreversible
+- All student attempts, answers, and results are permanently deleted
+- All exam analytics and reports are permanently deleted
+- Confirmation dialog must clearly communicate this\n
+#### 9.10.6 Alternative to Deletion: Archive Feature (Future Enhancement)
+**Archive Functionality**:
+- Instead of permanent deletion, exams can be archived
+- Archived exams:\n  - Not shown in active exams list
+  - Moved to 'Archived Exams' section
+  - Can be restored if needed
+  - Student data preserved
+- Archive button available for completed exams
+- Archived exams can be permanently deleted after extended period (e.g., 1 year)
 \n## 10. Teacher Dashboard and Functions
 
 ### 10.1 Teacher Login - Dashboard Overview
@@ -2367,7 +2491,8 @@ After Teacher login, the dashboard displays:
   - Monitor student participation in real-time
   - View submitted answers and auto-graded results
   - Manually grade subjective questions (Short Answer, Essay)\n  - Generate exam reports and analytics
-  - Export exam results\n\n## 11. Student Dashboard and Functions\n
+  - Export exam results\n  - **Delete own exams (with restrictions based on exam status)**
+\n## 11. Student Dashboard and Functions\n
 ### 11.1 Student Login - Dashboard Overview
 After Student login, the dashboard displays:
 - My class, section, subjects, and teachers
@@ -2396,8 +2521,7 @@ After Student login, the dashboard displays:
 - Enhanced search and filter for Active Users
 \n### 12.4 Principal Functions
 - Academic Management\n- Teacher Management with enhanced search
-- Student Management
-- Question Bank Management
+- Student Management\n- Question Bank Management
 - Question Paper History Management:\n  - View all question papers created by teachers in school
   - Advanced filtering and search\n  - School-wide analytics dashboard
   - Export and print capabilities
@@ -2408,7 +2532,9 @@ After Student login, the dashboard displays:
   - View all online exams (practice and school-level) created by teachers in school
   - Monitor exam status and student participation
   - Access exam analytics and reports
-\n### 12.5 Teacher Functions
+  - **Delete self-created exams (with restrictions)**
+
+### 12.5 Teacher Functions
 - View assigned classes, sections, subjects
 - Question Bank Access\n- Question Paper Preparation with shuffle and auto-versioning
 - Question Paper History Management:
@@ -2421,7 +2547,9 @@ After Student login, the dashboard displays:
   - Real-time monitoring\n  - **Auto-grading for objective questions**
   - Manual grading for subjective questions
   - **Detailed exam analytics and performance reports**
-\n### 12.6 Student Functions
+  - **Delete own exams (with restrictions)**
+
+### 12.6 Student Functions
 - View personal information
 - Profile editing
 - **Online Exam Functions**:
@@ -2461,6 +2589,7 @@ After Student login, the dashboard displays:
 - **Comprehensive exam analytics with detailed performance analysis**
 - Security features and anti-cheating measures
 - School-based data isolation and role-based access control
+- **Exam deletion functionality with restrictions based on exam status and user role**
 
 ## 13. Language Support
 
@@ -2472,14 +2601,13 @@ After Student login, the dashboard displays:
 - **UI = Always English**
 - **Chat/Communication = Any Language**
 \n## 14. Future Scope Features
-- Audit Logs
-- Backup & Restore
-- Notifications
-- Analytics Dashboard with lesson-level performance and negative marking impact analysis
+- Audit Logs\n- Backup & Restore
+- Notifications\n- Analytics Dashboard with lesson-level performance and negative marking impact analysis
 - Advanced question paper scheduling\n- Automated paper generation based on syllabus coverage
 - Student performance tracking linked to question papers
 - **Advanced proctoring features** (webcam monitoring, screen recording)\n- **Adaptive testing** (difficulty adjusts based on student performance)
 - **Question bank sharing** between teachers\n- **Parent portal** for viewing student exam results
+- **Exam archive feature** (alternative to permanent deletion)
 \n## 15. Design Style\n
 ### 15.1 Color Scheme
 - Primary color: Blue (#2563EB)
@@ -2491,7 +2619,8 @@ After Student login, the dashboard displays:
 - Minus Mark color: Red (#EF4444) or Orange (#F59E0B)
 - History/Archive color: Purple (#8B5CF6)
 - **Exam status colors**:
-  - Draft: Gray (#6B7280)\n  - Pending Approval: Orange (#F59E0B)
+  - Draft: Gray (#6B7280)
+  - Pending Approval: Orange (#F59E0B)
   - Approved: Green (#10B981)
   - Scheduled: Blue (#3B82F6)
   - Ongoing: Green (#10B981)
@@ -2499,7 +2628,7 @@ After Student login, the dashboard displays:
 - Cancelled: Red (#EF4444)\n  - Rejected: Red (#EF4444)\n- **Exam type badges**:
   - Practice: Green (#10B981)
   - School-Level: Blue (#3B82F6)
-\n### 15.2 Visual Details
+- **Delete button color**: Red (#EF4444)\n\n### 15.2 Visual Details
 - Soft rounded corners (8px radius)
 - Subtle shadow effects
 - Clear borders\n- Status badges with appropriate colors
@@ -2508,6 +2637,7 @@ After Student login, the dashboard displays:
 - **Progress indicators** for exam completion
 - **Real-time status updates** with smooth animations
 - **Question palette panel with color-coded status indicators** (green: answered, red: not answered, orange: marked for review, gray: not visited)
+- **Delete button with destructive styling** (red color, trash icon)
 \n### 15.3 Overall Layout
 - Side panel navigation with collapsible toggle
 - Card-based design\n- Responsive grid layout
@@ -2521,6 +2651,7 @@ After Student login, the dashboard displays:
 - **Real-time monitoring dashboard with live updates**
 - **Exam analytics with interactive charts and graphs**
 - **Approval workflow interface for Principal**
+- **Delete confirmation dialogs with clear warnings**
 \n## 16. Reference Image
 
 ### 16.1 Question Edit Form Layout
