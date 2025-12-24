@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileQuestion, BookOpen, GraduationCap, FileText, FolderOpen, ClipboardList } from 'lucide-react';
-import { questionApi, academicApi, profileApi } from '@/db/api';
+import { questionApi, academicApi, profileApi, examApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
 
 export default function TeacherDashboard() {
@@ -12,6 +12,7 @@ export default function TeacherDashboard() {
     totalQuestions: 0,
     totalSubjects: 0,
     totalClasses: 0,
+    totalExams: 0,
   });
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -48,10 +49,14 @@ export default function TeacherDashboard() {
         assignedSubjectIds.includes(q.subject_id)
       );
 
+      // Load exams created by this teacher
+      const exams = await examApi.getExamsByTeacher(profile.id);
+
       setStats({
         totalQuestions: filteredQuestions.length,
         totalSubjects: assignedSubjectIds.length,
         totalClasses: uniqueClasses.length,
+        totalExams: exams.length,
       });
     } catch (error: any) {
       console.error('Error loading stats:', error);
@@ -87,6 +92,14 @@ export default function TeacherDashboard() {
       color: 'text-accent',
       description: 'Classes you are assigned to',
     },
+    {
+      title: 'Online Exams',
+      value: stats.totalExams,
+      icon: ClipboardList,
+      color: 'text-primary',
+      description: 'Total exams you have created',
+      onClick: () => navigate('/teacher/exams'),
+    },
   ];
 
   if (loading) {
@@ -109,11 +122,15 @@ export default function TeacherDashboard() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.title}>
+            <Card 
+              key={stat.title}
+              className={stat.onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''}
+              onClick={stat.onClick}
+            >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
                 <Icon className={`w-5 h-5 ${stat.color}`} />
