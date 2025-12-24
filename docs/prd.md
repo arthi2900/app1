@@ -3,9 +3,10 @@
 ## 1. Application Description
 
 ### 1.1 Application Name
-Online School Management System\n
+Online School Management System
+
 ### 1.2 Application Purpose
-A comprehensive school management system for educational institutions. Features include school management, academic structure setup (class, section, subject, lesson), teacher-subject-class-section mapping, question bank management with lesson-level tracking, question paper preparation with shuffle functionality, question paper history tracking, user management with school-based data isolation.\n
+A comprehensive school management system for educational institutions. Features include school management, academic structure setup (class, section, subject, lesson), teacher-subject-class-section mapping, question bank management with lesson-level tracking, question paper preparation with shuffle functionality, question paper history tracking, **online exam creation and management**, user management with school-based data isolation.\n
 ## 2. User Roles\n
 ### 2.1 Admin\n- Complete system administration
 - School management (create, edit, view schools)\n- User account creation and management
@@ -38,12 +39,16 @@ A comprehensive school management system for educational institutions. Features 
 - **Question Paper History Access** (within assigned school only):\n  - View all question papers created by teachers in their school
   - Filter and search question paper history
   - Export and print historical question papers
+- **Online Exam Management** (within assigned school only):\n  - View all online exams created by teachers
+  - Monitor exam status and student participation
+  - Access exam analytics and reports
 - Profile editing capability
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view and manage users (teachers and students) from their assigned school
 - **Visibility Rules**:
-  - ✅ Can view: Teachers from their own school, Students from their own school, Question papers created by teachers in their school
-  - ❌ Cannot view: Users from other schools\n\n### 2.3 Teacher
+  - ✅ Can view: Teachers from their own school, Students from their own school, Question papers created by teachers in their school, Online exams created by teachers in their school
+  - ❌ Cannot view: Users from other schools\n
+### 2.3 Teacher
 - View assigned classes, sections, and subjects
 - View students of assigned sections only
 - **Question Bank Access**:
@@ -63,25 +68,36 @@ A comprehensive school management system for educational institutions. Features 
   - View, edit, delete, export, print historical papers
   - Create new versions from existing papers
   - Track paper creation and modification history
-- Profile editing capability
+- **Online Exam Management**:
+  - Create online exams from question papers or question bank
+  - Configure exam settings (duration, start/end time, passing marks, negative marking)
+  - Publish exams to assigned sections
+  - Monitor student participation in real-time
+  - View submitted answers and auto-graded results
+  - Manually grade subjective questions (Short Answer, Essay)\n  - Generate exam reports and analytics
+  - Export exam results\n- Profile editing capability
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view and interact with students from their assigned sections
 - **Visibility Rules**:
-  - ✅ Can view: Students from their assigned sections, Own question papers\n  - ❌ Cannot view: Principal (even from the same school), Other teachers (even from the same school), Users from other schools, Question papers created by other teachers
-\n### 2.4 Student
+  - ✅ Can view: Students from their assigned sections, Own question papers, Own online exams\n  - ❌ Cannot view: Principal (even from the same school), Other teachers (even from the same school), Users from other schools, Question papers created by other teachers, Online exams created by other teachers\n
+### 2.4 Student
 - View my class, section, subjects, and teachers
+- **Online Exam Access**:
+  - View assigned online exams
+  - Take online exams within scheduled time
+  - Submit answers before deadline
+  - View exam results and feedback (after teacher publishes results)
+  - Review correct answers (if enabled by teacher)
 - Profile editing capability
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view personal information from their assigned school
 - **Visibility Rules**:
-  - ✅ Can view: Only their own profile details, Personal information, and assigned content
+  - ✅ Can view: Only their own profile details, Personal information, Assigned content, Assigned online exams, Own exam results
   - ❌ Cannot view: Other students, Teachers, Principal, Admin\n
 ### 2.5 User Profile Information
 All users (Admin, Principal, Teacher, Student) will have the following profile information:
-- User name
-- Email address
-- Role\n- School name (mandatory field, selected from dropdown list populated from School Master)
-- Contact number
+- User name\n- Email address
+- Role\n- School name (mandatory field, selected from dropdown list populated from School Master)\n- Contact number
 - Profile picture (optional)\n- Account status (Pending Approval/Active/Suspended)
 \n## 3. School Management Module
 
@@ -99,7 +115,8 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 \n#### 3.1.2 School Management Features
 - Create new school with all mandatory fields
 - Edit existing school information
-- View complete school list\n- Search and filter schools by name, code, or affiliation
+- View complete school list
+- Search and filter schools by name, code, or affiliation
 - Auto-generate unique School Code/ID upon school creation
 - Link Principal from existing user database (dropdown selection)
 - Define subject list for each school
@@ -112,7 +129,8 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - Multiple Teachers and Students can be assigned to same school
 
 ## 4. School-Based Data Isolation
-\n### 4.1 Isolation Principle
+
+### 4.1 Isolation Principle
 - Users from same school form an isolated group
 - Within each school group, Principal, Teachers, and Students can only see and interact with users based on their role-specific visibility rules
 - Admin has cross-school visibility and can manage all schools\n
@@ -135,11 +153,12 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 ## 5. Principal Dashboard - Academic Management Module
 
 ### 5.1 Principal Dashboard Overview
-After Principal login, the dashboard displays five main cards:
+After Principal login, the dashboard displays six main cards:
 - **Academic Management**: Manage academic structure (classes, sections, subjects, lessons, student mapping)
 - **Teachers**: Manage teacher accounts and teacher-subject-class-section mapping\n- **Students**: View and manage students\n- **Question Bank**: Manage exam questions with lesson-level tracking and dual view options
 - **Question Paper History**: View all question papers created by teachers in the school
-\n**UI Language Requirement**: All card titles, labels, and UI text on Principal Dashboard must be displayed in English only. Card titles should be 'Academic Management', 'Teachers', 'Students', 'Question Bank', and 'Question Paper History' (not in Tamil or any other language).
+- **Online Exams**: View and monitor all online exams created by teachers in the school
+\n**UI Language Requirement**: All card titles, labels, and UI text on Principal Dashboard must be displayed in English only. Card titles should be 'Academic Management', 'Teachers', 'Students', 'Question Bank', 'Question Paper History', and 'Online Exams' (not in Tamil or any other language).
 
 ### 5.2 Academic Card - Academic Structure Management
 
@@ -272,20 +291,47 @@ After Principal login, the dashboard displays five main cards:
   - Papers created per class
   - Monthly paper creation trends
 
+### 5.7 Online Exams Card - Exam Monitoring and Management
+- Principal can access Online Exams interface
+- View all online exams created by teachers in their school
+- Filter by teacher name, class, subject, exam status, date range
+- Search by exam name or exam ID
+- View exam overview including:
+  - Exam name
+  - Created by (teacher name)
+  - Class and Subject
+  - Exam duration
+  - Start and end date/time
+  - Exam status (Draft/Scheduled/Ongoing/Completed/Cancelled)
+  - Total students assigned
+  - Students completed
+  - Average score
+- Actions available:
+  - View exam details
+  - View student participation report
+  - Export exam results
+  - View exam analytics
+- Analytics dashboard showing:
+  - Total exams conducted per teacher
+  - Exams conducted per subject
+  - Exams conducted per class
+  - Student participation rate
+  - Average scores by subject/class
+
 ## 6. Question Bank Module
 
 ### 6.1 Question Bank Overview
 - Centralized repository for exam questions
 - Questions are organized by Class, Subject, and Lesson
-- Support for multiple question types (Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ)\n- Difficulty levels (Easy, Medium, Hard)\n- Marks allocation per question
+- Support for multiple question types (Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ)
+- Difficulty levels (Easy, Medium, Hard)\n- Marks allocation per question
 - **Minus Mark (Negative Marking) support**: Questions can have negative marks for incorrect answers
 - Lesson-level tracking for performance analytics
 - **Image/Clip Art support**: Questions can include images or clip arts
 - **Dual view display options**: Row View and Card View
 
 ### 6.2 Question Bank Table Structure
-
-#### 6.2.1 Database Schema
+\n#### 6.2.1 Database Schema
 **Table name**: question_bank
 
 **Columns**:
@@ -316,7 +362,8 @@ After Principal login, the dashboard displays five main cards:
   - Supports multiple images per question
 - created_by (Foreign Key → users.id)
 - created_at (Timestamp)
-- updated_at (Timestamp)\n\n#### 6.2.2 Foreign Key Relationships
+- updated_at (Timestamp)\n
+#### 6.2.2 Foreign Key Relationships
 - school_id → schools.id (CASCADE on delete)
 - class_id → classes.id (CASCADE on delete)
 - subject_id → subjects.id (CASCADE on delete)
@@ -367,7 +414,8 @@ The question creation form displays fields in the following order:
 
 ### 7.1 Question Paper Preparation Overview
 - **Purpose**: Enable teachers to create question papers from their own question bank
-- **Access**: Available only to Teacher role\n- **Workflow**: Basic Details → Question Selection → Shuffle Options → Preview/Save/Generate
+- **Access**: Available only to Teacher role
+- **Workflow**: Basic Details → Question Selection → Shuffle Options → Preview/Save/Generate
 \n### 7.2 Question Paper Preparation Workflow
 
 #### 7.2.1 Step 1: Basic Details
@@ -401,7 +449,8 @@ The question creation form displays fields in the following order:
 - selected_questions (JSON array, stores question IDs and order)
 - shuffle_questions (Boolean, default false)
 - shuffle_mcq_options (Boolean, default false)
-- paper_status (Enum: Draft, Final)\n- total_marks (Integer, calculated)\n- total_questions (Integer, calculated)
+- paper_status (Enum: Draft, Final)
+- total_marks (Integer, calculated)\n- total_questions (Integer, calculated)
 - created_at (Timestamp)\n- updated_at (Timestamp)
 - parent_paper_id (Foreign Key → question_papers.id, nullable)
   - Used for tracking shuffled versions
@@ -416,7 +465,8 @@ The question creation form displays fields in the following order:
 - subject_id → subjects.id (CASCADE on delete)
 - created_by → users.id (SET NULL on delete)
 - parent_paper_id → question_papers.id (SET NULL on delete)
-\n### 7.4 Access Control & Data Isolation
+
+### 7.4 Access Control & Data Isolation
 - Teachers can access only their own question banks
 - Backend validation ensures data isolation
 - Teachers can only view and manage question papers created by themselves
@@ -525,8 +575,7 @@ The question creation form displays fields in the following order:
   - Question type
   - Marks
   - Minus marks (if applicable)
-  - Difficulty level
-  - Correct answer (for teacher/principal view)
+  - Difficulty level\n  - Correct answer (for teacher/principal view)
 - Questions displayed in paper order
 - Option to expand/collapse question details
 
@@ -601,8 +650,7 @@ The question creation form displays fields in the following order:
 - Add 'Question Paper History' card to Teacher Dashboard
 - Card displays:
   - Total papers created
-  - Recent papers (last 5)\n  - Quick action button:'View All History'
-- Click on card opens Question Paper History page
+  - Recent papers (last 5)\n  - Quick action button:'View All History'\n- Click on card opens Question Paper History page
 
 #### 8.6.2 Principal Dashboard Integration\n- Add 'Question Paper History' card to Principal Dashboard
 - Card displays:
@@ -649,122 +697,552 @@ The question creation form displays fields in the following order:
 - Notification when teacher creates new paper
 - Monthly analytics report
 
-## 9. Teacher Dashboard and Functions
+## 9. Online Exam Module
 
-### 9.1 Teacher Login - Dashboard Overview
+### 9.1 Online Exam Overview
+- **Purpose**: Enable teachers to create, publish, and manage online exams for students
+- **Access**: \n  - Teachers can create and manage online exams for their assigned sections
+  - Students can take assigned online exams
+  - Principal can view and monitor all online exams in their school
+- **Key Features**:
+  - Create exams from question papers or directly from question bank
+  - Configure exam settings (duration, start/end time, passing marks, negative marking)
+  - Publish exams to specific sections\n  - Real-time exam monitoring
+  - Auto-grading for objective questions
+  - Manual grading for subjective questions
+  - Exam analytics and reports
+
+### 9.2 Online Exam Creation Workflow
+
+#### 9.2.1 Step 1: Exam Basic Details
+- **Exam Name** (Text input, required)
+- **Class** (Dropdown, required)
+- **Subject** (Dropdown, required)
+- **Section Selection** (Multi-select, required)
+  - Teacher can select one or multiple sections from their assigned sections
+- **Exam Duration** (Number input in minutes, required)
+- **Start Date and Time** (Date-time picker, required)
+- **End Date and Time** (Date-time picker, required)
+- **Passing Marks** (Number input, optional)
+- **Instructions for Students** (Text area, optional)\n\n#### 9.2.2 Step 2: Question Selection Method
+Teacher can choose one of two methods:
+\n**Method A: Select from Existing Question Paper**
+- Dropdown list showing teacher's own question papers (filtered by selected class and subject)
+- Select question paper\n- All questions from selected paper are automatically added to exam
+- Question order and shuffle settings are inherited from paper
+
+**Method B: Select Questions from Question Bank**
+- View all questions from teacher's question bank (filtered by selected class and subject)
+- Manual question selection with checkboxes
+- Drag-and-drop to reorder questions
+- Real-time total marks calculation
+- Option to shuffle questions
+- Option to shuffle MCQ options
+
+#### 9.2.3 Step 3: Exam Settings Configuration
+- **Negative Marking** (Toggle switch)\n  - If enabled, use minus marks defined in questions
+  - If disabled, no negative marking applied
+- **Show Results Immediately** (Toggle switch)
+  - If enabled, students see results immediately after submission
+  - If disabled, results shown only after teacher publishes them
+- **Allow Review of Answers** (Toggle switch)
+  - If enabled, students can review correct answers after exam
+  - If disabled, students only see their score
+- **Randomize Question Order for Each Student** (Toggle switch)
+  - If enabled, each student gets questions in different order
+- **Randomize MCQ Options for Each Student** (Toggle switch)
+  - If enabled, MCQ options are shuffled differently for each student
+- **Allow Late Submission** (Toggle switch with grace period input)
+  - If enabled, students can submit after end time with penalty
+  - Grace period in minutes (e.g., 10 minutes)\n  - Late submission penalty (e.g., 10% marks deduction)
+
+#### 9.2.4 Step 4: Preview and Publish
+- **Preview Exam**: View exam as students will see it
+- **Save as Draft**: Save exam without publishing
+- **Publish Exam**: Make exam available to selected sections
+- **Schedule Exam**: Set exam to auto-publish at start time
+\n### 9.3 Online Exam Database Structure
+
+#### 9.3.1 Exams Table
+**Table name**: online_exams
+
+**Columns**:
+- id (UUID, Primary Key)
+- exam_name (Varchar, required)
+- school_id (Foreign Key → schools.id)
+- class_id (Foreign Key → classes.id)
+- subject_id (Foreign Key → subjects.id)
+- created_by (Foreign Key → users.id, teacher)\n- question_paper_id (Foreign Key → question_papers.id, nullable)
+  - If exam created from question paper, stores paper ID
+  - If exam created from question bank, null
+- selected_questions (JSON array, stores question IDs and order)
+- exam_duration (Integer, minutes)\n- start_datetime (Timestamp, required)
+- end_datetime (Timestamp, required)
+- passing_marks (Integer, optional)
+- instructions (Text, optional)
+- negative_marking_enabled (Boolean, default true)
+- show_results_immediately (Boolean, default false)
+- allow_answer_review (Boolean, default false)\n- randomize_questions (Boolean, default false)
+- randomize_mcq_options (Boolean, default false)
+- allow_late_submission (Boolean, default false)
+- late_submission_grace_period (Integer, minutes, nullable)
+- late_submission_penalty (Decimal, percentage, nullable)
+- exam_status (Enum: Draft, Scheduled, Ongoing, Completed, Cancelled)
+- total_marks (Integer, calculated)\n- total_questions (Integer, calculated)
+- created_at (Timestamp)\n- updated_at (Timestamp)
+- published_at (Timestamp, nullable)
+\n**Foreign Key Relationships**:
+- school_id → schools.id (CASCADE on delete)
+- class_id → classes.id (CASCADE on delete)
+- subject_id → subjects.id (CASCADE on delete)
+- created_by → users.id (SET NULL on delete)
+- question_paper_id → question_papers.id (SET NULL on delete)
+\n#### 9.3.2 Exam Section Mapping Table
+**Table name**: exam_sections
+
+**Columns**:
+- id (UUID, Primary Key)
+- exam_id (Foreign Key → online_exams.id)
+- section_id (Foreign Key → sections.id)\n- created_at (Timestamp)
+\n**Foreign Key Relationships**:\n- exam_id → online_exams.id (CASCADE on delete)
+- section_id → sections.id (CASCADE on delete)
+
+#### 9.3.3 Student Exam Attempts Table
+**Table name**: student_exam_attempts
+
+**Columns**:
+- id (UUID, Primary Key)
+- exam_id (Foreign Key → online_exams.id)
+- student_id (Foreign Key → users.id)
+- start_time (Timestamp, nullable)
+- end_time (Timestamp, nullable)
+- submission_time (Timestamp, nullable)\n- is_late_submission (Boolean, default false)
+- student_answers (JSON array, stores question ID, student answer, is_correct, marks_awarded)
+- randomized_question_order (JSON array, stores question order for this student)
+- randomized_mcq_options (JSON object, stores shuffled options for each MCQ)
+- total_marks_obtained (Decimal, calculated)
+- percentage (Decimal, calculated)
+- pass_fail_status (Enum: Pass, Fail, Pending)
+- attempt_status (Enum: Not Started, In Progress, Submitted, Graded)\n- auto_graded_marks (Decimal, marks from auto-graded questions)
+- manual_graded_marks (Decimal, marks from manually graded questions)
+- teacher_feedback (Text, optional)
+- graded_by (Foreign Key → users.id, teacher, nullable)
+- graded_at (Timestamp, nullable)
+- created_at (Timestamp)
+- updated_at (Timestamp)\n\n**Foreign Key Relationships**:\n- exam_id → online_exams.id (CASCADE on delete)
+- student_id → users.id (CASCADE on delete)
+- graded_by → users.id (SET NULL on delete)
+
+### 9.4 Student Exam Taking Interface
+
+#### 9.4.1 Student Dashboard - My Exams Section
+- Display list of assigned exams with status:\n  - **Upcoming Exams**: Scheduled exams not yet started
+  - **Ongoing Exams**: Exams currently available\n  - **Completed Exams**: Exams already submitted
+- Each exam card shows:
+  - Exam name
+  - Subject
+  - Start and end date/time
+  - Duration
+  - Total marks
+  - Status (Upcoming/Ongoing/Completed)
+  - Action button (Start Exam/Resume Exam/View Results)
+
+#### 9.4.2 Exam Taking Interface
+- **Exam Header**:
+  - Exam name\n  - Subject
+  - Timer (countdown showing remaining time)
+  - Question navigation panel (question numbers with status indicators)
+- **Question Display**:
+  - Question number and text
+  - Question images (if present)
+  - Answer input based on question type:\n    - Multiple Choice: Radio buttons
+    - Multiple Response MCQ: Checkboxes
+    - True/False: Radio buttons
+    - Short Answer: Text input
+    - Essay: Text area
+    - Match the Following: Drag-and-drop or dropdown matching
+  - Marks for question
+  - Mark for Review button
+  - Clear Answer button
+- **Navigation Controls**:
+  - Previous button
+  - Next button
+  - Submit Exam button
+- **Question Status Indicators**:
+  - Answered (green)
+  - Not Answered (red)
+  - Marked for Review (orange)
+  - Not Visited (gray)
+\n#### 9.4.3 Exam Submission\n- **Submit Confirmation Dialog**:
+  - Show summary: Total questions, Answered, Not Answered, Marked for Review\n  - Warning if questions are unanswered
+  - Confirm submission button
+- **Auto-submission**:
+  - Exam auto-submits when time expires
+  - Warning shown5 minutes before time expires
+- **Late Submission** (if enabled):
+  - Grace period countdown shown after end time
+  - Late submission penalty displayed
+  - Submit button available during grace period
+
+#### 9.4.4 Exam Results View (Student)
+- **Results Summary**:
+  - Total marks obtained
+  - Total marks\n  - Percentage
+  - Pass/Fail status
+  - Rank in class (optional)
+- **Question-wise Results** (if answer review enabled):
+  - Question text
+  - Student's answer
+  - Correct answer
+  - Marks obtained
+  - Marks allocated
+- **Teacher Feedback** (if provided)\n\n### 9.5 Teacher Exam Management Interface
+
+#### 9.5.1 Teacher Dashboard - My Exams Section
+- Display list of created exams with status:
+  - **Draft Exams**: Unpublished exams
+  - **Scheduled Exams**: Published but not yet started
+  - **Ongoing Exams**: Currently active exams
+  - **Completed Exams**: Finished exams
+- Each exam card shows:
+  - Exam name
+  - Class and Subject
+  - Sections assigned
+  - Start and end date/time
+  - Status\n  - Student participation (e.g., 25/30 completed)
+  - Action buttons (Edit/View/Monitor/Grade/Delete)
+
+#### 9.5.2 Exam Monitoring Interface
+- **Real-time Monitoring Dashboard**:
+  - Total students assigned\n  - Students started
+  - Students in progress
+  - Students completed\n  - Students not started
+- **Student List with Status**:
+  - Student name
+  - Start time
+  - Current status (Not Started/In Progress/Submitted)\n  - Time remaining (for in-progress students)
+  - Marks obtained (for submitted students)
+- **Live Updates**: Dashboard refreshes automatically to show real-time status
+
+#### 9.5.3 Exam Grading Interface
+- **Auto-grading**:
+  - System automatically grades objective questions (Multiple Choice, True/False, Multiple Response MCQ, Match the Following)
+  - Marks calculated based on correct answers and negative marking settings
+- **Manual Grading**:
+  - Teacher manually grades subjective questions (Short Answer, Essay)
+  - List of students with pending manual grading
+  - For each student:\n    - View question and student's answer
+    - Assign marks (0 to maximum marks for question)
+    - Add feedback/comments
+    - Save and move to next student
+- **Bulk Grading**:
+  - Grade same question for all students in sequence
+  - Quick navigation between students
+- **Publish Results**:
+  - After grading, teacher can publish results to students
+  - Option to publish results for individual students or all students at once
+
+#### 9.5.4 Exam Analytics and Reports
+- **Exam Performance Analytics**:
+  - Average score\n  - Highest score
+  - Lowest score
+  - Pass percentage
+  - Score distribution (histogram)
+  - Question-wise analysis:\n    - Questions with highest correct rate
+    - Questions with lowest correct rate
+    - Average time spent per question
+- **Student Performance Report**:
+  - Individual student performance
+  - Comparison with class average
+  - Strengths and weaknesses by topic/lesson
+- **Export Options**:
+  - Export exam results as Excel/CSV
+  - Export individual student report as PDF
+  - Export class performance report as PDF
+
+### 9.6 Principal Exam Monitoring Interface
+
+#### 9.6.1 Principal Dashboard - Online Exams Overview
+- Display school-wide exam statistics:
+  - Total exams conducted this month
+  - Total exams ongoing
+  - Total exams scheduled
+  - Average student participation rate
+- **Exam List View**:
+  - All exams created by teachers in school
+  - Filter by teacher, class, subject, status, date range
+  - Search by exam name\n- **Exam Details View**:
+  - View exam configuration
+  - View student participation\n  - View exam results and analytics
+  - Cannot edit or delete exams
+
+#### 9.6.2 School-wide Exam Analytics
+- **Overview Cards**:
+  - Total exams conducted
+  - Total students participated
+  - Average exam score across school
+  - Most active teachers
+- **Charts and Graphs**:
+  - Exams conducted over time (line chart)
+  - Exams by subject (bar chart)
+  - Exams by class (bar chart)
+  - Student participation rate (pie chart)
+  - Average scores by subject (bar chart)
+- **Teacher Performance**:
+  - Exams created per teacher
+  - Average student scores per teacher
+  - Student participation rate per teacher
+\n### 9.7 Online Exam Access Control and Data Isolation
+
+#### 9.7.1 Teacher Access Rules
+- Can create exams only for assigned sections
+- Can view and manage only own exams
+- Can view student attempts only for own exams
+- Can grade only own exams
+- Cannot view exams created by other teachers
+\n#### 9.7.2 Student Access Rules
+- Can view only exams assigned to their section
+- Can take exam only during scheduled time (unless late submission enabled)
+- Can view results only if teacher has published them
+- Can review answers only if teacher has enabled answer review
+- Cannot view other students' attempts or results
+
+#### 9.7.3 Principal Access Rules
+- Can view all exams created by teachers in their school
+- Can view exam analytics and reports
+- Can view student participation and results
+- Cannot edit or delete exams
+- Cannot grade exams
+
+#### 9.7.4 Data Isolation
+- All exam data is school-scoped
+- Backend validation ensures teachers can only access own exams
+- Students can only access exams assigned to their section
+- Principal can only access exams from their assigned school
+- Cross-school data access is prevented at database level
+
+### 9.8 Online Exam Notifications
+
+#### 9.8.1 Student Notifications
+- Notification when new exam is assigned
+- Reminder 24 hours before exam start time
+- Reminder 1 hour before exam start time
+- Notification when exam results are published
+- Notification when teacher adds feedback
+
+#### 9.8.2 Teacher Notifications
+- Notification when student submits exam
+- Notification when all students have completed exam
+- Reminder for pending manual grading
+- Notification when exam auto-publishes (for scheduled exams)
+
+#### 9.8.3 Principal Notifications
+- Daily summary of exams conducted
+- Weekly summary of student participation rates
+- Monthly exam analytics report
+\n### 9.9 Online Exam Security Features
+
+#### 9.9.1 Exam Integrity
+- **Single Attempt**: Students can take exam only once (no retakes)
+- **Browser Lock** (optional): Prevent students from switching tabs or windows during exam
+- **Copy-Paste Prevention** (optional): Disable copy-paste in answer fields
+- **Screenshot Prevention** (optional): Attempt to prevent screenshots (browser-level)
+- **IP Address Logging**: Log student's IP address for each attempt
+- **Device Fingerprinting**: Track device used for exam attempt
+
+#### 9.9.2 Anti-Cheating Measures
+- **Randomized Questions**: Different question order for each student
+- **Randomized Options**: Different MCQ option order for each student
+- **Time Tracking**: Track time spent on each question\n- **Suspicious Activity Detection**:
+  - Multiple tab switches
+  - Extended periods of inactivity
+  - Rapid answer changes
+  - Unusual answer patterns
+- **Activity Log**: Detailed log of student actions during exam
+
+#### 9.9.3 Exam Access Control
+- **Time-based Access**: Exam accessible only during scheduled time
+- **Section-based Access**: Only students from assigned sections can access exam
+- **One-time Access Link**: Unique access link for each student (optional)
+- **Password Protection** (optional): Exam requires password to start
+
+## 10. Teacher Dashboard and Functions
+
+### 10.1 Teacher Login - Dashboard Overview
 After Teacher login, the dashboard displays:
 - Assigned classes, sections, and subjects
 - Students of assigned sections
 - Question Bank access
 - Question Paper Preparation
-- **Question Paper History** (new card)
-\n### 9.2 Teacher Functions
+- Question Paper History
+- **Online Exams** (new card)
+\n### 10.2 Teacher Functions
 - View assigned classes, sections, and subjects
 - View students of assigned sections only
 - Question Bank Access with image upload and minus mark field
 - Question Paper Preparation with smart selection and shuffle features
-- **Question Paper History Management**:\n  - View all own question papers
+- Question Paper History Management:\n  - View all own question papers
   - Filter by class, subject, date range, status
   - View, edit, delete, export, print papers
   - Create new versions from existing papers
   - Track paper creation and modification history
   - View personal analytics dashboard
+- **Online Exam Management**:
+  - Create online exams from question papers or question bank
+  - Configure exam settings (duration, start/end time, passing marks, negative marking)
+  - Publish exams to assigned sections
+  - Monitor student participation in real-time
+  - View submitted answers and auto-graded results
+  - Manually grade subjective questions (Short Answer, Essay)
+  - Generate exam reports and analytics
+  - Export exam results\n\n## 11. Student Dashboard and Functions
 
-## 10. Student Dashboard and Functions
-
-### 10.1 Student Login - Dashboard Overview
-After Student login, the dashboard displays my class, section, subjects, and teachers.
-
-### 10.2 Student Functions
+### 11.1 Student Login - Dashboard Overview
+After Student login, the dashboard displays:
+- My class, section, subjects, and teachers
+- **My Exams** (new section)
+\n### 11.2 Student Functions
 - View my class and section
 - View my subjects\n- View my teachers
-- Profile settings\n\n## 11. Key Features\n
-### 11.1 User Registration and Approval Workflow
+- **Online Exam Functions**:
+  - View assigned online exams
+  - Take online exams within scheduled time
+  - Submit answers before deadline
+  - View exam results and feedback (after teacher publishes results)
+  - Review correct answers (if enabled by teacher)
+- Profile settings\n\n## 12. Key Features\n
+### 12.1 User Registration and Approval Workflow
 - New users assigned 'Pending Approval' status
-- Admin must approve new accounts\n\n### 11.2 Password Reset/Recovery Feature
+- Admin must approve new accounts\n\n### 12.2 Password Reset/Recovery Feature
 - Forgot Password link on login page
 - Email-based password reset process
-\n### 11.3 Admin Functions
+\n### 12.3 Admin Functions
 - Create and manage schools
 - User account management with status-based navigation
 - Enhanced search and filter for Active Users
-\n### 11.4 Principal Functions
+\n### 12.4 Principal Functions
 - Academic Management\n- Teacher Management with enhanced search
 - Student Management
 - Question Bank Management
-- **Question Paper History Management**:\n  - View all question papers created by teachers in school
+- Question Paper History Management:\n  - View all question papers created by teachers in school
   - Advanced filtering and search
   - School-wide analytics dashboard
   - Export and print capabilities
-
-### 11.5 Teacher Functions
+- **Online Exam Monitoring**:
+  - View all online exams created by teachers in school\n  - Monitor exam status and student participation
+  - Access exam analytics and reports
+\n### 12.5 Teacher Functions
 - View assigned classes, sections, subjects
 - Question Bank Access\n- Question Paper Preparation with shuffle and auto-versioning
-- **Question Paper History Management**:
+- Question Paper History Management:
   - View own paper history
   - Personal analytics dashboard
   - Version tracking and management
-\n### 11.6 Student Functions
+- **Online Exam Management**:
+  - Create and publish online exams
+  - Real-time monitoring\n  - Auto and manual grading
+  - Exam analytics and reports
+\n### 12.6 Student Functions
 - View personal information
 - Profile editing
-\n### 11.7 User Profile Management
+- **Online Exam Functions**:
+  - Take assigned online exams
+  - View results and feedback
+  - Review correct answers (if enabled)\n\n### 12.7 User Profile Management
 - Edit, Save, Approve, Suspend buttons
 - Status-based navigation
-\n### 11.8 Principal Dashboard - Total Teachers Card Feature
+\n### 12.8 Principal Dashboard - Total Teachers Card Feature
 - Click to open Teachers Management page with tabbed interface
 - Enhanced search and filter functionality
-\n### 11.9 Principal Dashboard - Total Students Card Feature
+\n### 12.9 Principal Dashboard - Total Students Card Feature
 - Click to open Students List page\n- Enhanced search with Class and Section filters
 
-### 11.10 Admin Dashboard - Updated Card Display
+### 12.10 Admin Dashboard - Updated Card Display
 - Display only Total Users and Total Schools cards
-\n### 11.11 Landing Page - Updated Design
+\n### 12.11 Landing Page - Updated Design
 - Login and Register buttons removed from hero section
-- Get Started section removed\n\n### 11.12 Question Paper History Feature
-- Comprehensive tracking of all question papers
-- Advanced filtering and search capabilities
+- Get Started section removed\n\n### 12.12 Question Paper History Feature
+- Comprehensive tracking of all question papers\n- Advanced filtering and search capabilities
 - Paper versioning and relationship tracking
 - Export and print functionality
 - Analytics and reporting for both teachers and principals
 - School-based data isolation and access control
 
-## 12. Language Support
+### 12.13 Online Exam Feature
+- Complete online exam creation and management system
+- Real-time exam monitoring and student participation tracking
+- Auto-grading for objective questions
+- Manual grading for subjective questions
+- Comprehensive exam analytics and reports
+- Security features and anti-cheating measures
+- School-based data isolation and role-based access control
 
-### 12.1 UI Language\n- **UI Language: English Only**
+## 13. Language Support
+
+### 13.1 UI Language\n- **UI Language: English Only**
 - All interface elements displayed in English
-\n### 12.2 Chat/Communication Language
+\n### 13.2 Chat/Communication Language
 - Users can communicate in any language
-\n### 12.3 Language Rule Summary
+\n### 13.3 Language Rule Summary
 - **UI = Always English**
 - **Chat/Communication = Any Language**
-\n## 13. Future Scope Features
+\n## 14. Future Scope Features
 - Audit Logs
 - Backup & Restore
 - Notifications
 - Analytics Dashboard with lesson-level performance and negative marking impact analysis
 - Advanced question paper scheduling\n- Automated paper generation based on syllabus coverage
 - Student performance tracking linked to question papers
-\n## 14. Design Style\n
-### 14.1 Color Scheme
+- **Advanced proctoring features** (webcam monitoring, screen recording)\n- **Adaptive testing** (difficulty adjusts based on student performance)
+- **Question bank sharing** between teachers\n- **Parent portal** for viewing student exam results
+\n## 15. Design Style\n
+### 15.1 Color Scheme
 - Primary color: Blue (#2563EB)
 - Secondary color: Green (#10B981)
 - Warning color: Red (#EF4444)
 - Pending status color: Orange (#F59E0B)
 - Match the Following badge color: Teal (#14B8A6)
 - Multiple Response MCQ badge color: Indigo (#6366F1)
-- Minus Mark color: Red (#EF4444) or Orange (#F59E0B)
-- History/Archive color: Purple (#8B5CF6)
-
-### 14.2 Visual Details
+- Minus Mark color: Red (#EF4444) or Orange (#F59E0B)\n- History/Archive color: Purple (#8B5CF6)
+- **Exam status colors**:
+  - Draft: Gray (#6B7280)
+  - Scheduled: Blue (#3B82F6)
+  - Ongoing: Green (#10B981)
+  - Completed: Purple (#8B5CF6)
+  - Cancelled: Red (#EF4444)\n
+### 15.2 Visual Details
 - Soft rounded corners (8px radius)
 - Subtle shadow effects
 - Clear borders\n- Status badges with appropriate colors
 - Icon indicators for images and versions
-\n### 14.3 Overall Layout
+- **Timer display with color coding** (green >10 min, orange 5-10 min, red < 5 min)
+- **Progress indicators** for exam completion
+- **Real-time status updates** with smooth animations
+\n### 15.3 Overall Layout
 - Side panel navigation with collapsible toggle
 - Card-based design\n- Responsive grid layout
 - Status-based button navigation for Admin User Management
 - Enhanced search and filter interfaces
 - Question Bank dual view with image upload and minus mark support
 - Question Paper Preparation with smart selection and auto-versioned shuffle
-- **Question Paper History with advanced filtering, analytics, and version tracking**
+- Question Paper History with advanced filtering, analytics, and version tracking
+- **Online Exam interface with clean, distraction-free design**
+- **Real-time monitoring dashboard with live updates**
+- **Exam analytics with interactive charts and graphs**
+\n## 16. Reference Image
+
+### 16.1 Question Edit Form Layout
+The uploaded image (screenshot.png) shows the question edit form with the following layout issue:
+\n**Current Issue**: In the Edit Question dialog, the 'Question Text' field,'Image/Clip Art (Optional)' field, 'Question Type' dropdown, 'Difficulty' dropdown, 'Marks' input, and 'Negative Marks' input are positioned below the 'Match Pairs' section.\n
+**Required Fix**: These fields should be moved above the 'Match Pairs' section to maintain the correct form field order as specified in Section 6.3.1.
+
+**Correct Field Order**:
+1. Class (Dropdown)
+2. Subject (Dropdown)
+3. Lesson (Dropdown)
+4. **Question Text** (Text area)← Should be here
+5. **Image/Clip Art (Optional)** (Image upload field) ← Should be here
+6. **Question Type** (Dropdown) ← Should be here
+7. **Marks** (Number input) ← Should be here\n8. **Minus Mark** (Number input) ← Should be here\n9. **Difficulty** (Dropdown) ← Should be here
+10. Options/Match Pairs (Dynamic fields based on question type) ← Should be here
+11. Correct Answer (Dynamic field based on question type)\n\nThis layout fix ensures consistency across all question types and improves user experience by maintaining a logical form flow.
