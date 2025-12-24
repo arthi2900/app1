@@ -21,6 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { getCurrentISTTime, hasExamStarted, hasExamEnded, getExamRemainingTime, formatSecondsToTime } from '@/utils/timezone';
 
 export default function TakeExam() {
   const { examId } = useParams<{ examId: string }>();
@@ -59,29 +60,27 @@ export default function TakeExam() {
       if (!examId) return;
 
       const profile = await profileApi.getCurrentProfile();
-      if (!profile) throw new Error('Profile not found');
+      if (!profile) throw new Error('प्रोफ़ाइल नहीं मिली');
 
       const examData = await examApi.getExamById(examId);
       setExam(examData);
 
-      const now = new Date();
-      const start = new Date(examData.start_time);
-      const end = new Date(examData.end_time);
-
-      if (now < start) {
-        throw new Error('Exam has not started yet');
+      // IST में समय की जांच करें (Check time in IST)
+      if (!hasExamStarted(examData.start_time)) {
+        throw new Error('परीक्षा अभी शुरू नहीं हुई है');
       }
-      if (now > end) {
-        throw new Error('Exam has ended');
+      if (hasExamEnded(examData.end_time)) {
+        throw new Error('परीक्षा समाप्त हो गई है');
       }
 
       let attemptData = await examAttemptApi.getAttemptByStudent(examId, profile.id);
 
       if (!attemptData) {
+        // IST में वर्तमान समय के साथ प्रयास बनाएं (Create attempt with current IST time)
         attemptData = await examAttemptApi.createAttempt({
           exam_id: examId,
           student_id: profile.id,
-          started_at: new Date().toISOString(),
+          started_at: getCurrentISTTime().toISOString(),
           submitted_at: null,
           status: 'in_progress',
           total_marks_obtained: 0,
@@ -105,14 +104,16 @@ export default function TakeExam() {
       });
       setAnswers(answersMap);
 
-      const startTime = new Date(attemptData.started_at || attemptData.created_at);
-      const elapsedSeconds = Math.floor((now.getTime() - startTime.getTime()) / 1000);
-      const remainingSeconds = Math.max(0, examData.duration_minutes * 60 - elapsedSeconds);
+      // IST में शेष समय की गणना करें (Calculate remaining time in IST)
+      const remainingSeconds = getExamRemainingTime(
+        attemptData.started_at || attemptData.created_at,
+        examData.duration_minutes
+      );
       setTimeRemaining(remainingSeconds);
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to load exam',
+        title: 'त्रुटि',
+        description: error.message || 'परीक्षा लोड करने में विफल',
         variant: 'destructive',
       });
       navigate('/student/exams');
@@ -144,8 +145,8 @@ export default function TakeExam() {
     try {
       await examAttemptApi.submitAttempt(attempt.id);
       toast({
-        title: 'Time Up!',
-        description: 'Your exam has been automatically submitted',
+        title: 'समय समाप्त!',
+        description: 'आपकी परीक्षा स्वचालित रूप से जमा कर दी गई है',
       });
       navigate(`/student/exams/${examId}/result`);
     } catch (error: any) {
@@ -176,13 +177,6 @@ export default function TakeExam() {
     } finally {
       setSubmitDialogOpen(false);
     }
-  };
-
-  const formatTime = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   const isQuestionAnswered = (questionId: string) => {
@@ -236,10 +230,10 @@ export default function TakeExam() {
                 timeRemaining < 300 ? 'bg-destructive text-destructive-foreground' : 'bg-muted'
               }`}>
                 <Clock className="h-5 w-5" />
-                <span className="font-mono text-lg font-bold">{formatTime(timeRemaining)}</span>
+                <span className="font-mono text-lg font-bold">{formatSecondsToTime(timeRemaining)}</span>
               </div>
               <Button onClick={() => setSubmitDialogOpen(true)}>
-                Submit Exam
+                परीक्षा जमा करें
               </Button>
             </div>
           </div>

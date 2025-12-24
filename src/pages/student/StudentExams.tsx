@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { examApi, profileApi, academicApi } from '@/db/api';
 import { Calendar, Clock, FileText, PlayCircle, CheckCircle2 } from 'lucide-react';
 import type { ExamWithDetails } from '@/types/types';
+import { getCurrentISTTime, hasExamStarted, hasExamEnded, formatISTDateTime } from '@/utils/timezone';
 
 export default function StudentExams() {
   const navigate = useNavigate();
@@ -48,46 +49,29 @@ export default function StudentExams() {
     }
   };
 
-  const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
   const isExamAvailable = (exam: ExamWithDetails) => {
-    const now = new Date();
-    const start = new Date(exam.start_time);
-    const end = new Date(exam.end_time);
-    return now >= start && now <= end;
+    return hasExamStarted(exam.start_time) && !hasExamEnded(exam.end_time);
   };
 
   const isExamUpcoming = (exam: ExamWithDetails) => {
-    const now = new Date();
-    const start = new Date(exam.start_time);
-    return now < start;
+    return !hasExamStarted(exam.start_time);
   };
 
   const isExamCompleted = (exam: ExamWithDetails) => {
-    const now = new Date();
-    const end = new Date(exam.end_time);
-    return now > end;
+    return hasExamEnded(exam.end_time);
   };
 
   const getExamStatus = (exam: ExamWithDetails) => {
     if (isExamCompleted(exam)) {
-      return { label: 'Completed', variant: 'secondary' as const };
+      return { label: 'समाप्त', variant: 'secondary' as const };
     }
     if (isExamAvailable(exam)) {
-      return { label: 'Available', variant: 'default' as const };
+      return { label: 'उपलब्ध', variant: 'default' as const };
     }
     if (isExamUpcoming(exam)) {
-      return { label: 'Upcoming', variant: 'outline' as const };
+      return { label: 'आगामी', variant: 'outline' as const };
     }
-    return { label: 'Unknown', variant: 'secondary' as const };
+    return { label: 'अज्ञात', variant: 'secondary' as const };
   };
 
   if (loading) {
@@ -147,22 +131,22 @@ export default function StudentExams() {
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
                       <div className="text-sm">
-                        <p className="text-muted-foreground">Start</p>
-                        <p className="font-medium">{formatDateTime(exam.start_time)}</p>
+                        <p className="text-muted-foreground">शुरुआत</p>
+                        <p className="font-medium">{formatISTDateTime(exam.start_time)}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
                       <div className="text-sm">
-                        <p className="text-muted-foreground">End</p>
-                        <p className="font-medium">{formatDateTime(exam.end_time)}</p>
+                        <p className="text-muted-foreground">समाप्ति</p>
+                        <p className="font-medium">{formatISTDateTime(exam.end_time)}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4 text-muted-foreground" />
                       <div className="text-sm">
-                        <p className="text-muted-foreground">Duration</p>
-                        <p className="font-medium">{exam.duration_minutes} minutes</p>
+                        <p className="text-muted-foreground">अवधि</p>
+                        <p className="font-medium">{exam.duration_minutes} मिनट</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">

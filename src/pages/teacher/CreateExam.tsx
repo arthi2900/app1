@@ -258,7 +258,7 @@ export default function CreateExam() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="startDate">Start Date *</Label>
+                <Label htmlFor="startDate">प्रारंभ तिथि * (IST)</Label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -270,10 +270,11 @@ export default function CreateExam() {
                     required
                   />
                 </div>
+                <p className="text-xs text-muted-foreground">भारतीय मानक समय (IST)</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="startTime">Start Time *</Label>
+                <Label htmlFor="startTime">प्रारंभ समय * (IST)</Label>
                 <div className="relative">
                   <Clock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -290,7 +291,7 @@ export default function CreateExam() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="endDate">End Date *</Label>
+                <Label htmlFor="endDate">समाप्ति तिथि * (IST)</Label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -302,10 +303,11 @@ export default function CreateExam() {
                     required
                   />
                 </div>
+                <p className="text-xs text-muted-foreground">भारतीय मानक समय (IST)</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="endTime">End Time *</Label>
+                <Label htmlFor="endTime">समाप्ति समय * (IST)</Label>
                 <div className="relative">
                   <Clock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
