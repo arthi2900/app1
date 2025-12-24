@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, UserCheck, GraduationCap } from 'lucide-react';
+import { BookOpen, UserCheck, GraduationCap, ClipboardCheck, FileText } from 'lucide-react';
 import { profileApi } from '@/db/api';
 import { useAuth } from '@/hooks/useAuth';
 import SchoolProfile from '@/components/principal/SchoolProfile';
@@ -133,6 +133,38 @@ export default function PrincipalDashboard() {
           <CardContent>
             <p className="text-xs text-muted-foreground mt-1">
               Click to view details
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Question Bank Card */}
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => navigate('/teacher/questions')}
+        >
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Question Bank</CardTitle>
+            <FileText className="w-5 h-5 text-accent" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-muted-foreground mt-1">
+              Manage exam questions
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Exam Approvals Card */}
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => navigate('/principal/exam-approvals')}
+        >
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Exam Approvals</CardTitle>
+            <ClipboardCheck className="w-5 h-5 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-muted-foreground mt-1">
+              Review and approve exams
             </p>
           </CardContent>
         </Card>

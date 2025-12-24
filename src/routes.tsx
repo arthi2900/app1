@@ -11,11 +11,18 @@ import PrincipalDashboard from './pages/principal/PrincipalDashboard';
 import TeachersList from './pages/principal/TeachersList';
 import StudentsList from './pages/principal/StudentsList';
 import AcademicsManagement from './pages/principal/AcademicsManagement';
+import ExamApprovals from './pages/principal/ExamApprovals';
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
 import QuestionBank from './pages/teacher/QuestionBank';
 import QuestionPaperPreparation from './pages/teacher/QuestionPaperPreparation';
 import QuestionPaperManagement from './pages/teacher/QuestionPaperManagement';
+import CreateExam from './pages/teacher/CreateExam';
+import ManageExams from './pages/teacher/ManageExams';
+import ExamResults from './pages/teacher/ExamResults';
 import StudentDashboard from './pages/student/StudentDashboard';
+import StudentExams from './pages/student/StudentExams';
+import TakeExam from './pages/student/TakeExam';
+import StudentResult from './pages/student/StudentResult';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 interface RouteConfig {
@@ -172,6 +179,76 @@ const routes: RouteConfig[] = [
     element: (
       <ProtectedRoute allowedRoles={['student']}>
         <StudentDashboard />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Student Exams',
+    path: '/student/exams',
+    element: (
+      <ProtectedRoute allowedRoles={['student']}>
+        <StudentExams />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Take Exam',
+    path: '/student/exams/:examId/take',
+    element: (
+      <ProtectedRoute allowedRoles={['student']}>
+        <TakeExam />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Student Result',
+    path: '/student/exams/:examId/result',
+    element: (
+      <ProtectedRoute allowedRoles={['student']}>
+        <StudentResult />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Exam Approvals',
+    path: '/principal/exam-approvals',
+    element: (
+      <ProtectedRoute allowedRoles={['principal']}>
+        <ExamApprovals />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Create Exam',
+    path: '/teacher/exams/create',
+    element: (
+      <ProtectedRoute allowedRoles={['teacher']}>
+        <CreateExam />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Manage Exams',
+    path: '/teacher/exams',
+    element: (
+      <ProtectedRoute allowedRoles={['teacher']}>
+        <ManageExams />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Exam Results',
+    path: '/teacher/exams/:examId/results',
+    element: (
+      <ProtectedRoute allowedRoles={['teacher']}>
+        <ExamResults />
       </ProtectedRoute>
     ),
     visible: false,

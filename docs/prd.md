@@ -3,10 +3,9 @@
 ## 1. Application Description
 
 ### 1.1 Application Name
-Online School Management System
-
+Online School Management System\n
 ### 1.2 Application Purpose
-A comprehensive school management system for educational institutions. Features include school management, academic structure setup (class, section, subject, lesson), teacher-subject-class-section mapping, question bank management with lesson-level tracking, question paper preparation with shuffle functionality, question paper history tracking, **online exam creation and management**, user management with school-based data isolation.\n
+A comprehensive school management system for educational institutions. Features include school management, academic structure setup (class, section, subject, lesson), teacher-subject-class-section mapping, question bank management with lesson-level tracking, question paper preparation with shuffle functionality, question paper history tracking, **online exam creation and management with approval workflow**, user management with school-based data isolation.\n
 ## 2. User Roles\n
 ### 2.1 Admin\n- Complete system administration
 - School management (create, edit, view schools)\n- User account creation and management
@@ -40,7 +39,10 @@ A comprehensive school management system for educational institutions. Features 
   - Filter and search question paper history
   - Export and print historical question papers
 - **Online Exam Management** (within assigned school only):
-  - View all online exams created by teachers
+  - **Approve school-level exams created by teachers**
+  - **Create exams directly without approval requirement**
+  - **Create exams from school question bank without approval**
+  - View all online exams (practice and school-level) created by teachers
   - Monitor exam status and student participation
   - Access exam analytics and reports
 - Profile editing capability
@@ -69,13 +71,13 @@ A comprehensive school management system for educational institutions. Features 
   - Create new versions from existing papers
   - Track paper creation and modification history
 - **Online Exam Management**:
-  - Create online exams from question papers or question bank
-  - Configure exam settings (duration, start/end time, passing marks, negative marking)
-  - Publish exams to assigned sections
-  - Monitor student participation in real-time
-  - View submitted answers and auto-graded results
-  - Manually grade subjective questions (Short Answer, Essay)\n  - Generate exam reports and analytics
-  - Export exam results\n- Profile editing capability
+  - **Create practice exams (no approval required) to assess student understanding**
+  - **Create school-level exams (requires Principal approval before scheduling)**
+  - Configure exam settings (duration, start/end time, passing marks, negative marking)\n  - Publish practice exams directly to assigned sections
+  - Submit school-level exams for Principal approval\n  - Monitor student participation in real-time
+  - View submitted answers and auto-graded results\n  - Manually grade subjective questions (Short Answer, Essay)
+  - Generate exam reports and analytics\n  - Export exam results
+- Profile editing capability
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view and interact with students from their assigned sections
 - **Visibility Rules**:
@@ -83,12 +85,14 @@ A comprehensive school management system for educational institutions. Features 
 ### 2.4 Student
 - View my class, section, subjects, and teachers
 - **Online Exam Access**:
-  - View assigned online exams
-  - Take online exams within scheduled time
+  - **Login with individual student account**
+  - View assigned online exams (practice and school-level)
+  - **Take online exams with exam interface including question palette panel and timer**
   - Submit answers before deadline
+  - **View auto-evaluated results for objective questions**
   - View exam results and feedback (after teacher publishes results)
-  - Review correct answers (if enabled by teacher)
-- Profile editing capability
+  - **View detailed performance analysis**
+  - Review correct answers (if enabled by teacher)\n- Profile editing capability
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view personal information from their assigned school
 - **Visibility Rules**:
@@ -102,7 +106,8 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - Profile picture (optional)\n- Account status (Pending Approval/Active/Suspended)
 \n## 3. School Management Module
 
-### 3.1 School Master\nAdmin can create and manage schools with the following details:
+### 3.1 School Master
+Admin can create and manage schools with the following details:
 \n#### 3.1.1 School Information Fields
 - School Name (unique, mandatory)
 - Assignment (optional, selected from existing School Name)\n- School Address (mandatory)
@@ -153,12 +158,13 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 ## 5. Principal Dashboard - Academic Management Module
 
 ### 5.1 Principal Dashboard Overview
-After Principal login, the dashboard displays six main cards:
+After Principal login, the dashboard displays seven main cards:
 - **Academic Management**: Manage academic structure (classes, sections, subjects, lessons, student mapping)
 - **Teachers**: Manage teacher accounts and teacher-subject-class-section mapping\n- **Students**: View and manage students\n- **Question Bank**: Manage exam questions with lesson-level tracking and dual view options
 - **Question Paper History**: View all question papers created by teachers in the school
 - **Online Exams**: View and monitor all online exams created by teachers in the school
-\n**UI Language Requirement**: All card titles, labels, and UI text on Principal Dashboard must be displayed in English only. Card titles should be 'Academic Management', 'Teachers', 'Students', 'Question Bank', 'Question Paper History', and 'Online Exams' (not in Tamil or any other language).
+- **Exam Approvals**: Review and approve school-level exams submitted by teachers
+\n**UI Language Requirement**: All card titles, labels, and UI text on Principal Dashboard must be displayed in English only. Card titles should be 'Academic Management', 'Teachers', 'Students', 'Question Bank', 'Question Paper History', 'Online Exams', and 'Exam Approvals' (not in Tamil or any other language).
 
 ### 5.2 Academic Card - Academic Structure Management
 
@@ -263,8 +269,7 @@ After Principal login, the dashboard displays six main cards:
 \n### 5.5 Question Bank Card - Question Management
 - Principal can access Question Bank management interface
 - Create, edit, and delete questions for exam preparation
-- **Insert images/clip arts in questions**
-- **Dual View Options**:
+- **Insert images/clip arts in questions**\n- **Dual View Options**:
   - Row View (table format)
   - Card View (detailed card format)
 - View all questions with lesson-level filtering
@@ -293,37 +298,102 @@ After Principal login, the dashboard displays six main cards:
 
 ### 5.7 Online Exams Card - Exam Monitoring and Management
 - Principal can access Online Exams interface
-- View all online exams created by teachers in their school
-- Filter by teacher name, class, subject, exam status, date range
+- View all online exams (practice and school-level) created by teachers in their school
+- Filter by teacher name, class, subject, exam status, exam type (practice/school-level), date range
 - Search by exam name or exam ID
 - View exam overview including:
   - Exam name
+  - Exam type badge (Practice/School-Level)
+  - Approval status (for school-level exams: Pending/Approved/Rejected)
   - Created by (teacher name)
   - Class and Subject
   - Exam duration
   - Start and end date/time
   - Exam status (Draft/Scheduled/Ongoing/Completed/Cancelled)
-  - Total students assigned
-  - Students completed
+  - Total students assigned\n  - Students completed
   - Average score
 - Actions available:
   - View exam details
   - View student participation report
   - Export exam results
   - View exam analytics
-- Analytics dashboard showing:
-  - Total exams conducted per teacher
+- Analytics dashboard showing:\n  - Total exams conducted per teacher
   - Exams conducted per subject
   - Exams conducted per class
   - Student participation rate
   - Average scores by subject/class
+\n### 5.8 Exam Approvals Card - School-Level Exam Approval Management
+**New Feature**: Principal can review and approve school-level exams submitted by teachers
+\n**Approval Dashboard Layout**:
+\n**Pending Approvals Section**:
+- List of school-level exams awaiting approval\n- Each exam card shows:
+  - Exam name
+  - Created by (Teacher name with profile link)
+  - Class and Subject\n  - Sections (with student count)
+  - Exam duration
+  - Requested start date/time
+  - Requested end date/time
+  - Total marks
+  - Total questions
+  - Submission date (when teacher submitted for approval)
+  - Status badge:'Pending Approval' (orange)
+  - Action buttons:\n    - 'Review': Open detailed exam review page
+    - 'Quick Approve': Approve without detailed review (with confirmation)
+    - 'Reject': Reject with reason (opens dialog)
+- Sort options: Submission Date (Recent First/Oldest First), Start Date (Nearest First)\n- Filter: By Teacher, By Class, By Subject\n- Search: By exam name\n\n**Exam Review Page**:
+- Display complete exam details:\n  - Exam Information: Name, Class, Subject, Sections, Duration, Start/End DateTime, Passing Marks, Instructions
+  - Exam Settings: Negative Marking, Show Results Immediately, Allow Answer Review, Randomization settings, Late Submission settings, Security settings
+  - Question List: All questions with marks, difficulty, question type, correct answers\n  - Teacher's Notes (optional): Any additional information provided by teacher
+- Preview exam as student would see it
+- Action buttons:
+  - 'Approve Exam': Approve and allow teacher to schedule\n    - Confirmation dialog:'Are you sure you want to approve this exam? Teacher will be able to schedule it immediately.'
+    - On approval: Exam status changes to 'Approved', teacher receives notification
+  - 'Approve with Modifications': Approve but request changes
+    - Opens dialog to specify required modifications
+    - Teacher receives notification with modification requests
+    - Exam returns to teacher for editing
+  - 'Reject Exam': Reject with reason
+    - Opens dialog to enter rejection reason (required)
+    - Exam status changes to 'Rejected'\n    - Teacher receives notification with rejection reason
+    - Teacher can edit and resubmit
+  - 'Request More Information': Ask teacher for clarification
+    - Opens dialog to enter questions/requests
+    - Teacher receives notification\n    - Exam remains in 'Pending Approval' status
+  - 'Back to Approvals': Return to approval dashboard
+\n**Approval History Section**:
+- List of all approved and rejected exams
+- Each exam card shows:
+  - Exam name
+  - Created by (Teacher name)\n  - Class and Subject
+  - Approval status badge (Approved/Rejected)
+  - Approval date
+  - Approved/Rejected by (Principal name)
+  - Rejection reason (if rejected)
+  - Current exam status (Scheduled/Ongoing/Completed/Cancelled)
+  - Action buttons:\n    - 'View Details': Open exam details page
+    - 'View Analytics': Open analytics (for completed exams)
+- Filter: By Status (Approved/Rejected), By Teacher, By Class, By Subject, By Date Range
+- Sort: Approval Date (Recent First/Oldest First)
+\n**Approval Statistics**:
+- Overview cards:\n  - Pending Approvals: X exams
+  - Approved This Month: Y exams
+  - Rejected This Month: Z exams
+  - Average Approval Time: W hours
+- Charts:
+  - Approvals Over Time (line chart)
+  - Approvals by Teacher (bar chart)
+  - Approvals by Subject (bar chart)
+\n**Notification System**:
+- Principal receives notification when teacher submits exam for approval
+- Teacher receives notification when exam is approved/rejected/requires modification
+- Reminder notification to Principal if approval pending for more than 48 hours
 \n## 6. Question Bank Module
 
 ### 6.1 Question Bank Overview
 - Centralized repository for exam questions
 - Questions are organized by Class, Subject, and Lesson
-- Support for multiple question types (Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ)
-- Difficulty levels (Easy, Medium, Hard)\n- Marks allocation per question
+- Support for multiple question types (Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ)\n- Difficulty levels (Easy, Medium, Hard)
+- Marks allocation per question
 - **Minus Mark (Negative Marking) support**: Questions can have negative marks for incorrect answers
 - Lesson-level tracking for performance analytics
 - **Image/Clip Art support**: Questions can include images or clip arts
@@ -391,8 +461,7 @@ The question creation form displays fields in the following order:
 #### 6.4.1 View Toggle Control
 - **View Switcher**: Toggle button or tab control at the top of Question Bank page
 - User can switch between views with single click
-- Default view: Row View
-\n#### 6.4.2 Row View (Table Format)
+- Default view: Row View\n\n#### 6.4.2 Row View (Table Format)
 **Display Columns**:
 - Question (truncated text with expand option)
 - **Image Indicator** (icon showing if question has images)
@@ -405,7 +474,8 @@ The question creation form displays fields in the following order:
 - Actions (Edit, Delete)
 
 #### 6.4.3 Card View (Detailed Card Format)
-**Card Layout**: Each question displayed as a card with question text, images, metadata, options, and action buttons.\n\n#### 6.4.4 Edit Functionality in Both Views
+**Card Layout**: Each question displayed as a card with question text, images, metadata, options, and action buttons.\n
+#### 6.4.4 Edit Functionality in Both Views
 - Edit icon/button opens edit dialog with pre-filled form
 - Image editing with local file selection
 - Minus Mark editing with validation
@@ -432,7 +502,8 @@ The question creation form displays fields in the following order:
 #### 7.2.4 Step 4: Final Question Paper Output
 - Preview Question Paper
 - Save as Draft
-- Generate Final Question Paper\n- Export as PDF
+- Generate Final Question Paper
+- Export as PDF
 - Print Option
 
 ### 7.3 Question Paper Database Structure
@@ -440,16 +511,14 @@ The question creation form displays fields in the following order:
 
 **Columns**:
 - id (UUID, Primary Key)
-- paper_name (Varchar, required)
-- school_id (Foreign Key → schools.id)
+- paper_name (Varchar, required)\n- school_id (Foreign Key → schools.id)
 - class_id (Foreign Key → classes.id)
 - subject_id (Foreign Key → subjects.id)
 - created_by (Foreign Key → users.id)
 - selected_questions (JSON array, stores question IDs and order)
 - shuffle_questions (Boolean, default false)
 - shuffle_mcq_options (Boolean, default false)
-- paper_status (Enum: Draft, Final)
-- total_marks (Integer, calculated)\n- total_questions (Integer, calculated)
+- paper_status (Enum: Draft, Final)\n- total_marks (Integer, calculated)\n- total_questions (Integer, calculated)
 - created_at (Timestamp)\n- updated_at (Timestamp)
 - parent_paper_id (Foreign Key → question_papers.id, nullable)
   - Used for tracking shuffled versions
@@ -516,18 +585,17 @@ The question creation form displays fields in the following order:
   - Analytics and reporting
 
 ### 8.2 Question Paper History Interface
-
-#### 8.2.1 History List View
+\n#### 8.2.1 History List View
 **Display Columns**:
 - Paper Name
 - Class
 - Subject
 - Created By (Teacher Name)
 - Creation Date
-- Last Modified Date\n- Paper Status (Draft/Final)
+- Last Modified Date
+- Paper Status (Draft/Final)
 - Total Marks
-- Total Questions
-- Version Info (Original/Shuffled A/Shuffled B, etc.)
+- Total Questions\n- Version Info (Original/Shuffled A/Shuffled B, etc.)
 - Actions (View, Edit, Delete, Export PDF, Print, Create New Version)
 
 #### 8.2.2 Filter Options\n- **Teacher Filter** (Principal only): Dropdown showing all teachers in the school
@@ -539,8 +607,7 @@ The question creation form displays fields in the following order:
 - **Version Type Filter**: Dropdown with options (All, Original, Shuffled Versions)
 - **Clear All Filters** button to reset all filter criteria
 
-#### 8.2.3 Search Functionality
-- Text search bar for searching by:\n  - Paper name
+#### 8.2.3 Search Functionality\n- Text search bar for searching by:\n  - Paper name
   - Paper ID
   - Teacher name (Principal only)
 - Real-time search with auto-suggestions
@@ -574,7 +641,8 @@ The question creation form displays fields in the following order:
   - Question type
   - Marks
   - Minus marks (if applicable)
-  - Difficulty level\n  - Correct answer (for teacher/principal view)
+  - Difficulty level
+  - Correct answer (for teacher/principal view)
 - Questions displayed in paper order
 - Option to expand/collapse question details
 
@@ -592,7 +660,8 @@ The question creation form displays fields in the following order:
 
 #### 8.4.1 Analytics Dashboard (Principal View)
 - **Overview Cards**:
-  - Total Papers Created\n  - Papers Created This Month
+  - Total Papers Created
+  - Papers Created This Month
   - Total Teachers Contributing
   - Average Papers per Teacher
 - **Charts and Graphs**:
@@ -615,7 +684,8 @@ The question creation form displays fields in the following order:
   - Average Questions per Paper
 - **Charts and Graphs**:
   - My Papers Over Time (Line chart)
-  - My Papers by Subject (Bar chart)\n  - My Papers by Class (Bar chart)
+  - My Papers by Subject (Bar chart)
+  - My Papers by Class (Bar chart)
   - Paper Status Distribution (Pie chart)\n- **Personal Statistics**:
   - Most Used Question Types
   - Average Paper Difficulty
@@ -691,7 +761,8 @@ The question creation form displays fields in the following order:
 - Notification when paper is successfully created
 - Notification when shuffled version is generated
 - Reminder for draft papers older than 30 days
-\n#### 8.8.2 Principal Notifications
+
+#### 8.8.2 Principal Notifications
 - Daily/weekly summary of papers created by teachers
 - Notification when teacher creates new paper
 - Monthly analytics report
@@ -700,16 +771,21 @@ The question creation form displays fields in the following order:
 
 ### 9.1 Online Exam Overview
 - **Purpose**: Enable teachers to create, publish, and manage online exams for students with comprehensive monitoring, auto-grading, and analytics capabilities
-- **Access**: \n  - Teachers can create and manage online exams for their assigned sections
-  - Students can take assigned online exams within scheduled time windows
-  - Principal can view and monitor all online exams in their school
+- **Exam Types**:
+  - **Practice Exams**: Created by teachers to assess student understanding, no approval required, can be scheduled immediately
+  - **School-Level Exams**: Created by teachers for formal assessment, requires Principal approval before scheduling
+  - **Principal-Created Exams**: Created directly by Principal or from school question bank, no approval required
+- **Access**: \n  - Teachers can create practice and school-level exams for their assigned sections
+  - Students can take assigned online exams using individual login with exam interface including question palette panel and timer
+  - Principal can create exams directly, approve school-level exams, and monitor all exams in their school
 - **Key Features**:
   - Create exams from existing question papers or directly from question bank
   - Configure detailed exam settings (duration, scheduling, passing criteria, negative marking)
-  - Publish exams to specific sections with automatic notifications
-  - Real-time exam monitoring with live student status tracking
-  - Automatic grading for objective questions (MCQ, True/False, Multiple Response, Match the Following)
-  - Manual grading interface for subjective questions (Short Answer, Essay)\n  - Comprehensive exam analytics with performance insights
+  - Approval workflow for school-level exams\n  - Publish exams to specific sections with automatic notifications
+  - **Enhanced student exam interface with question palette panel and timer**
+- Real-time exam monitoring with live student status tracking
+  - **Automatic grading for objective questions** (MCQ, True/False, Multiple Response, Match the Following)
+  - Manual grading interface for subjective questions (Short Answer, Essay)\n  - **Comprehensive exam analytics with detailed performance analysis**
   - Secure exam environment with anti-cheating measures
   - Export and reporting capabilities
 
@@ -718,16 +794,22 @@ The question creation form displays fields in the following order:
 #### 9.2.1 Step 1: Exam Basic Details
 **Form Fields**:
 - **Exam Name** (Text input, required)
-  - Validation:3-100 characters
+  - Validation: 3-100 characters
   - Example: 'Class 10 Science Mid-Term Exam 2025'
+- **Exam Type** (Radio buttons, required)
+  - Options:\n    - **Practice Exam**: For assessing student understanding, no approval required\n    - **School-Level Exam**: For formal assessment, requires Principal approval
+  - Default: Practice Exam
+  - Helper text:\n    - Practice Exam: 'Can be scheduled immediately after creation'
+    - School-Level Exam: 'Requires Principal approval before scheduling'
 - **Class** (Dropdown, required)
-  - Populated from teacher's assigned classes
+  - Populated from teacher's assigned classes (for teachers) or all classes (for principal)
   - Cascading filter for Subject and Section
 - **Subject** (Dropdown, required)
   - Filtered by selected Class
-  - Shows only subjects assigned to teacher\n- **Section Selection** (Multi-select checkbox, required)
+  - Shows only subjects assigned to teacher (for teachers) or all subjects (for principal)
+- **Section Selection** (Multi-select checkbox, required)
   - Teacher can select one or multiple sections from their assigned sections
-  - Display format: 'Section A (30 students)', 'Section B (28 students)'
+  - Principal can select any sections\n  - Display format: 'Section A (30 students)', 'Section B (28 students)'
   - Total student count displayed: 'Total: 58 students'
 - **Exam Duration** (Number input in minutes, required)
   - Validation: 10-300 minutes
@@ -743,25 +825,20 @@ The question creation form displays fields in the following order:
 - **Passing Marks** (Number input, optional)
   - Validation: 0 to Total Marks
   - Percentage display: Auto-calculate and show percentage
-  - Example: '40marks (40%)'
-- **Instructions for Students** (Rich text editor, optional)
+  - Example: '40marks (40%)'\n- **Instructions for Students** (Rich text editor, optional)
   - Support for formatted text, bullet points, numbered lists
   - Character limit: 2000 characters
   - Preview option available
   - Example instructions template provided
-
-**UI Layout**:
+\n**UI Layout**:
 - Two-column layout for better space utilization
-- Left column: Exam Name, Class, Subject, Section Selection
-- Right column: Duration, Start/End DateTime, Passing Marks
-- Full-width: Instructions for Students
-- Progress indicator:'Step 1 of 4'
-- Action buttons: 'Cancel', 'Save as Draft', 'Next'\n
+- Left column: Exam Name, Exam Type, Class, Subject, Section Selection\n- Right column: Duration, Start/End DateTime, Passing Marks\n- Full-width: Instructions for Students
+- Progress indicator:'Step 1 of 4'\n- Action buttons: 'Cancel', 'Save as Draft', 'Next'\n
 #### 9.2.2 Step 2: Question Selection Method
-Teacher can choose one of two methods:
+Teacher/Principal can choose one of two methods:
 \n**Method A: Select from Existing Question Paper**
 - **Question Paper Dropdown**:
-  - Shows teacher's own question papers filtered by selected class and subject
+  - Shows teacher's own question papers (for teachers) or all question papers (for principal) filtered by selected class and subject
   - Display format: 'Paper Name (Total Marks: XX, Questions: YY, Status: Draft/Final)'
   - Sort options: Recent, Name A-Z, Total Marks\n  - Search functionality with real-time filtering
 - **Paper Preview**:
@@ -777,7 +854,7 @@ Teacher can choose one of two methods:
   - Reorder questions via drag-and-drop
 \n**Method B: Select Questions from Question Bank**
 - **Question Bank View**:
-  - Display all questions from teacher's question bank
+  - Display all questions from teacher's question bank (for teachers) or school question bank (for principal)
   - Filtered by selected class and subject
   - View options: List view or Card view
 - **Filter Panel**:
@@ -798,8 +875,7 @@ Teacher can choose one of two methods:
   - Difficulty distribution indicator (pie chart)
   - Question type distribution indicator (bar chart)
 - **Smart Selection Tools**:
-  - 'Auto-select by Difficulty': Specify number of Easy/Medium/Hard questions
-  - 'Auto-select by Lesson': Ensure coverage of all lessons
+  - 'Auto-select by Difficulty': Specify number of Easy/Medium/Hard questions\n  - 'Auto-select by Lesson': Ensure coverage of all lessons
   - 'Auto-select by Marks': Specify target total marks, system suggests questions
 - **Question Preview**:
   - Click on question to view full details
@@ -826,7 +902,8 @@ Teacher can choose one of two methods:
   - Total possible negative marks displayed
 \n**2. Result Display Settings**
 - **Show Results Immediately** (Toggle switch)
-  - Default: OFF\n  - If enabled: Students see results immediately after submission
+  - Default: OFF
+  - If enabled: Students see results immediately after submission
   - If disabled: Results shown only after teacher publishes them
   - Warning message: 'Students will see their scores immediately. Manual grading for subjective questions will still be required.'
 - **Allow Review of Answers** (Toggle switch)
@@ -889,7 +966,8 @@ Teacher can choose one of two methods:
 #### 9.2.4 Step 4: Preview and Publish
 **Preview Section**:
 \n**1. Exam Summary Card**
-- Exam Name\n- Class and Subject
+- Exam Name\n- **Exam Type**: Practice Exam or School-Level Exam (badge)
+- Class and Subject
 - Sections: List of selected sections with student count
 - Total Students: Aggregate count\n- Exam Duration: In minutes and hours
 - Start Date/Time: Formatted display
@@ -922,7 +1000,8 @@ Teacher can choose one of two methods:
 \n**4. Student View Preview**
 - 'Preview as Student' button
 - Opens modal showing exam interface as students will see it
-- Includes timer, question navigation, answer fields\n- Sample questions with randomization applied (if enabled)
+- **Includes question palette panel, timer, question navigation, answer fields**
+- Sample questions with randomization applied (if enabled)
 - Close preview button
 
 **5. Validation Checks**
@@ -938,19 +1017,27 @@ Teacher can choose one of two methods:
 - **Back**: Return to Step 3
 - **Save as Draft**: Save exam without publishing
   - Confirmation message: 'Exam saved as draft. You can edit and publish it later.'
-  - Redirect to Teacher Dashboard
-- **Schedule Exam**: Set exam to auto-publish at start time
-  - Confirmation dialog: 'Exam will be automatically published on [Start Date/Time]. Students will be notified.'
-  - Status changes to 'Scheduled'
-- **Publish Now**: Make exam immediately available to students
-  - Confirmation dialog: 'Are you sure you want to publish this exam? Students will be able to access it immediately.'
-  - Final validation check
-  - On success: 'Exam published successfully. Students have been notified.'
-  - Status changes to 'Ongoing' (if within exam window) or 'Scheduled' (if before start time)
-
-**UI Layout**:
-- Single column layout with cards\n- Summary cards at top
-- Question list in middle
+  - Redirect to Teacher/Principal Dashboard
+- **For Practice Exams**:
+  - **Schedule Exam**: Set exam to auto-publish at start time
+    - Confirmation dialog: 'Exam will be automatically published on [Start Date/Time]. Students will be notified.'
+    - Status changes to 'Scheduled'
+  - **Publish Now**: Make exam immediately available to students
+    - Confirmation dialog: 'Are you sure you want to publish this exam? Students will be able to access it immediately.'
+    - Final validation check\n    - On success: 'Exam published successfully. Students have been notified.'
+    - Status changes to 'Ongoing' (if within exam window) or 'Scheduled' (if before start time)
+- **For School-Level Exams (Teacher only)**:
+  - **Submit for Approval**: Submit exam to Principal for approval
+    - Confirmation dialog: 'Are you sure you want to submit this exam for Principal approval? You will not be able to edit it until approval decision is made.'
+    - Final validation check
+    - On success: 'Exam submitted for approval. You will be notified when Principal reviews it.'
+    - Status changes to 'Pending Approval'
+    - Principal receives notification
+- **For School-Level Exams (Principal only)**:
+  - **Schedule Exam**: Set exam to auto-publish at start time (no approval needed)
+  - **Publish Now**: Make exam immediately available to students (no approval needed)
+\n**UI Layout**:
+- Single column layout with cards\n- Summary cards at top\n- Question list in middle
 - Action buttons at bottom (sticky footer)
 - Progress indicator: 'Step 4 of 4 - Review & Publish'
 \n### 9.3 Online Exam Database Structure
@@ -961,9 +1048,23 @@ Teacher can choose one of two methods:
 **Columns**:
 - id (UUID, Primary Key)
 - exam_name (Varchar(100), required)
-- school_id (Foreign Key → schools.id, required)
+- **exam_type (Enum: Practice, School-Level, default'Practice')**
+  - Practice: No approval required
+  - School-Level: Requires Principal approval (for teacher-created exams)
+- **approval_status (Enum: Not Required, Pending, Approved, Rejected, default 'Not Required')**
+  - Not Required: For practice exams and principal-created exams
+  - Pending: School-level exam submitted by teacher, awaiting approval
+  - Approved: School-level exam approved by principal
+  - Rejected: School-level exam rejected by principal
+- **approval_notes (Text, nullable)**
+  - Stores rejection reason or modification requests from principal
+- **approved_by (Foreign Key → users.id, principal, nullable)**
+  - Principal who approved/rejected the exam
+- **approval_date (Timestamp, nullable)**
+  - Date and time when exam was approved/rejected\n- school_id (Foreign Key → schools.id, required)
 - class_id (Foreign Key → classes.id, required)
-- subject_id (Foreign Key → subjects.id, required)\n- created_by (Foreign Key → users.id, teacher, required)
+- subject_id (Foreign Key → subjects.id, required)
+- created_by (Foreign Key → users.id, teacher or principal, required)
 - question_paper_id (Foreign Key → question_papers.id, nullable)
   - If exam created from question paper, stores paper ID
   - If exam created from question bank, null
@@ -988,8 +1089,7 @@ Teacher can choose one of two methods:
 - exam_password (Varchar(100), nullable, encrypted)
 - track_student_activity (Boolean, default true)
 - proctoring_enabled (Boolean, default false)
-- exam_status (Enum: Draft, Scheduled, Ongoing, Completed, Cancelled, default'Draft')
-- total_marks (Integer, calculated, required)
+- exam_status (Enum: Draft, Pending Approval, Approved, Scheduled, Ongoing, Completed, Cancelled, Rejected, default 'Draft')\n- total_marks (Integer, calculated, required)
 - total_questions (Integer, calculated, required)
 - created_at (Timestamp, default CURRENT_TIMESTAMP)
 - updated_at (Timestamp, default CURRENT_TIMESTAMP, on update CURRENT_TIMESTAMP)
@@ -999,12 +1099,15 @@ Teacher can choose one of two methods:
 - idx_school_id (school_id)
 - idx_created_by (created_by)
 - idx_exam_status (exam_status)
+- idx_exam_type (exam_type)
+- idx_approval_status (approval_status)
 - idx_start_datetime (start_datetime)
 - idx_class_subject (class_id, subject_id)
 \n**Foreign Key Relationships**:
 - school_id → schools.id (CASCADE on delete)
 - class_id → classes.id (CASCADE on delete)\n- subject_id → subjects.id (CASCADE on delete)
 - created_by → users.id (SET NULL on delete)
+- approved_by → users.id (SET NULL on delete)
 - question_paper_id → question_papers.id (SET NULL on delete)
 \n#### 9.3.2Exam Section Mapping Table
 **Table name**: exam_sections
@@ -1043,7 +1146,8 @@ Teacher can choose one of two methods:
   - Difference between start_time and submission_time
 - student_answers (JSON array, required)
   - Format: [{question_id: 'uuid', answer: 'text or array', is_correct: true/false/null, marks_awarded: 5, time_spent: 120}]
-- randomized_question_order (JSON array, nullable)\n  - Stores question order for this student if randomization enabled
+- randomized_question_order (JSON array, nullable)
+  - Stores question order for this student if randomization enabled
   - Format: ['uuid1', 'uuid2', 'uuid3', ...]
 - randomized_mcq_options (JSON object, nullable)
   - Stores shuffled options for each MCQ if randomization enabled
@@ -1055,8 +1159,7 @@ Teacher can choose one of two methods:
 - auto_graded_marks (Decimal(10,2), default 0)
   - Marks from auto-graded questions (MCQ, True/False, Multiple Response, Match the Following)
 - manual_graded_marks (Decimal(10,2), default 0)
-  - Marks from manually graded questions (Short Answer, Essay)
-- pending_manual_grading (Boolean, default false)
+  - Marks from manually graded questions (Short Answer, Essay)\n- pending_manual_grading (Boolean, default false)
   - True if exam has subjective questions not yet graded
 - teacher_feedback (Text, optional)
 - graded_by (Foreign Key → users.id, teacher, nullable)
@@ -1099,6 +1202,7 @@ Teacher can choose one of two methods:
 - List of scheduled exams not yet started
 - Each exam card shows:
   - Exam name
+  - Exam type badge (Practice/School-Level)
   - Subject
   - Class and Section
   - Start date and time (with countdown: 'Starts in 2 days5 hours')
@@ -1106,24 +1210,27 @@ Teacher can choose one of two methods:
   - Total marks
   - Status badge: 'Upcoming' (blue)\n  - Instructions button (opens modal with exam instructions)
   - 'Set Reminder' button (optional feature)
-- Sort options: Start Date (Nearest First/Farthest First), Subject A-Z\n- Filter: By Subject\n\n**Ongoing Exams Tab**:
+- Sort options: Start Date (Nearest First/Farthest First), Subject A-Z\n- Filter: By Subject, By Exam Type\n\n**Ongoing Exams Tab**:
 - List of exams currently available (between start and end datetime)
 - Each exam card shows:\n  - Exam name
+  - Exam type badge (Practice/School-Level)
   - Subject
   - Class and Section
   - Time remaining (countdown: 'Ends in 1 day 3 hours')
   - Duration
   - Total marks
   - Status badge: 'Ongoing' (green) or 'In Progress' (orange if student has started)
-  - Progress indicator: 'Answered: 10/20questions'\n  - Action button:\n    - 'Start Exam' (if not started)
+  - Progress indicator: 'Answered: 10/20questions'
+  - Action button:\n    - 'Start Exam' (if not started)
     - 'Resume Exam' (if in progress)
     - 'View Results' (if submitted and results published)
 - Prominent display for exams ending soon (within 24 hours)
 - Sort options: End Date (Nearest First), Subject A-Z
-- Filter: By Subject, By Status (Not Started/In Progress/Submitted)\n
+- Filter: By Subject, By Exam Type, By Status (Not Started/In Progress/Submitted)\n
 **Completed Exams Tab**:
 - List of exams already submitted or past end datetime
 - Each exam card shows:\n  - Exam name
+  - Exam type badge (Practice/School-Level)
   - Subject
   - Class and Section
   - Submission date and time
@@ -1136,12 +1243,13 @@ Teacher can choose one of two methods:
     - 'View Results' (if results published)
     - 'Awaiting Results' (if results not published, disabled button)
 - Sort options: Submission Date (Recent First/Oldest First), Subject A-Z
-- Filter: By Subject, By Result (Pass/Fail/Awaiting)
+- Filter: By Subject, By Exam Type, By Result (Pass/Fail/Awaiting)
 
 #### 9.4.2 Exam Taking Interface\n**Pre-Exam Screen**:
 - Display before student starts exam
 - Shows:
   - Exam name
+  - Exam type badge (Practice/School-Level)
   - Subject
   - Duration
   - Total marks
@@ -1155,28 +1263,30 @@ Teacher can choose one of two methods:
   - Checkbox: 'I have read and understood the instructions'
   - 'Start Exam' button (enabled only after checkbox is checked)
 
-**Exam Interface Layout**:
+**Enhanced Exam Interface Layout**:
 \n**Header Section** (Sticky at top):
-- Exam name
-- Subject
-- Timer (countdown showing remaining time)
+- Exam name\n- Subject
+- **Timer (countdown showing remaining time)**
+  - Large, prominent display
   - Color coding:\n    - Green: More than 10 minutes remaining
     - Orange: 5-10 minutes remaining
     - Red: Less than 5 minutes remaining
   - Warning at5 minutes: 'Only 5 minutes remaining!'
   - Blinking animation when less than 1 minute\n- 'Submit Exam' button (always visible)
-\n**Left Sidebar** (Collapsible):
-- Question navigation panel
-- Display all question numbers in grid format (e.g., 5x4 grid for 20 questions)
+\n**Left Sidebar - Question Palette Panel** (Collapsible):
+- **Question navigation panel with visual status indicators**
+- Display all question numbers in grid format (e.g., 5x4grid for 20 questions)
 - Each question number is a clickable button
-- Color-coded status indicators:
-  - Green: Answered\n  - Red: Not Answered
-  - Orange: Marked for Review
-  - Gray: Not Visited
-- Legend showing color meanings
-- Summary counts:\n  - Answered: X\n  - Not Answered: Y
+- **Color-coded status indicators**:
+  - **Green**: Answered\n  - **Red**: Not Answered
+  - **Orange**: Marked for Review
+  - **Gray**: Not Visited
+- **Legend showing color meanings**
+- **Summary counts**:
+  - Answered: X\n  - Not Answered: Y
   - Marked for Review: Z
   - Not Visited: W\n- 'Collapse' button to hide sidebar and maximize question area
+- 'Expand' button to show sidebar when collapsed
 
 **Main Content Area**:
 - Question display section
@@ -1184,21 +1294,20 @@ Teacher can choose one of two methods:
 - Question text (with proper formatting)
 - Question images (if present, with zoom functionality)
 - Marks for question (e.g., '5 marks')
-- Negative marks warning (if applicable, e.g., 'Incorrect answer: -0.25 marks')
+- Negative marks warning (if applicable, e.g., 'Incorrect answer: -0.25marks')
 \n**Answer Input Section** (Based on question type):
 \n**Multiple Choice Questions**:
 - Radio buttons for options (A, B, C, D)\n- Option text with proper formatting
 - Option images (if present)
 - Only one option can be selected
 - Selected option highlighted\n\n**Multiple Response MCQ**:
-- Checkboxes for options (A, B, C, D)
-- Option text with proper formatting
-- Multiple options can be selected
+- Checkboxes for options (A, B, C, D)\n- Option text with proper formatting\n- Multiple options can be selected
 - Selected options highlighted
 - Instruction: 'Select all correct answers'
 
 **True/False Questions**:
-- Two radio buttons:'True' and 'False'\n- Large, clear buttons
+- Two radio buttons: 'True' and 'False'
+- Large, clear buttons
 \n**Short Answer Questions**:
 - Text input field (single line)
 - Character limit: 500 characters
@@ -1218,7 +1327,7 @@ Teacher can choose one of two methods:
 
 **Action Buttons** (Below answer section):
 - 'Mark for Review' button\n  - Marks question for later review
-  - Changes status to 'Marked for Review' (orange)
+  - Changes status to 'Marked for Review' (orange in palette)
 - 'Clear Answer' button
   - Clears current answer
   - Confirmation dialog: 'Are you sure you want to clear your answer?'
@@ -1229,7 +1338,8 @@ Teacher can choose one of two methods:
   - Navigate to next question
   - Saves current answer automatically
   - If last question, button text changes to 'Review Answers'
-\n**Auto-Save Functionality**:
+
+**Auto-Save Functionality**:
 - Answers auto-saved every 30 seconds
 - Visual indicator: 'Last saved: 10 seconds ago'
 - Save on navigation (Previous/Next)\n- Save on 'Mark for Review'\n\n**Browser Lock Mode** (If enabled):
@@ -1265,7 +1375,7 @@ Teacher can choose one of two methods:
 - Save all answers to database
 - Calculate submission time
 - Check if late submission\n- Apply late submission penalty if applicable
-- Trigger auto-grading for objective questions
+- **Trigger auto-grading for objective questions**
 - Update attempt status to 'Submitted'
 - Show success message: 'Exam submitted successfully!'
 - Redirect based on settings:\n  - If 'Show Results Immediately' enabled: Redirect to Results page
@@ -1288,7 +1398,8 @@ Teacher can choose one of two methods:
   - Apply maximum penalty\n  - Show message: 'Grace period expired. Your exam has been auto-submitted with penalty.'
 \n#### 9.4.4 Exam Results View (Student)
 **Results Page Layout**:\n\n**Results Summary Card** (Top section):
-- Exam name\n- Subject
+- Exam name\n- Exam type badge (Practice/School-Level)
+- Subject
 - Submission date and time
 - Time taken (e.g., '1 hour 25 minutes')
 - Total marks: XX\n- Marks obtained: YY
@@ -1300,17 +1411,21 @@ Teacher can choose one of two methods:
 - Late submission indicator (if applicable):
   - Orange badge: 'Late Submission'\n  - Penalty applied: 'X% penalty applied'
 \n**Performance Analysis Card** (If enabled):
-- Marks breakdown by question type:
-  - Multiple Choice: X/Y marks
-  - True/False: X/Y marks\n  - Short Answer: X/Y marks
-  - Essay: X/Y marks
-  - Match the Following: X/Y marks
-  - Multiple Response MCQ: X/Y marks
-- Difficulty-wise performance:
-  - Easy questions: X/Y correct
-  - Medium questions: X/Y correct
-  - Hard questions: X/Y correct
-- Negative marks deducted: X marks (if applicable)
+- **Detailed performance breakdown**:
+  - Marks breakdown by question type:\n    - Multiple Choice: X/Y marks
+    - True/False: X/Y marks\n    - Short Answer: X/Y marks
+    - Essay: X/Y marks
+    - Match the Following: X/Y marks
+    - Multiple Response MCQ: X/Y marks
+  - Difficulty-wise performance:
+    - Easy questions: X/Y correct
+    - Medium questions: X/Y correct
+    - Hard questions: X/Y correct
+  - Negative marks deducted: X marks (if applicable)
+  - **Performance charts**:
+    - Bar chart showing marks by question type
+    - Pie chart showing difficulty distribution
+    - Line chart showing time spent per question
 \n**Teacher Feedback Section** (If provided):
 - Display teacher's overall feedback
 - Format: Text with proper line breaks
@@ -1331,8 +1446,8 @@ Teacher can choose one of two methods:
   - Marks obtained:\n    - Green badge: '+X marks' (if correct)
     - Red badge: '-X marks' (if negative marking applied)
     - Orange badge: 'X/Y marks' (for partially correct or manually graded)
-- Filter options:\n  - Show All Questions
-  - Show Correct Answers Only
+- Filter options:
+  - Show All Questions\n  - Show Correct Answers Only
   - Show Incorrect Answers Only
   - Show Subjective Questions Only
 - Expand/collapse all questions button
@@ -1344,8 +1459,8 @@ Teacher can choose one of two methods:
 - Display message: 'Your exam has been submitted successfully. Results will be published by your teacher soon.'
 - Show submission details:\n  - Exam name
   - Subject
-  - Submission date and time\n  - Time taken
--'Back to My Exams' button\n
+  - Submission date and time
+  - Time taken\n-'Back to My Exams' button\n
 ### 9.5 Teacher Exam Management Interface
 
 #### 9.5.1 Teacher Dashboard - My Exams Section
@@ -1353,12 +1468,12 @@ Teacher can choose one of two methods:
 - Display on teacher dashboard after login
 - Shows count of exams by status:
   - Draft: X exams
-  - Scheduled: Y exams
-  - Ongoing: Z exams
-  - Completed: W exams\n- Click card to open 'My Exams' page
-
-**My Exams Page Layout**:
-- Four tabs: 'Draft' | 'Scheduled' | 'Ongoing' | 'Completed'
+  - Pending Approval: Y exams (school-level exams awaiting principal approval)
+  - Scheduled: Z exams\n  - Ongoing: W exams
+  - Completed: V exams
+- Click card to open 'My Exams' page
+\n**My Exams Page Layout**:
+- Five tabs: 'Draft' | 'Pending Approval' | 'Scheduled' | 'Ongoing' | 'Completed'
 - Default tab: 'Ongoing' (if any ongoing exams), else 'Scheduled'
 -'Create New Exam' button (top right, always visible)
 
@@ -1366,6 +1481,7 @@ Teacher can choose one of two methods:
 - List of unpublished exams
 - Each exam card shows:
   - Exam name
+  - Exam type badge (Practice/School-Level)
   - Class and Subject
   - Sections (count)
   - Total marks
@@ -1379,26 +1495,49 @@ Teacher can choose one of two methods:
     - 'Delete': Delete exam with confirmation
     - 'Publish': Publish exam (opens Step 4preview)
 - Sort options: Last Modified (Recent First/Oldest First), Name A-Z
-- Search: By exam name\n\n**Scheduled Exams Tab**:
-- List of published exams not yet started (before start datetime)
+- Search: By exam name\n\n**Pending Approval Tab** (New):
+- List of school-level exams submitted for principal approval
 - Each exam card shows:
-  - Exam name\n  - Class and Subject
+  - Exam name\n  - Exam type badge: 'School-Level' (blue)
+  - Class and Subject
+  - Sections with student count
+  - Requested start date/time
+  - Requested end date/time
+  - Total marks
+  - Submission date
+  - Status badge: 'Pending Approval' (orange)
+  - Action buttons:
+    - 'View Details': Open exam details page (read-only)
+    - 'Withdraw': Withdraw exam from approval process (returns to draft)
+- Sort options: Submission Date (Recent First/Oldest First), Start Date (Nearest First)
+- Filter: By Class, By Subject\n- Note: 'Exams in this tab are awaiting Principal approval. You will be notified when approval decision is made.'
+
+**Scheduled Exams Tab**:
+- List of published exams not yet started (before start datetime)
+- Includes both practice exams and approved school-level exams
+- Each exam card shows:
+  - Exam name
+  - Exam type badge (Practice/School-Level)
+  - Class and Subject
   - Sections with student count (e.g., 'Section A (30), Section B (28)')
-  - Start date and time (with countdown: 'Starts in 2 days 5 hours')\n  - End date and time\n  - Duration
+  - Start date and time (with countdown: 'Starts in 2 days5 hours')
+  - End date and time\n  - Duration
   - Total marks
   - Status badge: 'Scheduled' (blue)
-  - Action buttons:\n    - 'View Details': Open exam details page
-    - 'Edit': Edit exam settings (limited editing allowed)
+  - Approval badge (for school-level exams): 'Approved by [Principal Name]'
+  - Action buttons:\n    - 'View Details': Open exam details page\n    - 'Edit': Edit exam settings (limited editing allowed)
     - 'Cancel Exam': Cancel scheduled exam with confirmation
     - 'Notify Students': Send reminder notification to students
 - Sort options: Start Date (Nearest First/Farthest First), Name A-Z
-- Filter: By Class, By Subject\n
+- Filter: By Class, By Subject, By Exam Type
+
 **Ongoing Exams Tab**:
 - List of exams currently active (between start and end datetime)
 - Each exam card shows:
   - Exam name
-  - Class and Subject
-  - Sections with student count\n  - Time remaining (countdown: 'Ends in 1 day 3 hours')
+  - Exam type badge (Practice/School-Level)
+  - Class and Subject\n  - Sections with student count
+  - Time remaining (countdown: 'Ends in 1 day 3 hours')
   - Duration
   - Total marks
   - Student participation:\n    - Total students: 58
@@ -1407,17 +1546,19 @@ Teacher can choose one of two methods:
     - Completed: 15 (purple)
     - Not Started: 13 (gray)
   - Progress bar showing completion percentage
-  - Status badge: 'Ongoing' (green)\n  - Action buttons:
+  - Status badge: 'Ongoing' (green)
+  - Action buttons:
     - 'Monitor Live': Open real-time monitoring dashboard
     - 'View Details': Open exam details page
     - 'Extend Time': Extend exam end time (with confirmation)
     - 'End Exam Early': End exam before scheduled time (with confirmation)
 - Auto-refresh every 30 seconds to show live updates
 - Sort options: End Date (Nearest First), Name A-Z
-- Filter: By Class, By Subject\n
-**Completed Exams Tab**:
-- List of exams past end datetime or manually ended
-- Each exam card shows:\n  - Exam name
+- Filter: By Class, By Subject, By Exam Type
+
+**Completed Exams Tab**:\n- List of exams past end datetime or manually ended
+- Each exam card shows:
+  - Exam name\n  - Exam type badge (Practice/School-Level)
   - Class and Subject
   - Sections with student count
   - End date and time
@@ -1434,13 +1575,14 @@ Teacher can choose one of two methods:
   - Average score: XX%
   - Pass rate: YY%
   - Status badge: 'Completed' (purple)
-  - Action buttons:\n    - 'View Results': Open results and analytics page
+  - Action buttons:
+    - 'View Results': Open results and analytics page
     - 'Grade Answers': Open manual grading interface (if pending)
     - 'Publish Results': Publish results to students (if not published)
     - 'Export Results': Download results as Excel/CSV
     - 'View Analytics': Open detailed analytics dashboard
 - Sort options: End Date (Recent First/Oldest First), Name A-Z
-- Filter: By Class, By Subject, By Grading Status (Fully Graded/Pending Grading)
+- Filter: By Class, By Subject, By Exam Type, By Grading Status (Fully Graded/Pending Grading)
 
 #### 9.5.2 Exam Monitoring Interface
 **Real-time Monitoring Dashboard**:
@@ -1459,12 +1601,10 @@ Teacher can choose one of two methods:
   - Gray progress bar
 - Average Time Taken: 45 minutes (for completed students)
 - Average Score: 72% (for completed students, if auto-graded)
-
-**Live Student Status Table**:
+\n**Live Student Status Table**:
 - Columns:\n  - Student Name
   - Section
-  - Status (Not Started/In Progress/Completed)
-    - Color-coded badges
+  - Status (Not Started/In Progress/Completed)\n    - Color-coded badges
   - Start Time
   - Time Elapsed (for in-progress students)
     - Real-time countdown
@@ -1479,7 +1619,8 @@ Teacher can choose one of two methods:
 **Student Detail View** (Click on student row):
 - Opens modal or side panel\n- Shows:
   - Student name and photo
-  - Section\n  - Current status
+  - Section
+  - Current status
   - Start time
   - Time elapsed
   - Questions answered: X/Y
@@ -1515,7 +1656,8 @@ Teacher can choose one of two methods:
   - All questions graded (objective + subjective)
 - Average Score (Auto-graded): 65%
 - Average Score (Fully Graded): 72%
-\n**Grading Mode Selection**:
+
+**Grading Mode Selection**:
 - Two modes available:
   - **Student-wise Grading**: Grade all questions for one student at a time
   - **Question-wise Grading**: Grade same question for all students in sequence
@@ -1531,8 +1673,7 @@ Teacher can choose one of two methods:
     - Orange badge: 'Partially Graded'
     - Green badge: 'Fully Graded'\n- Click on student to load their answers in grading panel
 - Filter: By Section, By Grading Status
-- Sort: Name A-Z, Auto-graded Marks (High to Low)
-
+- Sort: Name A-Z, Auto-graded Marks (High to Low)\n
 **Grading Panel** (Right panel, 70% width):
 - Display selected student's subjective answers
 - For each subjective question show:
@@ -1552,7 +1693,7 @@ Teacher can choose one of two methods:
   - 'Next Student': Move to next student in list
 -'Save and Next Student' button:\n  - Saves all marks and feedback for current student
   - Moves to next student with pending grading
-- Progress indicator:'Grading Question2 of 3 for Student 5of 20'
+- Progress indicator: 'Grading Question2 of 3 for Student 5of 20'
 
 **Question-wise Grading Mode**:\n
 **Question Selection** (Top section):
@@ -1576,7 +1717,7 @@ Teacher can choose one of two methods:
   - Copies feedback from one answer to all answers\n  - Useful for common feedback
 \n**Grading Progress**:
 - Progress bar showing grading completion\n- 'Graded: X/Y students for this question'\n\n**Auto-grading Logic**:
-- Triggered immediately after student submits exam
+- **Triggered immediately after student submits exam**
 - For each objective question:
   - **Multiple Choice**: Compare student's answer with correct_answer
     - If match: Award full marks\n    - If no match: Award 0 marks or apply negative marking
@@ -1601,7 +1742,7 @@ Teacher can choose one of two methods:
 - Selects grading mode (Student-wise or Question-wise)
 - For each subjective answer:
   - Review student's answer
-  - Assign marks (0to maximum)
+  - Assign marks (0 to maximum)
   - Optionally provide feedback
   - Click 'Save Marks'\n- System updates manual_graded_marks\n- When all subjective questions graded for a student:
   - Calculate total_marks_obtained = auto_graded_marks + manual_graded_marks
@@ -1625,7 +1766,8 @@ Teacher can choose one of two methods:
 
 #### 9.5.4 Exam Analytics and Reports
 **Analytics Dashboard**:
-- Accessible from 'View Analytics' button on completed exams\n\n**Dashboard Layout**:
+- Accessible from 'View Analytics' button on completed exams
+\n**Dashboard Layout**:
 
 **Overview Section** (Top cards):
 - Total Students: 58
@@ -1662,7 +1804,8 @@ Teacher can choose one of two methods:
   - Hard: 5 questions, Avg 2.1/5, 42%
 
 **Question-wise Analysis**:
-- Table showing performance for each question\n- Columns:
+- Table showing performance for each question
+- Columns:
   - Question Number
   - Question Type
   - Difficulty\n  - Marks\n  - Students Answered Correctly
@@ -1740,61 +1883,66 @@ Teacher can choose one of two methods:
 - 'Print Analytics Dashboard': Print-friendly version of dashboard
 - 'Print Student Results': Print student performance table
 \n### 9.6 Principal Exam Monitoring Interface
-
-#### 9.6.1 Principal Dashboard - Online Exams Overview
+\n#### 9.6.1 Principal Dashboard - Online Exams Overview
 **Dashboard Card:'Online Exams'**\n- Display on principal dashboard after login
 - Shows school-wide exam statistics:\n  - Total Exams This Month: X
   - Exams Ongoing: Y
   - Exams Scheduled: Z
-  - Average Participation Rate: W%
+  - Pending Approvals: W (school-level exams awaiting approval)
+  - Average Participation Rate: V%
 - Click card to open'Online Exams' page
 
 **Online Exams Page Layout**:
-- Three tabs: 'All Exams' | 'Ongoing' | 'Completed'
-- Default tab: 'Ongoing' (if any ongoing exams), else 'All Exams'
+- Four tabs: 'All Exams' | 'Pending Approvals' | 'Ongoing' | 'Completed'
+- Default tab: 'Pending Approvals' (if any pending), else 'Ongoing'
 \n**All Exams Tab**:
-- List of all exams created by teachers in school
+- List of all exams created by teachers and principal in school
 - Each exam card shows:\n  - Exam name
-  - Created by (Teacher name)
+  - Exam type badge (Practice/School-Level)\n  - Created by (Teacher/Principal name)
   - Class and Subject
   - Sections
   - Start and end date/time
-  - Status badge (Draft/Scheduled/Ongoing/Completed/Cancelled)
+  - Status badge (Draft/Pending Approval/Approved/Scheduled/Ongoing/Completed/Cancelled/Rejected)
+  - Approval status (for school-level exams created by teachers)
   - Total students
   - Participation rate (for ongoing/completed exams)
   - Average score (for completed exams)
   - Action buttons:\n    - 'View Details': Open exam details page
     - 'View Analytics': Open analytics dashboard (for completed exams)
 - Filter options:\n  - By Teacher (dropdown showing all teachers)
-  - By Class (dropdown)\n  - By Subject (dropdown)\n  - By Status (dropdown: All, Draft, Scheduled, Ongoing, Completed, Cancelled)
-  - By Date Range (date picker: From Date, To Date)
+  - By Class (dropdown)\n  - By Subject (dropdown)\n  - By Exam Type (dropdown: All, Practice, School-Level)
+  - By Status (dropdown: All, Draft, Pending Approval, Approved, Scheduled, Ongoing, Completed, Cancelled, Rejected)\n  - By Date Range (date picker: From Date, To Date)
 - Search: By exam name or exam ID
-- Sort options: Creation Date (Recent First/Oldest First), Start Date, Teacher Name A-Z
-
+- Sort options: Creation Date (Recent First/Oldest First), Start Date, Teacher Name A-Z\n
+**Pending Approvals Tab**:
+- Displays content from Section 5.8 (Exam Approvals Card)
+- List of school-level exams awaiting approval\n- Approval workflow interface\n- Quick approve, review, reject options
+- Approval history\n
 **Ongoing Exams Tab**:
 - List of exams currently active\n- Each exam card shows:
   - Exam name
-  - Created by (Teacher name)
+  - Exam type badge (Practice/School-Level)
+  - Created by (Teacher/Principal name)
   - Class and Subject
   - Sections
-  - Time remaining (countdown)
-  - Total students
+  - Time remaining (countdown)\n  - Total students
   - Student participation:\n    - Started: X (Y%)
     - In Progress: X (Y%)
     - Completed: X (Y%)
-    - Not Started: X (Y%)
+- Not Started: X (Y%)
   - Progress bar
   - Status badge:'Ongoing' (green)
   - Action buttons:
     - 'Monitor Live': Open real-time monitoring dashboard (read-only)
     - 'View Details': Open exam details page
 - Auto-refresh every 30 seconds
-- Filter: By Teacher, By Class, By Subject\n- Sort: End Date (Nearest First), Teacher Name A-Z
+- Filter: By Teacher, By Class, By Subject, By Exam Type\n- Sort: End Date (Nearest First), Teacher Name A-Z
 
 **Completed Exams Tab**:
 - List of exams past end datetime
 - Each exam card shows:\n  - Exam name
-  - Created by (Teacher name)\n  - Class and Subject
+  - Exam type badge (Practice/School-Level)
+  - Created by (Teacher/Principal name)\n  - Class and Subject
   - Sections
   - End date and time
   - Total students\n  - Participation rate: X% (Y students completed)
@@ -1804,12 +1952,13 @@ Teacher can choose one of two methods:
   - Action buttons:
     - 'View Results': Open results summary\n    - 'View Analytics': Open detailed analytics dashboard
     - 'Export Results': Download results as Excel/CSV
-- Filter: By Teacher, By Class, By Subject, By Date Range
+- Filter: By Teacher, By Class, By Subject, By Exam Type, By Date Range
 - Sort: End Date (Recent First/Oldest First), Average Score (High to Low), Teacher Name A-Z
 \n**Exam Details Page** (Principal view):
 - Read-only view of exam configuration
 - Sections:
-  - Exam Information: Name, Class, Subject, Sections, Duration, Start/End DateTime, Passing Marks, Instructions
+  - Exam Information: Name, Exam Type, Class, Subject, Sections, Duration, Start/End DateTime, Passing Marks, Instructions
+  - Approval Information (for school-level exams): Approval status, Approved by, Approval date, Approval notes
   - Exam Settings: Negative Marking, Show Results Immediately, Allow Answer Review, Randomization settings, Late Submission settings, Security settings
   - Question List: All questions with marks, difficulty, question type\n  - Student Participation: List of students with status (Not Started/In Progress/Completed)
   - Results Summary (for completed exams): Average score, pass rate, score distribution
@@ -1821,51 +1970,58 @@ Teacher can choose one of two methods:
 - Accessible from Principal Dashboard or Online Exams page
 - Shows aggregated analytics for all exams in school
 \n**Dashboard Layout**:
-\n**Overview Cards** (Top section):
+
+**Overview Cards** (Top section):
 - Total Exams Conducted: X (this month/this year)
-- Total Students Participated: Y\n- Average Exam Score: Z% (across all exams)
-- Average Pass Rate: W%
+- Practice Exams: Y\n- School-Level Exams: Z
+- Total Students Participated: W
+- Average Exam Score: V% (across all exams)
+- Average Pass Rate: U%
 - Most Active Teacher: [Teacher Name] (X exams created)
 - Most Exams by Subject: [Subject Name] (Y exams)\n\n**Charts and Graphs**:
 \n**1. Exams Conducted Over Time**:
 - Line chart showing number of exams per month
 - X-axis: Months (last 12 months)
-- Y-axis: Number of exams\n- Separate lines for each class or subject (toggle option)
+- Y-axis: Number of exams\n- Separate lines for Practice and School-Level exams
 
-**2. Exams by Subject**:
+**2. Exams by Type**:
+- Pie chart showing distribution of Practice vs School-Level exams
+\n**3. Exams by Subject**:
 - Bar chart showing number of exams per subject
 - X-axis: Subjects\n- Y-axis: Number of exams
-- Color-coded bars\n\n**3. Exams by Class**:
+- Color-coded bars\n
+**4. Exams by Class**:
 - Bar chart showing number of exams per class
 - X-axis: Classes
 - Y-axis: Number of exams
-\n**4. Student Participation Rate**:
+\n**5. Student Participation Rate**:
 - Pie chart showing:\n  - Students who attempted exams: X%
   - Students who did not attempt: Y%
 - Drill-down option to see class-wise or section-wise participation
 
-**5. Average Scores by Subject**:
+**6. Average Scores by Subject**:
 - Bar chart showing average scores for each subject
 - X-axis: Subjects
 - Y-axis: Average score (%)
 - Color-coded bars (green for >75%, orange for 50-75%, red for <50%)
 
-**6. Average Scores by Class**:
+**7. Average Scores by Class**:
 - Bar chart showing average scores for each class
 - X-axis: Classes
 - Y-axis: Average score (%)
-\n**7. Pass Rate by Subject**:
+\n**8. Pass Rate by Subject**:
 - Bar chart showing pass rate for each subject
 - X-axis: Subjects
-- Y-axis: Pass rate (%)\n\n**8. Pass Rate by Class**:
-- Bar chart showing pass rate for each class
-- X-axis: Classes
-- Y-axis: Pass rate (%)\n
+- Y-axis: Pass rate (%)\n\n**9. Pass Rate by Class**:
+- Bar chart showing pass rate for each class\n- X-axis: Classes\n- Y-axis: Pass rate (%)
+
 **Teacher Performance Table**:
 - List of teachers with exam statistics
 - Columns:
   - Teacher Name
   - Total Exams Created
+  - Practice Exams
+  - School-Level Exams
   - Total Students Participated
   - Average Student Score (%)
   - Average Pass Rate (%)
@@ -1875,8 +2031,8 @@ Teacher can choose one of two methods:
 
 **Subject Performance Table**:
 - List of subjects with exam statistics
-- Columns:
-  - Subject Name\n  - Total Exams Conducted
+- Columns:\n  - Subject Name
+  - Total Exams Conducted
   - Total Students Participated
   - Average Score (%)
   - Pass Rate (%)
@@ -1912,41 +2068,48 @@ Teacher can choose one of two methods:
 - Class: Multi-select dropdown
 - Subject: Multi-select dropdown
 - Teacher: Multi-select dropdown
--'Apply Filters' button
+- Exam Type: Multi-select dropdown (Practice/School-Level)
+- 'Apply Filters' button
 - 'Clear Filters' button\n
 ### 9.7 Online Exam Access Control and Data Isolation
 
 #### 9.7.1 Teacher Access Rules
-- Can create exams only for classes and subjects assigned to them
+- Can create practice exams and school-level exams only for classes and subjects assigned to them
 - Can select only sections assigned to them
+- Practice exams can be published immediately without approval
+- School-level exams must be submitted for Principal approval before scheduling
 - Can view and manage only own exams (created by them)
 - Can view student attempts only for own exams
 - Can grade only own exams
-- Cannot view exams created by other teachers
+- Cannot view exams created by other teachers or principal
 - Cannot view students from sections not assigned to them
-- Cannot edit or delete exams after students have started attempting
-- Can extend exam time or end exam early for own exams
-\n#### 9.7.2 Student Access Rules
-- Can view only exams assigned to their section
+- Cannot edit or delete exams after students have started attempting\n- Can extend exam time or end exam early for own exams
+- Cannot edit school-level exams while in'Pending Approval' status\n
+#### 9.7.2 Student Access Rules
+- Can view only exams assigned to their section (both practice and school-level)
 - Can take exam only during scheduled time window (start to end datetime)
 - Can take exam only once (no retakes)
+- **Use individual student login to access exam interface**
+- **Exam interface includes question palette panel with color-coded status indicators and timer**
 - Can view results only if teacher has published them
 - Can review answers only if teacher has enabled 'Allow Answer Review'
 - Cannot view other students' attempts or results
 - Cannot access exam before start time
 - Cannot access exam after end time (unless late submission enabled)
-
-#### 9.7.3 Principal Access Rules
-- Can view all exams created by teachers in their school
+\n#### 9.7.3 Principal Access Rules
+- Can create exams directly for any class and subject without approval requirement
+- Can create exams from school question bank without approval\n- Can approve or reject school-level exams submitted by teachers
+- Can view all exams (practice and school-level) created by teachers and self in their school
 - Can view exam details, settings, and questions
 - Can view student participation and results
 - Can view exam analytics and reports
 - Can export exam results and analytics
-- Cannot create, edit, or delete exams
-- Cannot grade exams
-- Cannot publish or unpublish results
-- Cannot extend exam time or end exam early
-- Read-only access to all exam data
+- Cannot edit or delete exams created by teachers
+- Cannot grade exams created by teachers
+- Cannot publish or unpublish results for teacher-created exams
+- Cannot extend exam time or end exam early for teacher-created exams
+- Read-only access to teacher-created exam data
+- Full control over self-created exams
 
 #### 9.7.4 Data Isolation\n- All exam data is school-scoped\n- Backend validation ensures:\n  - Teachers can only access own exams
   - Students can only access exams assigned to their section
@@ -1955,14 +2118,14 @@ Teacher can choose one of two methods:
 - Foreign key constraints enforce school-based isolation
 - API endpoints validate user's school_id before returning data
 - Student attempts are linked to specific exam and student, ensuring one attempt per student per exam
+- Approval workflow ensures school-level exams are reviewed before scheduling
 
-### 9.8 Online Exam Notifications
-
+### 9.8 Online Exam Notifications\n
 #### 9.8.1 Student Notifications
 **Notification Types**:
 - **Exam Assigned**: When teacher publishes new exam
-  - Message: 'New exam assigned: [Exam Name] for [Subject]. Starts on [Date] at [Time].'
-  - Action: 'View Exam Details'\n- **Exam Reminder (24 hours before)**: 24 hours before exam start time
+  - Message: 'New [Practice/School-Level] exam assigned: [Exam Name] for [Subject]. Starts on [Date] at [Time].'
+  - Action: 'View Exam Details'\n- **Exam Reminder (24 hours before)**: 24hours before exam start time
   - Message: 'Reminder: [Exam Name] starts tomorrow at [Time]. Duration: [X] minutes.'
   - Action: 'View Exam Details'
 - **Exam Reminder (1 hour before)**: 1 hour before exam start time
@@ -1986,6 +2149,14 @@ Teacher can choose one of two methods:
 - Push notifications (if mobile app, future feature)
 \n#### 9.8.2 Teacher Notifications
 **Notification Types**:
+- **Exam Approved**: When principal approves school-level exam
+  - Message: 'Your school-level exam [Exam Name] has been approved by [Principal Name]. You can now schedule it.'
+  - Action: 'Schedule Exam'
+- **Exam Rejected**: When principal rejects school-level exam
+  - Message: 'Your school-level exam [Exam Name] has been rejected by [Principal Name]. Reason: [Rejection Reason]'
+  - Action: 'View Details'
+- **Modification Requested**: When principal requests modifications\n  - Message: 'Principal has requested modifications for [Exam Name]. Please review and resubmit.'
+  - Action: 'View Requests'
 - **Student Submitted Exam**: When student submits exam\n  - Message: '[Student Name] has submitted [Exam Name].'
   - Action: 'View Submission'
 - **All Students Completed**: When all students have completed exam
@@ -2008,6 +2179,12 @@ Teacher can choose one of two methods:
 - In-app notifications\n- Email notifications (daily digest option)
 \n#### 9.8.3 Principal Notifications
 **Notification Types**:
+- **New Exam Submitted for Approval**: When teacher submits school-level exam
+  - Message: '[Teacher Name] has submitted school-level exam [Exam Name] for approval.'
+  - Action: 'Review Exam'
+- **Pending Approvals Reminder**: Daily reminder for pending approvals
+  - Message: 'You have [X] school-level exams pending approval.'
+  - Action: 'View Approvals'
 - **Daily Exam Summary**: Daily summary of exams conducted (sent at end of day)
   - Message: 'Daily Summary: [X] exams conducted today. [Y] students participated. Average score: [Z]%.'
   - Action: 'View Analytics'
@@ -2024,8 +2201,7 @@ Teacher can choose one of two methods:
 
 ### 9.9 Online Exam Security Features
 
-#### 9.9.1 Exam Integrity
-**Single Attempt Enforcement**:
+#### 9.9.1 Exam Integrity\n**Single Attempt Enforcement**:
 - Database constraint: Unique index on (exam_id, student_id) in student_exam_attempts table
 - Backend validation: Check if student has existing attempt before allowing exam start
 - Frontend validation: Disable'Start Exam' button if attempt exists
@@ -2170,7 +2346,7 @@ After Teacher login, the dashboard displays:
 - Question Bank access
 - Question Paper Preparation
 - Question Paper History
-- **Online Exams** (new card)
+- **Online Exams** (with practice and school-level exam creation)
 \n### 10.2 Teacher Functions
 - View assigned classes, sections, and subjects
 - View students of assigned sections only
@@ -2183,25 +2359,30 @@ After Teacher login, the dashboard displays:
   - Track paper creation and modification history
   - View personal analytics dashboard
 - **Online Exam Management**:
-  - Create online exams from question papers or question bank
+  - **Create practice exams (no approval required) to assess student understanding**
+  - **Create school-level exams (requires Principal approval before scheduling)**
   - Configure exam settings (duration, start/end time, passing marks, negative marking)
-  - Publish exams to assigned sections
+  - Publish practice exams directly to assigned sections
+  - Submit school-level exams for Principal approval
   - Monitor student participation in real-time
   - View submitted answers and auto-graded results
   - Manually grade subjective questions (Short Answer, Essay)\n  - Generate exam reports and analytics
-  - Export exam results\n\n## 11. Student Dashboard and Functions
-
+  - Export exam results\n\n## 11. Student Dashboard and Functions\n
 ### 11.1 Student Login - Dashboard Overview
 After Student login, the dashboard displays:
 - My class, section, subjects, and teachers
-- **My Exams** (new section)
+- **My Exams** (practice and school-level exams)
 \n### 11.2 Student Functions
 - View my class and section
 - View my subjects\n- View my teachers
 - **Online Exam Functions**:
-  - View assigned online exams
-  - Take online exams within scheduled time\n  - Submit answers before deadline
+  - **Login with individual student account**
+  - View assigned online exams (practice and school-level)
+  - **Take online exams with enhanced interface including question palette panel and timer**
+  - Submit answers before deadline
+  - **View auto-evaluated results for objective questions**
   - View exam results and feedback (after teacher publishes results)
+  - **View detailed performance analysis**
   - Review correct answers (if enabled by teacher)
 - Profile settings\n\n## 12. Key Features\n
 ### 12.1 User Registration and Approval Workflow
@@ -2218,11 +2399,13 @@ After Student login, the dashboard displays:
 - Student Management
 - Question Bank Management
 - Question Paper History Management:\n  - View all question papers created by teachers in school
-  - Advanced filtering and search
-  - School-wide analytics dashboard
+  - Advanced filtering and search\n  - School-wide analytics dashboard
   - Export and print capabilities
 - **Online Exam Monitoring**:
-  - View all online exams created by teachers in school
+  - **Approve school-level exams created by teachers**
+  - **Create exams directly without approval requirement**
+  - **Create exams from school question bank without approval**
+  - View all online exams (practice and school-level) created by teachers in school
   - Monitor exam status and student participation
   - Access exam analytics and reports
 \n### 12.5 Teacher Functions
@@ -2233,15 +2416,20 @@ After Student login, the dashboard displays:
   - Personal analytics dashboard
   - Version tracking and management
 - **Online Exam Management**:
-  - Create and publish online exams
-  - Real-time monitoring\n  - Auto and manual grading
-  - Exam analytics and reports
+  - **Create practice exams (no approval required)**
+  - **Create school-level exams (requires Principal approval)**
+  - Real-time monitoring\n  - **Auto-grading for objective questions**
+  - Manual grading for subjective questions
+  - **Detailed exam analytics and performance reports**
 \n### 12.6 Student Functions
 - View personal information
 - Profile editing
 - **Online Exam Functions**:
-  - Take assigned online exams
-  - View results and feedback
+  - **Individual login to access exams**
+  - **Enhanced exam interface with question palette panel and timer**
+  - Take assigned online exams (practice and school-level)
+  - **View auto-evaluated results for objective questions**
+  - **View detailed performance analysis**
   - Review correct answers (if enabled)\n\n### 12.7 User Profile Management
 - Edit, Save, Approve, Suspend buttons
 - Status-based navigation
@@ -2256,19 +2444,21 @@ After Student login, the dashboard displays:
 \n### 12.11 Landing Page - Updated Design
 - Login and Register buttons removed from hero section
 - Get Started section removed\n\n### 12.12 Question Paper History Feature
-- Comprehensive tracking of all question papers
-- Advanced filtering and search capabilities
+- Comprehensive tracking of all question papers\n- Advanced filtering and search capabilities
 - Paper versioning and relationship tracking
 - Export and print functionality
 - Analytics and reporting for both teachers and principals
 - School-based data isolation and access control
 
 ### 12.13 Online Exam Feature
-- Complete online exam creation and management system
+- **Complete online exam creation and management system with approval workflow**
+- **Practice exams (no approval) and school-level exams (requires approval)**
+- **Principal can create exams directly without approval**
+- **Enhanced student exam interface with question palette panel and timer**
 - Real-time exam monitoring and student participation tracking
-- Auto-grading for objective questions
+- **Automatic grading for objective questions (MCQ, True/False, Multiple Response, Match the Following)**
 - Manual grading for subjective questions
-- Comprehensive exam analytics and reports
+- **Comprehensive exam analytics with detailed performance analysis**
 - Security features and anti-cheating measures
 - School-based data isolation and role-based access control
 
@@ -2301,17 +2491,23 @@ After Student login, the dashboard displays:
 - Minus Mark color: Red (#EF4444) or Orange (#F59E0B)
 - History/Archive color: Purple (#8B5CF6)
 - **Exam status colors**:
-  - Draft: Gray (#6B7280)\n  - Scheduled: Blue (#3B82F6)
+  - Draft: Gray (#6B7280)\n  - Pending Approval: Orange (#F59E0B)
+  - Approved: Green (#10B981)
+  - Scheduled: Blue (#3B82F6)
   - Ongoing: Green (#10B981)
   - Completed: Purple (#8B5CF6)
-  - Cancelled: Red (#EF4444)\n\n### 15.2 Visual Details
+- Cancelled: Red (#EF4444)\n  - Rejected: Red (#EF4444)\n- **Exam type badges**:
+  - Practice: Green (#10B981)
+  - School-Level: Blue (#3B82F6)
+\n### 15.2 Visual Details
 - Soft rounded corners (8px radius)
 - Subtle shadow effects
 - Clear borders\n- Status badges with appropriate colors
 - Icon indicators for images and versions
-- **Timer display with color coding** (green >10min, orange 5-10 min, red < 5 min)
+- **Timer display with color coding** (green >10min, orange 5-10min, red <5min)
 - **Progress indicators** for exam completion
 - **Real-time status updates** with smooth animations
+- **Question palette panel with color-coded status indicators** (green: answered, red: not answered, orange: marked for review, gray: not visited)
 \n### 15.3 Overall Layout
 - Side panel navigation with collapsible toggle
 - Card-based design\n- Responsive grid layout
@@ -2321,8 +2517,10 @@ After Student login, the dashboard displays:
 - Question Paper Preparation with smart selection and auto-versioned shuffle
 - Question Paper History with advanced filtering, analytics, and version tracking
 - **Online Exam interface with clean, distraction-free design**
+- **Enhanced student exam interface with question palette panel (left sidebar) and timer (header)**
 - **Real-time monitoring dashboard with live updates**
 - **Exam analytics with interactive charts and graphs**
+- **Approval workflow interface for Principal**
 \n## 16. Reference Image
 
 ### 16.1 Question Edit Form Layout

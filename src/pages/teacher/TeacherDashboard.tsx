@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileQuestion, BookOpen, GraduationCap, FileText, FolderOpen } from 'lucide-react';
+import { FileQuestion, BookOpen, GraduationCap, FileText, FolderOpen, ClipboardList } from 'lucide-react';
 import { questionApi, academicApi, profileApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
 
@@ -133,7 +133,7 @@ export default function TeacherDashboard() {
         <CardHeader>
           <CardTitle>Quick Actions</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-3">
+        <CardContent className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Button
             onClick={() => navigate('/teacher/questions')}
             className="h-24 flex flex-col items-center justify-center gap-2"
@@ -157,6 +157,14 @@ export default function TeacherDashboard() {
           >
             <FolderOpen className="h-8 w-8" />
             <span>Question Paper History</span>
+          </Button>
+          <Button
+            onClick={() => navigate('/teacher/exams')}
+            className="h-24 flex flex-col items-center justify-center gap-2"
+            variant="outline"
+          >
+            <ClipboardList className="h-8 w-8" />
+            <span>Manage Exams</span>
           </Button>
         </CardContent>
       </Card>

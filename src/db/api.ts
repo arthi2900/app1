@@ -22,6 +22,7 @@ import type {
   QuestionPaperVersion,
   QuestionPaperVersionWithDetails,
   Exam,
+  ExamStatus,
   ExamWithDetails,
   ExamAttempt,
   ExamAttemptWithDetails,
@@ -996,6 +997,51 @@ export const examApi = {
     if (error) throw error;
     return data;
   },
+
+  async updateExamStatus(examId: string, status: ExamStatus): Promise<Exam | null> {
+    const { data, error } = await supabase
+      .from('exams')
+      .update({ status })
+      .eq('id', examId)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async getExamsBySchool(schoolId: string): Promise<ExamWithDetails[]> {
+    const { data, error } = await supabase
+      .from('exams')
+      .select(`
+        *,
+        question_paper:question_papers(*),
+        class:classes(*),
+        subject:subjects(*),
+        teacher:profiles!exams_teacher_id_fkey(*),
+        approver:profiles!exams_approved_by_fkey(*)
+      `)
+      .eq('class.school_id', schoolId)
+      .order('start_time', { ascending: false });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getExamsByClass(classId: string): Promise<ExamWithDetails[]> {
+    const { data, error } = await supabase
+      .from('exams')
+      .select(`
+        *,
+        question_paper:question_papers(*),
+        class:classes(*),
+        subject:subjects(*),
+        teacher:profiles!exams_teacher_id_fkey(*)
+      `)
+      .eq('class_id', classId)
+      .eq('status', 'published')
+      .order('start_time', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
 };
 
 // Exam Attempt API
@@ -1114,6 +1160,27 @@ export const examAttemptApi = {
       .eq('id', attemptId)
       .select()
       .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async getAttemptByStudent(examId: string, studentId: string): Promise<ExamAttempt | null> {
+    const { data, error } = await supabase
+      .from('exam_attempts')
+      .select()
+      .eq('exam_id', examId)
+      .eq('student_id', studentId)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async createAttempt(attempt: Omit<ExamAttempt, 'id' | 'created_at' | 'updated_at'>): Promise<ExamAttempt> {
+    const { data, error } = await supabase
+      .from('exam_attempts')
+      .insert(attempt)
+      .select()
+      .single();
     if (error) throw error;
     return data;
   },

@@ -1,7 +1,10 @@
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen } from 'lucide-react';
+import { ClipboardList, Award } from 'lucide-react';
 
 export default function StudentDashboard() {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-6">
       <div>
@@ -11,14 +14,43 @@ export default function StudentDashboard() {
         </p>
       </div>
 
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/student/exams')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ClipboardList className="h-5 w-5" />
+              My Exams
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              View and take your assigned exams
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/student/exams')}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Award className="h-5 w-5" />
+              My Results
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              View your exam results and performance
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Welcome</CardTitle>
-          <BookOpen className="w-5 h-5 text-primary" />
+        <CardHeader>
+          <CardTitle>Welcome</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            Welcome to the student section. Your teachers are preparing questions for your learning.
+            Welcome to the student dashboard. Here you can access your exams and view your results.
           </p>
         </CardContent>
       </Card>
