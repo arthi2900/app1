@@ -182,20 +182,47 @@ export default function TakeExam() {
   };
 
   const handleAnswerChange = async (questionId: string, answer: any) => {
+    console.log('=== ANSWER CHANGE ===');
+    console.log('Question ID:', questionId);
+    console.log('Answer:', answer);
+    console.log('Answer Type:', typeof answer);
+    console.log('Attempt ID:', attempt?.id);
+    
     setAnswers({ ...answers, [questionId]: answer });
 
     if (attempt) {
       try {
-        await examAnswerApi.saveAnswer({
+        const question = questions.find(q => q.question_id === questionId);
+        const answerData = {
           attempt_id: attempt.id,
           question_id: questionId,
           student_answer: answer,
-          marks_allocated: questions.find(q => q.question_id === questionId)?.question?.marks || 0,
-        });
+          marks_allocated: question?.question?.marks || 0,
+        };
+        
+        console.log('Saving answer data:', answerData);
+        const result = await examAnswerApi.saveAnswer(answerData);
+        console.log('✅ Answer saved successfully:', result);
       } catch (error: any) {
-        console.error('Failed to save answer:', error);
+        console.error('❌ Failed to save answer:', error);
+        console.error('Error details:', {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint
+        });
+        
+        // Show error to user
+        toast({
+          title: 'Error Saving Answer',
+          description: 'Your answer may not have been saved. Please try again.',
+          variant: 'destructive',
+        });
       }
+    } else {
+      console.warn('⚠️ No attempt found, answer not saved');
     }
+    console.log('====================');
   };
 
   const handleAutoSubmit = async () => {
@@ -226,7 +253,22 @@ export default function TakeExam() {
   const handleSubmit = async () => {
     if (!attempt) return;
 
+    console.log('=== MANUAL SUBMIT ===');
+    console.log('Attempt ID:', attempt.id);
+    console.log('Answers in state:', answers);
+    console.log('Answered questions:', Object.keys(answers).length);
+    console.log('Total questions:', questions.length);
+    console.log('====================');
+
     try {
+      // Verify answers are saved before submitting
+      const savedAnswers = await examAnswerApi.getAnswersByAttempt(attempt.id);
+      console.log('Saved answers in database:', savedAnswers.length);
+      
+      if (savedAnswers.length === 0) {
+        console.warn('⚠️ WARNING: No answers found in database before submission!');
+      }
+      
       await examAttemptApi.submitAttempt(attempt.id);
       toast({
         title: 'Success',
@@ -234,6 +276,7 @@ export default function TakeExam() {
       });
       navigate(`/student/exams/${examId}/result`);
     } catch (error: any) {
+      console.error('❌ Submit failed:', error);
       toast({
         title: 'Error',
         description: error.message || 'Failed to submit exam',
