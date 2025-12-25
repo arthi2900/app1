@@ -243,25 +243,39 @@ export default function TakeExam() {
     return true;
   };
 
+  // Loading state - exam data is being fetched
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading exam...</p>
+          <p className="text-muted-foreground">தேர்வு ஏற்றப்படுகிறது...</p>
         </div>
       </div>
     );
   }
 
-  if (!exam || questions.length === 0) {
+  // Exam truly not found (hard failure)
+  if (!exam && !loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <p className="text-muted-foreground">Exam not found</p>
+          <p className="text-muted-foreground">தேர்வு கிடைக்கவில்லை</p>
           <Button onClick={() => navigate('/student/exams')} className="mt-4">
-            Back to Exams
+            தேர்வுகளுக்கு திரும்பு
           </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Questions are still loading (DO NOT treat as exam not found)
+  if (exam && questions.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">வினாக்கள் ஏற்றப்படுகின்றன...</p>
         </div>
       </div>
     );
