@@ -27,19 +27,43 @@ export default function StudentExamDetail() {
     try {
       if (!examId || !studentId) return;
 
+      console.log('Loading exam details for:', { examId, studentId });
+
       const examData = await examApi.getExamById(examId);
+      console.log('Exam data loaded:', examData);
       setExam(examData);
 
       const attempts = await examAttemptApi.getAttemptsByExam(examId);
+      console.log('All attempts for exam:', attempts);
+      
       const studentAttempt = attempts.find(a => a.student_id === studentId);
+      console.log('Student attempt found:', studentAttempt);
       
       if (studentAttempt) {
         setAttempt(studentAttempt);
         
+        console.log('Fetching answers for attempt ID:', studentAttempt.id);
         const answersData = await examAnswerApi.getAnswersByAttempt(studentAttempt.id);
+        console.log('Answers data received:', answersData);
+        console.log('Number of answers:', answersData?.length || 0);
+        
+        if (answersData && answersData.length > 0) {
+          console.log('First answer sample:', answersData[0]);
+        }
+        
         setAnswers(answersData);
+      } else {
+        console.log('No attempt found for student:', studentId);
+        console.log('Available student IDs in attempts:', attempts.map(a => a.student_id));
       }
     } catch (error: any) {
+      console.error('Error loading student exam details:', error);
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
       toast({
         title: 'Error',
         description: error.message || 'Failed to load student exam details',
@@ -302,7 +326,16 @@ export default function StudentExamDetail() {
         <CardContent>
           {answers.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              No answers submitted
+              <p className="mb-2">No answers found for this exam attempt.</p>
+              {attempt?.status === 'not_started' && (
+                <p className="text-sm">The student has not started the exam yet.</p>
+              )}
+              {attempt?.status === 'in_progress' && (
+                <p className="text-sm">The student is currently taking the exam.</p>
+              )}
+              {(attempt?.status === 'submitted' || attempt?.status === 'evaluated') && (
+                <p className="text-sm">The student submitted the exam but no answers were recorded. Please check the exam data.</p>
+              )}
             </div>
           ) : (
             <div className="space-y-6">
