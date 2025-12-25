@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { examApi, profileApi, academicApi, examAttemptApi } from '@/db/api';
-import { Calendar, Clock, FileText, PlayCircle, CheckCircle2 } from 'lucide-react';
+import { Calendar, Clock, FileText, PlayCircle, CheckCircle2, AlertCircle } from 'lucide-react';
 import type { ExamWithDetails, ExamAttempt } from '@/types/types';
 import { hasExamStarted, hasExamEnded, formatISTDateTime } from '@/utils/timezone';
 
@@ -90,16 +90,26 @@ export default function StudentExams() {
       }
     }
     
-    // Otherwise, check time-based status
+    // Check if exam time has ended
     if (isExamCompleted(exam)) {
-      return { label: 'Completed', variant: 'secondary' as const };
+      // If no attempt exists, student missed the exam
+      if (!attempt) {
+        return { label: 'Missed', variant: 'destructive' as const };
+      }
+      // If attempt exists but not submitted, time expired
+      return { label: 'Time Expired', variant: 'secondary' as const };
     }
+    
+    // Check if exam is currently available
     if (isExamAvailable(exam)) {
       return { label: 'Available', variant: 'default' as const };
     }
+    
+    // Check if exam is upcoming
     if (isExamUpcoming(exam)) {
       return { label: 'Upcoming', variant: 'outline' as const };
     }
+    
     return { label: 'Unknown', variant: 'secondary' as const };
   };
 
@@ -225,14 +235,22 @@ export default function StudentExams() {
                       </Button>
                     )}
                     
-                    {/* Show "View Result" if exam time completed */}
-                    {completed && !hasSubmitted && (
+                    {/* Show "View Result" if exam completed and student has attempt */}
+                    {completed && attempt && !hasSubmitted && (
                       <Button
                         variant="outline"
                         onClick={() => navigate(`/student/exams/${exam.id}/result`)}
                       >
                         <CheckCircle2 className="h-4 w-4 mr-2" />
                         View Result
+                      </Button>
+                    )}
+                    
+                    {/* Show "Missed" message if exam completed and no attempt */}
+                    {completed && !attempt && (
+                      <Button disabled variant="destructive">
+                        <AlertCircle className="h-4 w-4 mr-2" />
+                        Exam Missed
                       </Button>
                     )}
                     
