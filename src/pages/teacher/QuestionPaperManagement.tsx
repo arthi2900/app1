@@ -494,7 +494,13 @@ export default function QuestionPaperManagement() {
                     <TableCell>{paper.class?.class_name || 'N/A'}</TableCell>
                     <TableCell>{paper.subject?.subject_name || 'N/A'}</TableCell>
                     <TableCell>{getStatusBadge(paper.status)}</TableCell>
-                    <TableCell>{paper.total_marks}</TableCell>
+                    <TableCell>
+                      {paper.total_marks === 0 ? (
+                        <span className="text-muted-foreground text-sm">No questions</span>
+                      ) : (
+                        <span className="font-medium">{paper.total_marks}</span>
+                      )}
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1 text-sm">
                         <Calendar className="h-3 w-3" />
