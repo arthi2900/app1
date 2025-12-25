@@ -113,16 +113,49 @@ export default function StudentExamDetail() {
       case 'mcq':
       case 'true_false':
         return (
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="font-medium">Student Answer:</span>
-              <Badge variant={answer.is_correct ? 'default' : 'destructive'} className={answer.is_correct ? 'bg-secondary' : ''}>
-                {studentAnswer || 'Not Answered'}
-              </Badge>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-medium">Correct Answer:</span>
-              <Badge variant="outline">{correctAnswer}</Badge>
+          <div className="space-y-3">
+            {/* Show options with highlighting */}
+            {question.options && (
+              <div className="space-y-2">
+                {(question.options as string[]).map((option, idx) => {
+                  const isCorrect = option === correctAnswer;
+                  const isStudentAnswer = option === studentAnswer;
+                  
+                  return (
+                    <div 
+                      key={idx} 
+                      className={`p-3 rounded-md border-2 ${
+                        isCorrect 
+                          ? 'bg-secondary/10 border-secondary' 
+                          : isStudentAnswer && !isCorrect
+                          ? 'bg-destructive/10 border-destructive'
+                          : 'border-border'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        {isCorrect && (
+                          <CheckCircle2 className="h-5 w-5 text-secondary flex-shrink-0" />
+                        )}
+                        {isStudentAnswer && !isCorrect && (
+                          <XCircle className="h-5 w-5 text-destructive flex-shrink-0" />
+                        )}
+                        <span className={isCorrect ? 'font-medium text-secondary' : ''}>
+                          {option}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            
+            <div className="flex items-center gap-4 pt-2">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">Student Answer:</span>
+                <Badge variant={answer.is_correct ? 'default' : 'destructive'} className={answer.is_correct ? 'bg-secondary' : ''}>
+                  {studentAnswer || 'Not Answered'}
+                </Badge>
+              </div>
             </div>
           </div>
         );
@@ -409,15 +442,6 @@ export default function StudentExamDetail() {
                           )}
                           <p className="text-base">{question.question_text}</p>
                         </div>
-                        {question.options && question.question_type !== 'match_following' && (
-                          <div className="mb-3 ml-4 space-y-1">
-                            {(question.options as string[]).map((option, idx) => (
-                              <div key={idx} className="text-sm">
-                                {option}
-                              </div>
-                            ))}
-                          </div>
-                        )}
                       </div>
                       <div className="ml-4">
                         {answer.is_correct ? (
