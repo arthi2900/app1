@@ -36,6 +36,7 @@ export default function TakeExam() {
   const [loading, setLoading] = useState(true);
   const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
   const [examInitialized, setExamInitialized] = useState(false);
+  const [questionsLoaded, setQuestionsLoaded] = useState(false);
 
   useEffect(() => {
     if (examId) {
@@ -126,7 +127,8 @@ export default function TakeExam() {
       setAttempt(attemptData);
 
       const paperQuestions = await academicApi.getQuestionPaperQuestions(examData.question_paper_id);
-      setQuestions(paperQuestions);
+      setQuestions(paperQuestions || []);
+      setQuestionsLoaded(true); // Mark questions as loaded, even if empty
 
       const existingAnswers = await examAnswerApi.getAnswersByAttempt(attemptData.id);
       const answersMap: Record<string, any> = {};
@@ -270,12 +272,27 @@ export default function TakeExam() {
   }
 
   // Questions are still loading (DO NOT treat as exam not found)
-  if (exam && questions.length === 0) {
+  if (exam && !questionsLoaded) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">வினாக்கள் ஏற்றப்படுகின்றன...</p>
+          <p className="text-muted-foreground">Loading questions...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Questions loaded but empty (no questions in question paper)
+  if (exam && questionsLoaded && questions.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-2">No questions found in this exam</p>
+          <p className="text-sm text-muted-foreground mb-4">Please contact your teacher</p>
+          <Button onClick={() => navigate('/student/exams')}>
+            Back to Exams
+          </Button>
         </div>
       </div>
     );
