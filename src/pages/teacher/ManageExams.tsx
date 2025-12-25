@@ -49,7 +49,17 @@ export default function ManageExams() {
       if (!profile) throw new Error('Profile not found');
 
       setCurrentProfile(profile);
-      const data = await examApi.getExamsByTeacher(profile.id);
+      
+      // Principal and Admin see all exams in their school
+      // Teachers see only their own exams
+      let data: ExamWithDetails[];
+      if (profile.role === 'principal' || profile.role === 'admin') {
+        if (!profile.school_id) throw new Error('School ID not found');
+        data = await examApi.getExamsBySchool(profile.school_id);
+      } else {
+        data = await examApi.getExamsByTeacher(profile.id);
+      }
+      
       setExams(data);
     } catch (error: any) {
       toast({
@@ -63,6 +73,19 @@ export default function ManageExams() {
   };
 
   const canForceDelete = currentProfile?.role === 'principal' || currentProfile?.role === 'admin';
+  
+  // Helper function to check if user can delete an exam
+  const canDeleteExam = (exam: ExamWithDetails): boolean => {
+    if (!currentProfile) return false;
+    
+    // Principal and Admin can delete any exam in their school
+    if (currentProfile.role === 'principal' || currentProfile.role === 'admin') {
+      return true;
+    }
+    
+    // Teachers can only delete their own exams
+    return exam.teacher_id === currentProfile.id;
+  };
 
   const handleDeleteClick = async (exam: ExamWithDetails) => {
     setCheckingAttempts(true);
@@ -294,7 +317,7 @@ export default function ManageExams() {
                     <Users className="h-4 w-4 mr-2" />
                     View Results
                   </Button>
-                  {exam.status !== 'completed' && (
+                  {exam.status !== 'completed' && canDeleteExam(exam) && (
                     <>
                       {canForceDelete ? (
                         <DropdownMenu>
@@ -311,7 +334,7 @@ export default function ManageExams() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => handleDeleteClick(exam)}>
                               <Trash2 className="h-4 w-4 mr-2" />
-                              Normal Delete
+                              Delete Exam
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem 
@@ -319,7 +342,7 @@ export default function ManageExams() {
                               className="text-destructive focus:text-destructive"
                             >
                               <ShieldAlert className="h-4 w-4 mr-2" />
-                              Force Delete
+                              Force Delete Exam
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
