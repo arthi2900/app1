@@ -113,8 +113,8 @@ export default function StudentExamDetail() {
       case 'mcq':
       case 'true_false':
         return (
-          <div className="space-y-3">
-            {/* Show options with highlighting */}
+          <div className="space-y-2">
+            {/* Show options with icons only - no background fill */}
             {question.options && (
               <div className="space-y-2">
                 {(question.options as string[]).map((option, idx) => {
@@ -124,13 +124,7 @@ export default function StudentExamDetail() {
                   return (
                     <div 
                       key={idx} 
-                      className={`p-3 rounded-md border-2 ${
-                        isCorrect 
-                          ? 'bg-secondary/10 border-secondary' 
-                          : isStudentAnswer && !isCorrect
-                          ? 'bg-destructive/10 border-destructive'
-                          : 'border-border'
-                      }`}
+                      className="p-3 rounded-md border"
                     >
                       <div className="flex items-center gap-2">
                         {isCorrect && (
@@ -139,7 +133,7 @@ export default function StudentExamDetail() {
                         {isStudentAnswer && !isCorrect && (
                           <XCircle className="h-5 w-5 text-destructive flex-shrink-0" />
                         )}
-                        <span className={isCorrect ? 'font-medium text-secondary' : ''}>
+                        <span>
                           {option}
                         </span>
                       </div>
@@ -148,15 +142,6 @@ export default function StudentExamDetail() {
                 })}
               </div>
             )}
-            
-            <div className="flex items-center gap-4 pt-2">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">Student Answer:</span>
-                <Badge variant={answer.is_correct ? 'default' : 'destructive'} className={answer.is_correct ? 'bg-secondary' : ''}>
-                  {studentAnswer || 'Not Answered'}
-                </Badge>
-              </div>
-            </div>
           </div>
         );
       
@@ -454,19 +439,6 @@ export default function StudentExamDetail() {
                     
                     <div className="border-t pt-3">
                       {renderAnswer(answer)}
-                    </div>
-
-                    <div className="flex items-center justify-between border-t pt-3">
-                      <div className="flex items-center gap-4">
-                        <span className="text-sm font-medium">
-                          Marks: {answer.marks_obtained} / {answer.marks_allocated}
-                        </span>
-                        {answer.is_correct !== null && (
-                          <Badge variant={answer.is_correct ? 'default' : 'destructive'} className={answer.is_correct ? 'bg-secondary' : ''}>
-                            {answer.is_correct ? 'Correct' : 'Incorrect'}
-                          </Badge>
-                        )}
-                      </div>
                     </div>
                   </div>
                 );
