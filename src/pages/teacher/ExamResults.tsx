@@ -195,9 +195,14 @@ export default function ExamResults() {
                 </thead>
                 <tbody>
                   {students.map((student) => (
-                    <tr key={student.student_id} className="border-b">
+                    <tr key={student.student_id} className="border-b hover:bg-muted/50 transition-colors">
                       <td className="py-3 px-4">
-                        {student.student_name}
+                        <button
+                          onClick={() => navigate(`/teacher/exams/${examId}/students/${student.student_id}`)}
+                          className="text-primary hover:underline font-medium text-left"
+                        >
+                          {student.student_name}
+                        </button>
                       </td>
                       <td className="py-3 px-4">
                         {student.section_name}

@@ -19,6 +19,7 @@ import QuestionPaperManagement from './pages/teacher/QuestionPaperManagement';
 import CreateExam from './pages/teacher/CreateExam';
 import ManageExams from './pages/teacher/ManageExams';
 import ExamResults from './pages/teacher/ExamResults';
+import StudentExamDetail from './pages/teacher/StudentExamDetail';
 import StudentDashboard from './pages/student/StudentDashboard';
 import StudentExams from './pages/student/StudentExams';
 import TakeExam from './pages/student/TakeExam';
@@ -249,6 +250,16 @@ const routes: RouteConfig[] = [
     element: (
       <ProtectedRoute allowedRoles={['teacher', 'principal', 'admin']}>
         <ExamResults />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Student Exam Detail',
+    path: '/teacher/exams/:examId/students/:studentId',
+    element: (
+      <ProtectedRoute allowedRoles={['teacher', 'principal', 'admin']}>
+        <StudentExamDetail />
       </ProtectedRoute>
     ),
     visible: false,
