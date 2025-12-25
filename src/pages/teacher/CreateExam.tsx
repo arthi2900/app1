@@ -88,6 +88,11 @@ export default function CreateExam() {
       const selectedPaper = questionPapers.find(p => p.id === formData.questionPaperId);
       if (!selectedPaper) throw new Error('Question paper not found');
 
+      // Validation: Check if the selected question paper has questions
+      if (selectedPaper.total_marks === 0) {
+        throw new Error('The selected question paper has no questions. Please select a different paper or add questions to this paper first.');
+      }
+
       // Convert IST input to UTC for storage
       const startTimeUTC = convertISTInputToUTC(formData.startDate, formData.startTime);
       const endTimeUTC = convertISTInputToUTC(formData.endDate, formData.endTime);
@@ -253,8 +258,12 @@ export default function CreateExam() {
                 </SelectTrigger>
                 <SelectContent>
                   {questionPapers.map((paper) => (
-                    <SelectItem key={paper.id} value={paper.id}>
-                      {paper.title} ({paper.total_marks} marks)
+                    <SelectItem 
+                      key={paper.id} 
+                      value={paper.id}
+                      disabled={paper.total_marks === 0}
+                    >
+                      {paper.title} {paper.total_marks === 0 ? '(No questions)' : `(${paper.total_marks} marks)`}
                     </SelectItem>
                   ))}
                 </SelectContent>

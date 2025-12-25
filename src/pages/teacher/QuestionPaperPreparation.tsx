@@ -252,6 +252,12 @@ export default function QuestionPaperPreparation() {
       return null;
     }
 
+    // Validation: Prevent finalizing papers with no questions
+    if (status === 'final' && selectedQuestions.size === 0) {
+      toast.error('Cannot finalize a question paper with no questions. Please add at least one question.');
+      return null;
+    }
+
     try {
       setSaving(true);
 
