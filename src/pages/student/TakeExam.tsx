@@ -394,25 +394,36 @@ export default function TakeExam() {
                   )}
 
                   {currentQuestion.question?.question_type === 'multiple_response' && (
-                    <div className="space-y-2">
-                      {(currentQuestion.shuffled_answer_options || currentQuestion.question?.answer_options || []).map((option: string, index: number) => (
-                        <div key={index} className="flex items-center space-x-2 p-3 border rounded-md hover:bg-muted">
-                          <Checkbox
-                            id={`option-${index}`}
-                            checked={currentAnswer === option}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                handleAnswerChange(currentQuestion.question_id, option);
-                              } else {
-                                handleAnswerChange(currentQuestion.question_id, '');
-                              }
-                            }}
-                          />
-                          <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
-                            {option}
-                          </Label>
+                    <div className="space-y-4">
+                      {/* Display main options (A, B, C, D) */}
+                      {currentQuestion.question?.options && Array.isArray(currentQuestion.question.options) && (
+                        <div className="space-y-2 mb-4 p-4 bg-muted/50 rounded-md">
+                          <p className="text-sm font-medium mb-2">Options:</p>
+                          {(currentQuestion.question.options as string[]).map((option: string, index: number) => (
+                            <div key={index} className="text-sm pl-2">
+                              {option}
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      )}
+                      
+                      {/* Display answer options (i, ii, iii, iv) as radio buttons */}
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium mb-2">Select the correct answer:</p>
+                        <RadioGroup
+                          value={currentAnswer || ''}
+                          onValueChange={(value) => handleAnswerChange(currentQuestion.question_id, value)}
+                        >
+                          {(currentQuestion.shuffled_answer_options || currentQuestion.question?.answer_options || []).map((option: string, index: number) => (
+                            <div key={index} className="flex items-center space-x-2 p-3 border rounded-md hover:bg-muted">
+                              <RadioGroupItem value={option} id={`answer-option-${index}`} />
+                              <Label htmlFor={`answer-option-${index}`} className="flex-1 cursor-pointer">
+                                {option}
+                              </Label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      </div>
                     </div>
                   )}
 
