@@ -10,12 +10,14 @@ Console shows:
 
 ## Solution Applied ✅
 
-**Migration:** `00031_fix_ambiguous_column_error.sql`
+**Migrations Applied:**
+1. `00031_fix_ambiguous_column_error.sql` - Fixed grading function
+2. `00032_fix_auto_evaluate_trigger.sql` - **Fixed trigger function (THE REAL FIX)**
 
 **What was fixed:**
-- Renamed database function variables to avoid conflicts
-- Changed `is_correct` → `v_is_correct`
-- Changed `marks_to_award` → `v_marks_to_award`
+- Fixed `auto_evaluate_answer()` TRIGGER function (runs on EVERY answer save)
+- Changed `correct_answer` → `v_correct_answer`
+- Changed `student_ans` → `v_student_ans`
 - Added explicit table qualifications
 
 ## Immediate Actions
@@ -25,8 +27,8 @@ Console shows:
 -- Run in Supabase SQL Editor
 SELECT proname, prosrc 
 FROM pg_proc 
-WHERE proname = 'auto_grade_objective_questions';
--- Should show function with v_is_correct and v_marks_to_award
+WHERE proname = 'auto_evaluate_answer';
+-- Should show function with v_correct_answer and v_student_ans
 ```
 
 ### 2. Test with Student Exam
@@ -37,11 +39,11 @@ WHERE proname = 'auto_grade_objective_questions';
 5. Look for: "✅ Answer saved successfully"
 
 ### 3. For AJIS C's Current Exam
-**Status:** Exam in progress, ~59 minutes remaining
+**Status:** Exam in progress, Question 2 of 4, ~50 minutes remaining
 
 **Options:**
-1. **Continue exam** (Recommended) - Fix is applied, can continue
-2. **Re-select answer** - Click "A pair of Shoes" again to save
+1. **Continue exam** (Recommended) - Fix is applied, just re-select "Personification"
+2. **Re-select answer** - Click "Personification" again to save
 3. **Restart exam** - If student prefers fresh start
 
 ## Expected Results
@@ -58,7 +60,10 @@ WHERE proname = 'auto_grade_objective_questions';
 ```javascript
 ✅ Answer saved successfully: {
   id: "...",
-  student_answer: "A pair of Shoes",
+  student_answer: "Personification",
+  is_correct: false,
+  marks_obtained: 0,
+  evaluated_at: "2025-12-26T...",
   created_at: "2025-12-26T..."
 }
 ```
@@ -84,34 +89,43 @@ WHERE proname = 'auto_grade_objective_questions';
 
 ### Check Database:
 ```sql
--- Verify function exists
-SELECT COUNT(*) FROM pg_proc WHERE proname = 'auto_grade_objective_questions';
+-- Verify trigger function exists
+SELECT COUNT(*) FROM pg_proc WHERE proname = 'auto_evaluate_answer';
 -- Should return: 1
 ```
 
 ### Manual Test:
 ```sql
--- Test the function directly
-SELECT auto_grade_objective_questions('YOUR_ATTEMPT_ID');
--- Should return: {"success": true, "graded_count": X, ...}
+-- Check if trigger is active
+SELECT 
+  tgname as trigger_name,
+  tgtype,
+  proname as function_name
+FROM pg_trigger t
+JOIN pg_proc p ON p.oid = t.tgfoid
+WHERE tgname = 'auto_evaluate_answer_trigger';
+-- Should return: 1 row showing trigger is active
 ```
 
 ## Support
 
 **Documentation:**
-- FIX_AMBIGUOUS_COLUMN_ERROR.md - Complete technical details
-- FIX_NO_ANSWERS_FOUND.md - Previous RLS fix
+- FINAL_FIX_TRIGGER_AMBIGUITY.md - Complete technical details (THE REAL FIX)
+- FIX_AMBIGUOUS_COLUMN_ERROR.md - First attempt fix
+- FIX_NO_ANSWERS_FOUND.md - RLS fix
 - VERIFY_DATA_STORAGE.md - Verification procedures
 
 **SQL Scripts:**
 - verify_data_storage.sql - Diagnostic queries
 
 **Migrations:**
-- 00031_fix_ambiguous_column_error.sql - This fix
+- 00032_fix_auto_evaluate_trigger.sql - **This fix (THE REAL ONE)**
+- 00031_fix_ambiguous_column_error.sql - Grading function fix
 - 00030_fix_exam_answers_insert_policy.sql - RLS fix
 
 ---
 
 **Status:** ✅ Fixed  
 **Date:** December 26, 2025  
-**Next Step:** Test with student exam
+**Next Step:** Test with student exam  
+**Confidence:** HIGH - This is the correct trigger function fix
