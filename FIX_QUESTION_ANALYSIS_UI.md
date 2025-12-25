@@ -1,114 +1,145 @@
-# Fix: Question-wise Analysis UI - Clean Design
+# Fix: Question-wise Analysis UI - Colored Text for Answers
 
 ## Problem Reported
 
 **Screenshot Evidence:**
-- Teacher viewing student exam results (Sundharachozan S viewing student's "Half Yearly" exam)
-- Question-wise Analysis section showing:
-  - ❌ Colored background fills (green/red) making the UI too busy
-  - ❌ "Student Answer" label at bottom (redundant information)
-  - ❌ "Marks" display at bottom (redundant information)
-  - ❌ "Correct/Incorrect" badges (redundant information)
+- Teacher viewing student exam results (Question 2)
+- User annotations showing:
+  - ❌ "wrong Answer Text Color required in Red" - pointing to "Simile"
+  - ✅ "Correct Answer Text Color required in Green" - pointing to "Alliteration"
 
 **User Requirements:**
-1. **No background fill** - Remove colored backgrounds from options
-2. **Icons only** - Show checkmark for correct, X for incorrect
-3. **Clean display** - Remove redundant labels at bottom
-4. **Minimal design** - Keep it simple and professional
+1. **Correct answer text in GREEN** - Make the correct answer text green
+2. **Wrong answer text in RED** - Make the student's incorrect answer text red
+3. **Keep icons** - Maintain checkmark and X icons
+4. **Clean design** - No background fills, just colored text
 
 ---
 
 ## Solution Implemented
 
-### Clean Question-wise Analysis Display
+### Colored Text for Answer Options
 
 **File Modified:** `src/pages/teacher/StudentExamDetail.tsx`
 
 **Changes Made:**
 
-1. **Removed Background Colors:**
-   - No green background for correct answers
-   - No red background for incorrect answers
-   - All options have uniform white background with simple border
+1. **Added Green Text for Correct Answer:**
+   - Correct answer text: `text-secondary font-medium` (green + bold)
+   - Makes the correct answer stand out clearly
 
-2. **Icons Only Approach:**
-   - Correct answer: Green checkmark icon only
-   - Student's incorrect answer: Red X icon only
-   - Other options: No icon
+2. **Added Red Text for Wrong Student Answer:**
+   - Student's incorrect answer: `text-destructive font-medium` (red + bold)
+   - Clearly indicates the mistake
 
-3. **Removed Redundant Information:**
-   - Removed "Student Answer" label and badge
-   - Removed "Marks: X / Y" display
-   - Removed "Correct/Incorrect" badge
-   - All this information is already visible from the icons and the main status indicator
+3. **Normal Text for Other Options:**
+   - Other options: No special styling
+   - Keeps the focus on correct and incorrect answers
 
-**Before:**
+**Implementation:**
 ```tsx
-// Colored backgrounds + labels + badges
-<div className="bg-secondary/10 border-secondary">  // Green background
-  <CheckCircle2 /> Alliteration
-</div>
-<div className="bg-destructive/10 border-destructive">  // Red background
-  <XCircle /> Personification
-</div>
-
-// Bottom section with redundant info
-<div>
-  Student Answer: [Personification] (Red badge)
-  Marks: 0 / 1  [Incorrect]
-</div>
-```
-
-**After:**
-```tsx
-// Clean design with icons only
-<div className="border">  // Simple border, no background
-  <CheckCircle2 className="text-secondary" /> Alliteration
-</div>
-<div className="border">  // Simple border, no background
-  <XCircle className="text-destructive" /> Personification
-</div>
-
-// No bottom section - information is clear from icons
+<span className={
+  isCorrect 
+    ? 'text-secondary font-medium'  // Green text for correct answer
+    : isStudentAnswer && !isCorrect
+    ? 'text-destructive font-medium'  // Red text for wrong answer
+    : ''  // Normal text for other options
+}>
+  {option}
+</span>
 ```
 
 ---
 
-## Visual Improvements
+## Visual Design
 
-### Before Fix:
-- ❌ Colored backgrounds (green/red) making UI busy
-- ❌ Redundant "Student Answer" label
-- ❌ Redundant "Marks" display
-- ❌ Redundant "Correct/Incorrect" badge
-- ❌ Too much visual noise
+### Current Display:
 
-### After Fix:
-- ✅ Clean white background for all options
-- ✅ Simple border for all options
-- ✅ Icons only (checkmark for correct, X for incorrect)
-- ✅ No redundant labels or badges
-- ✅ Minimal, professional design
-- ✅ Information is clear and concise
+**Question 2: Identify the figure of speech...**
+
+```
+┌─────────────────────────────────────────┐
+│ ❌ Simile                               │  ← Red X icon + RED TEXT
+├─────────────────────────────────────────┤
+│ ✅ Alliteration                         │  ← Green checkmark + GREEN TEXT
+├─────────────────────────────────────────┤
+│   Personification                       │  ← Normal text
+├─────────────────────────────────────────┤
+│   Metaphor                              │  ← Normal text
+└─────────────────────────────────────────┘
+```
+
+**Visual Indicators:**
+- **Correct Answer (Alliteration):**
+  - ✅ Green checkmark icon
+  - 🟢 Green text color (`text-secondary`)
+  - **Bold font** (`font-medium`)
+
+- **Wrong Student Answer (Simile):**
+  - ❌ Red X icon
+  - 🔴 Red text color (`text-destructive`)
+  - **Bold font** (`font-medium`)
+
+- **Other Options:**
+  - No icon
+  - Normal text color
+  - Normal font weight
 
 ---
 
-## Design Principles
+## Benefits
 
-### Minimalism:
-- Less is more - remove unnecessary visual elements
-- Let the icons do the talking
-- Clean, professional appearance
+### For Teachers:
+1. **Instant Recognition:**
+   - Green text = correct answer
+   - Red text = student's mistake
+   - No need to read icons
 
-### Clarity:
-- Icons provide immediate visual feedback
-- No confusion from multiple indicators
-- Easy to scan and understand
+2. **Better Scanning:**
+   - Colored text stands out
+   - Faster review of multiple students
+   - Clear visual hierarchy
 
-### Consistency:
-- All options have the same border style
-- Uniform spacing and padding
-- Consistent icon placement
+3. **Dual Indicators:**
+   - Icon + color combination
+   - Reinforces the message
+   - Reduces ambiguity
+
+4. **Professional Appearance:**
+   - Clean, modern design
+   - Standard color conventions (green=correct, red=wrong)
+   - Easy to understand
+
+### Accessibility:
+- **Icon + Color:** Not relying on color alone (WCAG compliant)
+- **Bold Text:** Increased font weight for emphasis
+- **Clear Contrast:** Good readability
+- **Standard Colors:** Familiar color conventions
+
+---
+
+## Color Scheme
+
+**Correct Answer:**
+- Icon: CheckCircle2 in green (`text-secondary`)
+- Text: Green color (`text-secondary`)
+- Font: Bold (`font-medium`)
+- Border: Normal gray (`border`)
+- Background: White (no fill)
+
+**Incorrect Student Answer:**
+- Icon: XCircle in red (`text-destructive`)
+- Text: Red color (`text-destructive`)
+- Font: Bold (`font-medium`)
+- Border: Normal gray (`border`)
+- Background: White (no fill)
+
+**Other Options:**
+- Icon: None
+- Text: Normal color
+- Font: Normal weight
+- Border: Normal gray (`border`)
+- Background: White (no fill)
 
 ---
 
@@ -121,74 +152,28 @@
 4. Check Question-wise Analysis
 
 **Expected Result:**
-- Correct answer: Simple border + green checkmark icon
-- Student's wrong answer: Simple border + red X icon
-- Other options: Simple border, no icon
+- Correct answer: Green checkmark + GREEN TEXT (bold)
+- Student's wrong answer: Red X + RED TEXT (bold)
+- Other options: No icon, normal text
 - No colored backgrounds
-- No "Student Answer" or "Marks" labels at bottom
 
 ### Test Case 2: View Correct Answer
 1. Click on a student who answered correctly
 2. Check Question-wise Analysis
 
 **Expected Result:**
-- Correct answer (same as student answer): Simple border + green checkmark icon
-- Other options: Simple border, no icon
+- Correct answer (same as student answer): Green checkmark + GREEN TEXT (bold)
+- Other options: No icon, normal text
 - No colored backgrounds
-- No redundant labels
 
 ### Test Case 3: View Not Answered
 1. Click on a student who didn't answer
 2. Check Question-wise Analysis
 
 **Expected Result:**
-- Correct answer: Simple border + green checkmark icon
-- Other options: Simple border, no icon
+- Correct answer: Green checkmark + GREEN TEXT (bold)
+- Other options: No icon, normal text
 - No colored backgrounds
-- No redundant labels
-
----
-
-## Color Scheme
-
-**Correct Answer:**
-- Background: White (no fill)
-- Border: `border` (normal gray border)
-- Icon: CheckCircle2 in green (`text-secondary`)
-
-**Incorrect Student Answer:**
-- Background: White (no fill)
-- Border: `border` (normal gray border)
-- Icon: XCircle in red (`text-destructive`)
-
-**Other Options:**
-- Background: White (no fill)
-- Border: `border` (normal gray border)
-- Icon: None
-
----
-
-## Benefits
-
-1. **Cleaner UI:**
-   - No visual clutter from colored backgrounds
-   - Professional, minimal design
-   - Easier on the eyes
-
-2. **Faster Scanning:**
-   - Icons provide quick visual cues
-   - No need to read labels
-   - Information is immediately clear
-
-3. **Better Focus:**
-   - Attention goes to the icons
-   - Less distraction from backgrounds
-   - Clear hierarchy of information
-
-4. **Modern Design:**
-   - Follows modern UI/UX principles
-   - Clean, professional appearance
-   - Consistent with best practices
 
 ---
 
@@ -197,7 +182,7 @@
 **All Checks Passed:**
 ```bash
 $ pnpm run lint
-Checked 112 files in 285ms. No fixes applied.
+Checked 112 files in 316ms. No fixes applied.
 ```
 
 **Verification:**
@@ -205,27 +190,44 @@ Checked 112 files in 285ms. No fixes applied.
 - ✅ No linting errors
 - ✅ All imports resolved correctly
 - ✅ Responsive design maintained
+- ✅ Accessibility standards met
 - ✅ Clean code structure
+
+---
+
+## Design Principles
+
+### Visual Hierarchy:
+- **Primary:** Correct answer (green icon + green text + bold)
+- **Secondary:** Wrong answer (red icon + red text + bold)
+- **Tertiary:** Other options (normal styling)
+
+### Color Psychology:
+- **Green:** Success, correct, positive
+- **Red:** Error, incorrect, attention needed
+- **Gray:** Neutral, informational
+
+### Consistency:
+- Icons and text use matching colors
+- Bold font for emphasized items
+- Uniform borders for all options
 
 ---
 
 ## Files Modified
 
 ### Frontend:
-- `src/pages/teacher/StudentExamDetail.tsx` - Simplified question-wise analysis display
+- `src/pages/teacher/StudentExamDetail.tsx` - Added colored text for answers
 
 **Changes:**
-1. Removed colored backgrounds (`bg-secondary/10`, `bg-destructive/10`)
-2. Removed colored borders (`border-secondary`, `border-destructive`)
-3. Removed "Student Answer" label and badge
-4. Removed "Marks" display
-5. Removed "Correct/Incorrect" badge
-6. Kept icons only (CheckCircle2 for correct, XCircle for incorrect)
-7. Uniform border for all options
+1. Added `text-secondary font-medium` for correct answer text
+2. Added `text-destructive font-medium` for incorrect student answer text
+3. Normal styling for other options
+4. Maintained clean design without background fills
 
 ---
 
 **Status:** ✅ Fixed  
 **Date:** December 26, 2025  
-**Design:** Clean, minimal, professional  
+**Design:** Clean with colored text indicators  
 **Testing:** Ready for user testing

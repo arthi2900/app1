@@ -114,7 +114,7 @@ export default function StudentExamDetail() {
       case 'true_false':
         return (
           <div className="space-y-2">
-            {/* Show options with icons only - no background fill */}
+            {/* Show options with icons and colored text */}
             {question.options && (
               <div className="space-y-2">
                 {(question.options as string[]).map((option, idx) => {
@@ -133,7 +133,13 @@ export default function StudentExamDetail() {
                         {isStudentAnswer && !isCorrect && (
                           <XCircle className="h-5 w-5 text-destructive flex-shrink-0" />
                         )}
-                        <span>
+                        <span className={
+                          isCorrect 
+                            ? 'text-secondary font-medium'  // Green text for correct answer
+                            : isStudentAnswer && !isCorrect
+                            ? 'text-destructive font-medium'  // Red text for wrong answer
+                            : ''  // Normal text for other options
+                        }>
                           {option}
                         </span>
                       </div>
