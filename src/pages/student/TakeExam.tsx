@@ -7,10 +7,17 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { examApi, examAttemptApi, examAnswerApi, academicApi, profileApi } from '@/db/api';
 import { Clock, AlertCircle, CheckCircle2, Circle } from 'lucide-react';
-import type { ExamWithDetails, QuestionPaperQuestionWithDetails, ExamAttempt } from '@/types/types';
+import type { ExamWithDetails, QuestionPaperQuestionWithDetails, ExamAttempt, MatchPair } from '@/types/types';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -416,6 +423,63 @@ export default function TakeExam() {
                       placeholder="Type your answer here..."
                       rows={6}
                     />
+                  )}
+
+                  {currentQuestion.question?.question_type === 'match_following' && (
+                    <div className="space-y-4">
+                      {(() => {
+                        const matchPairs = (currentQuestion.shuffled_options || currentQuestion.question?.options || []) as MatchPair[];
+                        const leftItems = matchPairs.map(pair => pair.left);
+                        const rightItems = matchPairs.map(pair => pair.right);
+                        
+                        // Parse current answer (JSON string) to object
+                        let currentMatches: Record<string, string> = {};
+                        try {
+                          if (currentAnswer) {
+                            currentMatches = JSON.parse(currentAnswer);
+                          }
+                        } catch (e) {
+                          currentMatches = {};
+                        }
+
+                        return (
+                          <div className="space-y-4">
+                            <p className="text-sm text-muted-foreground mb-4">
+                              Match the items from the left column with the appropriate items from the right column
+                            </p>
+                            {leftItems.map((leftItem, index) => (
+                              <div key={index} className="flex items-center gap-4 p-3 border rounded-md">
+                                <div className="flex-1 font-medium">{leftItem}</div>
+                                <div className="text-muted-foreground">→</div>
+                                <div className="flex-1">
+                                  <Select
+                                    value={currentMatches[leftItem] || ''}
+                                    onValueChange={(value) => {
+                                      const newMatches = { ...currentMatches, [leftItem]: value };
+                                      handleAnswerChange(
+                                        currentQuestion.question_id,
+                                        JSON.stringify(newMatches)
+                                      );
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select a match" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {rightItems.map((rightItem, rightIndex) => (
+                                        <SelectItem key={rightIndex} value={rightItem}>
+                                          {rightItem}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })()}
+                    </div>
                   )}
                 </div>
 
