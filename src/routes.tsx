@@ -237,7 +237,7 @@ const routes: RouteConfig[] = [
     name: 'Manage Exams',
     path: '/teacher/exams',
     element: (
-      <ProtectedRoute allowedRoles={['teacher']}>
+      <ProtectedRoute allowedRoles={['teacher', 'principal', 'admin']}>
         <ManageExams />
       </ProtectedRoute>
     ),
@@ -247,7 +247,7 @@ const routes: RouteConfig[] = [
     name: 'Exam Results',
     path: '/teacher/exams/:examId/results',
     element: (
-      <ProtectedRoute allowedRoles={['teacher']}>
+      <ProtectedRoute allowedRoles={['teacher', 'principal', 'admin']}>
         <ExamResults />
       </ProtectedRoute>
     ),

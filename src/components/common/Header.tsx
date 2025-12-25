@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { BookOpen, User, LogOut, LayoutDashboard, Users, FileQuestion, Building2 } from 'lucide-react';
+import { BookOpen, User, LogOut, LayoutDashboard, Users, FileQuestion, Building2, ClipboardList } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Header() {
@@ -43,7 +43,8 @@ export default function Header() {
       links.push(
         { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
         { to: '/admin/users', label: 'Users', icon: Users },
-        { to: '/admin/schools', label: 'Schools', icon: Building2 }
+        { to: '/admin/schools', label: 'Schools', icon: Building2 },
+        { to: '/teacher/exams', label: 'Manage Exams', icon: ClipboardList }
       );
     }
 
@@ -52,7 +53,8 @@ export default function Header() {
         { to: '/principal', label: 'Dashboard', icon: LayoutDashboard },
         { to: '/principal/teachers', label: 'Teachers', icon: Users },
         { to: '/principal/students', label: 'Students', icon: Users },
-        { to: '/principal/academics', label: 'Academics', icon: BookOpen }
+        { to: '/principal/academics', label: 'Academics', icon: BookOpen },
+        { to: '/teacher/exams', label: 'Manage Exams', icon: ClipboardList }
       );
     }
 

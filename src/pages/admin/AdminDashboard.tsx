@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Building2, Users } from 'lucide-react';
+import { Building2, Users, ClipboardList } from 'lucide-react';
 import { profileApi, schoolApi } from '@/db/api';
 
 interface UserStats {
@@ -11,6 +12,7 @@ interface UserStats {
 }
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalSchools: 0,
     userStats: {
@@ -114,6 +116,22 @@ export default function AdminDashboard() {
             </Card>
           );
         })}
+
+        {/* Manage Exams Card */}
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => navigate('/teacher/exams')}
+        >
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Manage Exams</CardTitle>
+            <ClipboardList className="w-5 h-5 text-accent" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-muted-foreground mt-1">
+              View and manage all exams
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       <Card>

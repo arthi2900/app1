@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, UserCheck, GraduationCap, ClipboardCheck, FileText } from 'lucide-react';
+import { BookOpen, UserCheck, GraduationCap, ClipboardCheck, FileText, ClipboardList } from 'lucide-react';
 import { profileApi } from '@/db/api';
 import { useAuth } from '@/hooks/useAuth';
 import SchoolProfile from '@/components/principal/SchoolProfile';
@@ -165,6 +165,22 @@ export default function PrincipalDashboard() {
           <CardContent>
             <p className="text-xs text-muted-foreground mt-1">
               Review and approve exams
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Manage Exams Card */}
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => navigate('/teacher/exams')}
+        >
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Manage Exams</CardTitle>
+            <ClipboardList className="w-5 h-5 text-secondary" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-muted-foreground mt-1">
+              View and manage all exams
             </p>
           </CardContent>
         </Card>
