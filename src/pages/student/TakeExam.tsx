@@ -76,18 +76,33 @@ export default function TakeExam() {
       let attemptData = await examAttemptApi.getAttemptByStudent(examId, profile.id);
 
       if (!attemptData) {
-        // Create attempt with current UTC time (database will store as UTC)
-        attemptData = await examAttemptApi.createAttempt({
-          exam_id: examId,
-          student_id: profile.id,
-          started_at: new Date().toISOString(),
-          submitted_at: null,
-          status: 'in_progress',
-          total_marks_obtained: 0,
-          percentage: 0,
-          result: null,
-        });
-      } else if (attemptData.status === 'submitted' || attemptData.status === 'evaluated') {
+        try {
+          // Create attempt with current UTC time (database will store as UTC)
+          attemptData = await examAttemptApi.createAttempt({
+            exam_id: examId,
+            student_id: profile.id,
+            started_at: new Date().toISOString(),
+            submitted_at: null,
+            status: 'in_progress',
+            total_marks_obtained: 0,
+            percentage: 0,
+            result: null,
+          });
+        } catch (createError: any) {
+          // If 409 conflict (attempt already exists), try fetching again
+          if (createError.message?.includes('409') || createError.code === '23505') {
+            console.log('Attempt already exists, fetching existing attempt...');
+            attemptData = await examAttemptApi.getAttemptByStudent(examId, profile.id);
+            if (!attemptData) {
+              throw new Error('Failed to create or retrieve exam attempt');
+            }
+          } else {
+            throw createError;
+          }
+        }
+      }
+      
+      if (attemptData.status === 'submitted' || attemptData.status === 'evaluated') {
         navigate(`/student/exams/${examId}/result`);
         return;
       }
@@ -115,10 +130,14 @@ export default function TakeExam() {
       console.log('=== EXAM TIMER DEBUG ===');
       console.log('Current UTC time:', new Date().toISOString());
       console.log('Attempt started_at (from DB):', startedAtTime);
+      console.log('Attempt started_at (converted to UTC):', new Date(startedAtTime).toISOString());
       console.log('Exam duration (minutes):', examData.duration_minutes);
       console.log('Calculated remaining seconds:', remainingSeconds);
+      console.log('Remaining time (formatted):', formatSecondsToTime(remainingSeconds));
       console.log('Exam start_time (from DB):', examData.start_time);
       console.log('Exam end_time (from DB):', examData.end_time);
+      console.log('Note: Database returns timestamps with timezone offset (+05:30 for IST)');
+      console.log('JavaScript automatically converts these to UTC for calculations');
       console.log('========================');
       
       setTimeRemaining(remainingSeconds);
