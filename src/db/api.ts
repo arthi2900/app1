@@ -1154,7 +1154,8 @@ export const examAttemptApi = {
   },
 
   async submitAttempt(attemptId: string): Promise<ExamAttempt | null> {
-    const { data, error } = await supabase
+    // First, update status to submitted
+    const { data: attemptData, error: updateError } = await supabase
       .from('exam_attempts')
       .update({
         status: 'submitted',
@@ -1163,8 +1164,29 @@ export const examAttemptApi = {
       .eq('id', attemptId)
       .select()
       .maybeSingle();
-    if (error) throw error;
-    return data;
+    
+    if (updateError) throw updateError;
+    
+    // Then, process the submission (auto-grade and evaluate)
+    const { data: processResult, error: processError } = await supabase
+      .rpc('process_exam_submission', { attempt_uuid: attemptId });
+    
+    if (processError) {
+      console.error('Error processing exam submission:', processError);
+      // Don't throw error - submission was successful, grading can be done later
+    } else {
+      console.log('Exam processing result:', processResult);
+    }
+    
+    // Return the updated attempt data
+    const { data: finalData, error: finalError } = await supabase
+      .from('exam_attempts')
+      .select()
+      .eq('id', attemptId)
+      .maybeSingle();
+    
+    if (finalError) throw finalError;
+    return finalData;
   },
 
   async markAsEvaluated(attemptId: string): Promise<ExamAttempt | null> {
@@ -1174,6 +1196,20 @@ export const examAttemptApi = {
       .eq('id', attemptId)
       .select()
       .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async processSubmission(attemptId: string): Promise<any> {
+    const { data, error } = await supabase
+      .rpc('process_exam_submission', { attempt_uuid: attemptId });
+    if (error) throw error;
+    return data;
+  },
+
+  async autoGradeObjectiveQuestions(attemptId: string): Promise<any> {
+    const { data, error } = await supabase
+      .rpc('auto_grade_objective_questions', { attempt_uuid: attemptId });
     if (error) throw error;
     return data;
   },

@@ -16,12 +16,40 @@ export default function StudentExamDetail() {
   const [attempt, setAttempt] = useState<ExamAttemptWithDetails | null>(null);
   const [answers, setAnswers] = useState<ExamAnswerWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     if (examId && studentId) {
       loadStudentExamDetail();
     }
   }, [examId, studentId]);
+
+  const handleProcessEvaluation = async () => {
+    if (!attempt) return;
+    
+    setProcessing(true);
+    try {
+      const result = await examAttemptApi.processSubmission(attempt.id);
+      console.log('Processing result:', result);
+      
+      toast({
+        title: 'வெற்றி',
+        description: result.message || 'தேர்வு மதிப்பீடு முடிந்தது',
+      });
+      
+      // Reload the data
+      await loadStudentExamDetail();
+    } catch (error: any) {
+      console.error('Error processing evaluation:', error);
+      toast({
+        title: 'பிழை',
+        description: error.message || 'மதிப்பீடு செயலாக்கத்தில் பிழை',
+        variant: 'destructive',
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
 
   const loadStudentExamDetail = async () => {
     try {
@@ -205,16 +233,26 @@ export default function StudentExamDetail() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate(`/teacher/exams/${examId}/results`)}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold">{exam.title}</h1>
-          <p className="text-muted-foreground mt-1">
-            Student: {attempt.student?.full_name || attempt.student?.username}
-          </p>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate(`/teacher/exams/${examId}/results`)}>
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold">{exam.title}</h1>
+            <p className="text-muted-foreground mt-1">
+              Student: {attempt.student?.full_name || attempt.student?.username}
+            </p>
+          </div>
         </div>
+        {attempt.status === 'submitted' && answers.length > 0 && (
+          <Button 
+            onClick={handleProcessEvaluation}
+            disabled={processing}
+          >
+            {processing ? 'செயலாக்கப்படுகிறது...' : 'மதிப்பீடு செய்'}
+          </Button>
+        )}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

@@ -15,12 +15,61 @@ export default function ExamResults() {
   const [exam, setExam] = useState<ExamWithDetails | null>(null);
   const [students, setStudents] = useState<StudentExamAllocation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     if (examId) {
       loadExamResults();
     }
   }, [examId]);
+
+  const handleBulkEvaluation = async () => {
+    if (!students) return;
+    
+    const submittedAttempts = students
+      .filter(s => s.attempt_id && s.status === 'submitted')
+      .map(s => s.attempt_id!);
+    
+    if (submittedAttempts.length === 0) {
+      toast({
+        title: 'தகவல்',
+        description: 'மதிப்பீடு செய்ய சமர்ப்பிக்கப்பட்ட தேர்வுகள் இல்லை',
+      });
+      return;
+    }
+    
+    setProcessing(true);
+    let successCount = 0;
+    let failCount = 0;
+    
+    try {
+      for (const attemptId of submittedAttempts) {
+        try {
+          await examAttemptApi.processSubmission(attemptId);
+          successCount++;
+        } catch (error) {
+          console.error(`Failed to process attempt ${attemptId}:`, error);
+          failCount++;
+        }
+      }
+      
+      toast({
+        title: 'வெற்றி',
+        description: `${successCount} தேர்வுகள் மதிப்பீடு செய்யப்பட்டன${failCount > 0 ? `, ${failCount} தோல்வி` : ''}`,
+      });
+      
+      // Reload results
+      await loadExamResults();
+    } catch (error: any) {
+      toast({
+        title: 'பிழை',
+        description: error.message || 'மதிப்பீடு செயலாக்கத்தில் பிழை',
+        variant: 'destructive',
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
 
   const loadExamResults = async () => {
     try {
@@ -103,16 +152,26 @@ export default function ExamResults() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/teacher/exams')}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold">{exam.title}</h1>
-          <p className="text-muted-foreground mt-1">
-            {exam.class?.class_name} • {exam.subject?.subject_name}
-          </p>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/teacher/exams')}>
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold">{exam.title}</h1>
+            <p className="text-muted-foreground mt-1">
+              {exam.class?.class_name} • {exam.subject?.subject_name}
+            </p>
+          </div>
         </div>
+        {stats.submitted > stats.evaluated && (
+          <Button 
+            onClick={handleBulkEvaluation}
+            disabled={processing}
+          >
+            {processing ? 'செயலாக்கப்படுகிறது...' : 'அனைத்தையும் மதிப்பீடு செய்'}
+          </Button>
+        )}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
