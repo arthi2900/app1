@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { examApi, profileApi, examAttemptApi } from '@/db/api';
-import { ArrowLeft, Plus, Calendar, Clock, Users, FileText, Trash2 } from 'lucide-react';
-import type { ExamWithDetails } from '@/types/types';
+import { ArrowLeft, Plus, Calendar, Clock, Users, FileText, Trash2, ShieldAlert } from 'lucide-react';
+import type { ExamWithDetails, Profile } from '@/types/types';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +17,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { ForceDeleteDialog } from '@/components/ui/force-delete-dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export default function ManageExams() {
   const navigate = useNavigate();
@@ -24,9 +32,12 @@ export default function ManageExams() {
   const [exams, setExams] = useState<ExamWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [forceDeleteDialogOpen, setForceDeleteDialogOpen] = useState(false);
   const [examToDelete, setExamToDelete] = useState<ExamWithDetails | null>(null);
   const [attemptCount, setAttemptCount] = useState<number>(0);
   const [checkingAttempts, setCheckingAttempts] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     loadExams();
@@ -37,6 +48,7 @@ export default function ManageExams() {
       const profile = await profileApi.getCurrentProfile();
       if (!profile) throw new Error('Profile not found');
 
+      setCurrentProfile(profile);
       const data = await examApi.getExamsByTeacher(profile.id);
       setExams(data);
     } catch (error: any) {
@@ -49,6 +61,8 @@ export default function ManageExams() {
       setLoading(false);
     }
   };
+
+  const canForceDelete = currentProfile?.role === 'principal' || currentProfile?.role === 'admin';
 
   const handleDeleteClick = async (exam: ExamWithDetails) => {
     setCheckingAttempts(true);
@@ -87,6 +101,7 @@ export default function ManageExams() {
   const handleDelete = async () => {
     if (!examToDelete) return;
 
+    setIsDeleting(true);
     try {
       await examApi.deleteExam(examToDelete.id);
       toast({
@@ -104,6 +119,53 @@ export default function ManageExams() {
       setDeleteDialogOpen(false);
       setExamToDelete(null);
       setAttemptCount(0);
+      setIsDeleting(false);
+    }
+  };
+
+  const handleForceDeleteClick = async (exam: ExamWithDetails) => {
+    setCheckingAttempts(true);
+    setExamToDelete(exam);
+    
+    try {
+      const attempts = await examAttemptApi.getAttemptsByExam(exam.id);
+      const validAttempts = Array.isArray(attempts) ? attempts : [];
+      setAttemptCount(validAttempts.length);
+      setForceDeleteDialogOpen(true);
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to check exam attempts',
+        variant: 'destructive',
+      });
+      setExamToDelete(null);
+    } finally {
+      setCheckingAttempts(false);
+    }
+  };
+
+  const handleForceDelete = async () => {
+    if (!examToDelete) return;
+
+    setIsDeleting(true);
+    try {
+      const result = await examApi.forceDeleteExam(examToDelete.id);
+      toast({
+        title: 'Success',
+        description: result.message || 'Exam and all associated data deleted successfully',
+      });
+      loadExams();
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to force delete exam',
+        variant: 'destructive',
+      });
+    } finally {
+      setForceDeleteDialogOpen(false);
+      setExamToDelete(null);
+      setAttemptCount(0);
+      setIsDeleting(false);
     }
   };
 
@@ -233,15 +295,46 @@ export default function ManageExams() {
                     View Results
                   </Button>
                   {exam.status !== 'completed' && (
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDeleteClick(exam)}
-                      disabled={checkingAttempts}
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      {checkingAttempts ? 'Checking...' : 'Delete'}
-                    </Button>
+                    <>
+                      {canForceDelete ? (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              disabled={checkingAttempts}
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              {checkingAttempts ? 'Checking...' : 'Delete'}
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleDeleteClick(exam)}>
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Normal Delete
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem 
+                              onClick={() => handleForceDeleteClick(exam)}
+                              className="text-destructive focus:text-destructive"
+                            >
+                              <ShieldAlert className="h-4 w-4 mr-2" />
+                              Force Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      ) : (
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeleteClick(exam)}
+                          disabled={checkingAttempts}
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          {checkingAttempts ? 'Checking...' : 'Delete'}
+                        </Button>
+                      )}
+                    </>
                   )}
                 </div>
               </CardContent>
@@ -275,13 +368,45 @@ export default function ManageExams() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Delete Exam
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDelete} 
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Deleting...' : 'Delete Exam'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <ForceDeleteDialog
+        open={forceDeleteDialogOpen}
+        onOpenChange={setForceDeleteDialogOpen}
+        onConfirm={handleForceDelete}
+        title="Force Delete Exam"
+        itemName={examToDelete?.title || ''}
+        isDeleting={isDeleting}
+        details={
+          examToDelete && (
+            <>
+              <p className="font-semibold">Exam Details:</p>
+              <ul className="space-y-1 ml-4">
+                <li>• Class: {examToDelete.class?.class_name}</li>
+                <li>• Subject: {examToDelete.subject?.subject_name}</li>
+                <li>• Created: {formatDateTime(examToDelete.created_at)}</li>
+                <li>• Status: {examToDelete.status}</li>
+                <li>• Student Attempts: <span className="font-bold text-destructive">{attemptCount}</span></li>
+              </ul>
+              {attemptCount > 0 && (
+                <p className="text-sm text-destructive font-medium mt-2">
+                  ⚠️ This will delete {attemptCount} student attempt{attemptCount > 1 ? 's' : ''} and all associated answers and results.
+                </p>
+              )}
+            </>
+          )
+        }
+      />
     </div>
   );
 }

@@ -972,6 +972,19 @@ export const examApi = {
     if (error) throw error;
   },
 
+  async forceDeleteExam(id: string): Promise<{ success: boolean; message: string; attempts_deleted?: number }> {
+    const { data, error } = await supabase
+      .rpc('force_delete_exam', { exam_id: id });
+    
+    if (error) throw error;
+    
+    if (!data?.success) {
+      throw new Error(data?.message || 'Failed to force delete exam');
+    }
+    
+    return data;
+  },
+
   async approveExam(examId: string, approverId: string): Promise<Exam | null> {
     const { data, error } = await supabase
       .from('exams')

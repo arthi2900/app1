@@ -15,7 +15,9 @@ A comprehensive school management system for educational institutions. Features 
 - User profile editing and suspension management
 - **Cross-school visibility**: Admin can view and manage all schools and users across the entire system
 - **Full management rights**: Create, edit, suspend, delete all users and schools
-\n### 2.2 Principal
+- **Force Delete Exam capability**: Can permanently delete exams with student attempts after strict confirmation
+
+### 2.2 Principal
 - **Academic Management** (within assigned school only):
   - Class creation\n  - Section creation
   - Subject creation (class-wise)
@@ -44,6 +46,7 @@ A comprehensive school management system for educational institutions. Features 
   - Monitor exam status and student participation
   - Access exam analytics and reports
   - **Delete exams created by self (with restrictions)**
+  - **Force Delete Exam capability**: Can permanently delete exams with student attempts after strict confirmation
 - Profile editing capability
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view and manage users (teachers and students) from their assigned school
@@ -79,7 +82,7 @@ A comprehensive school management system for educational institutions. Features 
   - Monitor student participation in real-time
   - View submitted answers and auto-graded results
   - Manually grade subjective questions (Short Answer, Essay)\n  - Generate exam reports and analytics
-  - Export exam results\n  - **Delete own exams (with restrictions)**
+  - Export exam results\n  - **Delete own exams (with restrictions, cannot force delete exams with student attempts)**
 - Profile editing capability
 - Linked to specific school from school master list
 - **School-based isolation**: Can only view and interact with students from their assigned sections
@@ -105,10 +108,8 @@ A comprehensive school management system for educational institutions. Features 
   - ❌ Cannot view: Other students, Teachers, Principal, Admin\n
 ### 2.5 User Profile Information
 All users (Admin, Principal, Teacher, Student) will have the following profile information:
-- User name
-- Email address
-- Role\n- School name (mandatory field, selected from dropdown list populated from School Master)
-- Contact number
+- User name\n- Email address
+- Role\n- School name (mandatory field, selected from dropdown list populated from School Master)\n- Contact number
 - Profile picture (optional)
 - Account status (Pending Approval/Active/Suspended)
 \n## 3. School Management Module
@@ -179,7 +180,8 @@ After Principal login, the dashboard displays seven main cards:
 - Principal can create classes for their assigned school
 - Class information fields:\n  - Class Name (e.g., Class 6, Class 7, Class 8, etc.)
   - Class Code (auto-generated or manual entry)
-  - Academic Year (e.g., 2024-2025)\n- Class list view with edit and delete options
+  - Academic Year (e.g., 2024-2025)
+- Class list view with edit and delete options
 - Classes are school-specific and isolated\n
 #### 5.2.2 Section Creation
 - Principal can create sections for each class
@@ -323,14 +325,14 @@ After Principal login, the dashboard displays seven main cards:
   - Export exam results
   - View exam analytics
   - **Delete exam (for self-created exams only, with restrictions)**
+  - **Force Delete exam (for self-created exams with student attempts, requires strict confirmation)**
 - Analytics dashboard showing:
   - Total exams conducted per teacher
   - Exams conducted per subject
   - Exams conducted per class
   - Student participation rate
   - Average scores by subject/class
-
-### 5.8 Exam Approvals Card - School-Level Exam Approval Management
+\n### 5.8 Exam Approvals Card - School-Level Exam Approval Management
 **New Feature**: Principal can review and approve school-level exams submitted by teachers
 \n**Approval Dashboard Layout**:
 \n**Pending Approvals Section**:
@@ -386,7 +388,7 @@ After Principal login, the dashboard displays seven main cards:
 - Overview cards:\n  - Pending Approvals: X exams
   - Approved This Month: Y exams
   - Rejected This Month: Z exams
-  - Average Approval Time: W hours
+- Average Approval Time: W hours
 - Charts:
   - Approvals Over Time (line chart)
   - Approvals by Teacher (bar chart)
@@ -509,8 +511,7 @@ The question creation form displays fields in the following order:
 - Preview Question Paper
 - Save as Draft
 - Generate Final Question Paper
-- Export as PDF
-- Print Option
+- Export as PDF\n- Print Option
 
 ### 7.3 Question Paper Database Structure
 **Table name**: question_papers
@@ -767,7 +768,8 @@ The question creation form displays fields in the following order:
 - Notification when paper is successfully created
 - Notification when shuffled version is generated
 - Reminder for draft papers older than 30 days
-\n#### 8.8.2 Principal Notifications
+
+#### 8.8.2 Principal Notifications
 - Daily/weekly summary of papers created by teachers
 - Notification when teacher creates new paper
 - Monthly analytics report
@@ -794,6 +796,7 @@ The question creation form displays fields in the following order:
   - Secure exam environment with anti-cheating measures
   - Export and reporting capabilities
   - **Delete exam functionality with restrictions**
+  - **Force Delete exam functionality for Principal/Admin with strict confirmation**
 
 ### 9.2 Online Exam Creation Workflow
 
@@ -894,8 +897,7 @@ Teacher/Principal can choose one of two methods:
   - Right: Selected questions panel (30% width)
 - Progress indicator: 'Step 2 of 4'
 - Action buttons: 'Back', 'Save as Draft', 'Next'
-
-#### 9.2.3 Step 3: Exam Settings Configuration
+\n#### 9.2.3 Step 3: Exam Settings Configuration
 **Settings Panel**:
 \n**1. Negative Marking Settings**
 - **Enable Negative Marking** (Toggle switch)
@@ -908,8 +910,7 @@ Teacher/Principal can choose one of two methods:
   - Total possible negative marks displayed
 \n**2. Result Display Settings**
 - **Show Results Immediately** (Toggle switch)
-  - Default: OFF
-  - If enabled: Students see results immediately after submission
+  - Default: OFF\n  - If enabled: Students see results immediately after submission
   - If disabled: Results shown only after teacher publishes them
   - Warning message: 'Students will see their scores immediately. Manual grading for subjective questions will still be required.'
 - **Allow Review of Answers** (Toggle switch)
@@ -1038,8 +1039,7 @@ Teacher/Principal can choose one of two methods:
     - Confirmation dialog: 'Are you sure you want to submit this exam for Principal approval? You will not be able to edit it until approval decision is made.'
     - Final validation check
     - On success: 'Exam submitted for approval. You will be notified when Principal reviews it.'
-    - Status changes to 'Pending Approval'
-    - Principal receives notification
+    - Status changes to 'Pending Approval'\n    - Principal receives notification
 - **For School-Level Exams (Principal only)**:
   - **Schedule Exam**: Set exam to auto-publish at start time (no approval needed)
   - **Publish Now**: Make exam immediately available to students (no approval needed)
@@ -1121,8 +1121,7 @@ Teacher/Principal can choose one of two methods:
 
 **Columns**:
 - id (UUID, Primary Key)
-- exam_id (Foreign Key → online_exams.id, required)
-- section_id (Foreign Key → sections.id, required)
+- exam_id (Foreign Key → online_exams.id, required)\n- section_id (Foreign Key → sections.id, required)
 - total_students (Integer, calculated)
   - Count of students in section at time of exam creation
 - students_started (Integer, default 0)
@@ -1214,7 +1213,8 @@ Teacher/Principal can choose one of two methods:
   - Subject
   - Class and Section
   - Start date and time (with countdown: 'Starts in 2 days5 hours')
-  - End date and time\n  - Duration
+  - End date and time
+  - Duration
   - Total marks
   - Status badge: 'Upcoming' (blue)\n  - Instructions button (opens modal with exam instructions)
   - 'Set Reminder' button (optional feature)
@@ -1759,7 +1759,8 @@ Teacher/Principal can choose one of two methods:
   - Determine pass_fail_status
   - Update attempt_status to 'Graded'
   - Set pending_manual_grading to false
-- Teacher can publish results after grading\n
+- Teacher can publish results after grading
+
 **Publish Results**:
 - 'Publish Results' button (available after grading)
 - Options:
@@ -1773,8 +1774,7 @@ Teacher/Principal can choose one of two methods:
 
 #### 9.5.4 Exam Analytics and Reports
 **Analytics Dashboard**:
-- Accessible from 'View Analytics' button on completed exams
-\n**Dashboard Layout**:
+- Accessible from 'View Analytics' button on completed exams\n\n**Dashboard Layout**:
 \n**Overview Section** (Top cards):
 - Total Students: 58
 - Students Completed: 55 (95%)
@@ -1916,6 +1916,7 @@ Teacher/Principal can choose one of two methods:
   - Action buttons:\n    - 'View Details': Open exam details page
     - 'View Analytics': Open analytics dashboard (for completed exams)
     - **'Delete': Delete exam (for self-created exams only, with restrictions)**
+    - **'Force Delete': Force delete exam with student attempts (for self-created exams only, requires strict confirmation)**
 - Filter options:\n  - By Teacher (dropdown showing all teachers)
   - By Class (dropdown)\n  - By Subject (dropdown)\n  - By Exam Type (dropdown: All, Practice, School-Level)
   - By Status (dropdown: All, Draft, Pending Approval, Approved, Scheduled, Ongoing, Completed, Cancelled, Rejected)\n  - By Date Range (date picker: From Date, To Date)
@@ -1961,9 +1962,11 @@ Teacher/Principal can choose one of two methods:
     - 'View Results': Open results summary\n    - 'View Analytics': Open detailed analytics dashboard
     - 'Export Results': Download results as Excel/CSV
     - **'Delete': Delete exam (for self-created exams only, with restrictions)**
+    - **'Force Delete': Force delete exam with student attempts (for self-created exams only, requires strict confirmation)**
 - Filter: By Teacher, By Class, By Subject, By Exam Type, By Date Range
 - Sort: End Date (Recent First/Oldest First), Average Score (High to Low), Teacher Name A-Z
-\n**Exam Details Page** (Principal view):
+
+**Exam Details Page** (Principal view):
 - Read-only view of exam configuration
 - Sections:
   - Exam Information: Name, Exam Type, Class, Subject, Sections, Duration, Start/End DateTime, Passing Marks, Instructions
@@ -1973,8 +1976,7 @@ Teacher/Principal can choose one of two methods:
   - Results Summary (for completed exams): Average score, pass rate, score distribution
 - Action buttons:
   - 'View Analytics': Open analytics dashboard
-  - 'Export Results': Download results\n  - 'Back to Exams'\n
-#### 9.6.2 School-wide Exam Analytics
+  - 'Export Results': Download results\n  - 'Back to Exams'\n\n#### 9.6.2 School-wide Exam Analytics
 **Analytics Dashboard** (Principal view):
 - Accessible from Principal Dashboard or Online Exams page
 - Shows aggregated analytics for all exams in school
@@ -2035,8 +2037,7 @@ Teacher/Principal can choose one of two methods:
   - Average Student Score (%)
   - Average Pass Rate (%)
   - Average Participation Rate (%)
-- Sort options: Name A-Z, Exams Created (High to Low), Average Score (High to Low)
-- Click on teacher to view detailed teacher-specific analytics
+- Sort options: Name A-Z, Exams Created (High to Low), Average Score (High to Low)\n- Click on teacher to view detailed teacher-specific analytics
 
 **Subject Performance Table**:
 - List of subjects with exam statistics
@@ -2093,11 +2094,13 @@ Teacher/Principal can choose one of two methods:
 - Cannot view exams created by other teachers or principal
 - Cannot view students from sections not assigned to them
 - Cannot edit or delete exams after students have started attempting\n- Can extend exam time or end exam early for own exams
-- Cannot edit school-level exams while in'Pending Approval' status\n- **Can delete own exams with following restrictions**:
+- Cannot edit school-level exams while in'Pending Approval' status
+- **Can delete own exams with following restrictions**:
   - **Draft exams**: Can be deleted anytime
   - **Scheduled exams**: Can be deleted only if no students have started\n  - **Ongoing exams**: Cannot be deleted
   - **Completed exams**: Can be deleted only after results are published and archived (after 30 days)
   - **Pending Approval exams**: Can be withdrawn (returns to draft) but not deleted
+- **Cannot force delete exams with student attempts** (only Principal/Admin can force delete)
 \n#### 9.7.2 Student Access Rules
 - Can view only exams assigned to their section (both practice and school-level)
 - Can take exam only during scheduled time window (start to end datetime)
@@ -2127,7 +2130,20 @@ Teacher/Principal can choose one of two methods:
   - **Scheduled exams**: Can be deleted only if no students have started
   - **Ongoing exams**: Cannot be deleted
   - **Completed exams**: Can be deleted only after results are published and archived (after 30 days)
-\n#### 9.7.4 Data Isolation\n- All exam data is school-scoped\n- Backend validation ensures:\n  - Teachers can only access own exams
+- **Can force delete self-created exams with student attempts after strict confirmation**
+
+#### 9.7.4 Admin Access Rules
+- Has cross-school visibility and can view all exams across all schools
+- Can view exam details, settings, and questions for any exam
+- Can view student participation and results for any exam
+- Can view exam analytics and reports for any school
+- Can export exam results and analytics for any school
+- Cannot create, edit, or delete exams
+- Cannot grade exams
+- Cannot publish or unpublish results\n- Read-only access to all exam data\n- **Can force delete any exam with student attempts after strict confirmation** (for system maintenance purposes)
+
+#### 9.7.5 Data Isolation
+- All exam data is school-scoped\n- Backend validation ensures:\n  - Teachers can only access own exams
   - Students can only access exams assigned to their section
   - Principal can only access exams from their assigned school
 - Cross-school data access is prevented at database level
@@ -2249,7 +2265,8 @@ Teacher/Principal can choose one of two methods:
 - Limitations:
   - Can be bypassed by disabling JavaScript
   - Does not prevent typing from another source
-\n**Screenshot Prevention** (Optional):
+
+**Screenshot Prevention** (Optional):
 - Browser-level screenshot prevention (limited support)
 - CSS property: -webkit-user-select: none (prevents text selection)
 - Watermark overlay with student name and timestamp (future feature)
@@ -2339,7 +2356,8 @@ Teacher/Principal can choose one of two methods:
 - Frontend validation:
   - Exam not shown in student's 'My Exams' list if not assigned\n\n**One-time Access Link** (Optional, future feature):
 - Generate unique access token for each student
-- Token valid only for exam duration\n- Token can be used only once
+- Token valid only for exam duration
+- Token can be used only once
 - Prevents sharing of exam link
 
 **Password Protection** (Optional):
@@ -2348,7 +2366,7 @@ Teacher/Principal can choose one of two methods:
   - Password input field on pre-exam screen
   - Backend validation: Compare entered password with stored exam_password
   - Error message: 'Incorrect password. Please try again.'
-  - After 3 failed attempts: Lock exam for 10 minutes
+  - After3 failed attempts: Lock exam for 10 minutes
 - Password stored encrypted in database
 - Teacher can share password via separate channel (email, SMS, in-class)
 \n### 9.10 Exam Deletion Feature
@@ -2370,6 +2388,17 @@ Teacher/Principal can choose one of two methods:
   - **Completed Exams Tab**: Delete button for self-created exams only (with restrictions)
   - **Exam Details Page**: Delete button for self-created exams only
 - Delete button styling: Same as teacher interface
+- **Force Delete button** (additional option):
+  - Available for self-created exams with student attempts\n  - Red color with warning icon
+  - Text: 'Force Delete' or 'Force Delete Exam'\n  - Only shown when normal delete is not allowed due to student attempts
+
+**Admin Interface**:
+- Force Delete button available in following locations:
+  - **All Exams Page**: Force Delete button for any exam with student attempts
+  - **Exam Details Page**: Force Delete button for any exam with student attempts
+- Force Delete button styling:\n  - Red color with warning icon
+  - Text: 'Force Delete' or 'Force Delete Exam'
+  - Only shown for exams with student attempts
 
 #### 9.10.2 Delete Restrictions and Validation
 \n**For Teachers**:
@@ -2383,13 +2412,13 @@ Teacher/Principal can choose one of two methods:
 - **Scheduled Exams**:
   - Can be deleted only if:\n    - No students have started the exam
     - Exam has not yet reached start time
-  - Validation check:\n    - Query student_exam_attempts table for this exam_id
+  - Validation check:
+    - Query student_exam_attempts table for this exam_id
     - If any student has attempt_status != 'Not Started', prevent deletion
   - Error message: 'Cannot delete exam. Some students have already started this exam.'
   - Confirmation dialog required with warning
 - **Ongoing Exams**:
-  - Cannot be deleted
-  - Delete button disabled or hidden
+  - Cannot be deleted\n  - Delete button disabled or hidden
   - Tooltip: 'Cannot delete ongoing exam. Please wait until exam is completed.'
 - **Completed Exams**:\n  - Can be deleted only if:
     - Results have been published
@@ -2398,13 +2427,18 @@ Teacher/Principal can choose one of two methods:
     - Check if results published\n    - Check if 30 days have passed since end_datetime
   - Error message: 'Cannot delete exam. Results must be published and exam must be archived (30 days after completion).'
   - Confirmation dialog required with strong warning
-
-**For Principal**:
+- **Cannot force delete exams with student attempts** (only Principal/Admin can force delete)
+\n**For Principal**:
 - Same restrictions as teachers for self-created exams
 - Cannot delete exams created by teachers
 - Delete button not shown for teacher-created exams
-\n#### 9.10.3 Delete Confirmation Dialog
-**Dialog Layout**:
+- **Can force delete self-created exams with student attempts after strict confirmation**
+
+**For Admin**:
+- **Can force delete any exam with student attempts after strict confirmation**
+- Force delete available for system maintenance purposes
+- Requires highest level of confirmation\n\n#### 9.10.3 Delete Confirmation Dialog
+**Standard Delete Confirmation Dialog**:
 - Title: 'Delete Exam?'
 - Warning icon (red exclamation mark)
 - Message:\n  - For Draft: 'Are you sure you want to delete this exam? This action cannot be undone.'
@@ -2416,8 +2450,31 @@ Teacher/Principal can choose one of two methods:
   - 'Cancel': Close dialog without deleting
   - 'Delete Exam': Confirm deletion (enabled only after checkbox is checked)
     - Red color to indicate destructive action
-\n#### 9.10.4 Delete Process
-**Backend Workflow**:
+\n**Force Delete Confirmation Dialog** (Principal/Admin only):
+- Title: 'Force Delete Exam?'\n- Strong warning icon (red exclamation mark with alert)\n- **Strong warning message**:
+  - 'WARNING: This will permanently delete the exam and all associated student attempts, answers, and results. This action cannot be undone.'
+  - 'X student(s) have already attempted this exam. All their data will be permanently deleted.'\n- Exam details summary:
+  - Exam name
+  - Class and Subject
+  - Total students assigned
+  - Students attempted: X
+  - Students completed: Y
+  - Total student attempts: Z
+- **Additional warning**:
+  - 'This is a destructive operation that will result in permanent data loss.'
+  - 'Only proceed if you are absolutely certain.'
+- **Type DELETE to confirm**:
+  - Text input field (required)
+  - Placeholder: 'Type DELETE to confirm'
+  - Validation: Must type exactly 'DELETE' (case-sensitive)
+  - Delete button enabled only after correct text is entered
+- Action buttons:
+  - 'Cancel': Close dialog without deleting
+  - 'Force Delete Exam': Confirm force deletion (enabled only after typing 'DELETE')
+    - Red color with bold styling to indicate highly destructive action
+
+#### 9.10.4 Delete Process
+**Standard Delete Workflow**:
 1. Validate user permissions:\n   - Check if user is creator of exam\n   - Check if user has delete permission\n2. Validate exam status and restrictions:
    - Check exam_status\n   - Check student attempts (for scheduled exams)
    - Check results published and archive status (for completed exams)
@@ -2428,15 +2485,37 @@ Teacher/Principal can choose one of two methods:
 4. Return success response
 5. If validation fails:
    - Return error response with specific reason
+\n**Force Delete Workflow** (Principal/Admin only):
+1. Validate user permissions:
+   - Check if user is Principal or Admin
+   - Check if user is creator of exam (for Principal)
+   - Admin can force delete any exam\n2. Validate confirmation:
+   - Check if user typed 'DELETE' correctly
+3. If validation passes:
+   - **Begin database transaction** (ensure data integrity)
+   - Delete related records in cascading order:
+     - student_exam_attempts (all attempts for this exam)
+       - This includes all student answers, activity logs, grading data
+     - exam_sections (section mappings)
+     - online_exams (exam record)
+   - **Commit transaction**
+   - Log force deletion action in audit log with user details and timestamp
+4. Return success response
+5. If validation fails:
+   - Return error response with specific reason
 \n**Frontend Workflow**:
-1. User clicks 'Delete' button
-2. Show confirmation dialog
-3. User checks confirmation checkbox
-4. User clicks 'Delete Exam' button
-5. Show loading spinner: 'Deleting exam...'
+1. User clicks 'Delete' or 'Force Delete' button
+2. Show appropriate confirmation dialog (standard or force delete)
+3. For standard delete:
+   - User checks confirmation checkbox
+   - User clicks 'Delete Exam' button
+4. For force delete:
+   - User types 'DELETE' in text input field
+   - User clicks 'Force Delete Exam' button
+5. Show loading spinner: 'Deleting exam...' or 'Force deleting exam...'
 6. Send delete request to backend
 7. On success:
-   - Show success message: 'Exam deleted successfully.'
+   - Show success message: 'Exam deleted successfully.' or 'Exam and all associated data deleted successfully.'
    - Remove exam from list
    - Redirect to exams list page
 8. On error:
@@ -2451,11 +2530,41 @@ Teacher/Principal can choose one of two methods:
 - Deletion is permanent and irreversible
 - All student attempts, answers, and results are permanently deleted
 - All exam analytics and reports are permanently deleted
-- Confirmation dialog must clearly communicate this\n
-#### 9.10.6 Alternative to Deletion: Archive Feature (Future Enhancement)
+- Confirmation dialog must clearly communicate this\n- **Force delete warning must be even stronger** to emphasize the severity of data loss
+
+#### 9.10.6 Force Delete Access Control
+**Role-based Access**:
+- **Teacher**: Cannot force delete exams with student attempts
+  - If exam has student attempts, show error message: 'Cannot delete exam. X student(s) have already attempted this exam.'
+  - No force delete option available
+- **Principal**: Can force delete self-created exams with student attempts\n  - Force delete button shown for self-created exams with student attempts\n  - Requires strict confirmation (type 'DELETE')
+  - Cannot force delete teacher-created exams
+- **Admin**: Can force delete any exam with student attempts
+  - Force delete button shown for any exam with student attempts
+  - Requires strict confirmation (type 'DELETE')
+  - Used for system maintenance and data cleanup
+
+**Backend Validation**:
+- API endpoint: DELETE /api/exams/{exam_id}/force-delete
+- Validate user role:\n  - If Teacher: Return403 Forbidden
+  - If Principal: Check if exam created by principal
+  - If Admin: Allow force delete for any exam
+- Validate confirmation:
+  - Check if confirmation text is'DELETE'\n- Perform force delete with transaction
+- Log action in audit log
+\n**Audit Log** (Future feature):
+- Record all force delete actions\n- Log fields:
+  - Action: 'Force Delete Exam'
+  - User: User ID and name
+  - Role: Principal/Admin
+  - Exam: Exam ID and name
+  - Students Affected: Count of students with attempts
+  - Timestamp: Date and time of deletion
+  - Reason: Optional reason field (future enhancement)
+
+#### 9.10.7 Alternative to Deletion: Archive Feature (Future Enhancement)
 **Archive Functionality**:
-- Instead of permanent deletion, exams can be archived
-- Archived exams:\n  - Not shown in active exams list
+- Instead of permanent deletion, exams can be archived\n- Archived exams:\n  - Not shown in active exams list
   - Moved to 'Archived Exams' section
   - Can be restored if needed
   - Student data preserved
@@ -2491,8 +2600,9 @@ After Teacher login, the dashboard displays:
   - Monitor student participation in real-time
   - View submitted answers and auto-graded results
   - Manually grade subjective questions (Short Answer, Essay)\n  - Generate exam reports and analytics
-  - Export exam results\n  - **Delete own exams (with restrictions based on exam status)**
-\n## 11. Student Dashboard and Functions\n
+  - Export exam results\n  - **Delete own exams (with restrictions based on exam status, cannot force delete)**
+\n## 11. Student Dashboard and Functions
+
 ### 11.1 Student Login - Dashboard Overview
 After Student login, the dashboard displays:
 - My class, section, subjects, and teachers
@@ -2519,11 +2629,13 @@ After Student login, the dashboard displays:
 - Create and manage schools
 - User account management with status-based navigation
 - Enhanced search and filter for Active Users
+- **Force delete exams with student attempts** (for system maintenance)
 \n### 12.4 Principal Functions
 - Academic Management\n- Teacher Management with enhanced search
 - Student Management\n- Question Bank Management
 - Question Paper History Management:\n  - View all question papers created by teachers in school
-  - Advanced filtering and search\n  - School-wide analytics dashboard
+  - Advanced filtering and search
+  - School-wide analytics dashboard
   - Export and print capabilities
 - **Online Exam Monitoring**:
   - **Approve school-level exams created by teachers**
@@ -2533,9 +2645,9 @@ After Student login, the dashboard displays:
   - Monitor exam status and student participation
   - Access exam analytics and reports
   - **Delete self-created exams (with restrictions)**
+  - **Force delete self-created exams with student attempts (requires strict confirmation)**
 
-### 12.5 Teacher Functions
-- View assigned classes, sections, subjects
+### 12.5 Teacher Functions\n- View assigned classes, sections, subjects
 - Question Bank Access\n- Question Paper Preparation with shuffle and auto-versioning
 - Question Paper History Management:
   - View own paper history
@@ -2547,9 +2659,8 @@ After Student login, the dashboard displays:
   - Real-time monitoring\n  - **Auto-grading for objective questions**
   - Manual grading for subjective questions
   - **Detailed exam analytics and performance reports**
-  - **Delete own exams (with restrictions)**
-
-### 12.6 Student Functions
+  - **Delete own exams (with restrictions, cannot force delete)**
+\n### 12.6 Student Functions
 - View personal information
 - Profile editing
 - **Online Exam Functions**:
@@ -2590,6 +2701,7 @@ After Student login, the dashboard displays:
 - Security features and anti-cheating measures
 - School-based data isolation and role-based access control
 - **Exam deletion functionality with restrictions based on exam status and user role**
+- **Force delete functionality for Principal/Admin with strict confirmation (type DELETE to confirm)**
 
 ## 13. Language Support
 
@@ -2619,16 +2731,16 @@ After Student login, the dashboard displays:
 - Minus Mark color: Red (#EF4444) or Orange (#F59E0B)
 - History/Archive color: Purple (#8B5CF6)
 - **Exam status colors**:
-  - Draft: Gray (#6B7280)
-  - Pending Approval: Orange (#F59E0B)
+  - Draft: Gray (#6B7280)\n  - Pending Approval: Orange (#F59E0B)
   - Approved: Green (#10B981)
   - Scheduled: Blue (#3B82F6)
   - Ongoing: Green (#10B981)
   - Completed: Purple (#8B5CF6)
-- Cancelled: Red (#EF4444)\n  - Rejected: Red (#EF4444)\n- **Exam type badges**:
+  - Cancelled: Red (#EF4444)\n  - Rejected: Red (#EF4444)\n- **Exam type badges**:
   - Practice: Green (#10B981)
   - School-Level: Blue (#3B82F6)
-- **Delete button color**: Red (#EF4444)\n\n### 15.2 Visual Details
+- **Delete button color**: Red (#EF4444)\n- **Force Delete button color**: Dark Red (#DC2626) with bold styling
+\n### 15.2 Visual Details
 - Soft rounded corners (8px radius)
 - Subtle shadow effects
 - Clear borders\n- Status badges with appropriate colors
@@ -2638,6 +2750,7 @@ After Student login, the dashboard displays:
 - **Real-time status updates** with smooth animations
 - **Question palette panel with color-coded status indicators** (green: answered, red: not answered, orange: marked for review, gray: not visited)
 - **Delete button with destructive styling** (red color, trash icon)
+- **Force Delete button with highly destructive styling** (dark red color, warning icon, bold text)
 \n### 15.3 Overall Layout
 - Side panel navigation with collapsible toggle
 - Card-based design\n- Responsive grid layout
@@ -2652,7 +2765,9 @@ After Student login, the dashboard displays:
 - **Exam analytics with interactive charts and graphs**
 - **Approval workflow interface for Principal**
 - **Delete confirmation dialogs with clear warnings**
-\n## 16. Reference Image
+- **Force Delete confirmation dialog with strong warnings and type DELETE confirmation**
+
+## 16. Reference Image
 
 ### 16.1 Question Edit Form Layout
 The uploaded image (screenshot.png) shows the question edit form with the following layout issue:
