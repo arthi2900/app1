@@ -35,6 +35,7 @@ export default function TakeExam() {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [loading, setLoading] = useState(true);
   const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
+  const [examInitialized, setExamInitialized] = useState(false);
 
   useEffect(() => {
     if (examId) {
@@ -43,8 +44,23 @@ export default function TakeExam() {
   }, [examId]);
 
   useEffect(() => {
-    if (timeRemaining <= 0 && attempt) {
+    // Debug: Log when this effect runs
+    console.log('Timer useEffect triggered:', {
+      timeRemaining,
+      hasAttempt: !!attempt,
+      examInitialized,
+      shouldAutoSubmit: timeRemaining <= 0 && attempt && examInitialized
+    });
+
+    // Only trigger auto-submit if exam is initialized and timer has expired
+    // This prevents auto-submit during initial load when timeRemaining is 0
+    if (timeRemaining <= 0 && attempt && examInitialized) {
       handleAutoSubmit();
+      return;
+    }
+
+    // Don't start timer until exam is initialized
+    if (!examInitialized) {
       return;
     }
 
@@ -53,7 +69,7 @@ export default function TakeExam() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeRemaining, attempt]);
+  }, [timeRemaining, attempt, examInitialized]);
 
   const initializeExam = async () => {
     try {
@@ -141,6 +157,9 @@ export default function TakeExam() {
       console.log('========================');
       
       setTimeRemaining(remainingSeconds);
+      
+      // Mark exam as initialized to enable timer and auto-submit logic
+      setExamInitialized(true);
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -172,6 +191,12 @@ export default function TakeExam() {
 
   const handleAutoSubmit = async () => {
     if (!attempt) return;
+
+    console.log('=== AUTO-SUBMIT TRIGGERED ===');
+    console.log('Reason: Timer expired (timeRemaining reached 0)');
+    console.log('Attempt ID:', attempt.id);
+    console.log('Current time:', new Date().toISOString());
+    console.log('============================');
 
     try {
       await examAttemptApi.submitAttempt(attempt.id);
