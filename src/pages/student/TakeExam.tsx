@@ -105,10 +105,21 @@ export default function TakeExam() {
       setAnswers(answersMap);
 
       // Calculate remaining time in UTC
+      const startedAtTime = attemptData.started_at || attemptData.created_at;
       const remainingSeconds = getExamRemainingTime(
-        attemptData.started_at || attemptData.created_at,
+        startedAtTime,
         examData.duration_minutes
       );
+      
+      // Debug logging
+      console.log('=== EXAM TIMER DEBUG ===');
+      console.log('Current UTC time:', new Date().toISOString());
+      console.log('Attempt started_at (from DB):', startedAtTime);
+      console.log('Exam duration (minutes):', examData.duration_minutes);
+      console.log('Calculated remaining seconds:', remainingSeconds);
+      console.log('Exam start_time (from DB):', examData.start_time);
+      console.log('Exam end_time (from DB):', examData.end_time);
+      console.log('========================');
       
       setTimeRemaining(remainingSeconds);
     } catch (error: any) {

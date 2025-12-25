@@ -98,7 +98,17 @@ export function getExamRemainingTime(
   const started = typeof startedAt === 'string' ? new Date(startedAt) : startedAt;
   const elapsedSeconds = getTimeDifferenceInSeconds(started, now);
   const totalSeconds = durationMinutes * 60;
-  return Math.max(0, totalSeconds - elapsedSeconds);
+  const remaining = Math.max(0, totalSeconds - elapsedSeconds);
+  
+  // Debug logging
+  console.log('getExamRemainingTime calculation:');
+  console.log('  now (UTC):', now.toISOString());
+  console.log('  started (UTC):', started.toISOString());
+  console.log('  elapsedSeconds:', elapsedSeconds);
+  console.log('  totalSeconds:', totalSeconds);
+  console.log('  remaining:', remaining);
+  
+  return remaining;
 }
 
 /**
