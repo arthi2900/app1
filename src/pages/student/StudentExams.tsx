@@ -4,15 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { examApi, profileApi, academicApi } from '@/db/api';
+import { examApi, profileApi, academicApi, examAttemptApi } from '@/db/api';
 import { Calendar, Clock, FileText, PlayCircle, CheckCircle2 } from 'lucide-react';
-import type { ExamWithDetails } from '@/types/types';
+import type { ExamWithDetails, ExamAttempt } from '@/types/types';
 import { hasExamStarted, hasExamEnded, formatISTDateTime } from '@/utils/timezone';
 
 export default function StudentExams() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [exams, setExams] = useState<ExamWithDetails[]>([]);
+  const [attempts, setAttempts] = useState<Record<string, ExamAttempt>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,6 +39,21 @@ export default function StudentExams() {
       
       const publishedExams = data.filter(exam => exam.status === 'published');
       setExams(publishedExams);
+
+      // Fetch exam attempts for all published exams
+      const attemptsMap: Record<string, ExamAttempt> = {};
+      for (const exam of publishedExams) {
+        try {
+          const attempt = await examAttemptApi.getAttemptByStudent(exam.id, profile.id);
+          if (attempt) {
+            attemptsMap[exam.id] = attempt;
+          }
+        } catch (error) {
+          // No attempt found for this exam, which is fine
+          console.log(`No attempt found for exam ${exam.id}`);
+        }
+      }
+      setAttempts(attemptsMap);
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -62,6 +78,19 @@ export default function StudentExams() {
   };
 
   const getExamStatus = (exam: ExamWithDetails) => {
+    const attempt = attempts[exam.id];
+    
+    // If student has submitted or is being evaluated, show that status
+    if (attempt) {
+      if (attempt.status === 'submitted' || attempt.status === 'evaluated') {
+        return { label: 'Submitted', variant: 'secondary' as const };
+      }
+      if (attempt.status === 'in_progress') {
+        return { label: 'In Progress', variant: 'default' as const };
+      }
+    }
+    
+    // Otherwise, check time-based status
     if (isExamCompleted(exam)) {
       return { label: 'Completed', variant: 'secondary' as const };
     }
@@ -110,6 +139,9 @@ export default function StudentExams() {
             const status = getExamStatus(exam);
             const available = isExamAvailable(exam);
             const completed = isExamCompleted(exam);
+            const attempt = attempts[exam.id];
+            const hasSubmitted = attempt && (attempt.status === 'submitted' || attempt.status === 'evaluated');
+            const inProgress = attempt && attempt.status === 'in_progress';
 
             return (
               <Card key={exam.id}>
@@ -166,13 +198,8 @@ export default function StudentExams() {
                   )}
 
                   <div className="flex gap-2">
-                    {available && (
-                      <Button onClick={() => navigate(`/student/exams/${exam.id}/take`)}>
-                        <PlayCircle className="h-4 w-4 mr-2" />
-                        Start Exam
-                      </Button>
-                    )}
-                    {completed && (
+                    {/* Show "View Result" if submitted */}
+                    {hasSubmitted && (
                       <Button
                         variant="outline"
                         onClick={() => navigate(`/student/exams/${exam.id}/result`)}
@@ -181,7 +208,36 @@ export default function StudentExams() {
                         View Result
                       </Button>
                     )}
-                    {!available && !completed && (
+                    
+                    {/* Show "Continue Exam" if in progress */}
+                    {inProgress && available && (
+                      <Button onClick={() => navigate(`/student/exams/${exam.id}/take`)}>
+                        <PlayCircle className="h-4 w-4 mr-2" />
+                        Continue Exam
+                      </Button>
+                    )}
+                    
+                    {/* Show "Start Exam" if not started and available */}
+                    {!attempt && available && (
+                      <Button onClick={() => navigate(`/student/exams/${exam.id}/take`)}>
+                        <PlayCircle className="h-4 w-4 mr-2" />
+                        Start Exam
+                      </Button>
+                    )}
+                    
+                    {/* Show "View Result" if exam time completed */}
+                    {completed && !hasSubmitted && (
+                      <Button
+                        variant="outline"
+                        onClick={() => navigate(`/student/exams/${exam.id}/result`)}
+                      >
+                        <CheckCircle2 className="h-4 w-4 mr-2" />
+                        View Result
+                      </Button>
+                    )}
+                    
+                    {/* Show disabled button if not available yet */}
+                    {!available && !completed && !hasSubmitted && (
                       <Button disabled>
                         Exam not yet available
                       </Button>
