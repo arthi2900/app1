@@ -33,8 +33,8 @@ export default function ExamResults() {
       setStudents(studentsData);
     } catch (error: any) {
       toast({
-        title: 'பிழை',
-        description: error.message || 'தேர்வு முடிவுகளை ஏற்ற முடியவில்லை',
+        title: 'Error',
+        description: error.message || 'Failed to load exam results',
         variant: 'destructive',
       });
     } finally {
@@ -43,6 +43,18 @@ export default function ExamResults() {
   };
 
   const calculateStats = () => {
+    if (!students || students.length === 0) {
+      return {
+        totalStudents: 0,
+        submitted: 0,
+        evaluated: 0,
+        passed: 0,
+        failed: 0,
+        avgPercentage: '0.00',
+        attendanceRate: '0',
+      };
+    }
+
     const submitted = students.filter(s => s.status === 'submitted' || s.status === 'evaluated');
     const evaluated = students.filter(s => s.status === 'evaluated');
     const passed = evaluated.filter(s => s.result === 'pass');
@@ -70,7 +82,7 @@ export default function ExamResults() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">முடிவுகள் ஏற்றப்படுகின்றன...</p>
+          <p className="text-muted-foreground">Loading results...</p>
         </div>
       </div>
     );
@@ -80,9 +92,9 @@ export default function ExamResults() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <p className="text-muted-foreground">தேர்வு கிடைக்கவில்லை</p>
+          <p className="text-muted-foreground">Exam not found</p>
           <Button onClick={() => navigate('/teacher/exams')} className="mt-4">
-            தேர்வுகளுக்குத் திரும்பு
+            Back to Exams
           </Button>
         </div>
       </div>
@@ -106,52 +118,52 @@ export default function ExamResults() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">மொத்த மாணவர்கள்</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Students</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalStudents}</div>
             <p className="text-xs text-muted-foreground">
-              {stats.submitted} சமர்ப்பித்தனர் • {stats.attendanceRate}% வருகை
+              {stats.submitted} submitted • {stats.attendanceRate}% attendance
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">சராசரி மதிப்பெண்</CardTitle>
+            <CardTitle className="text-sm font-medium">Average Score</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.avgPercentage}%</div>
             <p className="text-xs text-muted-foreground">
-              {stats.evaluated} மதிப்பீடு செய்யப்பட்டது
+              {stats.evaluated} evaluated
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">தேர்ச்சி</CardTitle>
+            <CardTitle className="text-sm font-medium">Passed</CardTitle>
             <CheckCircle2 className="h-4 w-4 text-secondary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-secondary">{stats.passed}</div>
             <p className="text-xs text-muted-foreground">
-              {stats.evaluated > 0 ? ((stats.passed / stats.evaluated) * 100).toFixed(1) : 0}% தேர்ச்சி விகிதம்
+              {stats.evaluated > 0 ? ((stats.passed / stats.evaluated) * 100).toFixed(1) : 0}% pass rate
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">தோல்வி</CardTitle>
+            <CardTitle className="text-sm font-medium">Failed</CardTitle>
             <XCircle className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-destructive">{stats.failed}</div>
             <p className="text-xs text-muted-foreground">
-              {stats.evaluated > 0 ? ((stats.failed / stats.evaluated) * 100).toFixed(1) : 0}% தோல்வி விகிதம்
+              {stats.evaluated > 0 ? ((stats.failed / stats.evaluated) * 100).toFixed(1) : 0}% fail rate
             </p>
           </CardContent>
         </Card>
@@ -159,26 +171,26 @@ export default function ExamResults() {
 
       <Card>
         <CardHeader>
-          <CardTitle>மாணவர் முடிவுகள்</CardTitle>
+          <CardTitle>Student Results</CardTitle>
         </CardHeader>
         <CardContent>
           {students.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              இந்த தேர்வுக்கு மாணவர்கள் ஒதுக்கப்படவில்லை
+              No students allocated to this exam
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4">மாணவர்</th>
-                    <th className="text-left py-3 px-4">பிரிவு</th>
-                    <th className="text-left py-3 px-4">நிலை</th>
-                    <th className="text-left py-3 px-4">தொடங்கிய நேரம்</th>
-                    <th className="text-left py-3 px-4">சமர்ப்பித்த நேரம்</th>
-                    <th className="text-right py-3 px-4">பெற்ற மதிப்பெண்கள்</th>
-                    <th className="text-right py-3 px-4">சதவீதம்</th>
-                    <th className="text-center py-3 px-4">முடிவு</th>
+                    <th className="text-left py-3 px-4">Student</th>
+                    <th className="text-left py-3 px-4">Section</th>
+                    <th className="text-left py-3 px-4">Status</th>
+                    <th className="text-left py-3 px-4">Started At</th>
+                    <th className="text-left py-3 px-4">Submitted At</th>
+                    <th className="text-right py-3 px-4">Marks Obtained</th>
+                    <th className="text-right py-3 px-4">Percentage</th>
+                    <th className="text-center py-3 px-4">Result</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -199,15 +211,15 @@ export default function ExamResults() {
                         } className={
                           student.status === 'not_started' ? 'bg-muted text-muted-foreground' : ''
                         }>
-                          {student.status === 'not_started' && 'முயற்சிக்கவில்லை'}
-                          {student.status === 'in_progress' && 'நடைபெறுகிறது'}
-                          {student.status === 'submitted' && 'சமர்ப்பிக்கப்பட்டது'}
-                          {student.status === 'evaluated' && 'மதிப்பீடு செய்யப்பட்டது'}
+                          {student.status === 'not_started' && 'Not Attempted'}
+                          {student.status === 'in_progress' && 'In Progress'}
+                          {student.status === 'submitted' && 'Submitted'}
+                          {student.status === 'evaluated' && 'Evaluated'}
                         </Badge>
                       </td>
                       <td className="py-3 px-4">
                         {student.started_at 
-                          ? new Date(student.started_at).toLocaleString('ta-IN', {
+                          ? new Date(student.started_at).toLocaleString('en-US', {
                               dateStyle: 'short',
                               timeStyle: 'short'
                             })
@@ -215,7 +227,7 @@ export default function ExamResults() {
                       </td>
                       <td className="py-3 px-4">
                         {student.submitted_at 
-                          ? new Date(student.submitted_at).toLocaleString('ta-IN', {
+                          ? new Date(student.submitted_at).toLocaleString('en-US', {
                               dateStyle: 'short',
                               timeStyle: 'short'
                             })
@@ -233,10 +245,10 @@ export default function ExamResults() {
                       </td>
                       <td className="text-center py-3 px-4">
                         {student.result === 'pass' && (
-                          <Badge variant="default" className="bg-secondary">தேர்ச்சி</Badge>
+                          <Badge variant="default" className="bg-secondary">Pass</Badge>
                         )}
                         {student.result === 'fail' && (
-                          <Badge variant="destructive">தோல்வி</Badge>
+                          <Badge variant="destructive">Fail</Badge>
                         )}
                         {!student.result && '-'}
                       </td>
