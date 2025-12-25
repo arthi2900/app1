@@ -252,6 +252,20 @@ export interface ExamAttemptWithDetails extends ExamAttempt {
   student?: Profile | null;
 }
 
+export interface StudentExamAllocation {
+  student_id: string;
+  student_name: string;
+  username: string;
+  section_name: string;
+  status: AttemptStatus;
+  total_marks_obtained: number;
+  percentage: number;
+  result: string | null;
+  started_at: string | null;
+  submitted_at: string | null;
+  attempt_id: string | null;
+}
+
 export interface ExamAnswer {
   id: string;
   attempt_id: string;

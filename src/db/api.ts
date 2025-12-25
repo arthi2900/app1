@@ -26,6 +26,7 @@ import type {
   ExamWithDetails,
   ExamAttempt,
   ExamAttemptWithDetails,
+  StudentExamAllocation,
   ExamAnswer,
   ExamAnswerWithDetails,
 } from '@/types/types';
@@ -1196,6 +1197,99 @@ export const examAttemptApi = {
       .single();
     if (error) throw error;
     return data;
+  },
+
+  async getAllStudentsForExam(examId: string): Promise<StudentExamAllocation[]> {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select(`
+        id,
+        full_name,
+        username,
+        student_class_sections!student_class_sections_student_id_fkey (
+          section_id,
+          sections!student_class_sections_section_id_fkey (
+            section_name
+          )
+        )
+      `)
+      .eq('role', 'student')
+      .eq('approved', true)
+      .order('full_name', { ascending: true });
+
+    if (error) throw error;
+
+    const exam = await supabase
+      .from('exams')
+      .select('class_id')
+      .eq('id', examId)
+      .maybeSingle();
+
+    if (exam.error) throw exam.error;
+    if (!exam.data) return [];
+
+    const classId = exam.data.class_id;
+
+    const studentsInClass = (Array.isArray(data) ? data : []).filter((student: any) => {
+      const classSection = student.student_class_sections?.find(
+        (scs: any) => scs.section_id
+      );
+      return classSection;
+    });
+
+    const studentIds = studentsInClass.map((s: any) => s.id);
+
+    const { data: attempts, error: attemptsError } = await supabase
+      .from('exam_attempts')
+      .select('*')
+      .eq('exam_id', examId)
+      .in('student_id', studentIds.length > 0 ? studentIds : ['']);
+
+    if (attemptsError) throw attemptsError;
+
+    const attemptsMap = new Map(
+      (Array.isArray(attempts) ? attempts : []).map((a: any) => [a.student_id, a])
+    );
+
+    const { data: classStudents, error: classError } = await supabase
+      .from('student_class_sections')
+      .select(`
+        student_id,
+        sections!student_class_sections_section_id_fkey (
+          section_name
+        )
+      `)
+      .eq('class_id', classId);
+
+    if (classError) throw classError;
+
+    const classStudentsMap = new Map(
+      (Array.isArray(classStudents) ? classStudents : []).map((cs: any) => [
+        cs.student_id,
+        cs.sections?.section_name || 'N/A'
+      ])
+    );
+
+    const result: StudentExamAllocation[] = studentsInClass
+      .filter((student: any) => classStudentsMap.has(student.id))
+      .map((student: any) => {
+        const attempt = attemptsMap.get(student.id);
+        return {
+          student_id: student.id,
+          student_name: student.full_name || student.username,
+          username: student.username,
+          section_name: classStudentsMap.get(student.id) || 'N/A',
+          status: (attempt?.status || 'not_started') as any,
+          total_marks_obtained: attempt?.total_marks_obtained || 0,
+          percentage: attempt?.percentage || 0,
+          result: attempt?.result || null,
+          started_at: attempt?.started_at || null,
+          submitted_at: attempt?.submitted_at || null,
+          attempt_id: attempt?.id || null,
+        };
+      });
+
+    return result;
   },
 };
 
