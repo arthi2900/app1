@@ -85,7 +85,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen gradient-hero flex items-center justify-center p-4">
-      <Card className="w-full max-w-md glass-card elegant-shadow-lg border-primary/30">
+      <Card className="w-full max-w-md glass-card elegant-shadow-lg border-primary/30 bg-background/10">
         <CardHeader className="space-y-4">
           <div className="flex justify-center">
             <div className="w-20 h-20 gradient-purple-blue rounded-2xl flex items-center justify-center glow-primary">
