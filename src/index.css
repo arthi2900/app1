@@ -111,7 +111,7 @@ All colors MUST be HSL.
   }
 
   .gradient-hero {
-    background: linear-gradient(135deg, #1a1535, #2a1f4a, #E06B80);
+    background: linear-gradient(135deg, #642B73, #C6426E);
     position: relative;
   }
 
