@@ -1,78 +1,214 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, Users, FileQuestion, Award } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { BookOpen, Users, FileQuestion, Award, Zap, Shield, Smartphone, Clock, TrendingUp, CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   return (
-    <div className="space-y-12">
-      <section className="text-center space-y-4 py-12">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          Student Performance &amp; Skill Analysis
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          A comprehensive platform for conducting and managing online exams efficiently
-        </p>
+    <div className="space-y-0">
+      {/* Hero Section */}
+      <section className="gradient-hero py-20 px-6 relative overflow-hidden">
+        <div className="max-w-6xl mx-auto text-center space-y-6 relative z-10">
+          <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight">
+            A Cube – Online Exam System
+          </h1>
+          <p className="text-2xl md:text-3xl text-white/90 font-medium">
+            Smart • Secure • Scalable Online Exams
+          </p>
+          <p className="text-xl text-white/80 max-w-3xl mx-auto">
+            Create, conduct &amp; analyse exams – all in one place
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center pt-6">
+            <Link to="/teacher/create-exam">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 glow-primary text-lg px-8 py-6">
+                Create Exam
+              </Button>
+            </Link>
+            <Link to="/teacher/exam-results">
+              <Button size="lg" variant="outline" className="glass-card text-white border-white/30 hover:bg-white/10 text-lg px-8 py-6">
+                View Results
+              </Button>
+            </Link>
+          </div>
+        </div>
       </section>
 
-      <section className="grid gap-6 md:grid-cols-2 2xl:grid-cols-4">
-        <Card>
-          <CardHeader>
-            <BookOpen className="w-10 h-10 text-primary mb-2" />
-            <CardTitle>Exam Management</CardTitle>
-            <CardDescription>
-              Create and manage exams with ease
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Teachers can create exams, set schedules, and manage question banks efficiently.
-            </p>
-          </CardContent>
-        </Card>
+      {/* Feature Cards */}
+      <section className="py-16 px-6 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 smooth-gradient-text">
+            Comprehensive Exam Management
+          </h2>
+          <div className="grid gap-6 md:grid-cols-2 2xl:grid-cols-4">
+            <Card className="glass-card glass-card-hover border-primary/20">
+              <CardHeader>
+                <BookOpen className="w-12 h-12 text-primary mb-3" />
+                <CardTitle className="text-xl">Create Exam</CardTitle>
+                <CardDescription className="text-base">
+                  Design and schedule exams
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Create comprehensive exams with multiple question types, set schedules, and manage exam settings effortlessly.
+                </p>
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader>
-            <Users className="w-10 h-10 text-primary mb-2" />
-            <CardTitle>User Management</CardTitle>
-            <CardDescription>
-              Role-based access control
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Admins can manage users, assign roles, and control system access.
-            </p>
-          </CardContent>
-        </Card>
+            <Card className="glass-card glass-card-hover border-secondary/20">
+              <CardHeader>
+                <FileQuestion className="w-12 h-12 text-secondary mb-3" />
+                <CardTitle className="text-xl">Question Bank</CardTitle>
+                <CardDescription className="text-base">
+                  Rich question repository
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Build and maintain an extensive question bank with MCQ, True/False, and Short Answer questions for NEET and school exams.
+                </p>
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader>
-            <FileQuestion className="w-10 h-10 text-primary mb-2" />
-            <CardTitle>Question Bank</CardTitle>
-            <CardDescription>
-              Comprehensive question repository
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Build and maintain a rich question bank with multiple question types.
-            </p>
-          </CardContent>
-        </Card>
+            <Card className="glass-card glass-card-hover border-accent/20">
+              <CardHeader>
+                <Users className="w-12 h-12 text-accent mb-3" />
+                <CardTitle className="text-xl">User Management</CardTitle>
+                <CardDescription className="text-base">
+                  Role-based access control
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Manage students, teachers, and administrators with secure role-based permissions and school-level isolation.
+                </p>
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader>
-            <Award className="w-10 h-10 text-primary mb-2" />
-            <CardTitle>Results & Reports</CardTitle>
-            <CardDescription>
-              Detailed performance analytics
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              View detailed results, generate reports, and track student performance.
-            </p>
-          </CardContent>
-        </Card>
+            <Card className="glass-card glass-card-hover border-primary/20">
+              <CardHeader>
+                <Award className="w-12 h-12 text-primary mb-3" />
+                <CardTitle className="text-xl">Reports &amp; Analytics</CardTitle>
+                <CardDescription className="text-base">
+                  Detailed performance insights
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Generate comprehensive reports, track student performance, and gain valuable insights with advanced analytics.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="py-16 px-6 gradient-hero">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-white">
+            Why Choose A Cube?
+          </h2>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center glow-primary">
+                <Zap className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Fast Evaluation</h3>
+              <p className="text-white/80">
+                Instant auto-grading for objective questions with detailed performance analysis
+              </p>
+            </div>
+
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 mx-auto rounded-full bg-secondary/20 flex items-center justify-center glow-secondary">
+                <Shield className="w-8 h-8 text-secondary" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Secure Exams</h3>
+              <p className="text-white/80">
+                Bank-level security with role-based access and school-level data isolation
+              </p>
+            </div>
+
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 mx-auto rounded-full bg-accent/20 flex items-center justify-center glow-accent">
+                <Smartphone className="w-8 h-8 text-accent" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Mobile Friendly</h3>
+              <p className="text-white/80">
+                Responsive design works seamlessly on desktop, tablet, and mobile devices
+              </p>
+            </div>
+
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center glow-primary">
+                <Clock className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Time Saving</h3>
+              <p className="text-white/80">
+                Automated workflows reduce administrative overhead and save valuable time
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Statistics Section */}
+      <section className="py-16 px-6 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 smooth-gradient-text">
+            Trusted by Educational Institutions
+          </h2>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            <Card className="glass-card elegant-shadow text-center p-8 border-primary/20">
+              <TrendingUp className="w-12 h-12 text-primary mx-auto mb-4" />
+              <div className="text-4xl font-bold text-primary mb-2">1200+</div>
+              <div className="text-lg text-muted-foreground">Students</div>
+            </Card>
+
+            <Card className="glass-card elegant-shadow text-center p-8 border-secondary/20">
+              <CheckCircle className="w-12 h-12 text-secondary mx-auto mb-4" />
+              <div className="text-4xl font-bold text-secondary mb-2">350+</div>
+              <div className="text-lg text-muted-foreground">Exams Conducted</div>
+            </Card>
+
+            <Card className="glass-card elegant-shadow text-center p-8 border-accent/20">
+              <FileQuestion className="w-12 h-12 text-accent mx-auto mb-4" />
+              <div className="text-4xl font-bold text-accent mb-2">15,000+</div>
+              <div className="text-lg text-muted-foreground">Questions</div>
+            </Card>
+
+            <Card className="glass-card elegant-shadow text-center p-8 border-primary/20">
+              <Award className="w-12 h-12 text-primary mx-auto mb-4" />
+              <div className="text-4xl font-bold text-primary mb-2">25+</div>
+              <div className="text-lg text-muted-foreground">Schools</div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="gradient-hero py-16 px-6">
+        <div className="max-w-4xl mx-auto text-center space-y-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-white">
+            Ready to Transform Your Exam Management?
+          </h2>
+          <p className="text-xl text-white/80">
+            Join thousands of educators and students using A Cube for seamless online examinations
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center pt-4">
+            <Link to="/register">
+              <Button size="lg" className="bg-white text-primary hover:bg-white/90 glow-primary text-lg px-8 py-6">
+                Get Started Free
+              </Button>
+            </Link>
+            <Link to="/login">
+              <Button size="lg" variant="outline" className="glass-card text-white border-white/30 hover:bg-white/10 text-lg px-8 py-6">
+                Sign In
+              </Button>
+            </Link>
+          </div>
+        </div>
       </section>
     </div>
   );

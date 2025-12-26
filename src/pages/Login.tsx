@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { BookOpen } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Box } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { profileApi } from '@/db/api';
@@ -12,6 +13,7 @@ import { profileApi } from '@/db/api';
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [keepSignedIn, setKeepSignedIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const { signIn, signOut } = useAuth();
   const navigate = useNavigate();
@@ -82,35 +84,38 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen gradient-hero flex items-center justify-center p-4">
+      <Card className="w-full max-w-md glass-card elegant-shadow-lg border-primary/30">
         <CardHeader className="space-y-4">
           <div className="flex justify-center">
-            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
-              <BookOpen className="w-8 h-8 text-primary-foreground" />
+            <div className="w-20 h-20 gradient-purple-blue rounded-2xl flex items-center justify-center glow-primary">
+              <Box className="w-10 h-10 text-white" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
-          <CardDescription className="text-center">
-            Online Exam Management System
+          <CardTitle className="text-3xl font-bold text-center">
+            Welcome to A Cube
+          </CardTitle>
+          <CardDescription className="text-center text-base">
+            Login to Exam System
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username" className="text-base">User ID / Email</Label>
               <Input
                 id="username"
                 type="text"
-                placeholder="Enter your username"
+                placeholder="Enter your username or email"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={loading}
                 required
+                className="h-11"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-base">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -119,22 +124,31 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
                 required
+                className="h-11"
               />
             </div>
-            <div className="text-right">
-              <Link to="/forgot-password" className="text-sm text-primary hover:underline">
-                Forgot Password?
-              </Link>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="keep-signed-in"
+                checked={keepSignedIn}
+                onCheckedChange={(checked) => setKeepSignedIn(checked as boolean)}
+              />
+              <label
+                htmlFor="keep-signed-in"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Keep me signed in
+              </label>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Logging in...' : 'Login'}
+            <Button type="submit" className="w-full h-11 glow-primary text-base" disabled={loading}>
+              {loading ? 'Signing in...' : 'Sign In'}
             </Button>
             <p className="text-sm text-center text-muted-foreground">
               Don't have an account?{' '}
               <Link to="/register" className="text-primary hover:underline font-medium">
-                Register
+                Register here
               </Link>
             </p>
           </CardFooter>

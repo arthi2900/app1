@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { BookOpen, User, LogOut, LayoutDashboard, Users, FileQuestion, Building2, ClipboardList } from 'lucide-react';
+import { User, LogOut, LayoutDashboard, Users, FileQuestion, Building2, ClipboardList, BarChart3, Box } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Header() {
@@ -53,7 +53,6 @@ export default function Header() {
         { to: '/principal', label: 'Dashboard', icon: LayoutDashboard },
         { to: '/principal/teachers', label: 'Teachers', icon: Users },
         { to: '/principal/students', label: 'Students', icon: Users },
-        { to: '/principal/academics', label: 'Academics', icon: BookOpen },
         { to: '/teacher/exams', label: 'Manage Exams', icon: ClipboardList }
       );
     }
@@ -87,18 +86,43 @@ export default function Header() {
     return roleMap[role] || role;
   };
 
+  // Public navigation links
+  const publicNavLinks = [
+    { to: '/', label: 'Home' },
+    { to: '/teacher/exams', label: 'Exams' },
+    { to: '/teacher/questions', label: 'Question Bank' },
+    { to: '/teacher/exam-results', label: 'Analytics' },
+  ];
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b glass-card">
       <div className="container mx-auto">
         <div className="flex h-16 items-center justify-between px-4">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <BookOpen className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <span className="font-bold text-lg hidden sm:inline-block">
-              Exam System
-            </span>
-          </Link>
+          <div className="flex items-center gap-8">
+            <Link to="/" className="flex items-center gap-2">
+              <div className="w-10 h-10 gradient-purple-blue rounded-lg flex items-center justify-center glow-primary">
+                <Box className="w-6 h-6 text-white" />
+              </div>
+              <span className="font-bold text-xl hidden sm:inline-block smooth-gradient-text">
+                A Cube
+              </span>
+            </Link>
+
+            {/* Desktop Navigation */}
+            {!profile && (
+              <nav className="hidden md:flex items-center gap-6">
+                {publicNavLinks.map((link) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            )}
+          </div>
 
           <div className="flex items-center gap-2">
             {profile ? (
@@ -111,7 +135,7 @@ export default function Header() {
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent align="end" className="w-56 glass-card">
                   <DropdownMenuLabel>
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium">
@@ -151,7 +175,7 @@ export default function Header() {
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button size="sm">Register</Button>
+                  <Button size="sm" className="glow-primary">Register</Button>
                 </Link>
               </div>
             )}

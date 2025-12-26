@@ -1,66 +1,58 @@
 import React from "react";
+import { Box } from "lucide-react";
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-r from-amber-50 to-orange-50 border-t border-amber-200">
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <footer className="gradient-hero border-t border-primary/20">
+      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* ================= About Us ================= */}
+          {/* About A Cube */}
           <div>
-            {/* Title: Change to your project's "About Us" */}
-            <h3 className="text-lg font-semibold text-amber-800 mb-4">
-              {/* About Us */}
-            </h3>
-            <p className="text-gray-600">
-              {/* Fill in your "About Us" introduction here, for example: Committed to xxx, making xxx more xxx */}
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 gradient-purple-blue rounded-lg flex items-center justify-center">
+                <Box className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white">
+                A Cube
+              </h3>
+            </div>
+            <p className="text-white/80 text-sm">
+              Smart, secure, and scalable online exam management system designed for educational institutions, NEET preparation, and schools.
             </p>
           </div>
 
-          {/* ================= Contact Information ================= */}
+          {/* Quick Links */}
           <div>
-            {/* Title: Contact Information */}
-            <h3 className="text-lg font-semibold text-amber-800 mb-4">
-              {/* Contact Information */}
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Quick Links
             </h3>
-            <div className="text-gray-600 space-y-2">
-              <p>
-                {/* Address: XXX Street, XXX District, XXX City, XXX Province */}
-              </p>
-              <p>
-                {/* Phone: 010-XXXXXXX */}
-              </p>
-              <p>
-                {/* Email: info@example.com */}
-              </p>
+            <div className="text-white/80 space-y-2 text-sm">
+              <p className="hover:text-white cursor-pointer transition-colors">Home</p>
+              <p className="hover:text-white cursor-pointer transition-colors">Exams</p>
+              <p className="hover:text-white cursor-pointer transition-colors">Question Bank</p>
+              <p className="hover:text-white cursor-pointer transition-colors">Analytics</p>
             </div>
           </div>
 
-          {/* ================= Business Hours / Other Information / Can be deleted ================= */}
+          {/* Contact Information */}
           <div>
-            {/* Title: Can be changed to "Business Hours" or "Service Hours" */}
-            <h3 className="text-lg font-semibold text-amber-800 mb-4">
-              {/* Business Hours */}
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Support
             </h3>
-            <div className="text-gray-600 space-y-2">
-              <p>
-                {/* Monday to Friday: 9:00-18:00 */}
-              </p>
-              <p>
-                {/* Please check announcements for weekends and public holidays */}
-              </p>
-              <p>
-                {/* Other notes, such as "Advance booking required" */}
-              </p>
+            <div className="text-white/80 space-y-2 text-sm">
+              <p>Available 24/7</p>
+              <p>Email: support@acube.edu</p>
+              <p>Help Center</p>
             </div>
           </div>
         </div>
 
-        {/* ================= Copyright Section ================= */}
-        <div className="mt-8 pt-8 border-t border-amber-200 text-center text-gray-600">
+        {/* Copyright Section */}
+        <div className="mt-8 pt-8 border-t border-white/20 text-center text-white/80 text-sm">
           <p>
-            {/* © {currentYear} Your Company or Organization Name */}
+            {currentYear} A Cube
           </p>
         </div>
       </div>
