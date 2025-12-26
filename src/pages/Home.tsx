@@ -40,7 +40,7 @@ export default function Home() {
             Comprehensive Exam Management
           </h2>
           <div className="grid gap-6 md:grid-cols-2 2xl:grid-cols-4">
-            <Card className="glass-card glass-card-hover border-primary/20 text-white">
+            <Card className="glass-card glass-card-hover border-primary/20 text-white rounded-3xl">
               <CardHeader>
                 <BookOpen className="w-12 h-12 text-white mb-3" />
                 <CardTitle className="text-xl text-white">Create Exam</CardTitle>
@@ -55,7 +55,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="glass-card glass-card-hover border-secondary/20 text-white">
+            <Card className="glass-card glass-card-hover border-secondary/20 text-white rounded-3xl">
               <CardHeader>
                 <FileQuestion className="w-12 h-12 text-white mb-3" />
                 <CardTitle className="text-xl text-white">Question Bank</CardTitle>
@@ -70,7 +70,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="glass-card glass-card-hover border-accent/20 text-white">
+            <Card className="glass-card glass-card-hover border-accent/20 text-white rounded-3xl">
               <CardHeader>
                 <Users className="w-12 h-12 text-white mb-3" />
                 <CardTitle className="text-xl text-white">User Management</CardTitle>
@@ -85,7 +85,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="glass-card glass-card-hover border-primary/20 text-white">
+            <Card className="glass-card glass-card-hover border-primary/20 text-white rounded-3xl">
               <CardHeader>
                 <Award className="w-12 h-12 text-white mb-3" />
                 <CardTitle className="text-xl text-white">Reports &amp; Analytics</CardTitle>
