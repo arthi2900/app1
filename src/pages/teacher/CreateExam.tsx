@@ -39,13 +39,27 @@ export default function CreateExam() {
     endDate: '',
     endTime: '',
     durationMinutes: 60,
-    passingMarks: 40,
+    passingMarks: 0,
     instructions: '',
   });
+  
+  const [totalMarks, setTotalMarks] = useState(0);
 
   useEffect(() => {
     loadInitialData();
   }, []);
+
+  // Auto-calculate passing marks as 35% of total marks when question paper is selected
+  useEffect(() => {
+    if (formData.questionPaperId) {
+      const selectedPaper = questionPapers.find(p => p.id === formData.questionPaperId);
+      if (selectedPaper && selectedPaper.total_marks) {
+        const calculatedPassingMarks = Math.ceil(selectedPaper.total_marks * 0.35);
+        setTotalMarks(selectedPaper.total_marks);
+        setFormData(prev => ({ ...prev, passingMarks: calculatedPassingMarks }));
+      }
+    }
+  }, [formData.questionPaperId, questionPapers]);
 
   const loadInitialData = async () => {
     try {
@@ -350,15 +364,18 @@ export default function CreateExam() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="passingMarks">Passing Marks *</Label>
+                <Label htmlFor="passingMarks">Passing Marks (Auto-calculated as 35% of Total Marks)</Label>
                 <Input
                   id="passingMarks"
                   type="number"
-                  min="0"
                   value={formData.passingMarks}
-                  onChange={(e) => setFormData({ ...formData, passingMarks: parseInt(e.target.value) })}
-                  required
+                  readOnly
+                  disabled
+                  className="bg-muted"
                 />
+                <p className="text-sm text-muted-foreground">
+                  Total Marks: {totalMarks} | Passing Marks: {formData.passingMarks} (35%)
+                </p>
               </div>
             </div>
 
