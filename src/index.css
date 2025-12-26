@@ -127,10 +127,10 @@ All colors MUST be HSL.
   }
 
   .glass-card {
-    background: linear-gradient(135deg, rgba(224, 107, 128, 0.25), rgba(224, 107, 128, 0.15));
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(224, 107, 128, 0.4);
-    box-shadow: 0 8px 32px 0 rgba(224, 107, 128, 0.3);
+    background: linear-gradient(135deg, #E06B80, #d85a70);
+    backdrop-filter: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
   }
 
   .glass-card-hover {
@@ -138,8 +138,8 @@ All colors MUST be HSL.
   }
 
   .glass-card-hover:hover {
-    background: linear-gradient(135deg, rgba(224, 107, 128, 0.35), rgba(224, 107, 128, 0.25));
-    box-shadow: 0 12px 40px 0 rgba(224, 107, 128, 0.4);
+    background: linear-gradient(135deg, #f07a8f, #E06B80);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
     transform: translateY(-4px);
   }
 
