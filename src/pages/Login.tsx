@@ -92,17 +92,17 @@ export default function Login() {
               <Box className="w-10 h-10 text-white" />
             </div>
           </div>
-          <CardTitle className="text-3xl font-bold text-center" style={{ color: '#FF00CE' }}>
+          <CardTitle className="text-3xl font-bold text-center text-white">
             Welcome to A Cube
           </CardTitle>
-          <CardDescription className="text-center text-base" style={{ color: '#FF00CE' }}>
+          <CardDescription className="text-center text-base text-white">
             Login to Exam System
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-base" style={{ color: '#FF00CE' }}>User ID / Email</Label>
+              <Label htmlFor="username" className="text-base text-white">User ID / Email</Label>
               <Input
                 id="username"
                 type="text"
@@ -115,7 +115,7 @@ export default function Login() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-base" style={{ color: '#FF00CE' }}>Password</Label>
+              <Label htmlFor="password" className="text-base text-white">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -135,8 +135,7 @@ export default function Login() {
               />
               <label
                 htmlFor="keep-signed-in"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                style={{ color: '#FF00CE' }}
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-white"
               >
                 Keep me signed in
               </label>
@@ -146,9 +145,9 @@ export default function Login() {
             <Button type="submit" className="w-full h-11 glow-primary text-base" disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
-            <p className="text-sm text-center" style={{ color: '#FF00CE' }}>
+            <p className="text-sm text-center text-white">
               Don't have an account?{' '}
-              <Link to="/register" className="hover:underline font-medium" style={{ color: '#FF00CE' }}>
+              <Link to="/register" className="hover:underline font-medium text-white">
                 Register here
               </Link>
             </p>
