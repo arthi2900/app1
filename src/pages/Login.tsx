@@ -111,7 +111,7 @@ export default function Login() {
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={loading}
                 required
-                className="h-11"
+                className="h-11 bg-white text-black placeholder:text-gray-500"
               />
             </div>
             <div className="space-y-2">
@@ -124,7 +124,7 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
                 required
-                className="h-11"
+                className="h-11 bg-white text-black placeholder:text-gray-500"
               />
             </div>
             <div className="flex items-center space-x-2">
