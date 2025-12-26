@@ -6,7 +6,7 @@ export default function Home() {
     <div className="space-y-12">
       <section className="text-center space-y-4 py-12">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-          Online Exam Management System
+          Student Performance &amp; Skill Analysis
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           A comprehensive platform for conducting and managing online exams efficiently
