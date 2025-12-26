@@ -40,61 +40,61 @@ export default function Home() {
             Comprehensive Exam Management
           </h2>
           <div className="grid gap-6 md:grid-cols-2 2xl:grid-cols-4">
-            <Card className="glass-card glass-card-hover border-primary/20">
+            <Card className="glass-card glass-card-hover border-primary/20 text-white">
               <CardHeader>
-                <BookOpen className="w-12 h-12 text-primary mb-3" />
-                <CardTitle className="text-xl">Create Exam</CardTitle>
-                <CardDescription className="text-base">
+                <BookOpen className="w-12 h-12 text-white mb-3" />
+                <CardTitle className="text-xl text-white">Create Exam</CardTitle>
+                <CardDescription className="text-base text-white/90">
                   Design and schedule exams
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-white/80">
                   Create comprehensive exams with multiple question types, set schedules, and manage exam settings effortlessly.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="glass-card glass-card-hover border-secondary/20">
+            <Card className="glass-card glass-card-hover border-secondary/20 text-white">
               <CardHeader>
-                <FileQuestion className="w-12 h-12 text-secondary mb-3" />
-                <CardTitle className="text-xl">Question Bank</CardTitle>
-                <CardDescription className="text-base">
+                <FileQuestion className="w-12 h-12 text-white mb-3" />
+                <CardTitle className="text-xl text-white">Question Bank</CardTitle>
+                <CardDescription className="text-base text-white/90">
                   Rich question repository
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-white/80">
                   Build and maintain an extensive question bank with MCQ, True/False, and Short Answer questions for NEET and school exams.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="glass-card glass-card-hover border-accent/20">
+            <Card className="glass-card glass-card-hover border-accent/20 text-white">
               <CardHeader>
-                <Users className="w-12 h-12 text-accent mb-3" />
-                <CardTitle className="text-xl">User Management</CardTitle>
-                <CardDescription className="text-base">
+                <Users className="w-12 h-12 text-white mb-3" />
+                <CardTitle className="text-xl text-white">User Management</CardTitle>
+                <CardDescription className="text-base text-white/90">
                   Role-based access control
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-white/80">
                   Manage students, teachers, and administrators with secure role-based permissions and school-level isolation.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="glass-card glass-card-hover border-primary/20">
+            <Card className="glass-card glass-card-hover border-primary/20 text-white">
               <CardHeader>
-                <Award className="w-12 h-12 text-primary mb-3" />
-                <CardTitle className="text-xl">Reports &amp; Analytics</CardTitle>
-                <CardDescription className="text-base">
+                <Award className="w-12 h-12 text-white mb-3" />
+                <CardTitle className="text-xl text-white">Reports &amp; Analytics</CardTitle>
+                <CardDescription className="text-base text-white/90">
                   Detailed performance insights
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-white/80">
                   Generate comprehensive reports, track student performance, and gain valuable insights with advanced analytics.
                 </p>
               </CardContent>
