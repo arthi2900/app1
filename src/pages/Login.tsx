@@ -96,7 +96,7 @@ export default function Login() {
             Welcome to A Cube
           </CardTitle>
           <CardDescription className="text-center text-base text-white">
-            Login to Exam System
+            Student Performance &amp; Skill Analysis
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>

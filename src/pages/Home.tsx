@@ -10,7 +10,7 @@ export default function Home() {
       <section className="gradient-hero py-20 px-6 relative overflow-hidden">
         <div className="max-w-6xl mx-auto text-center space-y-6 relative z-10">
           <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight">
-            A Cube – Online Exam System
+            A Cube – Student Performance &amp; Skill Analysis
           </h1>
           <p className="text-2xl md:text-3xl text-white/90 font-medium">
             Smart • Secure • Scalable Online Exams
