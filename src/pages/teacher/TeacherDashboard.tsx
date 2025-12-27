@@ -128,16 +128,17 @@ export default function TeacherDashboard() {
           return (
             <Card 
               key={stat.title}
-              className={stat.onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''}
+              className={stat.onClick ? 'cursor-pointer hover:shadow-lg transition-shadow rounded-3xl' : 'rounded-3xl'}
+              style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
               onClick={stat.onClick}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                <Icon className={`w-5 h-5 ${stat.color}`} />
+                <CardTitle className="text-sm font-medium text-white">{stat.title}</CardTitle>
+                <Icon className="w-5 h-5 text-white" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground mt-1">
+                <div className="text-2xl font-bold text-white">{stat.value}</div>
+                <p className="text-xs text-white/80 mt-1">
                   {stat.description}
                 </p>
               </CardContent>
