@@ -96,7 +96,7 @@ All colors MUST be HSL.
   }
 
   body {
-    background: linear-gradient(135deg, #F39EB6 0%, #FFE4EF 100%);
+    background: linear-gradient(135deg, #FFE4EF 0%, #FDEDED 100%);
     background-attachment: fixed;
     @apply text-foreground;
   }
