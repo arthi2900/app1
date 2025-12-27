@@ -7,8 +7,8 @@ export default function Home() {
   return (
     <div className="space-y-0">
       {/* Hero Section */}
-      <section className="gradient-hero py-20 px-6 relative overflow-hidden">
-        <div className="max-w-6xl mx-auto text-center space-y-6 relative z-10">
+      <section className="gradient-hero py-12 px-6 relative overflow-hidden">
+        <div className="max-w-6xl mx-auto text-center space-y-4 relative z-10">
           <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight">
             A Cube – Student Performance &amp; Skill Analysis
           </h1>
@@ -18,7 +18,7 @@ export default function Home() {
           <p className="text-xl text-white/80 max-w-3xl mx-auto">
             Create, conduct &amp; analyse exams – all in one place
           </p>
-          <div className="flex flex-wrap gap-4 justify-center pt-6">
+          <div className="flex flex-wrap gap-4 justify-center pt-4">
             <Link to="/teacher/create-exam">
               <Button size="lg" className="bg-primary hover:bg-primary/90 glow-primary text-lg px-8 py-6">
                 Create Exam
