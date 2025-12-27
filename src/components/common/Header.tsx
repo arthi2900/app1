@@ -161,7 +161,7 @@ export default function Header() {
                     })}
                     <DropdownMenuSeparator />
                   </div>
-                  <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                  <DropdownMenuItem onClick={handleSignOut} className="text-white">
                     <LogOut className="w-4 h-4 mr-2" />
                     Logout
                   </DropdownMenuItem>
