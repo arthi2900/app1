@@ -86,9 +86,10 @@ export default function Sidebar({ collapsed, onCollapsedChange }: SidebarProps) 
   return (
     <aside
       className={cn(
-        'fixed left-0 top-16 h-[calc(100vh-4rem)] bg-card border-r transition-all duration-300 z-40',
+        'fixed left-0 top-16 h-[calc(100vh-4rem)] border-r transition-all duration-300 z-40',
         collapsed ? 'w-16' : 'w-64'
       )}
+      style={{ backgroundColor: '#BB8ED0' }}
     >
       <div className="flex flex-col h-full">
         {/* Sidebar Header */}
