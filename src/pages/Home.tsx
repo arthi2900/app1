@@ -9,27 +9,15 @@ export default function Home() {
       {/* Hero Section */}
       <section className="gradient-hero py-12 px-6 relative overflow-hidden rounded-3xl mx-6 shadow-2xl elegant-shadow">
         <div className="max-w-6xl mx-auto text-center space-y-4 relative z-10">
-          <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight">
+          <h1 className="text-2xl md:text-4xl font-bold text-white tracking-tight">
             A Cube – Student Performance &amp; Skill Analysis
           </h1>
-          <p className="text-2xl md:text-3xl text-white/90 font-medium">
+          <p className="text-xl md:text-2xl text-white/90 font-medium">
             Smart • Secure • Scalable Online Exams
           </p>
-          <p className="text-xl text-white/80 max-w-3xl mx-auto">
+          <p className="text-base text-white/80 max-w-3xl mx-auto">
             Create, conduct &amp; analyse exams – all in one place
           </p>
-          <div className="flex flex-wrap gap-4 justify-center pt-4">
-            <Link to="/teacher/create-exam">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 glow-primary text-lg px-8 py-6 rounded-3xl">
-                Create Exam
-              </Button>
-            </Link>
-            <Link to="/teacher/exam-results">
-              <Button size="lg" variant="outline" className="glass-card text-white border-white/30 hover:bg-white/10 text-lg px-8 py-6 rounded-3xl">
-                View Results
-              </Button>
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -40,7 +28,7 @@ export default function Home() {
             Comprehensive Exam Management
           </h2>
           <div className="grid gap-6 md:grid-cols-2 2xl:grid-cols-4">
-            <Card className="glass-card glass-card-hover border-primary/20 text-white rounded-3xl">
+            <Card className="glass-card border-primary/20 text-white rounded-3xl">
               <CardHeader>
                 <BookOpen className="w-12 h-12 text-white mb-3" />
                 <CardTitle className="text-xl text-white">Create Exam</CardTitle>
@@ -55,7 +43,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="glass-card glass-card-hover border-secondary/20 text-white rounded-3xl">
+            <Card className="glass-card border-secondary/20 text-white rounded-3xl">
               <CardHeader>
                 <FileQuestion className="w-12 h-12 text-white mb-3" />
                 <CardTitle className="text-xl text-white">Question Bank</CardTitle>
@@ -70,7 +58,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="glass-card glass-card-hover border-accent/20 text-white rounded-3xl">
+            <Card className="glass-card border-accent/20 text-white rounded-3xl">
               <CardHeader>
                 <Users className="w-12 h-12 text-white mb-3" />
                 <CardTitle className="text-xl text-white">User Management</CardTitle>
@@ -85,7 +73,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="glass-card glass-card-hover border-primary/20 text-white rounded-3xl">
+            <Card className="glass-card border-primary/20 text-white rounded-3xl">
               <CardHeader>
                 <Award className="w-12 h-12 text-white mb-3" />
                 <CardTitle className="text-xl text-white">Reports &amp; Analytics</CardTitle>
