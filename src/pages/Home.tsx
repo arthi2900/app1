@@ -176,22 +176,22 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="gradient-hero py-16 px-6 rounded-3xl mx-6 shadow-2xl elegant-shadow my-6">
-        <div className="max-w-4xl mx-auto text-center space-y-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
+      <section className="gradient-hero py-8 px-6 rounded-3xl mx-6 shadow-2xl elegant-shadow my-6">
+        <div className="max-w-4xl mx-auto text-center space-y-3">
+          <h2 className="text-2xl md:text-3xl font-bold text-white">
             Ready to Transform Your Exam Management?
           </h2>
-          <p className="text-xl text-white/80">
+          <p className="text-base text-white/80">
             Join thousands of educators and students using A Cube for seamless online examinations
           </p>
-          <div className="flex flex-wrap gap-4 justify-center pt-4">
+          <div className="flex flex-wrap gap-4 justify-center pt-2">
             <Link to="/register">
-              <Button size="lg" className="bg-white text-primary hover:bg-white/90 glow-primary text-lg px-8 py-6 rounded-3xl">
+              <Button size="lg" className="bg-white text-primary hover:bg-white/90 glow-primary text-base px-6 py-4 rounded-3xl">
                 Get Started Free
               </Button>
             </Link>
             <Link to="/login">
-              <Button size="lg" variant="outline" className="glass-card text-white border-white/30 hover:bg-white/10 text-lg px-8 py-6 rounded-3xl">
+              <Button size="lg" variant="outline" className="glass-card text-white border-white/30 hover:bg-white/10 text-base px-6 py-4 rounded-3xl">
                 Sign In
               </Button>
             </Link>
