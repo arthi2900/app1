@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="space-y-0">
       {/* Hero Section */}
-      <section className="gradient-hero py-12 px-6 relative overflow-hidden rounded-3xl mx-6">
+      <section className="gradient-hero py-12 px-6 relative overflow-hidden rounded-3xl mx-6 shadow-2xl elegant-shadow">
         <div className="max-w-6xl mx-auto text-center space-y-4 relative z-10">
           <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight">
             A Cube – Student Performance &amp; Skill Analysis
