@@ -106,46 +106,46 @@ export default function Home() {
       {/* Why Choose Us Section */}
       <section className="py-16 px-6 gradient-hero rounded-3xl mx-6 shadow-2xl elegant-shadow my-6">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-white">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" style={{ color: '#D1F8EF' }}>
             Why Choose A Cube?
           </h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             <div className="text-center space-y-4">
-              <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center glow-primary">
-                <Zap className="w-8 h-8 text-primary" />
+              <div className="w-16 h-16 mx-auto rounded-full bg-blue-500/20 flex items-center justify-center">
+                <Zap className="w-8 h-8 text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white">Fast Evaluation</h3>
-              <p className="text-white/80">
+              <h3 className="text-xl font-semibold" style={{ color: '#D1F8EF' }}>Fast Evaluation</h3>
+              <p style={{ color: '#D1F8EF', opacity: 0.8 }}>
                 Instant auto-grading for objective questions with detailed performance analysis
               </p>
             </div>
 
             <div className="text-center space-y-4">
-              <div className="w-16 h-16 mx-auto rounded-full bg-secondary/20 flex items-center justify-center glow-secondary">
-                <Shield className="w-8 h-8 text-secondary" />
+              <div className="w-16 h-16 mx-auto rounded-full bg-blue-500/20 flex items-center justify-center">
+                <Shield className="w-8 h-8 text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white">Secure Exams</h3>
-              <p className="text-white/80">
+              <h3 className="text-xl font-semibold" style={{ color: '#D1F8EF' }}>Secure Exams</h3>
+              <p style={{ color: '#D1F8EF', opacity: 0.8 }}>
                 Bank-level security with role-based access and school-level data isolation
               </p>
             </div>
 
             <div className="text-center space-y-4">
-              <div className="w-16 h-16 mx-auto rounded-full bg-accent/20 flex items-center justify-center glow-accent">
-                <Smartphone className="w-8 h-8 text-accent" />
+              <div className="w-16 h-16 mx-auto rounded-full bg-blue-500/20 flex items-center justify-center">
+                <Smartphone className="w-8 h-8 text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white">Mobile Friendly</h3>
-              <p className="text-white/80">
+              <h3 className="text-xl font-semibold" style={{ color: '#D1F8EF' }}>Mobile Friendly</h3>
+              <p style={{ color: '#D1F8EF', opacity: 0.8 }}>
                 Responsive design works seamlessly on desktop, tablet, and mobile devices
               </p>
             </div>
 
             <div className="text-center space-y-4">
-              <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center glow-primary">
-                <Clock className="w-8 h-8 text-primary" />
+              <div className="w-16 h-16 mx-auto rounded-full bg-blue-500/20 flex items-center justify-center">
+                <Clock className="w-8 h-8 text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white">Time Saving</h3>
-              <p className="text-white/80">
+              <h3 className="text-xl font-semibold" style={{ color: '#D1F8EF' }}>Time Saving</h3>
+              <p style={{ color: '#D1F8EF', opacity: 0.8 }}>
                 Automated workflows reduce administrative overhead and save valuable time
               </p>
             </div>
