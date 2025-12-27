@@ -108,14 +108,15 @@ export default function PrincipalDashboard() {
         {/* New Teachers Card */}
         <Card
           className="cursor-pointer hover:shadow-lg transition-shadow"
+          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
           onClick={() => navigate('/principal/teachers')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Teachers</CardTitle>
-            <UserCheck className="w-5 h-5 text-primary" />
+            <CardTitle className="text-sm font-medium text-white">Teachers</CardTitle>
+            <UserCheck className="w-5 h-5 text-white" />
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-white/80 mt-1">
               Click to view details
             </p>
           </CardContent>
@@ -124,14 +125,15 @@ export default function PrincipalDashboard() {
         {/* New Students Card */}
         <Card
           className="cursor-pointer hover:shadow-lg transition-shadow"
+          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
           onClick={() => navigate('/principal/students')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Students</CardTitle>
-            <GraduationCap className="w-5 h-5 text-secondary" />
+            <CardTitle className="text-sm font-medium text-white">Students</CardTitle>
+            <GraduationCap className="w-5 h-5 text-white" />
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-white/80 mt-1">
               Click to view details
             </p>
           </CardContent>
@@ -140,14 +142,15 @@ export default function PrincipalDashboard() {
         {/* Question Bank Card */}
         <Card
           className="cursor-pointer hover:shadow-lg transition-shadow"
+          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
           onClick={() => navigate('/teacher/questions')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Question Bank</CardTitle>
-            <FileText className="w-5 h-5 text-accent" />
+            <CardTitle className="text-sm font-medium text-white">Question Bank</CardTitle>
+            <FileText className="w-5 h-5 text-white" />
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-white/80 mt-1">
               Manage exam questions
             </p>
           </CardContent>
@@ -156,14 +159,15 @@ export default function PrincipalDashboard() {
         {/* Exam Approvals Card */}
         <Card
           className="cursor-pointer hover:shadow-lg transition-shadow"
+          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
           onClick={() => navigate('/principal/exam-approvals')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Exam Approvals</CardTitle>
-            <ClipboardCheck className="w-5 h-5 text-primary" />
+            <CardTitle className="text-sm font-medium text-white">Exam Approvals</CardTitle>
+            <ClipboardCheck className="w-5 h-5 text-white" />
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-white/80 mt-1">
               Review and approve exams
             </p>
           </CardContent>
@@ -172,14 +176,15 @@ export default function PrincipalDashboard() {
         {/* Manage Exams Card */}
         <Card
           className="cursor-pointer hover:shadow-lg transition-shadow"
+          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
           onClick={() => navigate('/teacher/exams')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Manage Exams</CardTitle>
-            <ClipboardList className="w-5 h-5 text-secondary" />
+            <CardTitle className="text-sm font-medium text-white">Manage Exams</CardTitle>
+            <ClipboardList className="w-5 h-5 text-white" />
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-white/80 mt-1">
               View and manage all exams
             </p>
           </CardContent>
