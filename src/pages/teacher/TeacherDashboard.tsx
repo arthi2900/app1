@@ -129,7 +129,7 @@ export default function TeacherDashboard() {
             <Card 
               key={stat.title}
               className={stat.onClick ? 'cursor-pointer hover:shadow-lg transition-shadow rounded-3xl' : 'rounded-3xl'}
-              style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+              style={{ backgroundColor: '#608ce6' }}
               onClick={stat.onClick}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

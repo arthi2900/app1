@@ -107,7 +107,7 @@ export default function AdminDashboard() {
             <Card 
               key={stat.title}
               className="rounded-3xl"
-              style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+              style={{ backgroundColor: '#608ce6' }}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-white">{stat.title}</CardTitle>
@@ -124,7 +124,7 @@ export default function AdminDashboard() {
         {/* Manage Exams Card */}
         <Card
           className="cursor-pointer hover:shadow-lg transition-shadow rounded-3xl"
-          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+          style={{ backgroundColor: '#608ce6' }}
           onClick={() => navigate('/teacher/exams')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

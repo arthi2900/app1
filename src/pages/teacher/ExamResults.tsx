@@ -177,7 +177,7 @@ export default function ExamResults() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card 
           className="rounded-3xl"
-          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+          style={{ backgroundColor: '#608ce6' }}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-white">Total Students</CardTitle>
@@ -193,7 +193,7 @@ export default function ExamResults() {
 
         <Card 
           className="rounded-3xl"
-          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+          style={{ backgroundColor: '#608ce6' }}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-white">Average Score</CardTitle>
@@ -209,7 +209,7 @@ export default function ExamResults() {
 
         <Card 
           className="rounded-3xl"
-          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+          style={{ backgroundColor: '#608ce6' }}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-white">Passed</CardTitle>
@@ -225,7 +225,7 @@ export default function ExamResults() {
 
         <Card 
           className="rounded-3xl"
-          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+          style={{ backgroundColor: '#608ce6' }}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-white">Failed</CardTitle>

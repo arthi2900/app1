@@ -87,7 +87,7 @@ export default function PrincipalDashboard() {
             <Card
               key={stat.title}
               className={stat.clickable ? 'cursor-pointer hover:shadow-lg transition-shadow rounded-3xl' : 'rounded-3xl'}
-              style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+              style={{ backgroundColor: '#608ce6' }}
               onClick={stat.clickable ? stat.onClick : undefined}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -108,8 +108,8 @@ export default function PrincipalDashboard() {
 
         {/* New Teachers Card */}
         <Card
-          className="cursor-pointer hover:shadow-lg transition-shadow"
-          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+          className="cursor-pointer hover:shadow-lg transition-shadow rounded-3xl"
+          style={{ backgroundColor: '#608ce6' }}
           onClick={() => navigate('/principal/teachers')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -125,8 +125,8 @@ export default function PrincipalDashboard() {
 
         {/* New Students Card */}
         <Card
-          className="cursor-pointer hover:shadow-lg transition-shadow"
-          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+          className="cursor-pointer hover:shadow-lg transition-shadow rounded-3xl"
+          style={{ backgroundColor: '#608ce6' }}
           onClick={() => navigate('/principal/students')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -142,8 +142,8 @@ export default function PrincipalDashboard() {
 
         {/* Question Bank Card */}
         <Card
-          className="cursor-pointer hover:shadow-lg transition-shadow"
-          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+          className="cursor-pointer hover:shadow-lg transition-shadow rounded-3xl"
+          style={{ backgroundColor: '#608ce6' }}
           onClick={() => navigate('/teacher/questions')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

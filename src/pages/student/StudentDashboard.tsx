@@ -17,7 +17,7 @@ export default function StudentDashboard() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow rounded-3xl" 
-          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+          style={{ backgroundColor: '#608ce6' }}
           onClick={() => navigate('/student/exams')}
         >
           <CardHeader>
@@ -35,7 +35,7 @@ export default function StudentDashboard() {
 
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow rounded-3xl" 
-          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+          style={{ backgroundColor: '#608ce6' }}
           onClick={() => navigate('/student/exams')}
         >
           <CardHeader>
