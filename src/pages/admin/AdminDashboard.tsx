@@ -104,14 +104,18 @@ export default function AdminDashboard() {
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.title}>
+            <Card 
+              key={stat.title}
+              className="rounded-3xl"
+              style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+            >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                <Icon className={`w-5 h-5 ${stat.color}`} />
+                <CardTitle className="text-sm font-medium text-white">{stat.title}</CardTitle>
+                <Icon className="w-5 h-5 text-white" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground mt-1">{stat.description}</p>
+                <div className="text-2xl font-bold text-white">{stat.value}</div>
+                <p className="text-xs text-white/80 mt-1">{stat.description}</p>
               </CardContent>
             </Card>
           );
@@ -119,15 +123,16 @@ export default function AdminDashboard() {
 
         {/* Manage Exams Card */}
         <Card
-          className="cursor-pointer hover:shadow-lg transition-shadow"
+          className="cursor-pointer hover:shadow-lg transition-shadow rounded-3xl"
+          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
           onClick={() => navigate('/teacher/exams')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Manage Exams</CardTitle>
-            <ClipboardList className="w-5 h-5 text-accent" />
+            <CardTitle className="text-sm font-medium text-white">Manage Exams</CardTitle>
+            <ClipboardList className="w-5 h-5 text-white" />
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-white/80 mt-1">
               View and manage all exams
             </p>
           </CardContent>
