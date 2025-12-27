@@ -22,7 +22,7 @@ export default function Home() {
       </section>
 
       {/* Feature Cards */}
-      <section className="py-16 px-6 bg-background">
+      <section className="py-16 px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 smooth-gradient-text">
             Comprehensive Exam Management
@@ -142,7 +142,7 @@ export default function Home() {
       </section>
 
       {/* Statistics Section */}
-      <section className="py-16 px-6 bg-background rounded-3xl mx-6 shadow-xl my-6">
+      <section className="py-16 px-6 rounded-3xl mx-6 shadow-xl my-6 bg-white/30 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 smooth-gradient-text">
             Trusted by Educational Institutions

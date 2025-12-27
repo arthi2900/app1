@@ -30,7 +30,7 @@ export default function Layout({ children }: LayoutProps) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <Header />
       <div className="flex pt-16">
         {shouldShowSidebar && (
