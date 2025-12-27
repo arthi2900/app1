@@ -15,29 +15,37 @@ export default function StudentDashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/student/exams')}>
+        <Card 
+          className="cursor-pointer hover:shadow-lg transition-shadow rounded-3xl" 
+          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+          onClick={() => navigate('/student/exams')}
+        >
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ClipboardList className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-white">
+              <ClipboardList className="h-5 w-5 text-white" />
               My Exams
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">
+            <p className="text-white/80">
               View and take your assigned exams
             </p>
           </CardContent>
         </Card>
 
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/student/exams')}>
+        <Card 
+          className="cursor-pointer hover:shadow-lg transition-shadow rounded-3xl" 
+          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+          onClick={() => navigate('/student/exams')}
+        >
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Award className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-white">
+              <Award className="h-5 w-5 text-white" />
               My Results
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">
+            <p className="text-white/80">
               View your exam results and performance
             </p>
           </CardContent>
