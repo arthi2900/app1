@@ -175,53 +175,65 @@ export default function ExamResults() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card 
+          className="rounded-3xl"
+          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+        >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Students</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-white">Total Students</CardTitle>
+            <Users className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalStudents}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">{stats.totalStudents}</div>
+            <p className="text-xs text-white/80">
               {stats.submitted} submitted • {stats.attendanceRate}% attendance
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card 
+          className="rounded-3xl"
+          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+        >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Score</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-white">Average Score</CardTitle>
+            <TrendingUp className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.avgPercentage}%</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">{stats.avgPercentage}%</div>
+            <p className="text-xs text-white/80">
               {stats.evaluated} evaluated
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card 
+          className="rounded-3xl"
+          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+        >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Passed</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-secondary" />
+            <CardTitle className="text-sm font-medium text-white">Passed</CardTitle>
+            <CheckCircle2 className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-secondary">{stats.passed}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">{stats.passed}</div>
+            <p className="text-xs text-white/80">
               {stats.evaluated > 0 ? ((stats.passed / stats.evaluated) * 100).toFixed(1) : 0}% pass rate
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card 
+          className="rounded-3xl"
+          style={{ background: 'linear-gradient(135deg, #608ce6 0%, #06B6D4 100%)' }}
+        >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Failed</CardTitle>
-            <XCircle className="h-4 w-4 text-destructive" />
+            <CardTitle className="text-sm font-medium text-white">Failed</CardTitle>
+            <XCircle className="h-4 w-4 text-white" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">{stats.failed}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold text-white">{stats.failed}</div>
+            <p className="text-xs text-white/80">
               {stats.evaluated > 0 ? ((stats.failed / stats.evaluated) * 100).toFixed(1) : 0}% fail rate
             </p>
           </CardContent>
