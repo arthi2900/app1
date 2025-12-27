@@ -20,12 +20,12 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap gap-4 justify-center pt-4">
             <Link to="/teacher/create-exam">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 glow-primary text-lg px-8 py-6">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 glow-primary text-lg px-8 py-6 rounded-3xl">
                 Create Exam
               </Button>
             </Link>
             <Link to="/teacher/exam-results">
-              <Button size="lg" variant="outline" className="glass-card text-white border-white/30 hover:bg-white/10 text-lg px-8 py-6">
+              <Button size="lg" variant="outline" className="glass-card text-white border-white/30 hover:bg-white/10 text-lg px-8 py-6 rounded-3xl">
                 View Results
               </Button>
             </Link>
@@ -104,7 +104,7 @@ export default function Home() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-16 px-6 gradient-hero">
+      <section className="py-16 px-6 gradient-hero rounded-3xl mx-6 shadow-2xl elegant-shadow my-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-white">
             Why Choose A Cube?
@@ -154,31 +154,31 @@ export default function Home() {
       </section>
 
       {/* Statistics Section */}
-      <section className="py-16 px-6 bg-background">
+      <section className="py-16 px-6 bg-background rounded-3xl mx-6 shadow-xl my-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 smooth-gradient-text">
             Trusted by Educational Institutions
           </h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            <Card className="glass-card elegant-shadow text-center p-8 border-primary/20">
+            <Card className="glass-card elegant-shadow text-center p-8 border-primary/20 rounded-3xl">
               <TrendingUp className="w-12 h-12 text-primary mx-auto mb-4" />
               <div className="text-4xl font-bold text-primary mb-2">1200+</div>
               <div className="text-lg text-muted-foreground">Students</div>
             </Card>
 
-            <Card className="glass-card elegant-shadow text-center p-8 border-secondary/20">
+            <Card className="glass-card elegant-shadow text-center p-8 border-secondary/20 rounded-3xl">
               <CheckCircle className="w-12 h-12 text-secondary mx-auto mb-4" />
               <div className="text-4xl font-bold text-secondary mb-2">350+</div>
               <div className="text-lg text-muted-foreground">Exams Conducted</div>
             </Card>
 
-            <Card className="glass-card elegant-shadow text-center p-8 border-accent/20">
+            <Card className="glass-card elegant-shadow text-center p-8 border-accent/20 rounded-3xl">
               <FileQuestion className="w-12 h-12 text-accent mx-auto mb-4" />
               <div className="text-4xl font-bold text-accent mb-2">15,000+</div>
               <div className="text-lg text-muted-foreground">Questions</div>
             </Card>
 
-            <Card className="glass-card elegant-shadow text-center p-8 border-primary/20">
+            <Card className="glass-card elegant-shadow text-center p-8 border-primary/20 rounded-3xl">
               <Award className="w-12 h-12 text-primary mx-auto mb-4" />
               <div className="text-4xl font-bold text-primary mb-2">25+</div>
               <div className="text-lg text-muted-foreground">Schools</div>
@@ -188,7 +188,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="gradient-hero py-16 px-6">
+      <section className="gradient-hero py-16 px-6 rounded-3xl mx-6 shadow-2xl elegant-shadow my-6">
         <div className="max-w-4xl mx-auto text-center space-y-6">
           <h2 className="text-3xl md:text-4xl font-bold text-white">
             Ready to Transform Your Exam Management?
@@ -198,12 +198,12 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap gap-4 justify-center pt-4">
             <Link to="/register">
-              <Button size="lg" className="bg-white text-primary hover:bg-white/90 glow-primary text-lg px-8 py-6">
+              <Button size="lg" className="bg-white text-primary hover:bg-white/90 glow-primary text-lg px-8 py-6 rounded-3xl">
                 Get Started Free
               </Button>
             </Link>
             <Link to="/login">
-              <Button size="lg" variant="outline" className="glass-card text-white border-white/30 hover:bg-white/10 text-lg px-8 py-6">
+              <Button size="lg" variant="outline" className="glass-card text-white border-white/30 hover:bg-white/10 text-lg px-8 py-6 rounded-3xl">
                 Sign In
               </Button>
             </Link>
