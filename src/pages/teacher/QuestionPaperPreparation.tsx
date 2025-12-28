@@ -716,7 +716,12 @@ export default function QuestionPaperPreparation() {
                                   onCheckedChange={() => handleQuestionToggle(question.id)}
                                 />
                               </TableCell>
-                              <TableCell className="max-w-md truncate">{question.question_text}</TableCell>
+                              <TableCell className="max-w-md">
+                                <div 
+                                  className="question-content line-clamp-2"
+                                  dangerouslySetInnerHTML={{ __html: question.question_text }}
+                                />
+                              </TableCell>
                               <TableCell>
                                 <Badge variant="outline">{getQuestionTypeLabel(question.question_type)}</Badge>
                               </TableCell>
@@ -812,9 +817,13 @@ export default function QuestionPaperPreparation() {
                 {previewQuestions.map((question, index) => (
                   <div key={question.id} className="border-b pb-4 last:border-b-0">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-medium">
-                        Q{index + 1}. {question.question_text}
-                      </h3>
+                      <div className="flex-1">
+                        <span className="font-medium">Q{index + 1}. </span>
+                        <span 
+                          className="question-content font-medium"
+                          dangerouslySetInnerHTML={{ __html: question.question_text }}
+                        />
+                      </div>
                       <Badge className={getDifficultyColor(question.difficulty)}>
                         {question.marks} marks
                       </Badge>

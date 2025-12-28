@@ -393,7 +393,10 @@ export default function TakeExam() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="prose max-w-none">
-                  <p className="text-lg">{currentQuestion.question?.question_text}</p>
+                  <div 
+                    className="question-content text-lg"
+                    dangerouslySetInnerHTML={{ __html: currentQuestion.question?.question_text || '' }}
+                  />
                   {currentQuestion.question?.image_url && (
                     <img
                       src={currentQuestion.question.image_url}
@@ -413,7 +416,10 @@ export default function TakeExam() {
                         <div key={index} className="flex items-center space-x-2 p-3 border rounded-md hover:bg-muted">
                           <RadioGroupItem value={option} id={`option-${index}`} />
                           <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
-                            {option}
+                            <span 
+                              className="question-content"
+                              dangerouslySetInnerHTML={{ __html: option }}
+                            />
                           </Label>
                         </div>
                       ))}

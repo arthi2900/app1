@@ -33,6 +33,7 @@ import { questionApi, subjectApi, academicApi, profileApi, lessonApi } from '@/d
 import { useToast } from '@/hooks/use-toast';
 import type { Question, Subject, Class, Lesson, TeacherAssignmentWithDetails, Profile, MatchPair } from '@/types/types';
 import { supabase } from '@/db/supabase';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 
 // Utility function to remove segment prefix from answer options
 const normalizeAnswerOption = (answer: string): string => {
@@ -972,14 +973,13 @@ export default function QuestionBank() {
 
                 <div className="space-y-2">
                   <Label htmlFor="question">Question Text</Label>
-                  <Input
+                  <RichTextEditor
                     id="question"
                     value={formData.question_text}
-                    onChange={(e) =>
-                      setFormData({ ...formData, question_text: e.target.value })
+                    onChange={(value) =>
+                      setFormData({ ...formData, question_text: value })
                     }
-                    placeholder="Enter question text"
-                    required
+                    placeholder="Enter question text with formatting..."
                   />
                 </div>
 
@@ -1516,14 +1516,13 @@ export default function QuestionBank() {
 
                 <div className="space-y-2">
                   <Label htmlFor="edit-question">Question Text</Label>
-                  <Input
+                  <RichTextEditor
                     id="edit-question"
                     value={formData.question_text}
-                    onChange={(e) =>
-                      setFormData({ ...formData, question_text: e.target.value })
+                    onChange={(value) =>
+                      setFormData({ ...formData, question_text: value })
                     }
-                    placeholder="Enter your question"
-                    required
+                    placeholder="Enter question text with formatting..."
                   />
                 </div>
 
@@ -1929,7 +1928,10 @@ export default function QuestionBank() {
                   <TableRow key={question.id}>
                     <TableCell className="max-w-md">
                       <div className="space-y-2">
-                        <p className="truncate">{question.question_text}</p>
+                        <div 
+                          className="question-content line-clamp-2"
+                          dangerouslySetInnerHTML={{ __html: question.question_text }}
+                        />
                         {question.image_url && (
                           <img
                             src={question.image_url}
@@ -2006,9 +2008,10 @@ export default function QuestionBank() {
                         <Badge variant="secondary" className="mb-2">
                           {question.bank_name || '-'}
                         </Badge>
-                        <CardTitle className="text-base line-clamp-2">
-                          {question.question_text}
-                        </CardTitle>
+                        <div 
+                          className="question-content text-base line-clamp-2"
+                          dangerouslySetInnerHTML={{ __html: question.question_text }}
+                        />
                         {question.image_url && (
                           <div className="mt-3">
                             <img
@@ -2107,7 +2110,11 @@ export default function QuestionBank() {
                                   : 'bg-muted'
                               }`}
                             >
-                              <span className="font-medium">{String.fromCharCode(65 + idx)}.</span> {option}
+                              <span className="font-medium">{String.fromCharCode(65 + idx)}.</span>{' '}
+                              <span 
+                                className="question-content inline"
+                                dangerouslySetInnerHTML={{ __html: option }}
+                              />
                             </div>
                           ))}
                         </div>

@@ -32,11 +32,13 @@ Smart • Secure • Scalable Online Exams
   - View teacher accounts
   - Teacher-subject-class-section mapping\n  - View class-section overview with assigned teachers per subject
   - Edit teacher profiles
-- Student Management (within assigned school only):\n  - View students list
+- Student Management (within assigned school only):
+  - View students list
   - View student class-section assignments
 - Question Bank Management (within assigned school only):
   - Create and manage questions with lesson-level tracking
   - Insert images/clip arts in questions
+  - **Use rich text editor for question text formatting (bold, underline, italic, etc.)**
   - View question bank analytics
   - Switch between Row View and Card View
   - Edit questions in both views
@@ -55,8 +57,7 @@ Smart • Secure • Scalable Online Exams
   - View individual student exam results with question-wise performance
   - Delete exams created by self (with restrictions)
   - Force Delete Exam capability: Can permanently delete exams with student attempts after strict confirmation\n- Profile editing capability\n- Linked to specific school from school master list
-- School-based isolation: Can only view and manage users (teachers and students) from their assigned school
-
+- School-based isolation: Can only view and manage users (teachers and students) from their assigned school\n
 ### 2.3 Teacher
 - View assigned classes, sections, and subjects
 - View students of assigned sections only
@@ -67,6 +68,7 @@ Smart • Secure • Scalable Online Exams
   - **View student details including name, class, section, phone number, and account status**
 - Question Bank Access:\n  - Create questions for assigned subjects and lessons
   - Insert images/clip arts in questions
+  - **Use rich text editor for question text formatting (bold, underline, italic, etc.)**
   - View questions filtered by assigned subjects\n  - Switch between Row View and Card View
   - Edit own questions in both views
 - Question Paper Preparation:
@@ -94,7 +96,8 @@ Smart • Secure • Scalable Online Exams
   - Manually grade subjective questions (Short Answer, Essay)\n  - Generate exam reports and analytics
   - Export exam results\n  - Delete own exams (with restrictions, cannot force delete exams with student attempts)
 - Profile editing capability
-- Linked to specific school from school master list\n- School-based isolation: Can only view and interact with students from their assigned sections
+- Linked to specific school from school master list
+- School-based isolation: Can only view and interact with students from their assigned sections
 
 ### 2.4 Student
 - View my class, section, subjects, and teachers
@@ -116,7 +119,8 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - User name\n- Email address
 - Role\n- School name (mandatory field, selected from dropdown list populated from School Master)
 - Contact number
-- Profile picture (optional)\n- Account status (Pending Approval/Active/Suspended)
+- Profile picture (optional)
+- Account status (Pending Approval/Active/Suspended)
 \n## 3. School Management Module
 
 ### 3.1 School Master
@@ -222,7 +226,8 @@ After Principal login, the dashboard displays seven main cards:
 - View current class-section assignments with edit and reassign options
 - Students without class-section assignment are listed separately for easy identification
 
-### 5.3 Teachers Card - Teacher Management\n
+### 5.3 Teachers Card - Teacher Management
+
 #### 5.3.1 Teacher Accounts
 - Note: Teacher accounts are already created via Sign-Up process and mapped to school by Admin
 - Principal can view all teachers in their assigned school
@@ -263,8 +268,7 @@ After Principal login, the dashboard displays seven main cards:
 - Student list displays:
   - Student Name
   - Class and Section
-  - Phone Number
-  - Account Status (Active/Pending/Suspended)
+  - Phone Number\n  - Account Status (Active/Pending/Suspended)
 - Enhanced Search Functionality:
   - Text search bar for searching by name, phone, or email
   - Additional dropdown filters for Class and Section
@@ -275,6 +279,7 @@ After Principal login, the dashboard displays seven main cards:
 - Principal can access Question Bank management interface
 - Create, edit, and delete questions for exam preparation
 - Insert images/clip arts in questions
+- **Use rich text editor for question text formatting (bold, underline, italic, etc.)**
 - Dual View Options:
   - Row View (table format)
   - Card View (detailed card format)
@@ -309,26 +314,27 @@ After Principal login, the dashboard displays seven main cards:
   - View exam details
   - View student allocation list with attendance status
   - View individual student exam results\n  - View student participation report
-  - Export exam results
-  - View exam analytics
+  - Export exam results\n  - View exam analytics
   - Delete exam (for self-created exams only, with restrictions)
   - Force Delete exam (for self-created exams with student attempts, requires strict confirmation)
 
 ### 5.8 Exam Approvals Card - School-Level Exam Approval Management
-Principal can review and approve school-level exams submitted by teachers\n\nApproval Dashboard Layout:
+Principal can review and approve school-level exams submitted by teachers
+\nApproval Dashboard Layout:
 - Pending Approvals Section
 - Exam Review Page
-- Approval History Section\n- Approval Statistics
+- Approval History Section
+- Approval Statistics
 - Notification System
 \n## 6. Question Bank Module
 
-### 6.1 Question Bank Overview
-- Centralized repository for exam questions
+### 6.1 Question Bank Overview\n- Centralized repository for exam questions
 - Questions organized by Class, Subject, and Lesson
 - Support for multiple question types\n- Difficulty levels (Easy, Medium, Hard)\n- Marks allocation per question
 - Minus Mark (Negative Marking) support
 - Lesson-level tracking for performance analytics
-- Image/Clip Art support\n- Dual view display options: Row View and Card View
+- Image/Clip Art support\n- **Rich text editor integration for question text formatting**
+- Dual view display options: Row View and Card View
 
 ### 6.2 Question Bank Table Structure
 Table name: question_bank
@@ -339,18 +345,22 @@ Columns:
 - class_id (Foreign Key → classes.id)\n- subject_id (Foreign Key → subjects.id)
 - lesson_id (Foreign Key → lessons.id)
 - bank_name (Varchar, auto-generated)
-- question_text (Text, required)
+- question_text (Text, required, **supports rich text HTML formatting**)
 - question_type (Enum: Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ)\n- marks (Integer, required)
 - minus_mark (Decimal, optional)
 - difficulty (Enum: Easy, Medium, Hard)\n- options (JSON array)\n- correct_answer (Text or JSON array)\n- question_images (JSON array, optional)
-- created_by (Foreign Key → users.id)\n- created_at (Timestamp)
+- created_by (Foreign Key → users.id)
+- created_at (Timestamp)
 - updated_at (Timestamp)
 \n### 6.3 Question Creation Form
 \n#### 6.3.1 Form Field Order
 1. Class (Dropdown, required)
 2. Subject (Dropdown, required)
 3. Lesson (Dropdown, required)
-4. Question (Text area, required)
+4. **Question (Rich Text Editor, required)**
+   - **Integrated rich text editor (Quill, Draft.js, or TinyMCE)**
+   - **Toolbar options: Bold, Italic, Underline, Strikethrough, Font Size, Font Color, Highlight, Alignment, Lists, Links, etc.**
+   - **Support for formatted text input with real-time preview**
 5. Insert Images/Clip Arts (Image upload field, optional)
 6. Question Type (Dropdown, required)
 7. Marks (Number input, required)
@@ -361,6 +371,29 @@ Columns:
 - Cascading Dropdowns: Class → Subject → Lesson\n- Auto-generation: bank_name field is auto-generated upon form submission
 - Validation: All required fields must be filled before submission
 - Form Persistence Issue Fix: After submitting a question, the form should clear all fields except Class and Subject
+- **Rich Text Editor Behavior:**
+  - **Toolbar appears above the question text input area**
+  - **Real-time formatting preview as user types**
+  - **HTML content saved to database**
+  - **Sanitization of HTML to prevent XSS attacks**
+
+#### 6.3.3 Rich Text Editor Integration Details
+- **Editor Library Options:**
+  - **Quill (Recommended): Lightweight, modern, easy to integrate**
+  - **Draft.js: React-based, highly customizable**
+  - **TinyMCE: Feature-rich, enterprise-grade**
+- **Toolbar Configuration:**
+  - **Basic formatting: Bold, Italic, Underline, Strikethrough**\n  - **Text styling: Font size, Font family, Text color, Background color**
+  - **Alignment: Left, Center, Right, Justify**
+  - **Lists: Ordered list, Unordered list**
+  - **Insert: Link, Image (optional)**
+  - **Clear formatting button**
+- **Implementation Requirements:**
+  - **Responsive design for mobile and desktop**
+  - **Accessibility support (ARIA labels, keyboard navigation)**
+  - **HTML sanitization to prevent malicious code injection**
+  - **Save formatted content as HTML in database**
+  - **Display formatted content correctly in question preview, exam interface, and reports**
 
 ### 6.4 Question Bank Dual View Display
 
@@ -369,7 +402,7 @@ Columns:
 - User can switch between views with single click
 - Default view: Row View\n\n#### 6.4.2 Row View (Table Format)
 Display Columns:
-- Question (truncated text with expand option)
+- Question (truncated text with expand option, **displays formatted text preview**)
 - Image Indicator (icon showing if question has images)
 - Class\n- Subject
 - Lesson
@@ -380,17 +413,27 @@ Display Columns:
 - Actions (Edit, Delete)
 
 #### 6.4.3 Card View (Detailed Card Format)
-Card Layout: Each question displayed as a card with question text, images, metadata, options, and action buttons.\n
+Card Layout: Each question displayed as a card with question text (**rendered with formatting**), images, metadata, options, and action buttons.
+
 #### 6.4.4 Edit Functionality in Both Views
-- Edit icon/button opens edit dialog with pre-filled form
+- Edit icon/button opens edit dialog with pre-filled form\n- **Rich text editor pre-populated with existing formatted content**
 - Image editing with local file selection
 - Minus Mark editing with validation
+\n### 6.5 Question Display in Exams and Reports
+- **All question text displayed with proper HTML rendering**
+- **Formatting preserved in:**
+  - Student exam interface
+  - Question paper preview
+  - Exam results and analytics
+  - Exported PDFs and printed papers
+- **Consistent styling across all views**
 \n## 7. Question Paper Preparation Module
 
 ### 7.1 Question Paper Preparation Overview
 - Purpose: Enable teachers to create question papers from their own question bank
 - Access: Available only to Teacher role
 - Workflow: Basic Details → Question Selection → Shuffle Options → Preview/Save/Generate
+- **Question text displayed with formatting in all stages**
 \n### 7.2 Question Paper Preparation Workflow
 
 #### 7.2.1 Step 1: Basic Details
@@ -398,15 +441,14 @@ Card Layout: Each question displayed as a card with question text, images, metad
 - Subject Selection (Dropdown, required)
 \n#### 7.2.2 Step 2: Question Selection Source
 - View All Questions or View Questions by Question Bank Name
-- Question list displayed in row format
+- Question list displayed in row format (**with formatted text preview**)
 \n#### 7.2.3 Step 3: Shuffle Functionality
 - Shuffle Questions (Checkbox)
 - Shuffle MCQ Options (Checkbox)
 \n#### 7.2.4 Step 4: Final Question Paper Output
-- Preview Question Paper
-- Save as Draft
-- Generate Final Question Paper
-- Export as PDF\n- Print Option
+- Preview Question Paper (**with formatted question text**)
+- Save as Draft\n- Generate Final Question Paper\n- Export as PDF (**preserving text formatting**)
+- Print Option (**preserving text formatting**)
 
 ### 7.3 Question Paper Database Structure
 Table name: question_papers
@@ -417,8 +459,8 @@ Columns:
 - class_id (Foreign Key → classes.id)
 - subject_id (Foreign Key → subjects.id)
 - created_by (Foreign Key → users.id)
-- selected_questions (JSON array)\n- shuffle_questions (Boolean)
-- shuffle_mcq_options (Boolean)
+- selected_questions (JSON array, **includes formatted question text**)
+- shuffle_questions (Boolean)\n- shuffle_mcq_options (Boolean)
 - paper_status (Enum: Draft, Final)\n- total_marks (Integer)
 - total_questions (Integer)
 - created_at (Timestamp)
@@ -434,28 +476,28 @@ Columns:
 \n### 7.5 Question Paper Management Interface
 - Question Paper List with filters
 - Actions: View, Edit, Delete, Export PDF, Print, Shuffle and Save
-\n### 7.6 Enhanced Question Paper Features
+- **All actions preserve question text formatting**
+
+### 7.6 Enhanced Question Paper Features
 - Multiple Question Paper Versions
 - Question Paper Templates
 - Smart Question Selection
-- Preview Enhancements
+- Preview Enhancements (**with formatted text rendering**)
 - Bulk Operations
 - Version History
 - Shuffle and Save with Auto-Versioned Names
 
 ## 8. Question Paper History Module
 
-### 8.1 Question Paper History Overview
-- Purpose: Provide comprehensive tracking and management of all question papers created by teachers
+### 8.1 Question Paper History Overview\n- Purpose: Provide comprehensive tracking and management of all question papers created by teachers
 - Access:\n  - Teachers can view only their own question paper history
   - Principal can view all question papers created by teachers in their school
 - Key Features:
   - Complete historical record of all question papers
   - Advanced filtering and search capabilities
   - Paper versioning and relationship tracking
-  - Export and print functionality
-  - Analytics and reporting\n
-### 8.2 Question Paper History Interface
+  - Export and print functionality (**preserving formatting**)
+  - Analytics and reporting\n\n### 8.2 Question Paper History Interface
 
 #### 8.2.1 History List View
 Display Columns:
@@ -480,8 +522,7 @@ Display Columns:
 #### 8.2.3 Search Functionality\n- Text search bar
 - Real-time search with auto-suggestions
 - Combined search and filter capability
-
-#### 8.2.4 Sorting Options
+\n#### 8.2.4 Sorting Options
 - Sort by Creation Date\n- Sort by Last Modified Date\n- Sort by Paper Name
 - Sort by Class
 - Sort by Total Marks
@@ -491,25 +532,24 @@ Display Columns:
 - Paper Name
 - Paper ID
 - Class and Subject
-- Created By
-- Creation Date and Time
+- Created By\n- Creation Date and Time
 - Last Modified Date and Time
 - Paper Status
 - Total Marks
 - Total Questions
 - Version Information
 \n#### 8.3.2 Question List Section
-- Display all questions in the paper
+- Display all questions in the paper (**with formatted text rendering**)
 - Question details with expand/collapse\n\n#### 8.3.3 Paper Settings Section
 - Shuffle Questions: Yes/No
 - Shuffle MCQ Options: Yes/No
 - Paper Configuration Details
-
-#### 8.3.4 Action Buttons
+\n#### 8.3.4 Action Buttons
 - Edit Paper
 - Create New Version
-- Export as PDF
-- Print\n- Delete Paper
+- Export as PDF (**preserving formatting**)
+- Print (**preserving formatting**)
+- Delete Paper
 - Duplicate Paper
 \n### 8.4 Question Paper History Analytics
 
@@ -532,10 +572,11 @@ Display Columns:
 
 #### 8.5.2 Principal Access Rules
 - Can view all question papers created by teachers in their school
-- Can filter by teacher name\n- Can view detailed analytics for all teachers
+- Can filter by teacher name
+- Can view detailed analytics for all teachers
 - Can export and print any paper
 - Cannot edit or delete papers created by teachers
-- Can view paper details and question content
+- Can view paper details and question content (**with formatting**)
 
 #### 8.5.3 Data Isolation
 - All question paper history data is school-scoped
@@ -557,11 +598,11 @@ Display Columns:
 
 ### 8.7 Question Paper History Export and Print
 
-#### 8.7.1 Export Options\n- Export Single Paper
-- Bulk Export
+#### 8.7.1 Export Options\n- Export Single Paper (**preserving formatting**)
+- Bulk Export (**preserving formatting**)
 \n#### 8.7.2 Print Options
-- Print Single Paper
-- Bulk Print\n
+- Print Single Paper (**preserving formatting**)\n- Bulk Print (**preserving formatting**)
+
 ### 8.8 Question Paper History Notifications
 
 #### 8.8.1 Teacher Notifications
@@ -590,12 +631,13 @@ Display Columns:
   - Create exams from question papers or question bank
   - **Automatic passing marks calculation: 35% of total marks**\n  - Configure exam settings\n  - Approval workflow for school-level exams\n  - Publish exams with automatic notifications
   - Enhanced student exam interface with question palette and timer
+  - **Question text displayed with formatting in exam interface**
   - Real-time exam monitoring\n  - Automatic grading for objective questions
   - Manual grading for subjective questions
   - Comprehensive exam analytics
   - Student allocation list with attendance tracking
   - Individual student result details with question-wise analysis
-  - Secure exam environment\n  - Export and reporting capabilities
+  - Secure exam environment\n  - Export and reporting capabilities (**preserving formatting**)
   - Delete exam functionality with restrictions
   - Force Delete for Principal/Admin with strict confirmation
 
@@ -604,8 +646,7 @@ Display Columns:
 #### 9.2.1 Step 1: Exam Basic Details
 Form Fields:
 - Exam Name (Text input, required)
-- Exam Type (Radio buttons: Practice Exam / School-Level Exam)
-- Class (Dropdown, required)
+- Exam Type (Radio buttons: Practice Exam / School-Level Exam)\n- Class (Dropdown, required)
 - Subject (Dropdown, required)
 - Section Selection (Multi-select checkbox, required)
 - Exam Duration (Number input in minutes, required)
@@ -617,16 +658,16 @@ Form Fields:
 - Instructions for Students (Rich text editor, optional)
 \n#### 9.2.2 Step 2: Question Selection Method
 Method A: Select from Existing Question Paper
-- Question Paper Dropdown\n- Paper Preview
+- Question Paper Dropdown\n- Paper Preview (**with formatted question text**)
 - Auto-Import\n- Modification Options
 
 Method B: Select Questions from Question Bank
-- Question Bank View
+- Question Bank View (**with formatted question text preview**)
 - Filter Panel
 - Question Selection Interface
 - Selected Questions Panel
 - Smart Selection Tools
-- Question Preview
+- Question Preview (**with formatting**)
 
 #### 9.2.3 Step 3: Exam Settings Configuration
 Settings Panel:
@@ -640,8 +681,8 @@ Settings Panel:
 Preview Section:
 1. Exam Summary Card
 2. Settings Summary Card
-3. Question List Preview
-4. Student View Preview
+3. Question List Preview (**with formatted text**)
+4. Student View Preview (**with formatted text**)
 5. Validation Checks
 \nAction Buttons:
 - Back\n- Save as Draft
@@ -665,7 +706,7 @@ Columns:
 - subject_id (Foreign Key → subjects.id, required)
 - created_by (Foreign Key → users.id, required)
 - question_paper_id (Foreign Key → question_papers.id, nullable)
-- selected_questions (JSON array, required)
+- selected_questions (JSON array, required, **includes formatted question text**)
 - exam_duration (Integer, minutes, required)
 - start_datetime (Timestamp with timezone, required)
 - end_datetime (Timestamp with timezone, required)
@@ -689,7 +730,8 @@ Columns:
 - total_marks (Integer, calculated, required)
 - total_questions (Integer, calculated, required)
 - created_at (Timestamp)
-- updated_at (Timestamp)\n- published_at (Timestamp, nullable)
+- updated_at (Timestamp)
+- published_at (Timestamp, nullable)
 - auto_publish (Boolean)
 \n#### 9.3.2 Exam Section Mapping Table
 Table name: exam_sections
@@ -735,8 +777,7 @@ Columns:
 ### 9.4 Student Exam Taking Interface
 
 #### 9.4.1 Student Dashboard - My Exams Section
-Dashboard Card:'My Exams'
-- Display on student dashboard after login
+Dashboard Card: 'My Exams'\n- Display on student dashboard after login
 - Shows count of exams by status
 \nMy Exams Page Layout:
 - Three tabs: 'Upcoming' | 'Ongoing' | 'Completed'
@@ -752,13 +793,12 @@ Pre-Exam Screen:
 \nEnhanced Exam Interface Layout:
 - Header Section (Sticky at top)
 - Left Sidebar - Question Palette Panel (Collapsible)
-- Main Content Area
-- Answer Input Section
-- Action Buttons\n- Auto-Save Functionality
+- Main Content Area (**displays question text with formatting**)
+- Answer Input Section\n- Action Buttons\n- Auto-Save Functionality
 - Browser Lock Mode (If enabled)
 - Activity Tracking
 \n#### 9.4.3 Exam Submission\nSubmit Button Click:
-- Open'Submit Exam' confirmation dialog
+- Open 'Submit Exam' confirmation dialog
 \nSubmission Process:
 - Save all answers
 - Calculate submission time
@@ -773,11 +813,12 @@ Results Page Layout:
 - Results Summary Card
 - Performance Analysis Card
 - Teacher Feedback Section
-- Question-wise Results Section
+- Question-wise Results Section (**with formatted question text**)
 - Action Buttons
 \n### 9.5 Teacher Exam Management Interface
 
-#### 9.5.1 Teacher Dashboard - My Exams Section\nDashboard Card: 'Online Exams'
+#### 9.5.1 Teacher Dashboard - My Exams Section
+Dashboard Card: 'Online Exams'
 \nMy Exams Page Layout:
 - Five tabs: 'Draft' | 'Pending Approval' | 'Scheduled' | 'Ongoing' | 'Completed'
 
@@ -802,39 +843,36 @@ Real-time Monitoring Dashboard:
 - Live Student Status Table
 - Student Detail View
 - Live Updates
-- Export Options
+- Export Options (**preserving formatting**)
 \n#### 9.5.3 Exam Grading Interface
 Grading Dashboard:
 - Grading Overview Cards
 - Grading Mode Selection
 - Student-wise Grading Mode
-- Question-wise Grading Mode
+- Question-wise Grading Mode (**with formatted question text**)
 - Auto-grading Logic
 - Manual Grading Workflow
 - Publish Results
-
-#### 9.5.4 Exam Analytics and Reports
+\n#### 9.5.4 Exam Analytics and Reports
 Analytics Dashboard:
 - Overview Section
 - Score Distribution Chart
 - Performance by Question Type
-- Performance by Difficulty\n- Question-wise Analysis
-- Student Performance Table
+- Performance by Difficulty\n- Question-wise Analysis (**with formatted question text**)\n- Student Performance Table
 - Section-wise Comparison
 - Time Analysis
 - Negative Marking Impact
 - Suspicious Activity Report
-- Export Options
-- Print Options
-
-#### 9.5.5 Student Allocation List with Attendance Status
+- Export Options (**preserving formatting**)
+- Print Options (**preserving formatting**)
+\n#### 9.5.5 Student Allocation List with Attendance Status
 Student Allocation List Interface:
 - Page Layout
 - Student List Table
 - Attendance Status Logic
 - Summary Statistics
 - Filter and Sort Options
-- Export Options
+- Export Options (**preserving formatting**)
 - Real-time Updates
 - Access Control
 
@@ -844,12 +882,10 @@ Individual Student Result Details Page:
 - Student Information Card
 - Exam Performance Summary Card
 - Performance Breakdown Card
-- Teacher Feedback Section
-- Question-wise Performance Section
-- Filter and Sort Options
+- Teacher Feedback Section\n- Question-wise Performance Section (**with formatted question text**)\n- Filter and Sort Options
 - Performance Charts
 - Activity Log Section
-- Export and Print Options
+- Export and Print Options (**preserving formatting**)
 - Action Buttons
 - Access Control
 
@@ -878,10 +914,9 @@ Analytics Dashboard (Principal view):
 - Subject Performance Table
 - Class Performance Table
 - Monthly Trends
-- Export Options
+- Export Options (**preserving formatting**)
 - Filter Options
-
-### 9.7 Online Exam Access Control and Data Isolation
+\n### 9.7 Online Exam Access Control and Data Isolation
 
 #### 9.7.1 Teacher Access Rules
 - Can create exams for assigned classes and sections
@@ -892,12 +927,13 @@ Analytics Dashboard (Principal view):
 - Can view individual student results for own exams
 - Can delete own exams with restrictions
 - Cannot force delete exams with student attempts
-\n#### 9.7.2 Student Access Rules
+
+#### 9.7.2 Student Access Rules
 - Can view only assigned exams
 - Can take exam only during scheduled time
 - Can take exam only once
 - Use individual login to access exam interface
-- **Can view pass/fail status based on 35% passing threshold**\n- Can review answers if enabled
+- **Can view pass/fail status based on 35% passing threshold**\n- Can review answers if enabled (**with formatted question text**)
 \n#### 9.7.3 Principal Access Rules
 - Can create exams directly without approval
 - Can approve or reject teacher exams
@@ -905,8 +941,7 @@ Analytics Dashboard (Principal view):
 - Can view student allocation list for all exams
 - Can view individual student results for all exams\n- Can view exam analytics\n- Cannot edit or delete teacher exams
 - Can delete self-created exams with restrictions
-- Can force delete self-created exams with strict confirmation
-
+- Can force delete self-created exams with strict confirmation\n
 #### 9.7.4 Admin Access Rules
 - Has cross-school visibility
 - Can view all exams across all schools
@@ -946,7 +981,8 @@ Analytics Dashboard (Principal view):
 - Weekly Participation Report
 - Monthly Analytics Report
 - Low Participation Alert
-\n### 9.9 Online Exam Security Features
+
+### 9.9 Online Exam Security Features
 
 #### 9.9.1 Exam Integrity
 - Single Attempt Enforcement
@@ -1035,7 +1071,7 @@ After Teacher login, the dashboard displays:
 \n### 10.2 Teacher Functions
 - View assigned classes, sections, subjects
 - **View students of assigned sections with enhanced search and filter functionality**
-- Question Bank Access
+- Question Bank Access (**with rich text editor for question creation**)
 - Question Paper Preparation\n- Question Paper History Management
 - Online Exam Management
 \n### 10.3 Students Card - Student Management (Teacher Dashboard)
@@ -1064,10 +1100,9 @@ After Student login, the dashboard displays:
 - My class, section, subjects, teachers\n- My Exams\n\n### 11.2 Student Functions
 - View my class and section
 - View my subjects\n- View my teachers
-- Online Exam Functions
+- Online Exam Functions (**with formatted question text display**)
 - Profile settings
-
-## 12. Key Features\n
+\n## 12. Key Features\n
 ### 12.1 User Registration and Approval Workflow
 - New users assigned 'Pending Approval' status
 - Admin must approve new accounts
@@ -1082,21 +1117,21 @@ After Student login, the dashboard displays:
 - Academic Management
 - Teacher Management
 - Student Management
-- Question Bank Management
+- Question Bank Management (**with rich text editor**)
 - Question Paper History Management
 - Online Exam Monitoring
-
-### 12.5 Teacher Functions
+\n### 12.5 Teacher Functions
 - View assigned classes, sections, subjects
 - **View and manage students from assigned sections**
-- Question Bank Access
+- Question Bank Access (**with rich text editor**)
 - Question Paper Preparation
 - Question Paper History Management
-- Online Exam Management\n
+- Online Exam Management
+
 ### 12.6 Student Functions
 - View personal information
 - Profile editing
-- Online Exam Functions
+- Online Exam Functions (**with formatted question text display**)
 \n### 12.7 User Profile Management
 - Edit, Save, Approve, Suspend buttons
 - Status-based navigation
@@ -1116,6 +1151,7 @@ After Student login, the dashboard displays:
 ### 12.12 Online Exam Feature
 - Complete exam management system
 - **Automatic passing marks calculation: 35% of total marks**\n- Enhanced student interface
+- **Question text displayed with formatting**
 - Real-time monitoring
 - Automatic and manual grading
 - Comprehensive analytics
@@ -1127,7 +1163,15 @@ After Student login, the dashboard displays:
 - **Role-based access control for viewing students from assigned sections only**
 - **Enhanced search and filter functionality**
 - **Data isolation based on teacher-section mapping**
-\n## 13. Language Support
+\n### 12.14 Rich Text Editor Integration Feature
+- **Integrated rich text editor (Quill, Draft.js, or TinyMCE) in question creation form**
+- **Teachers and Principals can apply bold, underline, italic, and other formatting directly while typing questions**
+- **Formatted text preserved and displayed correctly in all interfaces (exam, reports, exports)**
+- **HTML sanitization to prevent XSS attacks**
+- **Responsive design for mobile and desktop**
+- **Accessibility support (ARIA labels, keyboard navigation)**
+
+## 13. Language Support
 
 ### 13.1 UI Language\n- UI Language: English Only
 \n### 13.2 Chat/Communication Language
@@ -1247,6 +1291,12 @@ After Student login, the dashboard displays:
   - Underline on hover for links
   - Pointer cursor for interactive elements
   - Visual feedback on click
+- **Rich Text Editor Styling:**
+  - **Clean, modern toolbar design**
+  - **Consistent with overall theme**
+  - **Toolbar icons with hover effects**
+  - **Real-time preview of formatted text**
+  - **Formatted text displayed with proper styling in all views**
 \n### 15.4 Overall Layout
 - **Responsive design:**
   - Desktop view with side navigation
@@ -1268,6 +1318,7 @@ After Student login, the dashboard displays:
   - Two-column layout for better space utilization
   - Clear field labels and helper text
   - Validation feedback with color coding
+  - **Rich text editor integrated seamlessly in question creation form**
 - **Table layouts:**
   - Responsive tables with horizontal scroll
   - Alternating row colors for readability
@@ -1280,14 +1331,14 @@ After Student login, the dashboard displays:
   - Clean, distraction-free design
   - Question palette panel on left (collapsible)
   - Timer in header (sticky)
-  - Main content area for questions
+  - Main content area for questions (**with formatted text rendering**)
   - Action buttons at bottom
 - **Analytics dashboards:**
   - Overview cards at top
   - Interactive charts and graphs
   - Filterable data tables
   - Export options\n\n### 15.5 Website (Desktop View) Specific Design
-\n#### 15.5.1 Header\n- **Logo:'A Cube' with modern icon**
+\n#### 15.5.1 Header\n- **Logo: 'A Cube' with modern icon**
 - **Navigation menu:**
   - Home
   - Exams
@@ -1352,8 +1403,7 @@ After Student login, the dashboard displays:
   - Accuracy % (with percentage)
   - Progress chart (circular progress)
 - **Action buttons:**
-  - Create Exam (gradient button)
-  - View Results (outlined button)
+  - Create Exam (gradient button)\n  - View Results (outlined button)
 - **Recent activity list:**
   - List of recent exams with status
   - Swipeable cards\n- **Bottom navigation:**
@@ -1380,7 +1430,8 @@ After Student login, the dashboard displays:
   - Sharp, crisp visuals
   - High-quality mockups
 - **Realistic lighting:**
-  - Soft shadows\n  - Ambient lighting effects
+  - Soft shadows
+  - Ambient lighting effects
   - Screen glow effects
 - **No watermark**
 - **No extra text**
@@ -1391,17 +1442,20 @@ After Student login, the dashboard displays:
 ### 16.1 Question Edit Form Layout
 The uploaded image (screenshot.png) shows the question edit form with the following layout issue:
 
-Current Issue: In the Edit Question dialog, the 'Question Text' field,'Image/Clip Art (Optional)' field, 'Question Type' dropdown, 'Difficulty' dropdown, 'Marks' input, and 'Negative Marks' input are positioned below the 'Match Pairs' section.\n
+Current Issue: In the Edit Question dialog, the 'Question Text' field, 'Image/Clip Art (Optional)' field, 'Question Type' dropdown, 'Difficulty' dropdown, 'Marks' input, and 'Negative Marks' input are positioned below the 'Match Pairs' section.\n
 Required Fix: These fields should be moved above the 'Match Pairs' section to maintain the correct form field order as specified in Section 6.3.1.
 
-### 16.2 Design Reference\nThe uploaded image (image.png) shows the current dashboard design. The new design should follow the dark purple-blue gradient theme with glassmorphism cards as specified in Section 15.\n
+**Additional Requirement: Replace the 'Question Text' field with a rich text editor (Quill, Draft.js, or TinyMCE) to enable formatting (bold, underline, italic, etc.) directly while typing.**
+
+### 16.2 Design Reference
+The uploaded image (image.png) shows the current dashboard design. The new design should follow the dark purple-blue gradient theme with glassmorphism cards as specified in Section 15.\n
 ### 16.3 Teacher Dashboard Students Card Reference
 The uploaded image (screenshot.png) shows the Principal Dashboard with the Students card highlighted. This card's JSX structure and functionality should be copied to the Teacher Dashboard with appropriate role-based access control modifications.
 
 ## 17. Updated Requirement: Automatic Passing Marks Calculation
 
 ### 17.1 Passing Marks Calculation Logic
-- **Passing marks are automatically calculated as35% of the total marks**
+- **Passing marks are automatically calculated as 35% of the total marks**
 - **Formula: Passing Marks = Total Marks × 0.35**
 - **Example: If total marks = 75, then passing marks = 26.25 marks**
 - **Pass/Fail status determined by comparing obtained marks with passing marks**
@@ -1472,7 +1526,7 @@ The uploaded image (screenshot.png) shows the Principal Dashboard with the Stude
 - **Consistent with dark purple-blue gradient theme**
 
 ### 18.3 Branding Consistency
-- **Use'A Cube' consistently across all screens**
+- **Use 'A Cube' consistently across all screens**
 - **Maintain same theme and branding everywhere**
 - **Professional EdTech look**
 - **NEET and school-focused positioning**
@@ -1483,35 +1537,36 @@ The uploaded image (screenshot.png) shows the Principal Dashboard with the Stude
 - Modern JavaScript framework (React, Vue, or Angular)
 - Responsive CSS framework\n- Glassmorphism CSS effects
 - Smooth animations and transitions
+- **Rich text editor library (Quill, Draft.js, or TinyMCE)**
 
 ### 19.2 Backend Technologies
 - RESTful API architecture
 - Database with foreign key constraints
 - Authentication and authorization
 - Role-based access control
-\n### 19.3 Security\n- Encrypted passwords
-- Secure exam environment
-- Activity logging\n- Data isolation
+- **HTML sanitization library for rich text content**
 
-### 19.4 Performance
-- Fast page load times
+### 19.3 Security\n- Encrypted passwords\n- Secure exam environment
+- Activity logging\n- Data isolation
+- **XSS prevention for rich text content**
+
+### 19.4 Performance\n- Fast page load times
 - Optimized database queries
 - Efficient caching\n- Real-time updates
+- **Optimized rich text rendering**
 
 ### 19.5 Scalability
 - Support for multiple schools
 - Handle large number of concurrent users
 - Efficient data storage
 - Cloud-based infrastructure
-
-## 20. Deployment and Maintenance
+\n## 20. Deployment and Maintenance
 
 ### 20.1 Deployment\n- Cloud hosting (AWS, Azure, or Google Cloud)
 - Continuous integration/deployment
 - Automated testing
 - Staging and production environments
-
-### 20.2 Maintenance
+\n### 20.2 Maintenance
 - Regular backups
 - Security updates
 - Performance monitoring
@@ -1524,4 +1579,4 @@ The uploaded image (screenshot.png) shows the Principal Dashboard with the Stude
 
 ## 21. Conclusion
 
-A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The addition of the Students card to the Teacher Dashboard with role-based access control further enhances teacher functionality by allowing them to view and manage students from their assigned sections efficiently.
+A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, **rich text editor integration for question formatting**, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The addition of the Students card to the Teacher Dashboard with role-based access control, combined with the rich text editor functionality, further enhances teacher productivity by allowing them to create well-formatted questions and manage students from their assigned sections efficiently.
