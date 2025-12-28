@@ -12,6 +12,7 @@ import {
   ChevronRight,
   BookOpen,
   Building2,
+  GraduationCap,
 } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -61,6 +62,7 @@ export default function Sidebar({ collapsed, onCollapsedChange }: SidebarProps) 
     if (profile.role === 'teacher') {
       links.push(
         { to: '/teacher', label: 'Dashboard', icon: LayoutDashboard },
+        { to: '/teacher/students', label: 'Students', icon: GraduationCap },
         { to: '/teacher/questions', label: 'Question Bank', icon: FileQuestion },
         { to: '/teacher/exams', label: 'Manage Exams', icon: ClipboardList }
       );

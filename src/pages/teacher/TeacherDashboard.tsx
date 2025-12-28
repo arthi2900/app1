@@ -145,6 +145,23 @@ export default function TeacherDashboard() {
             </Card>
           );
         })}
+
+        {/* Students Card */}
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow rounded-3xl"
+          style={{ backgroundColor: '#608ce6' }}
+          onClick={() => navigate('/teacher/students')}
+        >
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-white">Students</CardTitle>
+            <GraduationCap className="w-5 h-5 text-white" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-white/80 mt-1">
+              Click to view details
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       <Card>

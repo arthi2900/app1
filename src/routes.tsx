@@ -145,6 +145,16 @@ const routes: RouteConfig[] = [
     visible: false,
   },
   {
+    name: 'Students List',
+    path: '/teacher/students',
+    element: (
+      <ProtectedRoute allowedRoles={['teacher']}>
+        <StudentsList />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
     name: 'Question Bank',
     path: '/teacher/questions',
     element: (

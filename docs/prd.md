@@ -5,14 +5,15 @@
 ### 1.1 Application Name
 A Cube - Online Exam System
 
-### 1.2 Application Purpose\nA comprehensive online exam management platform for educational institutions, focusing on NEET preparation and school-level assessments. The system enables schools to create, conduct, and analyze exams efficiently with features including school management, academic structure setup, teacher-subject-class-section mapping, question bank management, question paper preparation, online exam creation with approval workflow, user management with school-based data isolation, student allocation tracking, and detailed performance analytics.
+### 1.2 Application Purpose
+A comprehensive online exam management platform for educational institutions, focusing on NEET preparation and school-level assessments. The system enables schools to create, conduct, and analyze exams efficiently with features including school management, academic structure setup, teacher-subject-class-section mapping, question bank management, question paper preparation, online exam creation with approval workflow, user management with school-based data isolation, student allocation tracking, and detailed performance analytics.
 
 ### 1.3 Tagline
 Smart • Secure • Scalable Online Exams
 
 ## 2. User Roles\n
-### 2.1 Admin
-- Complete system administration\n- School management (create, edit, view schools)
+### 2.1 Admin\n- Complete system administration
+- School management (create, edit, view schools)
 - User account creation and management
 - New user approval management
 - Role-based Access Control setup
@@ -31,8 +32,7 @@ Smart • Secure • Scalable Online Exams
   - View teacher accounts
   - Teacher-subject-class-section mapping\n  - View class-section overview with assigned teachers per subject
   - Edit teacher profiles
-- Student Management (within assigned school only):
-  - View students list
+- Student Management (within assigned school only):\n  - View students list
   - View student class-section assignments
 - Question Bank Management (within assigned school only):
   - Create and manage questions with lesson-level tracking
@@ -60,10 +60,14 @@ Smart • Secure • Scalable Online Exams
 ### 2.3 Teacher
 - View assigned classes, sections, and subjects
 - View students of assigned sections only
+- **Student Management (within assigned sections only):**
+  - **View students list with enhanced search and filter functionality**
+  - **Search by student name, phone number, or email**
+  - **Filter by class and section**
+  - **View student details including name, class, section, phone number, and account status**
 - Question Bank Access:\n  - Create questions for assigned subjects and lessons
   - Insert images/clip arts in questions
-  - View questions filtered by assigned subjects
-  - Switch between Row View and Card View
+  - View questions filtered by assigned subjects\n  - Switch between Row View and Card View
   - Edit own questions in both views
 - Question Paper Preparation:
   - Create question papers from own question bank
@@ -72,15 +76,15 @@ Smart • Secure • Scalable Online Exams
   - Preview, save as draft, generate final paper
   - Export as PDF and print
   - Save shuffled papers with auto-versioned names (Shuffled A, Shuffled B, etc.)
-- Question Paper History:\n  - View all question papers created by self\n  - Filter by class, subject, date range, status
+- Question Paper History:\n  - View all question papers created by self
+  - Filter by class, subject, date range, status
   - View, edit, delete, export, print historical papers
   - Create new versions from existing papers
   - Track paper creation and modification history
 - Online Exam Management:
   - Create practice exams (no approval required) to assess student understanding
   - Create school-level exams (requires Principal approval before scheduling)
-  - Configure exam settings (duration, start/end time, negative marking)\n  - **Note: Passing marks are automatically calculated as 35% of total marks**
-  - Publish practice exams directly to assigned sections
+  - Configure exam settings (duration, start/end time, negative marking)\n  - **Note: Passing marks are automatically calculated as 35% of total marks**\n  - Publish practice exams directly to assigned sections
   - Submit school-level exams for Principal approval
   - View student allocation list with attendance status for own exams
   - Monitor student participation in real-time
@@ -109,8 +113,7 @@ Smart • Secure • Scalable Online Exams
 
 ### 2.5 User Profile Information
 All users (Admin, Principal, Teacher, Student) will have the following profile information:
-- User name
-- Email address
+- User name\n- Email address
 - Role\n- School name (mandatory field, selected from dropdown list populated from School Master)
 - Contact number
 - Profile picture (optional)\n- Account status (Pending Approval/Active/Suspended)
@@ -155,8 +158,7 @@ Admin can create and manage schools with the following details:
 - Principal: Can only view teachers and students from assigned school, and question papers created by teachers in their school
 - Teacher: Can only view students from assigned sections and own question papers (cannot view Principal or other teachers)\n- Student: Can only view their own profile and personal information (cannot view other students, teachers, or Principal)
 
-#### 4.2.2 Search and Filter
-- All user lists are automatically filtered by school and role-based visibility rules
+#### 4.2.2 Search and Filter\n- All user lists are automatically filtered by school and role-based visibility rules
 - Search functionality respects school-based isolation and role permissions
 - Dropdown lists and selection options show only school-relevant and role-appropriate data
 
@@ -220,8 +222,7 @@ After Principal login, the dashboard displays seven main cards:
 - View current class-section assignments with edit and reassign options
 - Students without class-section assignment are listed separately for easy identification
 
-### 5.3 Teachers Card - Teacher Management
-
+### 5.3 Teachers Card - Teacher Management\n
 #### 5.3.1 Teacher Accounts
 - Note: Teacher accounts are already created via Sign-Up process and mapped to school by Admin
 - Principal can view all teachers in their assigned school
@@ -263,7 +264,8 @@ After Principal login, the dashboard displays seven main cards:
   - Student Name
   - Class and Section
   - Phone Number
-  - Account Status (Active/Pending/Suspended)\n- Enhanced Search Functionality:
+  - Account Status (Active/Pending/Suspended)
+- Enhanced Search Functionality:
   - Text search bar for searching by name, phone, or email
   - Additional dropdown filters for Class and Section
   - Combined search capability (text search + class filter + section filter)
@@ -278,8 +280,7 @@ After Principal login, the dashboard displays seven main cards:
   - Card View (detailed card format)
 - View all questions with lesson-level filtering
 - Analytics dashboard for question bank performance
-
-### 5.6 Question Paper History Card - Historical Paper Management
+\n### 5.6 Question Paper History Card - Historical Paper Management
 - Principal can access Question Paper History interface
 - View all question papers created by teachers in their school
 - Filter by teacher name, class, subject, date range, paper status
@@ -314,8 +315,7 @@ After Principal login, the dashboard displays seven main cards:
   - Force Delete exam (for self-created exams with student attempts, requires strict confirmation)
 
 ### 5.8 Exam Approvals Card - School-Level Exam Approval Management
-Principal can review and approve school-level exams submitted by teachers
-\nApproval Dashboard Layout:
+Principal can review and approve school-level exams submitted by teachers\n\nApproval Dashboard Layout:
 - Pending Approvals Section
 - Exam Review Page
 - Approval History Section\n- Approval Statistics
@@ -454,8 +454,7 @@ Columns:
   - Advanced filtering and search capabilities
   - Paper versioning and relationship tracking
   - Export and print functionality
-  - Analytics and reporting
-
+  - Analytics and reporting\n
 ### 8.2 Question Paper History Interface
 
 #### 8.2.1 History List View
@@ -483,9 +482,7 @@ Display Columns:
 - Combined search and filter capability
 
 #### 8.2.4 Sorting Options
-- Sort by Creation Date
-- Sort by Last Modified Date
-- Sort by Paper Name
+- Sort by Creation Date\n- Sort by Last Modified Date\n- Sort by Paper Name
 - Sort by Class
 - Sort by Total Marks
 \n### 8.3 Question Paper Detail View
@@ -535,8 +532,7 @@ Display Columns:
 
 #### 8.5.2 Principal Access Rules
 - Can view all question papers created by teachers in their school
-- Can filter by teacher name
-- Can view detailed analytics for all teachers
+- Can filter by teacher name\n- Can view detailed analytics for all teachers
 - Can export and print any paper
 - Cannot edit or delete papers created by teachers
 - Can view paper details and question content
@@ -739,7 +735,8 @@ Columns:
 ### 9.4 Student Exam Taking Interface
 
 #### 9.4.1 Student Dashboard - My Exams Section
-Dashboard Card:'My Exams'\n- Display on student dashboard after login
+Dashboard Card:'My Exams'
+- Display on student dashboard after login
 - Shows count of exams by status
 \nMy Exams Page Layout:
 - Three tabs: 'Upcoming' | 'Ongoing' | 'Completed'
@@ -806,8 +803,7 @@ Real-time Monitoring Dashboard:
 - Student Detail View
 - Live Updates
 - Export Options
-
-#### 9.5.3 Exam Grading Interface
+\n#### 9.5.3 Exam Grading Interface
 Grading Dashboard:
 - Grading Overview Cards
 - Grading Mode Selection
@@ -918,7 +914,8 @@ Analytics Dashboard (Principal view):
 - Can view individual student results for any exam
 - Cannot create, edit, or delete exams
 - Can force delete any exam with strict confirmation
-\n#### 9.7.5 Data Isolation
+
+#### 9.7.5 Data Isolation
 - All exam data is school-scoped
 - Backend validation ensures data isolation
 - Cross-school access prevented
@@ -1030,23 +1027,41 @@ Standard Delete Workflow:
 ### 10.1 Teacher Login - Dashboard Overview
 After Teacher login, the dashboard displays:
 - Assigned classes, sections, and subjects
-- Students of assigned sections
+- **Students: View and manage students from assigned sections**
 - Question Bank access
 - Question Paper Preparation
 - Question Paper History
 - Online Exams
 \n### 10.2 Teacher Functions
 - View assigned classes, sections, subjects
-- View students of assigned sections
+- **View students of assigned sections with enhanced search and filter functionality**
 - Question Bank Access
 - Question Paper Preparation\n- Question Paper History Management
 - Online Exam Management
-\n## 11. Student Dashboard and Functions
+\n### 10.3 Students Card - Student Management (Teacher Dashboard)
+**Note: This card is copied from Principal Dashboard with role-based access control for Teachers**
+
+- Teacher can view students from their assigned sections only
+- Student list displays:\n  - Student Name
+  - Class and Section
+  - Phone Number
+  - Account Status (Active/Pending/Suspended)
+- Enhanced Search Functionality:\n  - Text search bar for searching by name, phone, or email
+  - Additional dropdown filters for Class and Section (filtered by teacher's assigned sections)
+  - Combined search capability (text search + class filter + section filter)
+- Filter and search options by class, section, or name (limited to assigned sections)
+- Click on student to view detailed profile and academic records
+- **Access Control:**
+  - Teachers can only view students from sections they are assigned to teach
+  - Backend validation ensures data isolation based on teacher-section mapping
+  - Search and filter results are automatically scoped to assigned sections
+  - Cannot view students from other sections or other teachers' sections
+
+## 11. Student Dashboard and Functions
 
 ### 11.1 Student Login - Dashboard Overview
 After Student login, the dashboard displays:
-- My class, section, subjects, teachers
-- My Exams\n\n### 11.2 Student Functions
+- My class, section, subjects, teachers\n- My Exams\n\n### 11.2 Student Functions
 - View my class and section
 - View my subjects\n- View my teachers
 - Online Exam Functions
@@ -1073,10 +1088,12 @@ After Student login, the dashboard displays:
 
 ### 12.5 Teacher Functions
 - View assigned classes, sections, subjects
+- **View and manage students from assigned sections**
 - Question Bank Access
 - Question Paper Preparation
 - Question Paper History Management
-- Online Exam Management\n\n### 12.6 Student Functions
+- Online Exam Management\n
+### 12.6 Student Functions
 - View personal information
 - Profile editing
 - Online Exam Functions
@@ -1105,7 +1122,12 @@ After Student login, the dashboard displays:
 - Security features
 - Deletion functionality
 
-## 13. Language Support
+### 12.13 Teacher Student Management Feature
+- **Students card added to Teacher Dashboard**
+- **Role-based access control for viewing students from assigned sections only**
+- **Enhanced search and filter functionality**
+- **Data isolation based on teacher-section mapping**
+\n## 13. Language Support
 
 ### 13.1 UI Language\n- UI Language: English Only
 \n### 13.2 Chat/Communication Language
@@ -1145,8 +1167,7 @@ After Student login, the dashboard displays:
 - **Accent colors:**
   - Success/Active: Green (#10B981)
   - Warning/Pending: Orange (#F59E0B)
-  - Error/Danger: Red (#EF4444)\n  - Info: Blue (#3B82F6)
-  - Purple accent: (#8B5CF6)
+  - Error/Danger: Red (#EF4444)\n  - Info: Blue (#3B82F6)\n  - Purple accent: (#8B5CF6)
   - Teal accent: (#14B8A6)
   - Indigo accent: (#6366F1)
 - **Text colors:**
@@ -1374,6 +1395,9 @@ Current Issue: In the Edit Question dialog, the 'Question Text' field,'Image/Cli
 Required Fix: These fields should be moved above the 'Match Pairs' section to maintain the correct form field order as specified in Section 6.3.1.
 
 ### 16.2 Design Reference\nThe uploaded image (image.png) shows the current dashboard design. The new design should follow the dark purple-blue gradient theme with glassmorphism cards as specified in Section 15.\n
+### 16.3 Teacher Dashboard Students Card Reference
+The uploaded image (screenshot.png) shows the Principal Dashboard with the Students card highlighted. This card's JSX structure and functionality should be copied to the Teacher Dashboard with appropriate role-based access control modifications.
+
 ## 17. Updated Requirement: Automatic Passing Marks Calculation
 
 ### 17.1 Passing Marks Calculation Logic
@@ -1392,8 +1416,7 @@ Required Fix: These fields should be moved above the 'Match Pairs' section to ma
 - **Remove manual passing marks input**
 - **Add read-only passing marks display**
 - **Update dynamically when questions selected**
-
-#### 17.2.3 Exam Display Changes
+\n#### 17.2.3 Exam Display Changes
 - **All exam cards display passing marks (35% of total)**
 - **Exam details page displays passing marks**
 - **Student pre-exam screen displays passing marks**
@@ -1469,7 +1492,8 @@ Required Fix: These fields should be moved above the 'Match Pairs' section to ma
 \n### 19.3 Security\n- Encrypted passwords
 - Secure exam environment
 - Activity logging\n- Data isolation
-\n### 19.4 Performance
+
+### 19.4 Performance
 - Fast page load times
 - Optimized database queries
 - Efficient caching\n- Real-time updates
@@ -1500,4 +1524,4 @@ Required Fix: These fields should be moved above the 'Match Pairs' section to ma
 
 ## 21. Conclusion
 
-A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments.
+A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The addition of the Students card to the Teacher Dashboard with role-based access control further enhances teacher functionality by allowing them to view and manage students from their assigned sections efficiently.
