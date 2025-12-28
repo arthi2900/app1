@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { examApi, examAttemptApi, examAnswerApi, profileApi } from '@/db/api';
 import { ArrowLeft, Award, CheckCircle2, XCircle, TrendingUp } from 'lucide-react';
-import type { ExamWithDetails, ExamAttempt, ExamAnswer } from '@/types/types';
+import type { ExamWithDetails, ExamAttempt, ExamAnswerWithDetails } from '@/types/types';
 
 export default function StudentResult() {
   const { examId } = useParams<{ examId: string }>();
@@ -14,7 +14,7 @@ export default function StudentResult() {
   const { toast } = useToast();
   const [exam, setExam] = useState<ExamWithDetails | null>(null);
   const [attempt, setAttempt] = useState<ExamAttempt | null>(null);
-  const [answers, setAnswers] = useState<ExamAnswer[]>([]);
+  const [answers, setAnswers] = useState<ExamAnswerWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -260,6 +260,186 @@ export default function StudentResult() {
           </div>
         </CardContent>
       </Card>
+
+      {isEvaluated && answers.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Question-wise Analysis</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {answers.map((answer, index) => {
+                const question = answer.question;
+                if (!question) return null;
+
+                const studentAnswer = answer.student_answer;
+                const correctAnswer = question.correct_answer;
+
+                return (
+                  <div key={answer.id} className="border rounded-lg p-4 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="font-bold text-lg">Q{index + 1}.</span>
+                          <Badge variant="outline" className="text-xs">
+                            {question.question_type.replace('_', ' ').toUpperCase()}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {question.marks} marks
+                          </Badge>
+                          {question.negative_marks > 0 && (
+                            <Badge variant="destructive" className="text-xs">
+                              -{question.negative_marks} negative
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="mb-3">
+                          {question.image_url && (
+                            <img 
+                              src={question.image_url} 
+                              alt="Question" 
+                              className="max-w-md mb-2 rounded-md"
+                            />
+                          )}
+                          <p className="text-base">{question.question_text}</p>
+                        </div>
+                      </div>
+                      <div className="ml-4">
+                        {answer.is_correct ? (
+                          <CheckCircle2 className="h-6 w-6 text-secondary" />
+                        ) : (
+                          <XCircle className="h-6 w-6 text-destructive" />
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="border-t pt-3">
+                      {/* MCQ and True/False */}
+                      {(question.question_type === 'mcq' || question.question_type === 'true_false') && (
+                        <div className="space-y-2">
+                          {question.options && (
+                            <div className="space-y-2">
+                              {(question.options as string[]).map((option, idx) => {
+                                const isCorrect = option === correctAnswer;
+                                const isStudentAnswer = option === studentAnswer;
+                                
+                                return (
+                                  <div 
+                                    key={idx} 
+                                    className="p-3 rounded-md border"
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      {isCorrect && (
+                                        <CheckCircle2 className="h-5 w-5 text-secondary flex-shrink-0" />
+                                      )}
+                                      {isStudentAnswer && !isCorrect && (
+                                        <XCircle className="h-5 w-5 text-destructive flex-shrink-0" />
+                                      )}
+                                      <span className={
+                                        isCorrect 
+                                          ? 'text-secondary font-medium'
+                                          : isStudentAnswer && !isCorrect
+                                          ? 'text-destructive font-medium'
+                                          : ''
+                                      }>
+                                        {option}
+                                      </span>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Short Answer */}
+                      {question.question_type === 'short_answer' && (
+                        <div className="space-y-2">
+                          <div>
+                            <span className="font-medium">Your Answer:</span>
+                            <div className="mt-1 p-3 bg-muted rounded-md">
+                              {studentAnswer || 'Not Answered'}
+                            </div>
+                          </div>
+                          <div>
+                            <span className="font-medium">Expected Answer:</span>
+                            <div className="mt-1 p-3 bg-muted rounded-md">
+                              {correctAnswer}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Multiple Response */}
+                      {question.question_type === 'multiple_response' && (
+                        <div className="space-y-2">
+                          <div className="flex items-start gap-2">
+                            <span className="font-medium">Your Answer:</span>
+                            <div className="flex flex-wrap gap-1">
+                              {Array.isArray(studentAnswer) && studentAnswer.length > 0 ? (
+                                studentAnswer.map((ans: string, idx: number) => (
+                                  <Badge key={idx} variant={answer.is_correct ? 'default' : 'destructive'} className={answer.is_correct ? 'bg-secondary' : ''}>
+                                    {ans}
+                                  </Badge>
+                                ))
+                              ) : (
+                                <Badge variant="destructive">Not Answered</Badge>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="font-medium">Correct Answer:</span>
+                            <Badge variant="outline">{correctAnswer}</Badge>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Match Following */}
+                      {question.question_type === 'match_following' && (
+                        <div className="space-y-2">
+                          <div>
+                            <span className="font-medium">Your Matches:</span>
+                            <div className="mt-1 p-3 bg-muted rounded-md space-y-1">
+                              {studentAnswer && Object.entries(studentAnswer).map(([left, right]: [string, any]) => (
+                                <div key={left} className="flex items-center gap-2">
+                                  <span>{left}</span>
+                                  <span>→</span>
+                                  <span>{right}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <span className="font-medium">Correct Matches:</span>
+                            <div className="mt-1 p-3 bg-muted rounded-md space-y-1">
+                              {correctAnswer && JSON.parse(correctAnswer) && Object.entries(JSON.parse(correctAnswer)).map(([left, right]: [string, any]) => (
+                                <div key={left} className="flex items-center gap-2">
+                                  <span>{left}</span>
+                                  <span>→</span>
+                                  <span>{right}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Marks Obtained */}
+                    <div className="flex items-center justify-between pt-2 border-t">
+                      <span className="text-sm font-medium">Marks Obtained:</span>
+                      <Badge variant={answer.is_correct ? 'default' : 'destructive'} className={answer.is_correct ? 'bg-secondary' : ''}>
+                        {answer.marks_obtained} / {question.marks}
+                      </Badge>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
