@@ -109,11 +109,11 @@ export default function StudentResult() {
       )}
 
       {isEvaluated && (
-        <Card className={isPassed ? 'border-secondary' : 'border-destructive'}>
+        <Card className={isPassed ? 'border-success' : 'border-destructive'}>
           <CardContent className="flex items-center justify-between py-6">
             <div className="flex items-center gap-4">
               {isPassed ? (
-                <CheckCircle2 className="h-12 w-12 text-secondary" />
+                <CheckCircle2 className="h-12 w-12 text-success" />
               ) : (
                 <XCircle className="h-12 w-12 text-destructive" />
               )}
@@ -204,7 +204,7 @@ export default function StudentResult() {
             {isEvaluated && (
               <div className="grid gap-4 md:grid-cols-3 pt-4">
                 <div className="text-center p-4 bg-muted rounded-md">
-                  <p className="text-2xl font-bold text-secondary">
+                  <p className="text-2xl font-bold text-success">
                     {answers.filter(a => a.is_correct === true).length}
                   </p>
                   <p className="text-sm text-muted-foreground">Correct Answers</p>
@@ -309,7 +309,7 @@ export default function StudentResult() {
                       </div>
                       <div className="ml-4">
                         {answer.is_correct ? (
-                          <CheckCircle2 className="h-6 w-6 text-secondary" />
+                          <CheckCircle2 className="h-6 w-6 text-success" />
                         ) : (
                           <XCircle className="h-6 w-6 text-destructive" />
                         )}
@@ -333,14 +333,14 @@ export default function StudentResult() {
                                   >
                                     <div className="flex items-center gap-2">
                                       {isCorrect && (
-                                        <CheckCircle2 className="h-5 w-5 text-secondary flex-shrink-0" />
+                                        <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0" />
                                       )}
                                       {isStudentAnswer && !isCorrect && (
                                         <XCircle className="h-5 w-5 text-destructive flex-shrink-0" />
                                       )}
                                       <span className={
                                         isCorrect 
-                                          ? 'text-secondary font-medium'
+                                          ? 'text-success font-medium'
                                           : isStudentAnswer && !isCorrect
                                           ? 'text-destructive font-medium'
                                           : ''

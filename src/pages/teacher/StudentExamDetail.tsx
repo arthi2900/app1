@@ -128,14 +128,14 @@ export default function StudentExamDetail() {
                     >
                       <div className="flex items-center gap-2">
                         {isCorrect && (
-                          <CheckCircle2 className="h-5 w-5 text-secondary flex-shrink-0" />
+                          <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0" />
                         )}
                         {isStudentAnswer && !isCorrect && (
                           <XCircle className="h-5 w-5 text-destructive flex-shrink-0" />
                         )}
                         <span className={
                           isCorrect 
-                            ? 'text-secondary font-medium'  // Green text for correct answer
+                            ? 'text-success font-medium'  // Green text for correct answer
                             : isStudentAnswer && !isCorrect
                             ? 'text-destructive font-medium'  // Red text for wrong answer
                             : ''  // Normal text for other options
@@ -448,7 +448,7 @@ export default function StudentExamDetail() {
                       </div>
                       <div className="ml-4">
                         {answer.is_correct ? (
-                          <CheckCircle2 className="h-6 w-6 text-secondary" />
+                          <CheckCircle2 className="h-6 w-6 text-success" />
                         ) : (
                           <XCircle className="h-6 w-6 text-destructive" />
                         )}
