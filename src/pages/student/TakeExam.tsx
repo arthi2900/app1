@@ -583,7 +583,7 @@ export default function TakeExam() {
                           ${isCurrent
                             ? 'bg-primary text-primary-foreground'
                             : answered
-                            ? 'bg-secondary text-secondary-foreground'
+                            ? 'bg-success text-success-foreground'
                             : 'bg-muted text-muted-foreground hover:bg-muted/80'
                           }
                         `}
@@ -596,7 +596,7 @@ export default function TakeExam() {
 
                 <div className="mt-4 space-y-2 text-sm">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-secondary"></div>
+                    <div className="w-6 h-6 rounded-md bg-success"></div>
                     <span>Answered</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -617,7 +617,7 @@ export default function TakeExam() {
                     </div>
                     <div className="flex justify-between">
                       <span>Answered:</span>
-                      <span className="font-medium text-secondary">
+                      <span className="font-medium text-success">
                         {questions.filter(q => isQuestionAnswered(q.question_id)).length}
                       </span>
                     </div>
