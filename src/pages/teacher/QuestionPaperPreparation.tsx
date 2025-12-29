@@ -347,7 +347,7 @@ export default function QuestionPaperPreparation() {
       const paper = await saveQuestionPaper('draft');
       if (paper) {
         toast.success(draftPaperId ? 'Draft updated successfully' : 'Question paper saved as draft successfully');
-        navigate('/teacher/question-paper-management');
+        navigate('/teacher/question-papers');
       }
     } catch (error) {
       console.error('Error saving draft:', error);
@@ -370,7 +370,7 @@ export default function QuestionPaperPreparation() {
       const paper = await saveQuestionPaper('final');
       if (paper) {
         toast.success(draftPaperId ? 'Question paper updated and finalized successfully' : 'Question paper generated successfully');
-        navigate('/teacher/question-paper-management');
+        navigate('/teacher/question-papers');
       }
     } catch (error) {
       console.error('Error generating paper:', error);
