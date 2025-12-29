@@ -443,7 +443,10 @@ export default function StudentExamDetail() {
                               className="max-w-md mb-2 rounded-md"
                             />
                           )}
-                          <p className="text-base">{question.question_text}</p>
+                          <div 
+                            className="text-base question-content"
+                            dangerouslySetInnerHTML={{ __html: question.question_text }}
+                          />
                         </div>
                       </div>
                       <div className="ml-4">

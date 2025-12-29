@@ -551,9 +551,13 @@ export default function QuestionPaperManagement() {
                                       return (
                                         <div key={pq.id} className="border-b pb-4 last:border-b-0">
                                           <div className="flex items-start justify-between mb-2">
-                                            <h3 className="font-medium">
-                                              Q{index + 1}. {question.question_text}
-                                            </h3>
+                                            <div className="flex-1">
+                                              <span className="font-medium">Q{index + 1}. </span>
+                                              <span 
+                                                className="font-medium question-content"
+                                                dangerouslySetInnerHTML={{ __html: question.question_text }}
+                                              />
+                                            </div>
                                             <Badge className={getDifficultyColor(question.difficulty)}>
                                               {question.marks} marks
                                             </Badge>
