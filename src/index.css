@@ -183,20 +183,31 @@ All colors MUST be HSL.
 
   /* Hide all UI elements except the preview card */
   body.printing-mode * {
-    visibility: hidden;
+    visibility: hidden !important;
   }
 
   body.printing-mode .print-content,
   body.printing-mode .print-content * {
-    visibility: visible;
+    visibility: visible !important;
   }
 
   body.printing-mode .print-content {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    background: white;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  /* Hide dialog overlay */
+  [data-radix-dialog-overlay],
+  [data-radix-portal] {
+    display: none !important;
   }
 
   /* Hide navigation, buttons, and UI elements */
@@ -210,6 +221,7 @@ All colors MUST be HSL.
   [role="banner"],
   .print-hide {
     display: none !important;
+    visibility: hidden !important;
   }
 
   /* Clean white background for print */
@@ -243,17 +255,6 @@ All colors MUST be HSL.
     font-weight: 500 !important;
   }
 
-  /* Marks badge styling for print */
-  .marks-badge {
-    background: #fef3c7 !important;
-    color: #92400e !important;
-    padding: 0.25rem 0.5rem !important;
-    border-radius: 0.25rem !important;
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    border: 1px solid #fbbf24 !important;
-  }
-
   /* Options styling */
   .ml-4 {
     margin-left: 1rem !important;
@@ -283,21 +284,47 @@ All colors MUST be HSL.
 
   /* Header section for print */
   .print-header {
-    text-align: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid #000;
+    text-align: center !important;
+    margin-bottom: 2rem !important;
+    padding-bottom: 1rem !important;
+    border-bottom: 2px solid #000 !important;
+    display: block !important;
   }
 
   .print-header h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.5rem !important;
+    color: black !important;
   }
 
   .print-header p {
-    font-size: 0.875rem;
-    color: #4b5563;
+    font-size: 0.875rem !important;
+    color: #4b5563 !important;
+    margin: 0.25rem 0 !important;
+  }
+
+  .print-header .font-medium {
+    font-weight: 600 !important;
+    color: black !important;
+  }
+
+  /* Show marks badge in print */
+  .marks-badge {
+    display: inline-block !important;
+    background: #fef3c7 !important;
+    color: #92400e !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 0.25rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    border: 1px solid #fbbf24 !important;
+    margin-left: 1rem !important;
+  }
+
+  /* Hide screen-only elements */
+  .screen-only {
+    display: none !important;
   }
 
   /* Question container */
@@ -319,6 +346,42 @@ All colors MUST be HSL.
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
+    padding: 0 !important;
+  }
+
+  /* Ensure proper spacing for card content */
+  body.printing-mode .print-content .space-y-4,
+  body.printing-mode .print-content .space-y-6 {
+    display: block !important;
+  }
+
+  /* Make sure text is visible */
+  body.printing-mode .print-content .font-medium,
+  body.printing-mode .print-content .text-sm,
+  body.printing-mode .print-content span,
+  body.printing-mode .print-content div {
+    color: black !important;
+  }
+
+  /* Question text styling */
+  .question-number {
+    font-weight: 600 !important;
+    color: black !important;
+  }
+
+  .question-content {
+    color: black !important;
+  }
+
+  .question-text-wrapper {
+    color: black !important;
+  }
+
+  /* Options styling */
+  body.printing-mode .print-content .ml-4 div {
+    color: black !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
   }
 }
 

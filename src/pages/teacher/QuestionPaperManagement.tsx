@@ -538,13 +538,12 @@ export default function QuestionPaperManagement() {
                             </DialogHeader>
 
                             {/* Print Header - Only visible when printing */}
-                            <div className="print-header hidden print:block">
+                            <div className="print-header" style={{ display: 'none' }}>
                               <h1>Question Paper Preview</h1>
-                              <p className="font-medium">{paper.title}</p>
-                              <p className="text-sm">Class: {paper.class?.class_name || 'N/A'} | Subject: {paper.subject?.subject_name || 'N/A'} | Total Marks: {paper.total_marks}</p>
+                              <p className="font-medium">{paper.title} | Total Marks: {paper.total_marks}</p>
                             </div>
 
-                            <div className="space-y-4">
+                            <div className="space-y-4 print-questions-container">
                               <Card>
                                 <CardHeader className="print-hide">
                                   <CardTitle className="text-lg">{paper.title}</CardTitle>
@@ -552,7 +551,7 @@ export default function QuestionPaperManagement() {
                                     Class: {paper.class?.class_name || 'N/A'} | Subject: {paper.subject?.subject_name || 'N/A'} | Total Marks: {paper.total_marks}
                                   </CardDescription>
                                 </CardHeader>
-                                <CardContent className="space-y-6">
+                                <CardContent className="space-y-6 print-card-content">
                                   {paperQuestions.length === 0 ? (
                                     <p className="text-center text-muted-foreground py-8">No questions found</p>
                                   ) : (
@@ -566,20 +565,20 @@ export default function QuestionPaperManagement() {
                                       
                                       return (
                                         <div key={pq.id} className="border-b pb-4 last:border-b-0 question-item">
-                                          <div className="flex items-start justify-between mb-2">
-                                            <div className="flex-1">
-                                              <span className="font-medium">Q{index + 1}. </span>
+                                          <div className="flex items-start justify-between mb-2 question-header">
+                                            <div className="flex-1 question-text-wrapper">
+                                              <span className="font-medium question-number">Q{index + 1}. </span>
                                               <span 
                                                 className="font-medium question-content"
                                                 dangerouslySetInnerHTML={{ __html: question.question_text }}
                                               />
                                             </div>
                                             {/* Print version - simple text badge */}
-                                            <span className="hidden print:inline-block marks-badge ml-4 flex-shrink-0">
+                                            <span className="marks-badge" style={{ display: 'none' }}>
                                               {question.marks} {question.marks === 1 ? 'mark' : 'marks'}
                                             </span>
                                             {/* Screen version - colored badge */}
-                                            <Badge className={`${getDifficultyColor(question.difficulty)} print:hidden flex-shrink-0`}>
+                                            <Badge className={`${getDifficultyColor(question.difficulty)} screen-only flex-shrink-0`}>
                                               {question.marks} marks
                                             </Badge>
                                           </div>
