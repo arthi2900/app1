@@ -40,8 +40,7 @@ Smart • Secure • Scalable Online Exams
   - Insert images/clip arts in questions
   - Use rich text editor for question text formatting (bold, underline, italic, etc.)
   - View question bank analytics
-  - Switch between Row View and Card View
-  - Edit questions in both views
+  - Switch between Row View and Card View\n  - Edit questions in both views
 - Question Paper History Access (within assigned school only):
   - View all question papers created by teachers in their school
   - Filter and search question paper history
@@ -93,8 +92,7 @@ Smart • Secure • Scalable Online Exams
 - Online Exam Management:
   - Create practice exams (no approval required) to assess student understanding
   - Create school-level exams (requires Principal approval before scheduling)
-  - Configure exam settings (duration, start/end time, negative marking)
-  - Note: Passing marks are automatically calculated as 35% of total marks
+  - Configure exam settings (duration, start/end time, negative marking)\n  - Note: Passing marks are automatically calculated as 35% of total marks
   - Publish practice exams directly to assigned sections
   - Submit school-level exams for Principal approval
   - View student allocation list with attendance status for own exams
@@ -129,8 +127,7 @@ All users (Admin, Principal, Teacher, Student) will have the following profile i
 - User name\n- Email address
 - Role\n- School name (mandatory field, selected from dropdown list populated from School Master)
 - Contact number
-- Profile picture (optional)
-- Account status (Pending Approval/Active/Suspended)
+- Profile picture (optional)\n- Account status (Pending Approval/Active/Suspended)
 \n## 3. School Management Module
 
 ### 3.1 School Master
@@ -198,7 +195,8 @@ After Principal login, the dashboard displays seven main cards:
 - Principal can create classes for their assigned school
 - Class information fields:\n  - Class Name (e.g., Class 6, Class 7, Class 8, etc.)
   - Class Code (auto-generated or manual entry)
-  - Academic Year (e.g., 2024-2025)\n- Class list view with edit and delete options
+  - Academic Year (e.g., 2024-2025)
+- Class list view with edit and delete options
 - Classes are school-specific and isolated\n
 #### 5.2.2 Section Creation
 - Principal can create sections for each class
@@ -229,7 +227,8 @@ After Principal login, the dashboard displays seven main cards:
 #### 5.2.5 Student Class-Section Mapping
 - Principal can assign students to specific class and section
 - Note: Student accounts are already created via Sign-Up process, only class-section assignment is done here
-- Mapping interface:\n  - Student selection (dropdown or search from existing students in the school)
+- Mapping interface:
+  - Student selection (dropdown or search from existing students in the school)
   - Class selection (dropdown)\n  - Section selection (dropdown, filtered by selected class)
   - Academic Year\n- Bulk assignment option for multiple students
 - View current class-section assignments with edit and reassign options
@@ -258,7 +257,8 @@ After Principal login, the dashboard displays seven main cards:
   - Teacher selection (dropdown from school teachers)
   - Subject selection (dropdown from school subjects)
   - Class selection (dropdown from school classes)
-  - Section selection (multi-select, filtered by selected class)\n- One teacher can be assigned to multiple subject-class-section combinations
+  - Section selection (multi-select, filtered by selected class)
+- One teacher can be assigned to multiple subject-class-section combinations
 - View current teacher assignments with edit and delete options
 - This mapping determines which students a teacher can view\n
 #### 5.3.3 Class-Section Overview
@@ -339,8 +339,7 @@ Principal can review and approve school-level exams submitted by teachers\n\nApp
 - Notification System
 \n## 6. Question Bank Module
 
-### 6.1 Question Bank Overview
-- Centralized repository for exam questions
+### 6.1 Question Bank Overview\n- Centralized repository for exam questions
 - Questions organized by Class, Subject, and Lesson
 - Support for multiple question types\n- Difficulty levels (Easy, Medium, Hard)\n- Marks allocation per question
 - Minus Mark (Negative Marking) support
@@ -362,8 +361,7 @@ Columns:
 - question_type (Enum: Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ)\n- marks (Integer, required)
 - minus_mark (Decimal, optional)
 - difficulty (Enum: Easy, Medium, Hard)\n- options (JSON array)\n- correct_answer (Text or JSON array)\n- question_images (JSON array, optional)
-- created_by (Foreign Key → users.id)
-- created_at (Timestamp)
+- created_by (Foreign Key → users.id)\n- created_at (Timestamp)
 - updated_at (Timestamp)
 \n### 6.3 Question Creation Form
 \n#### 6.3.1 Form Field Order
@@ -397,8 +395,7 @@ Columns:
   - Basic formatting: Bold, Italic, Underline, Strikethrough
   - Text styling: Font size, Font family, Text color, Background color
   - Alignment: Left, Center, Right, Justify
-  - Lists: Ordered list, Unordered list\n  - Insert: Link, Image (optional)
-  - Clear formatting button
+  - Lists: Ordered list, Unordered list\n  - Insert: Link, Image (optional)\n  - Clear formatting button
 - Implementation Requirements:
   - Responsive design for mobile and desktop
   - Accessibility support (ARIA labels, keyboard navigation)\n  - HTML sanitization to prevent malicious code injection
@@ -426,12 +423,10 @@ Columns:
 \n#### 6.4.3 Template File Structure
 \nTemplate File Format: Excel (.xlsx) or CSV (.csv)\n
 Template Columns (in order):
-1. Class (Text, required) - e.g., 'Class 6', 'Class 7'
-2. Subject (Text, required) - e.g., 'Mathematics', 'Science'
-3. Lesson (Text, required) - e.g., 'Algebra Basics', 'Photosynthesis'
-4. Question Text (Text, required) - Plain text or basic HTML formatting
-5. Question Type (Text, required) - Options: 'Multiple Choice', 'True/False', 'Short Answer', 'Essay', 'Match the Following', 'Multiple Response MCQ'\n6. Marks (Number, required) - e.g., 1, 2, 5
-7. Minus Mark (Number, optional) - e.g., 0.25, 0.5, 1\n8. Difficulty (Text, required) - Options: 'Easy', 'Medium', 'Hard'
+1. Class (Dropdown selection, required) - **Updated: Dropdown with pre-populated class names from school**
+2. Subject (Dropdown selection, required) - **Updated: Dropdown with pre-populated subject names from school**
+3. Lesson (Text, required) - e.g., 'Algebra Basics', 'Photosynthesis'\n4. Question Text (Text, required) - Plain text or basic HTML formatting
+5. Question Type (Dropdown selection, required) - Options: 'Multiple Choice', 'True/False', 'Short Answer', 'Essay', 'Match the Following', 'Multiple Response MCQ'\n6. Marks (Number, required) - e.g., 1, 2, 5\n7. Minus Mark (Number, optional) - e.g., 0.25, 0.5, 1\n8. Difficulty (Dropdown selection, required) - Options: 'Easy', 'Medium', 'Hard'
 9. Option A (Text, conditional) - Required for MCQ types
 10. Option B (Text, conditional) - Required for MCQ types
 11. Option C (Text, conditional) - Optional for MCQ types
@@ -439,16 +434,23 @@ Template Columns (in order):
 13. Option E (Text, conditional) - Optional for MCQ types
 14. Correct Answer (Text, required) - Format varies by question type
 15. Image Path (Text, optional) - Path to image file or URL
-\nTemplate Instructions Sheet:
+\n**Updated Template Features:**
+- **Class Column**: Dropdown list with data validation, populated with all class names from the user's school (e.g., 'Class 6', 'Class 7', 'Class 8', etc.)
+- **Subject Column**: Dropdown list with data validation, populated with all subject names from the user's school (e.g., 'Mathematics', 'Science', 'English', etc.)
+- **Question Type Column**: Dropdown list with data validation, options: 'Multiple Choice', 'True/False', 'Short Answer', 'Essay', 'Match the Following', 'Multiple Response MCQ'
+- **Difficulty Column**: Dropdown list with data validation, options: 'Easy', 'Medium', 'Hard'
+- **Excel Data Validation**: All dropdown columns have Excel data validation rules applied to prevent invalid entries
+- **Dynamic Template Generation**: Template file is generated dynamically based on the logged-in user's school, ensuring Class and Subject dropdowns contain only relevant data
+
+Template Instructions Sheet:
 - Separate sheet in Excel file with detailed instructions\n- Column descriptions and data format requirements
 - Examples for each question type
 - Common errors and how to avoid them
-- Validation rules\n
-#### 6.4.4 Question Type Specific Format
+- Validation rules\n- **New Section**: How to use dropdown selections for Class, Subject, Question Type, and Difficulty
+\n#### 6.4.4 Question Type Specific Format
 
 **Multiple Choice Questions:**
-- Question Type: 'Multiple Choice'
-- Options: Fill Option A, Option B, and optionally Option C, Option D, Option E
+- Question Type: 'Multiple Choice'\n- Options: Fill Option A, Option B, and optionally Option C, Option D, Option E
 - Correct Answer: Single letter (A, B, C, D, or E)
 - Example: Correct Answer = 'B'
 \n**Multiple Response MCQ:**
@@ -483,12 +485,28 @@ Template Columns (in order):
 
 Download Template Button:
 - Prominently displayed in Bulk Upload dialog
-- Downloads pre-formatted Excel file with:\n  - Column headers\n  - Sample data rows for each question type
-  - Instructions sheet
-  - Data validation rules (dropdowns for Question Type, Difficulty)\n\nTemplate File Contents:
-- Sheet 1: Question Data (with sample rows)
+- Downloads pre-formatted Excel file with:\n  - Column headers\n  - **Excel data validation dropdowns for Class, Subject, Question Type, and Difficulty columns**
+  - **Class dropdown populated with all classes from user's school**
+  - **Subject dropdown populated with all subjects from user's school**
+  - Sample data rows for each question type
+  - Instructions sheet\n  - Data validation rules (dropdowns for Class, Subject, Question Type, Difficulty)
+\nTemplate File Contents:
+- Sheet 1: Question Data (with sample rows and dropdown validations)
 - Sheet 2: Instructions and Examples
-- Sheet 3: Valid Values Reference (Question Types, Difficulty Levels)
+- Sheet 3: Valid Values Reference (Class Names, Subject Names, Question Types, Difficulty Levels)
+- **Sheet 4 (Hidden)**: Class List (contains all class names from user's school, used for dropdown validation)
+- **Sheet 5 (Hidden)**: Subject List (contains all subject names from user's school, used for dropdown validation)
+\n**Template Generation Process:**
+1. User clicks 'Download Template' button
+2. Backend fetches all classes and subjects from user's school
+3. Backend generates Excel file with:
+   - Main data sheet with column headers
+   - Excel data validation formulas referencing hidden sheets
+   - Hidden sheets containing class names and subject names
+   - Sample data rows\n   - Instructions sheet
+4. File downloaded to user's device
+5. User opens file and sees dropdown arrows in Class, Subject, Question Type, and Difficulty columns
+6. User selects values from dropdowns instead of typing manually
 \n#### 6.4.6 File Upload Process
 
 Step 1: File Selection
@@ -505,6 +523,8 @@ Step 2: File Validation
   - Validate column headers
   - Validate data types
   - Check for required fields
+  - **Validate Class names against user's school classes**
+  - **Validate Subject names against user's school subjects**
   - Validate question type specific fields
   - Check for duplicate questions
   - Validate Class, Subject, Lesson existence
@@ -519,8 +539,7 @@ Step 3: Validation Results Display
 - Allow user to download error report
 
 Step 4: Import Confirmation
-- If validation passes:
-  - Show import summary
+- If validation passes:\n  - Show import summary
   - Display preview of questions to be imported
   - Confirm button to proceed with import
 - If validation fails:\n  - Show error details
@@ -559,12 +578,10 @@ Validation Rules:
 
 Common Errors and Messages:
 - Missing Required Field: 'Row X: [Field Name] is required'
-- Invalid Class: 'Row X: Class [Class Name] does not exist in your school'
-- Invalid Subject: 'Row X: Subject [Subject Name] does not exist for [Class Name]'
-- Invalid Lesson: 'Row X: Lesson [Lesson Name] does not exist for [Subject Name]'
-- Invalid Question Type: 'Row X: Question Type must be one of: Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ'
-- Invalid Marks: 'Row X: Marks must be a positive number'
-- Invalid Difficulty: 'Row X: Difficulty must be Easy, Medium, or Hard'
+- Invalid Class: 'Row X: Class [Class Name] does not exist in your school. Please select from dropdown in template.'
+- Invalid Subject: 'Row X: Subject [Subject Name] does not exist for [Class Name]. Please select from dropdown in template.'
+- Invalid Lesson: 'Row X: Lesson [Lesson Name] does not exist for [Subject Name]'\n- Invalid Question Type: 'Row X: Question Type must be selected from dropdown: Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ'\n- Invalid Marks: 'Row X: Marks must be a positive number'
+- Invalid Difficulty: 'Row X: Difficulty must be selected from dropdown: Easy, Medium, or Hard'
 - Missing Options: 'Row X: At least 2 options required for Multiple Choice questions'
 - Invalid Correct Answer Format: 'Row X: Correct Answer format is invalid for [Question Type]'
 - Duplicate Question: 'Row X: Question text already exists in question bank'
@@ -575,17 +592,20 @@ Teacher Access:
 - Questions automatically linked to teacher's school
 - Backend validation ensures teacher can only upload for assigned subjects
 - Cannot upload questions for other teachers' subjects
+- Template file contains only classes and subjects assigned to the teacher
 
 Principal Access:
 - Can bulk upload questions for all subjects in their school
 - Questions automatically linked to principal's school
 - No subject restriction\n- Can upload questions for any class and subject in their school
+- Template file contains all classes and subjects from principal's school
 
 Data Isolation:
 - All uploaded questions are school-scoped
 - Backend validation ensures data isolation
 - Cross-school upload prevented
 - Questions visible only to users from same school
+- Template file dynamically generated based on user's school and role
 
 #### 6.4.9 Bulk Upload UI Components
 
@@ -594,30 +614,28 @@ Bulk Upload Button:
 - Icon: Upload icon with text 'Bulk Upload'
 - Styling: Secondary button with gradient effect
 - Tooltip: 'Upload multiple questions from Excel/CSV file'
-
-Bulk Upload Dialog:
-- Modal dialog with large size
-- Glassmorphism styling consistent with overall theme
+\nBulk Upload Dialog:
+- Modal dialog with large size\n- Glassmorphism styling consistent with overall theme
 - Three main sections:
   1. Template Download Section (top)
   2. File Upload Section (middle)
   3. Results Section (bottom, shown after upload)
 \nTemplate Download Section:
 - Heading: 'Step 1: Download Template'
-- Description: 'Download the Excel template file with sample data and instructions'
-- Download Button: 'Download Template' with download icon
+- Description: 'Download the Excel template file with dropdown selections for Class and Subject to avoid input errors'\n- Download Button: 'Download Template' with download icon
 - Template file format info: 'Supports .xlsx and .csv formats'
+- **New Info Badge**: 'Template includes dropdown selections for easy data entry'
 
-File Upload Section:\n- Heading: 'Step 2: Upload File'
-- Description: 'Upload your completed template file with questions'
+File Upload Section:
+- Heading: 'Step 2: Upload File'\n- Description: 'Upload your completed template file with questions. Use dropdown selections in Class and Subject columns.'
 - File Picker: Drag-and-drop area or click to browse
 - Accepted formats: .xlsx, .csv
 - Max file size: 10MB
 - Upload Button: 'Upload and Validate' with upload icon
-
-Validation Results Section:
+\nValidation Results Section:
 - Shown after file upload and validation
-- Summary Cards:\n  - Total Rows\n  - Valid Rows (green)
+- Summary Cards:
+  - Total Rows\n  - Valid Rows (green)
   - Invalid Rows (red)
 - Error Table (if errors exist):
   - Columns: Row Number, Error Type, Error Message, Suggested Fix
@@ -685,12 +703,16 @@ Help Resources:
 
 FAQ Topics:
 - How to format questions in template?\n- What question types are supported?
+- How to use dropdown selections in template?
 - How to upload images with questions?
 - What to do if validation fails?
 - How to fix common errors?
 - Can I upload questions for multiple classes in one file?
 - Can I upload all question types in same file?
-\n### 6.5 Question Bank Dual View Display
+- Why should I use dropdown selections instead of typing?\n\n**Updated FAQ Answer:**
+Q: Why should I use dropdown selections instead of typing?
+A: Using dropdown selections for Class, Subject, Question Type, and Difficulty ensures data accuracy and prevents input errors. The dropdown lists are pre-populated with valid values from your school, so you cannot enter invalid or misspelled names. This significantly reduces validation errors during upload and saves time.\n
+### 6.5 Question Bank Dual View Display
 
 #### 6.5.1 View Toggle Control
 - View Switcher: Toggle button or tab control at the top of Question Bank page
@@ -732,8 +754,7 @@ Card Layout: Each question displayed as a card with question text (rendered with
 - Question text displayed with formatting in all stages
 
 ### 7.2 Question Paper Preparation Workflow
-
-#### 7.2.1 Step 1: Basic Details
+\n#### 7.2.1 Step 1: Basic Details
 - Class Selection (Dropdown, required)
 - Subject Selection (Dropdown, required)
 \n#### 7.2.2 Step 2: Question Selection Source
@@ -771,8 +792,7 @@ Columns:
 - Backend validation ensures data isolation
 - Teachers can only view and manage question papers created by themselves
 - Principal can view all question papers created by teachers in their school
-
-### 7.5 Question Paper Management Interface
+\n### 7.5 Question Paper Management Interface
 - Question Paper List with filters\n- Actions: View, Edit, Delete, Export PDF, Print, Shuffle and Save
 - All actions preserve question text formatting
 \n### 7.6 Enhanced Question Paper Features
@@ -809,8 +829,7 @@ Display Columns:
 - Last Modified Date
 - Paper Status (Draft/Final)
 - Total Marks\n- Total Questions
-- Version Info
-- Actions\n
+- Version Info\n- Actions\n
 #### 8.2.2 Filter Options
 - Teacher Filter (Principal only)
 - Class Filter\n- Subject Filter
@@ -829,7 +848,9 @@ Display Columns:
 - Sort by Total Marks
 \n### 8.3 Question Paper Detail View
 \n#### 8.3.1 Paper Information Section
-- Paper Name\n- Paper ID\n- Class and Subject
+- Paper Name
+- Paper ID
+- Class and Subject
 - Created By
 - Creation Date and Time
 - Last Modified Date and Time
@@ -883,8 +904,7 @@ Display Columns:
   - Browser print preview shows paper exactly as it will be printed
   - All formatting, images, and layout preserved
   - Page numbers displayed
-
-#### 8.4.3 Print Access Control
+\n#### 8.4.3 Print Access Control
 - Teacher Access:
   - Can preview and print own question papers
   - Cannot preview or print papers created by other teachers
@@ -949,8 +969,8 @@ Display Columns:
 #### 8.7.1 Teacher Dashboard Integration
 - Add 'Question Paper History' card to Teacher Dashboard
 - Card displays recent papers and quick action button
-
-#### 8.7.2 Principal Dashboard Integration\n- Add 'Question Paper History' card to Principal Dashboard
+\n#### 8.7.2 Principal Dashboard Integration
+- Add 'Question Paper History' card to Principal Dashboard
 - Card displays school-wide statistics and quick action button
 
 #### 8.7.3 Navigation Menu
@@ -987,7 +1007,8 @@ Display Columns:
   - Practice Exams: No approval required
   - School-Level Exams: Requires Principal approval
   - Principal-Created Exams: No approval required
-- Access:\n  - Teachers can create exams for assigned sections
+- Access:
+  - Teachers can create exams for assigned sections
   - Students can take assigned exams using individual login
   - Principal can create exams directly and approve teacher exams
 - Key Features:
@@ -1148,7 +1169,8 @@ Dashboard Card: 'My Exams'
 - Three tabs: 'Upcoming' | 'Ongoing' | 'Completed'
 \nUpcoming Exams Tab:
 - List of scheduled exams not yet started
-\nOngoing Exams Tab:\n- List of exams currently available\n
+\nOngoing Exams Tab:\n- List of exams currently available
+
 Completed Exams Tab:
 - List of exams already submitted
 
@@ -1322,8 +1344,7 @@ Analytics Dashboard (Principal view):
 - Cannot create, edit, or delete exams
 - Can force delete any exam with strict confirmation
 
-#### 9.7.5 Data Isolation
-- All exam data is school-scoped
+#### 9.7.5 Data Isolation\n- All exam data is school-scoped
 - Backend validation ensures data isolation
 - Cross-school access prevented
 - Passing marks calculation (35% of total marks) is consistent across all roles
@@ -1353,8 +1374,7 @@ Analytics Dashboard (Principal view):
 - Weekly Participation Report
 - Monthly Analytics Report
 - Low Participation Alert
-
-### 9.9 Online Exam Security Features
+\n### 9.9 Online Exam Security Features
 
 #### 9.9.1 Exam Integrity
 - Single Attempt Enforcement
@@ -1549,7 +1569,8 @@ The side panel navigation for Teacher role includes the following menu items (in
 \n### 13.9 Admin Dashboard Features
 - Total Users Card
 - Total Schools Card
-\n### 13.10 Landing Page Features
+
+### 13.10 Landing Page Features
 - Updated design without login/register buttons in hero section
 \n### 13.11 Question Paper History Feature
 - Comprehensive tracking\n- Advanced filtering
@@ -1597,12 +1618,14 @@ The side panel navigation for Teacher role includes the following menu items (in
 - Bulk upload functionality for Question Bank
 - Support for all question types in single file
 - Excel/CSV template file provided for download
+- **Updated: Template includes dropdown selections for Class and Subject columns**
+- **Dropdown lists populated with school-specific data**
+- **Excel data validation prevents invalid entries**
 - Comprehensive validation and error handling
 - Role-based access control (Teacher and Principal)
 - Efficient import process with progress tracking
 - Detailed import summary and statistics
-- Help documentation and FAQ
-
+- Help documentation and FAQ\n
 ## 14. Language Support\n
 ### 14.1 UI Language\n- UI Language: English Only
 \n### 14.2 Chat/Communication Language
@@ -1740,6 +1763,7 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Large modal dialog with glassmorphism effect
   - Clear section separation with headings
   - Download template button with gradient effect
+  - **New: Info badge highlighting dropdown feature**
   - Drag-and-drop upload area with hover effect
   - Validation results table with color-coded rows
   - Progress bar for import process
@@ -1867,7 +1891,8 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Exams (clipboard icon)
   - Analytics (chart icon)
   - Profile (user icon)
-\n#### 16.6.2 Mobile Login Screen
+
+#### 16.6.2 Mobile Login Screen
 - Title: 'Welcome to A Cube'
 - Subtitle: 'Login to Exam System'
 - Form fields:
@@ -1892,7 +1917,8 @@ The side panel navigation for Teacher role includes the following menu items (in
 
 ### 17.1 Question Edit Form Layout
 The uploaded image (screenshot.png) shows the question edit form with the following layout issue:
-\nCurrent Issue: In the Edit Question dialog, the 'Question Text' field, 'Image/Clip Art (Optional)' field, 'Question Type' dropdown, 'Difficulty' dropdown, 'Marks' input, and 'Negative Marks' input are positioned below the 'Match Pairs' section.\n
+
+Current Issue: In the Edit Question dialog, the 'Question Text' field, 'Image/Clip Art (Optional)' field, 'Question Type' dropdown, 'Difficulty' dropdown, 'Marks' input, and 'Negative Marks' input are positioned below the 'Match Pairs' section.\n
 Required Fix: These fields should be moved above the 'Match Pairs' section to maintain the correct form field order as specified in Section 6.3.1.
 
 Additional Requirement: Replace the 'Question Text' field with a rich text editor (Quill, Draft.js, or TinyMCE) to enable formatting (bold, underline, italic, etc.) directly while typing.\n
@@ -1907,8 +1933,7 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 
 ### 18.1 Passing Marks Calculation Logic
 - Passing marks are automatically calculated as 35% of the total marks
-- Formula: Passing Marks = Total Marks × 0.35
-- Example: If total marks = 75, then passing marks = 26.25 marks
+- Formula: Passing Marks = Total Marks × 0.35\n- Example: If total marks = 75, then passing marks = 26.25 marks
 - Pass/Fail status determined by comparing obtained marks with passing marks
 
 ### 18.2 Implementation Changes
@@ -1924,8 +1949,7 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - All exam cards display passing marks (35% of total)
 - Exam details page displays passing marks
 - Student pre-exam screen displays passing marks
-
-#### 18.2.4 Results Display Changes
+\n#### 18.2.4 Results Display Changes
 - Student results page displays passing marks
 - Pass/Fail status badge based on 35% threshold
 - Analytics displays pass rate based on 35% threshold
@@ -1980,8 +2004,10 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - Smooth animations and transitions
 - Rich text editor library (Quill, Draft.js, or TinyMCE)\n- Print CSS styles for optimized print output
 - Excel/CSV parsing library for bulk upload (e.g., SheetJS, PapaParse)
+- **Excel library with data validation support (e.g., ExcelJS, SheetJS with custom validation)**
 
-### 20.2 Backend Technologies\n- RESTful API architecture
+### 20.2 Backend Technologies
+- RESTful API architecture
 - Database with foreign key constraints
 - Authentication and authorization
 - Role-based access control
@@ -1989,14 +2015,14 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - File upload handling for bulk import
 - Excel/CSV processing library (e.g., Apache POI, OpenCSV)
 - Batch processing for large file imports
+- **Dynamic Excel template generation with data validation**
+- **School-specific data population for dropdown lists**
 
 ### 20.3 Security\n- Encrypted passwords\n- Secure exam environment
-- Activity logging\n- Data isolation
-- XSS prevention for rich text content
+- Activity logging\n- Data isolation\n- XSS prevention for rich text content
 - File upload validation and sanitization
 - Secure file storage for uploaded templates
-
-### 20.4 Performance
+\n### 20.4 Performance
 - Fast page load times
 - Optimized database queries
 - Efficient caching\n- Real-time updates
@@ -2004,6 +2030,7 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - Optimized print preview generation
 - Asynchronous file processing for bulk uploads
 - Progress tracking for long-running imports
+- **Efficient template generation with cached school data**
 
 ### 20.5 Scalability
 - Support for multiple schools
@@ -2011,8 +2038,7 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - Efficient data storage\n- Cloud-based infrastructure
 - Scalable file storage for bulk uploads
 - Queue-based processing for bulk imports
-
-## 21. Deployment and Maintenance
+\n## 21. Deployment and Maintenance
 
 ### 21.1 Deployment\n- Cloud hosting (AWS, Azure, or Google Cloud)
 - Continuous integration/deployment
@@ -2028,4 +2054,4 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - Help desk support
 - FAQ section
 \n## 22. Conclusion\n
-A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting, bulk upload functionality for efficient question import, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The addition of the Students card to the Teacher Dashboard with role-based access control, combined with the rich text editor functionality, bulk upload capability, and the new preview-print feature in Question Paper History, further enhances teacher productivity by allowing them to create well-formatted questions, import large question banks efficiently, manage students from their assigned sections effectively, and print question papers with all formatting preserved directly from the preview dialog. The updated side panel navigation for both Principal and Teacher roles now includes easy access to Question Paper History, streamlining the workflow and improving overall user experience.
+A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting, bulk upload functionality with dropdown selections for Class and Subject to prevent input errors, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The addition of the Students card to the Teacher Dashboard with role-based access control, combined with the rich text editor functionality, improved bulk upload capability with Excel data validation, and the new preview-print feature in Question Paper History, further enhances teacher productivity by allowing them to create well-formatted questions, import large question banks efficiently with reduced errors, manage students from their assigned sections effectively, and print question papers with all formatting preserved directly from the preview dialog. The updated side panel navigation for both Principal and Teacher roles now includes easy access to Question Paper History, streamlining the workflow and improving overall user experience.

@@ -75,12 +75,32 @@ export default function BulkUploadDialog({
   const { toast } = useToast();
 
   const downloadTemplate = () => {
+    // Check if we have classes and subjects
+    if (classes.length === 0 || subjects.length === 0) {
+      toast({
+        title: 'No Data Available',
+        description: 'Please ensure classes and subjects are created before downloading the template.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Get unique class names and subject names
+    const classNames = classes.map(c => c.class_name);
+    const subjectNames = subjects.map(s => s.subject_name);
+    const lessonNames = lessons.map(l => l.lesson_name);
+
+    // Create sample data with first available class and subject
+    const sampleClass = classNames[0];
+    const sampleSubject = subjectNames[0];
+    const sampleLesson = lessonNames.length > 0 ? lessonNames[0] : '';
+
     const templateData = [
       {
         'Question Text': 'What is the capital of France?',
-        'Class Name': 'Class 10',
-        'Subject Name': 'Geography',
-        'Lesson Name': 'World Capitals',
+        'Class Name': sampleClass,
+        'Subject Name': sampleSubject,
+        'Lesson Name': sampleLesson,
         'Question Type': 'mcq',
         'Difficulty': 'easy',
         'Marks': 1,
@@ -105,9 +125,9 @@ export default function BulkUploadDialog({
       },
       {
         'Question Text': 'The Earth revolves around the Sun.',
-        'Class Name': 'Class 10',
-        'Subject Name': 'Science',
-        'Lesson Name': 'Solar System',
+        'Class Name': sampleClass,
+        'Subject Name': sampleSubject,
+        'Lesson Name': sampleLesson,
         'Question Type': 'true_false',
         'Difficulty': 'easy',
         'Marks': 1,
@@ -132,9 +152,9 @@ export default function BulkUploadDialog({
       },
       {
         'Question Text': 'Explain the process of photosynthesis.',
-        'Class Name': 'Class 10',
-        'Subject Name': 'Biology',
-        'Lesson Name': 'Plant Biology',
+        'Class Name': sampleClass,
+        'Subject Name': sampleSubject,
+        'Lesson Name': sampleLesson,
         'Question Type': 'short_answer',
         'Difficulty': 'medium',
         'Marks': 5,
@@ -159,9 +179,9 @@ export default function BulkUploadDialog({
       },
       {
         'Question Text': 'Match the following countries with their capitals:',
-        'Class Name': 'Class 10',
-        'Subject Name': 'Geography',
-        'Lesson Name': 'World Capitals',
+        'Class Name': sampleClass,
+        'Subject Name': sampleSubject,
+        'Lesson Name': sampleLesson,
         'Question Type': 'match_following',
         'Difficulty': 'medium',
         'Marks': 4,
@@ -186,9 +206,9 @@ export default function BulkUploadDialog({
       },
       {
         'Question Text': 'Which of the following are prime numbers?',
-        'Class Name': 'Class 10',
-        'Subject Name': 'Mathematics',
-        'Lesson Name': 'Number Theory',
+        'Class Name': sampleClass,
+        'Subject Name': sampleSubject,
+        'Lesson Name': sampleLesson,
         'Question Type': 'multiple_response',
         'Difficulty': 'medium',
         'Marks': 2,
@@ -217,14 +237,34 @@ export default function BulkUploadDialog({
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Questions');
 
-    // Set column widths
+    // Create a separate sheet for dropdown options
+    const optionsData = [
+      { 'Available Classes': '', 'Available Subjects': '', 'Available Lessons': '', 'Question Types': '', 'Difficulty Levels': '' },
+    ];
+
+    // Add all options to the sheet
+    const maxRows = Math.max(classNames.length, subjectNames.length, lessonNames.length, 5, 3);
+    for (let i = 0; i < maxRows; i++) {
+      optionsData.push({
+        'Available Classes': classNames[i] || '',
+        'Available Subjects': subjectNames[i] || '',
+        'Available Lessons': lessonNames[i] || '',
+        'Question Types': ['mcq', 'true_false', 'short_answer', 'match_following', 'multiple_response'][i] || '',
+        'Difficulty Levels': ['easy', 'medium', 'hard'][i] || '',
+      });
+    }
+
+    const optionsWs = XLSX.utils.json_to_sheet(optionsData);
+    XLSX.utils.book_append_sheet(wb, optionsWs, 'Options');
+
+    // Set column widths for main sheet
     ws['!cols'] = [
       { wch: 50 }, // Question Text
-      { wch: 15 }, // Class Name
-      { wch: 15 }, // Subject Name
-      { wch: 20 }, // Lesson Name
-      { wch: 18 }, // Question Type
-      { wch: 12 }, // Difficulty
+      { wch: 20 }, // Class Name
+      { wch: 20 }, // Subject Name
+      { wch: 25 }, // Lesson Name
+      { wch: 20 }, // Question Type
+      { wch: 15 }, // Difficulty
       { wch: 8 },  // Marks
       { wch: 15 }, // Negative Marks
       { wch: 30 }, // Option A
@@ -246,11 +286,84 @@ export default function BulkUploadDialog({
       { wch: 30 }, // Answer Option 4
     ];
 
+    // Set column widths for options sheet
+    optionsWs['!cols'] = [
+      { wch: 25 }, // Available Classes
+      { wch: 25 }, // Available Subjects
+      { wch: 30 }, // Available Lessons
+      { wch: 25 }, // Question Types
+      { wch: 20 }, // Difficulty Levels
+    ];
+
+    // Add data validation for dropdowns
+    // Note: Excel data validation is added through the sheet's dataValidation property
+    const dataValidations: any[] = [];
+
+    // Class Name dropdown (Column B, starting from row 2)
+    const classRange = `Options!$A$2:$A$${classNames.length + 1}`;
+    for (let row = 2; row <= 1000; row++) {
+      dataValidations.push({
+        type: 'list',
+        allowBlank: false,
+        sqref: `B${row}`,
+        formulas: [classRange],
+      });
+    }
+
+    // Subject Name dropdown (Column C, starting from row 2)
+    const subjectRange = `Options!$B$2:$B$${subjectNames.length + 1}`;
+    for (let row = 2; row <= 1000; row++) {
+      dataValidations.push({
+        type: 'list',
+        allowBlank: false,
+        sqref: `C${row}`,
+        formulas: [subjectRange],
+      });
+    }
+
+    // Lesson Name dropdown (Column D, starting from row 2) - Optional
+    if (lessonNames.length > 0) {
+      const lessonRange = `Options!$C$2:$C$${lessonNames.length + 1}`;
+      for (let row = 2; row <= 1000; row++) {
+        dataValidations.push({
+          type: 'list',
+          allowBlank: true,
+          sqref: `D${row}`,
+          formulas: [lessonRange],
+        });
+      }
+    }
+
+    // Question Type dropdown (Column E, starting from row 2)
+    const questionTypeRange = 'Options!$D$2:$D$6';
+    for (let row = 2; row <= 1000; row++) {
+      dataValidations.push({
+        type: 'list',
+        allowBlank: false,
+        sqref: `E${row}`,
+        formulas: [questionTypeRange],
+      });
+    }
+
+    // Difficulty dropdown (Column F, starting from row 2)
+    const difficultyRange = 'Options!$E$2:$E$4';
+    for (let row = 2; row <= 1000; row++) {
+      dataValidations.push({
+        type: 'list',
+        allowBlank: false,
+        sqref: `F${row}`,
+        formulas: [difficultyRange],
+      });
+    }
+
+    // Add data validations to the worksheet
+    ws['!dataValidation'] = dataValidations;
+
     XLSX.writeFile(wb, 'question_bank_template.xlsx');
 
     toast({
       title: 'Template Downloaded',
-      description: 'Please fill in the template and upload it back.',
+      description: 'The template includes dropdown menus for Class, Subject, Lesson, Question Type, and Difficulty. Check the "Options" sheet for available values.',
     });
   };
 
@@ -579,7 +692,7 @@ export default function BulkUploadDialog({
               Step 1: Download Template
             </h3>
             <p className="text-sm text-muted-foreground mb-3">
-              Download the Excel template with sample questions for all question types.
+              Download the Excel template with dropdown menus for Class, Subject, Lesson, Question Type, and Difficulty. The template includes sample questions for all question types.
             </p>
             <Button onClick={downloadTemplate} variant="outline" className="w-full">
               <Download className="w-4 h-4 mr-2" />
@@ -653,15 +766,17 @@ export default function BulkUploadDialog({
           <div className="border rounded-lg p-4 bg-muted/50">
             <h3 className="font-semibold mb-2">Important Notes:</h3>
             <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+              <li>✨ The template includes dropdown menus for easy selection of Class, Subject, Lesson, Question Type, and Difficulty</li>
               <li>All question types can be uploaded in the same file</li>
-              <li>Class Name and Subject Name must match existing entries in the system</li>
-              <li>Lesson Name is optional but must match existing lessons if provided</li>
-              <li>Question Type must be: mcq, true_false, short_answer, match_following, or multiple_response</li>
-              <li>Difficulty must be: easy, medium, or hard</li>
+              <li>Use the dropdown menus to select Class Name and Subject Name - this prevents typing errors</li>
+              <li>Lesson Name is optional - select from dropdown if needed</li>
+              <li>Question Type dropdown: mcq, true_false, short_answer, match_following, or multiple_response</li>
+              <li>Difficulty dropdown: easy, medium, or hard</li>
               <li>For MCQ: Fill Option A, B, C, D and Correct Answer</li>
               <li>For True/False: Correct Answer must be "True" or "False"</li>
               <li>For Match Following: Fill Match Left and Match Right columns</li>
               <li>For Multiple Response: Fill Options, Correct Answer (e.g., "A,C"), and Answer Options</li>
+              <li>Check the "Options" sheet in the template to see all available values</li>
             </ul>
           </div>
         </div>
