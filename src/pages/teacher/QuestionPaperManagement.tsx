@@ -148,35 +148,213 @@ export default function QuestionPaperManagement() {
     setPaperQuestions(questions);
   };
 
-  const handlePrintPaper = () => {
-    // Get all elements that should be hidden/shown
-    const printHeader = document.querySelector('.print-header') as HTMLElement;
-    const marksBadges = document.querySelectorAll('.marks-badge') as NodeListOf<HTMLElement>;
+  const handlePrintPaper = async (paper: QuestionPaperWithDetails) => {
+    // Load questions for this paper
+    const questions = await loadPaperQuestions(paper.id);
     
-    // Show print-only elements
-    if (printHeader) {
-      printHeader.style.display = 'block';
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      toast.error('Please allow pop-ups to print the question paper');
+      return;
     }
-    marksBadges.forEach(badge => {
-      badge.style.display = 'inline-block';
-    });
-    
-    // Add print-specific class to body
-    document.body.classList.add('printing-mode');
-    
-    // Trigger print
-    window.print();
-    
-    // Restore original state after print dialog closes
-    setTimeout(() => {
-      document.body.classList.remove('printing-mode');
-      if (printHeader) {
-        printHeader.style.display = 'none';
-      }
-      marksBadges.forEach(badge => {
-        badge.style.display = 'none';
-      });
-    }, 1000);
+
+    // Generate HTML content for printing
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>${paper.title} - Question Paper</title>
+          <style>
+            @page {
+              margin: 2cm;
+              size: A4;
+            }
+            
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+            }
+            
+            body {
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              line-height: 1.6;
+              color: #000;
+              background: #fff;
+              padding: 20px;
+            }
+            
+            .header {
+              text-align: center;
+              margin-bottom: 30px;
+              border-bottom: 2px solid #000;
+              padding-bottom: 15px;
+            }
+            
+            .header h1 {
+              font-size: 24px;
+              margin-bottom: 10px;
+              text-transform: uppercase;
+            }
+            
+            .header-info {
+              display: flex;
+              justify-content: space-between;
+              margin-top: 10px;
+              font-size: 14px;
+            }
+            
+            .question-container {
+              margin-bottom: 25px;
+              page-break-inside: avoid;
+            }
+            
+            .question-header {
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+              margin-bottom: 10px;
+            }
+            
+            .question-text {
+              font-size: 15px;
+              font-weight: 500;
+              flex: 1;
+              margin-right: 15px;
+            }
+            
+            .question-marks {
+              font-size: 13px;
+              white-space: nowrap;
+              font-weight: 600;
+              border: 1px solid #000;
+              padding: 2px 8px;
+              border-radius: 4px;
+            }
+            
+            .question-image {
+              margin: 10px 0 10px 20px;
+              max-width: 400px;
+            }
+            
+            .question-image img {
+              max-width: 100%;
+              border: 1px solid #ddd;
+              border-radius: 4px;
+            }
+            
+            .options {
+              margin-left: 20px;
+              margin-top: 10px;
+            }
+            
+            .option {
+              margin-bottom: 8px;
+              font-size: 14px;
+              display: flex;
+              align-items: flex-start;
+            }
+            
+            .option-label {
+              font-weight: 600;
+              margin-right: 8px;
+              min-width: 25px;
+            }
+            
+            .answer-space {
+              margin: 15px 0 15px 20px;
+              border-bottom: 1px solid #ccc;
+              min-height: 60px;
+            }
+            
+            @media print {
+              body {
+                padding: 0;
+              }
+              
+              .question-container {
+                page-break-inside: avoid;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>${paper.title}</h1>
+            <div class="header-info">
+              <div><strong>Class:</strong> ${paper.class?.class_name || 'N/A'}</div>
+              <div><strong>Subject:</strong> ${paper.subject?.subject_name || 'N/A'}</div>
+              <div><strong>Total Marks:</strong> ${paper.total_marks}</div>
+            </div>
+          </div>
+          
+          <div class="questions">
+            ${questions.map((pq, index) => {
+              const question = pq.question;
+              if (!question) return '';
+              
+              const displayOptions = pq.shuffled_options || question.options;
+              const displayAnswerOptions = pq.shuffled_answer_options || question.answer_options;
+              
+              return `
+                <div class="question-container">
+                  <div class="question-header">
+                    <div class="question-text">
+                      <strong>Q${index + 1}.</strong> ${question.question_text}
+                    </div>
+                    <div class="question-marks">${question.marks} ${question.marks === 1 ? 'mark' : 'marks'}</div>
+                  </div>
+                  
+                  ${question.image_url ? `
+                    <div class="question-image">
+                      <img src="${question.image_url}" alt="Question illustration" />
+                    </div>
+                  ` : ''}
+                  
+                  ${question.question_type === 'mcq' && displayOptions ? `
+                    <div class="options">
+                      ${Array.isArray(displayOptions) ? displayOptions.map((option, idx) => {
+                        const optionText = typeof option === 'string' ? option : option.option;
+                        return `
+                          <div class="option">
+                            <span class="option-label">${String.fromCharCode(65 + idx)})</span>
+                            <span>${optionText}</span>
+                          </div>
+                        `;
+                      }).join('') : ''}
+                    </div>
+                  ` : question.question_type === 'true_false' ? `
+                    <div class="options">
+                      <div class="option">
+                        <span class="option-label">A)</span>
+                        <span>True</span>
+                      </div>
+                      <div class="option">
+                        <span class="option-label">B)</span>
+                        <span>False</span>
+                      </div>
+                    </div>
+                  ` : `
+                    <div class="answer-space"></div>
+                  `}
+                </div>
+              `;
+            }).join('')}
+          </div>
+          
+          <script>
+            window.onload = function() {
+              window.print();
+            };
+          </script>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.write(printContent);
+    printWindow.document.close();
   };
 
   const handleEditDraft = (paper: QuestionPaperWithDetails) => {
@@ -698,15 +876,18 @@ export default function QuestionPaperManagement() {
                                 </CardContent>
                               </Card>
                             </div>
-
-                            {/* Print Button */}
-                            <div className="flex justify-end gap-2 pt-4 print-hide">
-                              <Button onClick={handlePrintPaper}>
-                                <Printer className="mr-2 h-4 w-4" /> Print
-                              </Button>
-                            </div>
                           </DialogContent>
                         </Dialog>
+
+                        {/* Print Button */}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handlePrintPaper(paper)}
+                          title="Print this paper"
+                        >
+                          <Printer className="h-4 w-4" />
+                        </Button>
 
                         {/* Duplicate Button */}
                         <Button
