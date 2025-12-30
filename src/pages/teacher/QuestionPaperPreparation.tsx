@@ -510,13 +510,14 @@ export default function QuestionPaperPreparation() {
     // If we're in preview mode (step 3) and have preview questions, use those
     // This ensures correct calculation for shuffled papers loaded from drafts
     if (currentStep === 3 && previewQuestions.length > 0) {
-      return previewQuestions.reduce((sum, q) => sum + q.marks, 0);
+      const total = previewQuestions.reduce((sum, q) => sum + (q.marks || 0), 0);
+      return total;
     }
     
     // Otherwise, calculate from available questions and selected questions
-    return availableQuestions
-      .filter(q => selectedQuestions.has(q.id))
-      .reduce((sum, q) => sum + q.marks, 0);
+    const selectedQuestionsArray = availableQuestions.filter(q => selectedQuestions.has(q.id));
+    const total = selectedQuestionsArray.reduce((sum, q) => sum + (q.marks || 0), 0);
+    return total;
   };
 
   if (loading && currentStep === 1) {
