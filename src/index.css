@@ -181,32 +181,42 @@ All colors MUST be HSL.
     size: A4;
   }
 
-  /* Hide all UI elements except the preview card */
-  body.printing-mode * {
+  /* Clean white background for print */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* When in printing mode, hide everything except print-content */
+  body.printing-mode > *:not([data-radix-portal]) {
     visibility: hidden !important;
   }
 
-  body.printing-mode .print-content,
-  body.printing-mode .print-content * {
+  /* Make print-content and its children visible */
+  body.printing-mode [data-radix-portal] .print-content {
+    visibility: visible !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    background: white !important;
+    padding: 1rem !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    border: none !important;
+    box-shadow: none !important;
+    z-index: 9999 !important;
+  }
+
+  body.printing-mode [data-radix-portal] .print-content * {
     visibility: visible !important;
   }
 
-  body.printing-mode .print-content {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    background: white !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: visible !important;
-    max-height: none !important;
-  }
-
-  /* Hide dialog overlay */
-  [data-radix-dialog-overlay],
-  [data-radix-portal] {
+  /* Hide dialog overlay and backdrop */
+  body.printing-mode [data-radix-dialog-overlay] {
     display: none !important;
   }
 
@@ -214,19 +224,76 @@ All colors MUST be HSL.
   nav,
   button,
   .no-print,
-  header,
+  header:not(.print-header),
   footer,
   aside,
   [role="navigation"],
   [role="banner"],
-  .print-hide {
+  .print-hide,
+  .screen-only {
     display: none !important;
     visibility: hidden !important;
   }
 
-  /* Clean white background for print */
-  body {
-    background: white !important;
+  /* Show print header */
+  .print-header {
+    display: block !important;
+    visibility: visible !important;
+    text-align: center !important;
+    margin-bottom: 2rem !important;
+    padding-bottom: 1rem !important;
+    border-bottom: 2px solid #000 !important;
+  }
+
+  .print-header h1 {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.5rem !important;
+    color: black !important;
+  }
+
+  .print-header p {
+    font-size: 0.875rem !important;
+    color: #4b5563 !important;
+    margin: 0.25rem 0 !important;
+  }
+
+  .print-header .font-medium {
+    font-weight: 600 !important;
+    color: black !important;
+  }
+
+  /* Show marks badge in print */
+  .marks-badge {
+    display: inline-block !important;
+    visibility: visible !important;
+    background: #fef3c7 !important;
+    color: #92400e !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 0.25rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    border: 1px solid #fbbf24 !important;
+    margin-left: 1rem !important;
+  }
+
+  /* Ensure all text is visible and black */
+  body.printing-mode [data-radix-portal] .print-content * {
+    color: black !important;
+  }
+
+  /* Question text styling */
+  .question-number {
+    font-weight: 600 !important;
+    color: black !important;
+  }
+
+  .question-content {
+    color: black !important;
+  }
+
+  /* Options styling */
+  .text-sm {
     color: black !important;
   }
 
@@ -280,51 +347,6 @@ All colors MUST be HSL.
     margin-top: 0.75rem !important;
     border-radius: 0.375rem !important;
     page-break-inside: avoid;
-  }
-
-  /* Header section for print */
-  .print-header {
-    text-align: center !important;
-    margin-bottom: 2rem !important;
-    padding-bottom: 1rem !important;
-    border-bottom: 2px solid #000 !important;
-    display: block !important;
-  }
-
-  .print-header h1 {
-    font-size: 1.5rem !important;
-    font-weight: 700 !important;
-    margin-bottom: 0.5rem !important;
-    color: black !important;
-  }
-
-  .print-header p {
-    font-size: 0.875rem !important;
-    color: #4b5563 !important;
-    margin: 0.25rem 0 !important;
-  }
-
-  .print-header .font-medium {
-    font-weight: 600 !important;
-    color: black !important;
-  }
-
-  /* Show marks badge in print */
-  .marks-badge {
-    display: inline-block !important;
-    background: #fef3c7 !important;
-    color: #92400e !important;
-    padding: 0.25rem 0.5rem !important;
-    border-radius: 0.25rem !important;
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    border: 1px solid #fbbf24 !important;
-    margin-left: 1rem !important;
-  }
-
-  /* Hide screen-only elements */
-  .screen-only {
-    display: none !important;
   }
 
   /* Question container */
