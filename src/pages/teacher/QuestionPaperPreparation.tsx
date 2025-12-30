@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Loader2, FileText, Eye, Save, Download, ArrowLeft, ArrowRight, Layers, Filter } from 'lucide-react';
+import { Loader2, FileText, Eye, Save, ArrowLeft, ArrowRight, Layers, Filter } from 'lucide-react';
 import { profileApi, academicApi, subjectApi, questionApi, lessonApi } from '@/db/api';
 import { TemplateManagementDialog } from '@/components/teacher/TemplateManagementDialog';
 import { VersionGenerationDialog } from '@/components/teacher/VersionGenerationDialog';
@@ -424,19 +424,6 @@ export default function QuestionPaperPreparation() {
       console.error('Error generating paper:', error);
       toast.error('Failed to generate question paper');
     }
-  };
-
-  const handleExportPDF = () => {
-    // Add print-specific class to body
-    document.body.classList.add('printing-mode');
-    
-    // Trigger print
-    window.print();
-    
-    // Remove print-specific class after print dialog closes
-    setTimeout(() => {
-      document.body.classList.remove('printing-mode');
-    }, 1000);
   };
 
   // New Enhancement Handlers
@@ -1043,9 +1030,6 @@ export default function QuestionPaperPreparation() {
                     <Save className="mr-2 h-4 w-4" /> Save as Draft
                   </>
                 )}
-              </Button>
-              <Button variant="outline" onClick={handleExportPDF} disabled={saving}>
-                <Download className="mr-2 h-4 w-4" /> Export PDF
               </Button>
               <Button onClick={handleGenerateFinal} disabled={saving}>
                 {saving ? (
