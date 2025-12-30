@@ -228,7 +228,9 @@ All colors MUST be HSL.
   /* Hide buttons and UI elements inside print-content */
   body.printing-mode .print-content button,
   body.printing-mode .print-content .print-hide,
-  body.printing-mode .print-content .screen-only {
+  body.printing-mode .print-content .screen-only,
+  .print-hide,
+  button {
     display: none !important;
   }
 
