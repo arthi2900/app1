@@ -13,6 +13,7 @@ import {
   BookOpen,
   Building2,
   GraduationCap,
+  FolderOpen,
 } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -54,8 +55,8 @@ export default function Sidebar({ collapsed, onCollapsedChange }: SidebarProps) 
     if (profile.role === 'principal') {
       links.push(
         { to: '/principal', label: 'Dashboard', icon: LayoutDashboard },
-        { to: '/principal/approvals', label: 'Exam Approvals', icon: ClipboardList },
-        { to: '/principal/reports', label: 'Reports', icon: Award }
+        { to: '/principal/exam-approvals', label: 'Exam Approvals', icon: ClipboardList },
+        { to: '/principal/question-papers', label: 'Question Paper History', icon: FolderOpen }
       );
     }
 
@@ -64,6 +65,7 @@ export default function Sidebar({ collapsed, onCollapsedChange }: SidebarProps) 
         { to: '/teacher', label: 'Dashboard', icon: LayoutDashboard },
         { to: '/teacher/students', label: 'Students', icon: GraduationCap },
         { to: '/teacher/questions', label: 'Question Bank', icon: FileQuestion },
+        { to: '/teacher/question-papers', label: 'Question Paper History', icon: FolderOpen },
         { to: '/teacher/exams', label: 'Manage Exams', icon: ClipboardList }
       );
     }

@@ -185,6 +185,16 @@ const routes: RouteConfig[] = [
     visible: false,
   },
   {
+    name: 'Question Paper Management',
+    path: '/principal/question-papers',
+    element: (
+      <ProtectedRoute allowedRoles={['principal']}>
+        <QuestionPaperManagement />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
     name: 'Student Dashboard',
     path: '/student',
     element: (
