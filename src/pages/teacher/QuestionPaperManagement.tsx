@@ -143,15 +143,33 @@ export default function QuestionPaperManagement() {
   };
 
   const handleExportPDF = () => {
+    // Get all elements that should be hidden/shown
+    const printHeader = document.querySelector('.print-header') as HTMLElement;
+    const marksBadges = document.querySelectorAll('.marks-badge') as NodeListOf<HTMLElement>;
+    
+    // Show print-only elements
+    if (printHeader) {
+      printHeader.style.display = 'block';
+    }
+    marksBadges.forEach(badge => {
+      badge.style.display = 'inline-block';
+    });
+    
     // Add print-specific class to body
     document.body.classList.add('printing-mode');
     
     // Trigger print
     window.print();
     
-    // Remove print-specific class after print dialog closes
+    // Restore original state after print dialog closes
     setTimeout(() => {
       document.body.classList.remove('printing-mode');
+      if (printHeader) {
+        printHeader.style.display = 'none';
+      }
+      marksBadges.forEach(badge => {
+        badge.style.display = 'none';
+      });
     }, 1000);
   };
 

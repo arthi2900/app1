@@ -182,24 +182,38 @@ All colors MUST be HSL.
   }
 
   /* Clean white background for print */
+  * {
+    color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
   body {
     background: white !important;
     color: black !important;
   }
 
-  /* When in printing mode, hide everything except print-content */
-  body.printing-mode > *:not([data-radix-portal]) {
-    visibility: hidden !important;
+  /* Hide UI elements we don't want in print */
+  body.printing-mode nav,
+  body.printing-mode header:not(.print-header),
+  body.printing-mode footer,
+  body.printing-mode aside,
+  body.printing-mode [role="navigation"],
+  body.printing-mode [role="banner"],
+  body.printing-mode .sidebar,
+  body.printing-mode > div:not([data-radix-portal]) {
+    display: none !important;
   }
 
-  /* Make print-content and its children visible */
-  body.printing-mode [data-radix-portal] .print-content {
-    visibility: visible !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
+  /* Hide dialog overlay */
+  body.printing-mode [data-radix-dialog-overlay] {
+    display: none !important;
+  }
+
+  /* Make dialog content full width and remove styling */
+  body.printing-mode .print-content {
     max-width: 100% !important;
+    width: 100% !important;
     height: auto !important;
     max-height: none !important;
     background: white !important;
@@ -208,37 +222,18 @@ All colors MUST be HSL.
     overflow: visible !important;
     border: none !important;
     box-shadow: none !important;
-    z-index: 9999 !important;
+    position: static !important;
   }
 
-  body.printing-mode [data-radix-portal] .print-content * {
-    visibility: visible !important;
-  }
-
-  /* Hide dialog overlay and backdrop */
-  body.printing-mode [data-radix-dialog-overlay] {
+  /* Hide buttons and UI elements inside print-content */
+  body.printing-mode .print-content button,
+  body.printing-mode .print-content .print-hide,
+  body.printing-mode .print-content .screen-only {
     display: none !important;
   }
 
-  /* Hide navigation, buttons, and UI elements */
-  nav,
-  button,
-  .no-print,
-  header:not(.print-header),
-  footer,
-  aside,
-  [role="navigation"],
-  [role="banner"],
-  .print-hide,
-  .screen-only {
-    display: none !important;
-    visibility: hidden !important;
-  }
-
-  /* Show print header */
+  /* Print header styling */
   .print-header {
-    display: block !important;
-    visibility: visible !important;
     text-align: center !important;
     margin-bottom: 2rem !important;
     padding-bottom: 1rem !important;
@@ -258,15 +253,8 @@ All colors MUST be HSL.
     margin: 0.25rem 0 !important;
   }
 
-  .print-header .font-medium {
-    font-weight: 600 !important;
-    color: black !important;
-  }
-
-  /* Show marks badge in print */
+  /* Marks badge styling */
   .marks-badge {
-    display: inline-block !important;
-    visibility: visible !important;
     background: #fef3c7 !important;
     color: #92400e !important;
     padding: 0.25rem 0.5rem !important;
@@ -277,12 +265,12 @@ All colors MUST be HSL.
     margin-left: 1rem !important;
   }
 
-  /* Ensure all text is visible and black */
-  body.printing-mode [data-radix-portal] .print-content * {
-    color: black !important;
+  /* Question styling */
+  .question-item {
+    page-break-inside: avoid;
+    margin-bottom: 1.5rem !important;
   }
 
-  /* Question text styling */
   .question-number {
     font-weight: 600 !important;
     color: black !important;
