@@ -143,7 +143,16 @@ export default function QuestionPaperManagement() {
   };
 
   const handleExportPDF = () => {
+    // Add print-specific class to body
+    document.body.classList.add('printing-mode');
+    
+    // Trigger print
     window.print();
+    
+    // Remove print-specific class after print dialog closes
+    setTimeout(() => {
+      document.body.classList.remove('printing-mode');
+    }, 1000);
   };
 
   const handlePreviewPaper = async (paper: QuestionPaperWithDetails) => {
@@ -520,17 +529,24 @@ export default function QuestionPaperManagement() {
                               <Eye className="h-4 w-4" />
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                            <DialogHeader>
+                          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto print-content">
+                            <DialogHeader className="print-hide">
                               <DialogTitle>Question Paper Preview</DialogTitle>
                               <DialogDescription>
                                 Preview of "{paper.title}"
                               </DialogDescription>
                             </DialogHeader>
 
+                            {/* Print Header - Only visible when printing */}
+                            <div className="print-header hidden print:block">
+                              <h1>Question Paper Preview</h1>
+                              <p className="font-medium">{paper.title}</p>
+                              <p className="text-sm">Class: {paper.class?.class_name || 'N/A'} | Subject: {paper.subject?.subject_name || 'N/A'} | Total Marks: {paper.total_marks}</p>
+                            </div>
+
                             <div className="space-y-4">
                               <Card>
-                                <CardHeader>
+                                <CardHeader className="print-hide">
                                   <CardTitle className="text-lg">{paper.title}</CardTitle>
                                   <CardDescription>
                                     Class: {paper.class?.class_name || 'N/A'} | Subject: {paper.subject?.subject_name || 'N/A'} | Total Marks: {paper.total_marks}
@@ -549,7 +565,7 @@ export default function QuestionPaperManagement() {
                                       const displayAnswerOptions = pq.shuffled_answer_options || question.answer_options;
                                       
                                       return (
-                                        <div key={pq.id} className="border-b pb-4 last:border-b-0">
+                                        <div key={pq.id} className="border-b pb-4 last:border-b-0 question-item">
                                           <div className="flex items-start justify-between mb-2">
                                             <div className="flex-1">
                                               <span className="font-medium">Q{index + 1}. </span>
@@ -558,7 +574,12 @@ export default function QuestionPaperManagement() {
                                                 dangerouslySetInnerHTML={{ __html: question.question_text }}
                                               />
                                             </div>
-                                            <Badge className={getDifficultyColor(question.difficulty)}>
+                                            {/* Print version - simple text badge */}
+                                            <span className="hidden print:inline-block marks-badge ml-4 flex-shrink-0">
+                                              {question.marks} {question.marks === 1 ? 'mark' : 'marks'}
+                                            </span>
+                                            {/* Screen version - colored badge */}
+                                            <Badge className={`${getDifficultyColor(question.difficulty)} print:hidden flex-shrink-0`}>
                                               {question.marks} marks
                                             </Badge>
                                           </div>
@@ -658,7 +679,7 @@ export default function QuestionPaperManagement() {
                                     })
                                   )}
 
-                                  <div className="flex justify-end gap-2 pt-4">
+                                  <div className="flex justify-end gap-2 pt-4 print-hide">
                                     <Button variant="outline" onClick={handleExportPDF}>
                                       <Download className="mr-2 h-4 w-4" /> Export PDF
                                     </Button>
