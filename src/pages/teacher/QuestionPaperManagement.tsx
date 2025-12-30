@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Loader2, FileText, Eye, Trash2, Plus, Search, Filter, Copy, Calendar, BarChart3, Printer } from 'lucide-react';
+import { Loader2, FileText, Eye, Trash2, Plus, Search, Filter, Calendar, BarChart3, Printer } from 'lucide-react';
 import { academicApi, subjectApi } from '@/db/api';
 import { VersionHistoryDialog } from '@/components/teacher/VersionHistoryDialog';
 import { ShuffleAndSaveDialog } from '@/components/teacher/ShuffleAndSaveDialog';
@@ -374,33 +374,6 @@ export default function QuestionPaperManagement() {
     } catch (error) {
       console.error('Error deleting paper:', error);
       toast.error('Failed to delete question paper');
-    }
-  };
-
-  const handleDuplicatePaper = async (paper: QuestionPaperWithDetails) => {
-    try {
-      // Load the questions for this paper
-      const questions = await getQuestionsForPaper(paper.id);
-      
-      // Create a new draft paper with the same details
-      const newPaperTitle = `${paper.title} (Copy)`;
-      
-      // Navigate to question paper preparation with the duplicate data
-      navigate('/teacher/question-paper', {
-        state: {
-          duplicateFrom: {
-            ...paper,
-            title: newPaperTitle,
-            status: 'draft',
-            questions: questions.map(pq => pq.question).filter((q): q is Question => q !== null)
-          }
-        }
-      });
-      
-      toast.success('Paper duplicated. You can now edit and save it.');
-    } catch (error) {
-      console.error('Error duplicating paper:', error);
-      toast.error('Failed to duplicate question paper');
     }
   };
 
@@ -887,16 +860,6 @@ export default function QuestionPaperManagement() {
                           title="Print this paper"
                         >
                           <Printer className="h-4 w-4" />
-                        </Button>
-
-                        {/* Duplicate Button */}
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDuplicatePaper(paper)}
-                          title="Duplicate this paper"
-                        >
-                          <Copy className="h-4 w-4" />
                         </Button>
 
                         {/* Shuffle and Save Button */}
