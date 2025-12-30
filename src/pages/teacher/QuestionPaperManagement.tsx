@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Loader2, FileText, Eye, Download, Trash2, Plus, Search, Filter, Copy, Calendar, BarChart3 } from 'lucide-react';
+import { Loader2, FileText, Eye, Trash2, Plus, Search, Filter, Copy, Calendar, BarChart3 } from 'lucide-react';
 import { academicApi, subjectApi } from '@/db/api';
 import { VersionHistoryDialog } from '@/components/teacher/VersionHistoryDialog';
 import { ShuffleAndSaveDialog } from '@/components/teacher/ShuffleAndSaveDialog';
@@ -140,37 +140,6 @@ export default function QuestionPaperManagement() {
       return paperQuestionsMap[paperId];
     }
     return await loadPaperQuestions(paperId);
-  };
-
-  const handleExportPDF = () => {
-    // Get all elements that should be hidden/shown
-    const printHeader = document.querySelector('.print-header') as HTMLElement;
-    const marksBadges = document.querySelectorAll('.marks-badge') as NodeListOf<HTMLElement>;
-    
-    // Show print-only elements
-    if (printHeader) {
-      printHeader.style.display = 'block';
-    }
-    marksBadges.forEach(badge => {
-      badge.style.display = 'inline-block';
-    });
-    
-    // Add print-specific class to body
-    document.body.classList.add('printing-mode');
-    
-    // Trigger print
-    window.print();
-    
-    // Restore original state after print dialog closes
-    setTimeout(() => {
-      document.body.classList.remove('printing-mode');
-      if (printHeader) {
-        printHeader.style.display = 'none';
-      }
-      marksBadges.forEach(badge => {
-        badge.style.display = 'none';
-      });
-    }, 1000);
   };
 
   const handlePreviewPaper = async (paper: QuestionPaperWithDetails) => {
@@ -695,12 +664,6 @@ export default function QuestionPaperManagement() {
                                       );
                                     })
                                   )}
-
-                                  <div className="flex justify-end gap-2 pt-4 print-hide">
-                                    <Button variant="outline" onClick={handleExportPDF}>
-                                      <Download className="mr-2 h-4 w-4" /> Export PDF
-                                    </Button>
-                                  </div>
                                 </CardContent>
                               </Card>
                             </div>
