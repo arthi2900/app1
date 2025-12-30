@@ -132,13 +132,33 @@ export default function QuestionPaperPreparation() {
         setAvailableQuestions(allQuestions);
       }
 
-      // Load the questions for this paper
+      // Load the questions for this paper (with shuffled data)
       const paperQuestions = await academicApi.getQuestionPaperQuestions(draftPaper.id);
+      
+      // Sort by display_order to maintain the shuffled order
+      paperQuestions.sort((a, b) => a.display_order - b.display_order);
+      
       const questionIds = paperQuestions.map(pq => pq.question_id);
       setSelectedQuestions(new Set(questionIds));
 
-      // Generate preview with the selected questions
-      const selectedQuestionsForPreview = allQuestions.filter(q => questionIds.includes(q.id));
+      // Generate preview with the selected questions in the correct order
+      // and with shuffled options if available
+      const selectedQuestionsForPreview = paperQuestions.map(pq => {
+        const question = pq.question;
+        if (!question) return null;
+        
+        // If this paper has shuffled options, use them for the preview
+        if (pq.shuffled_options || pq.shuffled_answer_options) {
+          return {
+            ...question,
+            options: pq.shuffled_options || question.options,
+            answer_options: pq.shuffled_answer_options || question.answer_options,
+          };
+        }
+        
+        return question;
+      }).filter((q): q is Question => q !== null);
+      
       setPreviewQuestions(selectedQuestionsForPreview);
 
       // Move to step 3 (Preview)
@@ -278,11 +298,39 @@ export default function QuestionPaperPreparation() {
         
         paperId = draftPaperId;
 
-        // Delete existing questions and re-add them
+        // Get existing questions to check if selection has changed
         const existingQuestions = await academicApi.getQuestionPaperQuestions(draftPaperId);
-        for (const pq of existingQuestions) {
-          await academicApi.removeQuestionFromPaper(pq.id);
+        const existingQuestionIds = new Set(existingQuestions.map(pq => pq.question_id));
+        
+        // Check if the question selection has changed
+        const selectionChanged = 
+          existingQuestionIds.size !== selectedQuestions.size ||
+          Array.from(selectedQuestions).some(id => !existingQuestionIds.has(id));
+
+        // Only update questions if the selection has changed
+        // This preserves shuffled_options and display_order when just changing status
+        if (selectionChanged) {
+          // Delete existing questions and re-add them
+          for (const pq of existingQuestions) {
+            await academicApi.removeQuestionFromPaper(pq.id);
+          }
+
+          // Add all selected questions to the paper
+          const selectedQuestionsArray = availableQuestions.filter(q => selectedQuestions.has(q.id));
+          
+          for (let i = 0; i < selectedQuestionsArray.length; i++) {
+            const question = selectedQuestionsArray[i];
+            await academicApi.addQuestionToPaper({
+              question_paper_id: paperId,
+              question_id: question.id,
+              display_order: i + 1,
+              shuffled_options: null,
+              shuffled_answer_options: null,
+            });
+          }
         }
+        // If selection hasn't changed, we don't touch question_paper_questions
+        // This preserves shuffled_options, shuffled_answer_options, and display_order
       } else {
         // Create new question paper
         const paperData = {
@@ -307,20 +355,20 @@ export default function QuestionPaperPreparation() {
         }
         
         paperId = createdPaper.id;
-      }
 
-      // Add all selected questions to the paper
-      const selectedQuestionsArray = availableQuestions.filter(q => selectedQuestions.has(q.id));
-      
-      for (let i = 0; i < selectedQuestionsArray.length; i++) {
-        const question = selectedQuestionsArray[i];
-        await academicApi.addQuestionToPaper({
-          question_paper_id: paperId,
-          question_id: question.id,
-          display_order: i + 1,
-          shuffled_options: null,
-          shuffled_answer_options: null,
-        });
+        // Add all selected questions to the paper
+        const selectedQuestionsArray = availableQuestions.filter(q => selectedQuestions.has(q.id));
+        
+        for (let i = 0; i < selectedQuestionsArray.length; i++) {
+          const question = selectedQuestionsArray[i];
+          await academicApi.addQuestionToPaper({
+            question_paper_id: paperId,
+            question_id: question.id,
+            display_order: i + 1,
+            shuffled_options: null,
+            shuffled_answer_options: null,
+          });
+        }
       }
 
       return { id: paperId };
