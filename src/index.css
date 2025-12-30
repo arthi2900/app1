@@ -175,7 +175,95 @@ All colors MUST be HSL.
 
 /* Print styles for question papers */
 @media print {
-  /* Ensure images are visible and properly sized when printing */
+  /* Reset page margins and setup */
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+
+  /* Hide all UI elements except the preview card */
+  body.printing-mode * {
+    visibility: hidden;
+  }
+
+  body.printing-mode .print-content,
+  body.printing-mode .print-content * {
+    visibility: visible;
+  }
+
+  body.printing-mode .print-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white;
+  }
+
+  /* Hide navigation, buttons, and UI elements */
+  nav,
+  button,
+  .no-print,
+  header,
+  footer,
+  aside,
+  [role="navigation"],
+  [role="banner"],
+  .print-hide {
+    display: none !important;
+  }
+
+  /* Clean white background for print */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Remove shadows and borders for cleaner print */
+  .shadow,
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl {
+    box-shadow: none !important;
+  }
+
+  /* Keep essential borders only */
+  .border-b {
+    border-bottom: 1px solid #e5e7eb !important;
+    page-break-inside: avoid;
+  }
+
+  /* Ensure proper spacing */
+  .space-y-6 > * + * {
+    margin-top: 1.5rem !important;
+  }
+
+  /* Question numbering and text */
+  .font-medium {
+    font-weight: 500 !important;
+  }
+
+  /* Marks badge styling for print */
+  .marks-badge {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 0.25rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    border: 1px solid #fbbf24 !important;
+  }
+
+  /* Options styling */
+  .ml-4 {
+    margin-left: 1rem !important;
+  }
+
+  .space-y-1 > * + * {
+    margin-top: 0.25rem !important;
+  }
+
+  /* Images */
   img {
     max-width: 100% !important;
     height: auto !important;
@@ -183,21 +271,54 @@ All colors MUST be HSL.
     display: block !important;
   }
 
-  /* Prevent page breaks inside questions */
-  .border-b {
+  /* Answer key section */
+  .answer-key-section {
+    background: #f3f4f6 !important;
+    border: 1px solid #d1d5db !important;
+    padding: 0.75rem !important;
+    margin-top: 0.75rem !important;
+    border-radius: 0.375rem !important;
     page-break-inside: avoid;
   }
 
-  /* Hide navigation and buttons when printing */
-  button,
-  nav,
-  .no-print {
-    display: none !important;
+  /* Header section for print */
+  .print-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #000;
   }
 
-  /* Ensure proper spacing for printed content */
-  .space-y-6 > * + * {
-    margin-top: 1.5rem !important;
+  .print-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .print-header p {
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+
+  /* Question container */
+  .question-item {
+    page-break-inside: avoid;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Prevent orphans and widows */
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Remove card styling for print */
+  .card,
+  .card-header,
+  .card-content {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
   }
 }
 

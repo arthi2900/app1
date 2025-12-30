@@ -427,7 +427,16 @@ export default function QuestionPaperPreparation() {
   };
 
   const handleExportPDF = () => {
+    // Add print-specific class to body
+    document.body.classList.add('printing-mode');
+    
+    // Trigger print
     window.print();
+    
+    // Remove print-specific class after print dialog closes
+    setTimeout(() => {
+      document.body.classList.remove('printing-mode');
+    }, 1000);
   };
 
   // New Enhancement Handlers
@@ -825,7 +834,7 @@ export default function QuestionPaperPreparation() {
       {/* Step 3: Preview & Save */}
       {currentStep === 3 && (
         <div className="space-y-6">
-          <Card>
+          <Card className="print-hide">
             <CardHeader>
               <CardTitle>Preview & Save</CardTitle>
               <CardDescription>Review your question paper and save it</CardDescription>
@@ -847,8 +856,8 @@ export default function QuestionPaperPreparation() {
           </Card>
 
           {previewQuestions.length > 0 && (
-            <Card>
-              <CardHeader>
+            <Card className="print-content">
+              <CardHeader className="print-hide">
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle>Question Paper Preview</CardTitle>
@@ -869,9 +878,17 @@ export default function QuestionPaperPreparation() {
                   </div>
                 </div>
               </CardHeader>
+              
+              {/* Print Header - Only visible when printing */}
+              <div className="print-header hidden print:block">
+                <h1>Question Paper Preview</h1>
+                <p className="font-medium">{paperTitle} | Total Marks: {calculateTotalMarks()}</p>
+                {showAnswerKey && <p className="text-sm mt-2">(With Answer Key)</p>}
+              </div>
+
               <CardContent className="space-y-6">
                 {previewQuestions.map((question, index) => (
-                  <div key={question.id} className="border-b pb-4 last:border-b-0">
+                  <div key={question.id} className="border-b pb-4 last:border-b-0 question-item">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
                         <span className="font-medium">Q{index + 1}. </span>
@@ -880,7 +897,12 @@ export default function QuestionPaperPreparation() {
                           dangerouslySetInnerHTML={{ __html: question.question_text }}
                         />
                       </div>
-                      <Badge className={getDifficultyColor(question.difficulty)}>
+                      {/* Print version - simple text badge */}
+                      <span className="hidden print:inline-block marks-badge ml-4 flex-shrink-0">
+                        {question.marks} {question.marks === 1 ? 'mark' : 'marks'}
+                      </span>
+                      {/* Screen version - colored badge */}
+                      <Badge className={`${getDifficultyColor(question.difficulty)} print:hidden flex-shrink-0`}>
                         {question.marks} marks
                       </Badge>
                     </div>
@@ -978,8 +1000,8 @@ export default function QuestionPaperPreparation() {
 
                     {/* Answer Key Display */}
                     {showAnswerKey && (
-                      <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
-                        <p className="text-sm font-medium text-primary">
+                      <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20 answer-key-section">
+                        <p className="text-sm font-medium text-primary print:text-black">
                           ✓ Answer: {' '}
                           {question.question_type === 'multiple_response'
                             ? question.correct_answer.includes(',')
@@ -997,7 +1019,7 @@ export default function QuestionPaperPreparation() {
             </Card>
           )}
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between print-hide">
             <Button variant="outline" onClick={handlePreviousStep} disabled={saving}>
               <ArrowLeft className="mr-2 h-4 w-4" /> Previous
             </Button>
