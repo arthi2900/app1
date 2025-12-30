@@ -28,12 +28,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Trash2, FileQuestion, BookOpen, LayoutGrid, LayoutList, Pencil, Upload } from 'lucide-react';
+import { Plus, Trash2, FileQuestion, BookOpen, LayoutGrid, LayoutList, Pencil, Upload, FileSpreadsheet } from 'lucide-react';
 import { questionApi, subjectApi, academicApi, profileApi, lessonApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
 import type { Question, Subject, Class, Lesson, TeacherAssignmentWithDetails, Profile, MatchPair } from '@/types/types';
 import { supabase } from '@/db/supabase';
 import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import BulkUploadDialog from '@/components/teacher/BulkUploadDialog';
 
 // Utility function to remove segment prefix from answer options
 const normalizeAnswerOption = (answer: string): string => {
@@ -52,6 +53,7 @@ export default function QuestionBank() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [lessonDialogOpen, setLessonDialogOpen] = useState(false);
+  const [bulkUploadDialogOpen, setBulkUploadDialogOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'row' | 'card'>('row');
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -784,18 +786,27 @@ export default function QuestionBank() {
             </div>
           )}
         </div>
-        <Dialog open={dialogOpen} onOpenChange={(open) => {
-          setDialogOpen(open);
-          if (!open) {
-            resetForm();
-          }
-        }}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus className="w-4 h-4" />
-              New Question
-            </Button>
-          </DialogTrigger>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={() => setBulkUploadDialogOpen(true)}
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            Bulk Upload
+          </Button>
+          <Dialog open={dialogOpen} onOpenChange={(open) => {
+            setDialogOpen(open);
+            if (!open) {
+              resetForm();
+            }
+          }}>
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <Plus className="w-4 h-4" />
+                New Question
+              </Button>
+            </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <form onSubmit={handleSubmit}>
               <DialogHeader>
@@ -1353,8 +1364,10 @@ export default function QuestionBank() {
             </form>
           </DialogContent>
         </Dialog>
+      </div>
+    </div>
 
-        {/* Edit Question Dialog */}
+      {/* Edit Question Dialog */}
         <Dialog open={editDialogOpen} onOpenChange={(open) => {
           setEditDialogOpen(open);
           if (!open) {
@@ -1868,7 +1881,6 @@ export default function QuestionBank() {
             </form>
           </DialogContent>
         </Dialog>
-      </div>
 
       <Card>
         <CardHeader>
@@ -2201,6 +2213,16 @@ export default function QuestionBank() {
           )}
         </CardContent>
       </Card>
+
+      {/* Bulk Upload Dialog */}
+      <BulkUploadDialog
+        open={bulkUploadDialogOpen}
+        onOpenChange={setBulkUploadDialogOpen}
+        subjects={subjects}
+        classes={classes}
+        lessons={lessons}
+        onUploadComplete={loadData}
+      />
     </div>
   );
 }
