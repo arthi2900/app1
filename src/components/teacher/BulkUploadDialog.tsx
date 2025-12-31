@@ -97,7 +97,7 @@ export default function BulkUploadDialog({
 
     const wb = XLSX.utils.book_new();
 
-    // 1. Create Options Sheet - Contains dropdown values
+    // Prepare Options data first (needed for validation ranges)
     const optionsData = [
       { 'Available Classes': '', 'Available Subjects': '', 'Available Lessons': '', 'Question Types': '', 'Difficulty Levels': '' },
     ];
@@ -113,17 +113,7 @@ export default function BulkUploadDialog({
       });
     }
 
-    const optionsWs = XLSX.utils.json_to_sheet(optionsData);
-    optionsWs['!cols'] = [
-      { wch: 25 }, // Available Classes
-      { wch: 25 }, // Available Subjects
-      { wch: 30 }, // Available Lessons
-      { wch: 25 }, // Question Types
-      { wch: 20 }, // Difficulty Levels
-    ];
-    XLSX.utils.book_append_sheet(wb, optionsWs, 'Options');
-
-    // 2. Create Questions Sheet - Empty with only headers and data validation
+    // 1. Create Questions Sheet - Empty with only headers (validation added later)
     const emptyQuestionData = [
       {
         'Question Text': '',
@@ -182,71 +172,9 @@ export default function BulkUploadDialog({
       { wch: 30 }, // Answer Option 3
       { wch: 30 }, // Answer Option 4
     ];
-
-    // Add data validation for dropdowns in Questions sheet
-    const dataValidations: any[] = [];
-
-    // Class Name dropdown (Column B, starting from row 2)
-    const classRange = `Options!$A$2:$A$${classNames.length + 1}`;
-    for (let row = 2; row <= 1000; row++) {
-      dataValidations.push({
-        type: 'list',
-        allowBlank: false,
-        sqref: `B${row}`,
-        formulas: [classRange],
-      });
-    }
-
-    // Subject Name dropdown (Column C, starting from row 2)
-    const subjectRange = `Options!$B$2:$B$${subjectNames.length + 1}`;
-    for (let row = 2; row <= 1000; row++) {
-      dataValidations.push({
-        type: 'list',
-        allowBlank: false,
-        sqref: `C${row}`,
-        formulas: [subjectRange],
-      });
-    }
-
-    // Lesson Name dropdown (Column D, starting from row 2) - Optional
-    if (lessonNames.length > 0) {
-      const lessonRange = `Options!$C$2:$C$${lessonNames.length + 1}`;
-      for (let row = 2; row <= 1000; row++) {
-        dataValidations.push({
-          type: 'list',
-          allowBlank: true,
-          sqref: `D${row}`,
-          formulas: [lessonRange],
-        });
-      }
-    }
-
-    // Question Type dropdown (Column E, starting from row 2)
-    const questionTypeRange = 'Options!$D$2:$D$6';
-    for (let row = 2; row <= 1000; row++) {
-      dataValidations.push({
-        type: 'list',
-        allowBlank: false,
-        sqref: `E${row}`,
-        formulas: [questionTypeRange],
-      });
-    }
-
-    // Difficulty dropdown (Column F, starting from row 2)
-    const difficultyRange = 'Options!$E$2:$E$4';
-    for (let row = 2; row <= 1000; row++) {
-      dataValidations.push({
-        type: 'list',
-        allowBlank: false,
-        sqref: `F${row}`,
-        formulas: [difficultyRange],
-      });
-    }
-
-    questionsWs['!dataValidation'] = dataValidations;
     XLSX.utils.book_append_sheet(wb, questionsWs, 'Questions');
 
-    // 3. Create Reference Sheet - Contains sample questions for reference
+    // 2. Create Reference Sheet - Contains sample questions for reference
     const referenceData = [
       {
         'Question Text': 'What is the capital of France?',
@@ -415,11 +343,86 @@ export default function BulkUploadDialog({
     ];
     XLSX.utils.book_append_sheet(wb, referenceWs, 'Reference');
 
+    // 3. Create Options Sheet - Contains dropdown values
+    const optionsWs = XLSX.utils.json_to_sheet(optionsData);
+    optionsWs['!cols'] = [
+      { wch: 25 }, // Available Classes
+      { wch: 25 }, // Available Subjects
+      { wch: 30 }, // Available Lessons
+      { wch: 25 }, // Question Types
+      { wch: 20 }, // Difficulty Levels
+    ];
+    XLSX.utils.book_append_sheet(wb, optionsWs, 'Options');
+
+    // 4. Add data validation to Questions sheet (now that Options sheet exists)
+    // Note: We need to add validation using Excel formulas that reference the Options sheet
+    const dataValidations: any[] = [];
+
+    // Class Name dropdown (Column B, starting from row 2)
+    const classRange = `Options!$A$2:$A$${classNames.length + 1}`;
+    for (let row = 2; row <= 1000; row++) {
+      dataValidations.push({
+        type: 'list',
+        allowBlank: false,
+        sqref: `B${row}`,
+        formulas: [classRange],
+      });
+    }
+
+    // Subject Name dropdown (Column C, starting from row 2)
+    const subjectRange = `Options!$B$2:$B$${subjectNames.length + 1}`;
+    for (let row = 2; row <= 1000; row++) {
+      dataValidations.push({
+        type: 'list',
+        allowBlank: false,
+        sqref: `C${row}`,
+        formulas: [subjectRange],
+      });
+    }
+
+    // Lesson Name dropdown (Column D, starting from row 2) - Optional
+    if (lessonNames.length > 0) {
+      const lessonRange = `Options!$C$2:$C$${lessonNames.length + 1}`;
+      for (let row = 2; row <= 1000; row++) {
+        dataValidations.push({
+          type: 'list',
+          allowBlank: true,
+          sqref: `D${row}`,
+          formulas: [lessonRange],
+        });
+      }
+    }
+
+    // Question Type dropdown (Column E, starting from row 2)
+    const questionTypeRange = 'Options!$D$2:$D$6';
+    for (let row = 2; row <= 1000; row++) {
+      dataValidations.push({
+        type: 'list',
+        allowBlank: false,
+        sqref: `E${row}`,
+        formulas: [questionTypeRange],
+      });
+    }
+
+    // Difficulty dropdown (Column F, starting from row 2)
+    const difficultyRange = 'Options!$E$2:$E$4';
+    for (let row = 2; row <= 1000; row++) {
+      dataValidations.push({
+        type: 'list',
+        allowBlank: false,
+        sqref: `F${row}`,
+        formulas: [difficultyRange],
+      });
+    }
+
+    // Apply data validation to Questions sheet
+    questionsWs['!dataValidation'] = dataValidations;
+
     XLSX.writeFile(wb, 'question_bank_template.xlsx');
 
     toast({
       title: 'Template Downloaded',
-      description: 'The template has 3 sheets: "Questions" (work here with dropdown menus), "Options" (dropdown values), and "Reference" (sample questions for guidance).',
+      description: 'The template has 3 sheets: "Questions" (work here with dropdown menus), "Reference" (sample questions), and "Options" (dropdown values).',
     });
   };
 
@@ -748,7 +751,7 @@ export default function BulkUploadDialog({
               Step 1: Download Template
             </h3>
             <p className="text-sm text-muted-foreground mb-3">
-              Download the Excel template with 3 sheets: Questions (empty with dropdowns), Options (dropdown values), and Reference (sample questions).
+              Download the Excel template with 3 sheets: Questions (empty with dropdowns), Reference (sample questions), and Options (dropdown values).
             </p>
             <Button onClick={downloadTemplate} variant="outline" className="w-full">
               <Download className="w-4 h-4 mr-2" />
@@ -823,16 +826,16 @@ export default function BulkUploadDialog({
             <h3 className="font-semibold mb-2">Template Structure (3 Sheets):</h3>
             <div className="space-y-3 text-sm text-muted-foreground mb-4">
               <div className="flex gap-2">
-                <span className="font-semibold text-primary min-w-[100px]">Questions:</span>
+                <span className="font-semibold text-primary min-w-[100px]">1. Questions:</span>
                 <span>Work here! Empty sheet with dropdown menus for data entry</span>
               </div>
               <div className="flex gap-2">
-                <span className="font-semibold text-primary min-w-[100px]">Options:</span>
-                <span>Contains all dropdown values (do not modify)</span>
+                <span className="font-semibold text-primary min-w-[100px]">2. Reference:</span>
+                <span>Sample questions for each type (use as guide)</span>
               </div>
               <div className="flex gap-2">
-                <span className="font-semibold text-primary min-w-[100px]">Reference:</span>
-                <span>Sample questions for each type (use as guide)</span>
+                <span className="font-semibold text-primary min-w-[100px]">3. Options:</span>
+                <span>Contains all dropdown values (do not modify)</span>
               </div>
             </div>
             <h3 className="font-semibold mb-2">Important Notes:</h3>
