@@ -90,12 +90,164 @@ export default function BulkUploadDialog({
     const subjectNames = subjects.map(s => s.subject_name);
     const lessonNames = lessons.map(l => l.lesson_name);
 
-    // Create sample data with first available class and subject
+    // Create sample data with first available class and subject for Reference sheet
     const sampleClass = classNames[0];
     const sampleSubject = subjectNames[0];
     const sampleLesson = lessonNames.length > 0 ? lessonNames[0] : '';
 
-    const templateData = [
+    const wb = XLSX.utils.book_new();
+
+    // 1. Create Options Sheet - Contains dropdown values
+    const optionsData = [
+      { 'Available Classes': '', 'Available Subjects': '', 'Available Lessons': '', 'Question Types': '', 'Difficulty Levels': '' },
+    ];
+
+    const maxRows = Math.max(classNames.length, subjectNames.length, lessonNames.length, 5, 3);
+    for (let i = 0; i < maxRows; i++) {
+      optionsData.push({
+        'Available Classes': classNames[i] || '',
+        'Available Subjects': subjectNames[i] || '',
+        'Available Lessons': lessonNames[i] || '',
+        'Question Types': ['mcq', 'true_false', 'short_answer', 'match_following', 'multiple_response'][i] || '',
+        'Difficulty Levels': ['easy', 'medium', 'hard'][i] || '',
+      });
+    }
+
+    const optionsWs = XLSX.utils.json_to_sheet(optionsData);
+    optionsWs['!cols'] = [
+      { wch: 25 }, // Available Classes
+      { wch: 25 }, // Available Subjects
+      { wch: 30 }, // Available Lessons
+      { wch: 25 }, // Question Types
+      { wch: 20 }, // Difficulty Levels
+    ];
+    XLSX.utils.book_append_sheet(wb, optionsWs, 'Options');
+
+    // 2. Create Questions Sheet - Empty with only headers and data validation
+    const emptyQuestionData = [
+      {
+        'Question Text': '',
+        'Class Name': '',
+        'Subject Name': '',
+        'Lesson Name': '',
+        'Question Type': '',
+        'Difficulty': '',
+        'Marks': '',
+        'Negative Marks': '',
+        'Option A': '',
+        'Option B': '',
+        'Option C': '',
+        'Option D': '',
+        'Correct Answer': '',
+        'Match Left 1': '',
+        'Match Right 1': '',
+        'Match Left 2': '',
+        'Match Right 2': '',
+        'Match Left 3': '',
+        'Match Right 3': '',
+        'Match Left 4': '',
+        'Match Right 4': '',
+        'Answer Option 1': '',
+        'Answer Option 2': '',
+        'Answer Option 3': '',
+        'Answer Option 4': '',
+      },
+    ];
+
+    const questionsWs = XLSX.utils.json_to_sheet(emptyQuestionData);
+    questionsWs['!cols'] = [
+      { wch: 50 }, // Question Text
+      { wch: 20 }, // Class Name
+      { wch: 20 }, // Subject Name
+      { wch: 25 }, // Lesson Name
+      { wch: 20 }, // Question Type
+      { wch: 15 }, // Difficulty
+      { wch: 8 },  // Marks
+      { wch: 15 }, // Negative Marks
+      { wch: 30 }, // Option A
+      { wch: 30 }, // Option B
+      { wch: 30 }, // Option C
+      { wch: 30 }, // Option D
+      { wch: 30 }, // Correct Answer
+      { wch: 20 }, // Match Left 1
+      { wch: 20 }, // Match Right 1
+      { wch: 20 }, // Match Left 2
+      { wch: 20 }, // Match Right 2
+      { wch: 20 }, // Match Left 3
+      { wch: 20 }, // Match Right 3
+      { wch: 20 }, // Match Left 4
+      { wch: 20 }, // Match Right 4
+      { wch: 30 }, // Answer Option 1
+      { wch: 30 }, // Answer Option 2
+      { wch: 30 }, // Answer Option 3
+      { wch: 30 }, // Answer Option 4
+    ];
+
+    // Add data validation for dropdowns in Questions sheet
+    const dataValidations: any[] = [];
+
+    // Class Name dropdown (Column B, starting from row 2)
+    const classRange = `Options!$A$2:$A$${classNames.length + 1}`;
+    for (let row = 2; row <= 1000; row++) {
+      dataValidations.push({
+        type: 'list',
+        allowBlank: false,
+        sqref: `B${row}`,
+        formulas: [classRange],
+      });
+    }
+
+    // Subject Name dropdown (Column C, starting from row 2)
+    const subjectRange = `Options!$B$2:$B$${subjectNames.length + 1}`;
+    for (let row = 2; row <= 1000; row++) {
+      dataValidations.push({
+        type: 'list',
+        allowBlank: false,
+        sqref: `C${row}`,
+        formulas: [subjectRange],
+      });
+    }
+
+    // Lesson Name dropdown (Column D, starting from row 2) - Optional
+    if (lessonNames.length > 0) {
+      const lessonRange = `Options!$C$2:$C$${lessonNames.length + 1}`;
+      for (let row = 2; row <= 1000; row++) {
+        dataValidations.push({
+          type: 'list',
+          allowBlank: true,
+          sqref: `D${row}`,
+          formulas: [lessonRange],
+        });
+      }
+    }
+
+    // Question Type dropdown (Column E, starting from row 2)
+    const questionTypeRange = 'Options!$D$2:$D$6';
+    for (let row = 2; row <= 1000; row++) {
+      dataValidations.push({
+        type: 'list',
+        allowBlank: false,
+        sqref: `E${row}`,
+        formulas: [questionTypeRange],
+      });
+    }
+
+    // Difficulty dropdown (Column F, starting from row 2)
+    const difficultyRange = 'Options!$E$2:$E$4';
+    for (let row = 2; row <= 1000; row++) {
+      dataValidations.push({
+        type: 'list',
+        allowBlank: false,
+        sqref: `F${row}`,
+        formulas: [difficultyRange],
+      });
+    }
+
+    questionsWs['!dataValidation'] = dataValidations;
+    XLSX.utils.book_append_sheet(wb, questionsWs, 'Questions');
+
+    // 3. Create Reference Sheet - Contains sample questions for reference
+    const referenceData = [
       {
         'Question Text': 'What is the capital of France?',
         'Class Name': sampleClass,
@@ -233,32 +385,8 @@ export default function BulkUploadDialog({
       },
     ];
 
-    const ws = XLSX.utils.json_to_sheet(templateData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Questions');
-
-    // Create a separate sheet for dropdown options
-    const optionsData = [
-      { 'Available Classes': '', 'Available Subjects': '', 'Available Lessons': '', 'Question Types': '', 'Difficulty Levels': '' },
-    ];
-
-    // Add all options to the sheet
-    const maxRows = Math.max(classNames.length, subjectNames.length, lessonNames.length, 5, 3);
-    for (let i = 0; i < maxRows; i++) {
-      optionsData.push({
-        'Available Classes': classNames[i] || '',
-        'Available Subjects': subjectNames[i] || '',
-        'Available Lessons': lessonNames[i] || '',
-        'Question Types': ['mcq', 'true_false', 'short_answer', 'match_following', 'multiple_response'][i] || '',
-        'Difficulty Levels': ['easy', 'medium', 'hard'][i] || '',
-      });
-    }
-
-    const optionsWs = XLSX.utils.json_to_sheet(optionsData);
-    XLSX.utils.book_append_sheet(wb, optionsWs, 'Options');
-
-    // Set column widths for main sheet
-    ws['!cols'] = [
+    const referenceWs = XLSX.utils.json_to_sheet(referenceData);
+    referenceWs['!cols'] = [
       { wch: 50 }, // Question Text
       { wch: 20 }, // Class Name
       { wch: 20 }, // Subject Name
@@ -285,85 +413,13 @@ export default function BulkUploadDialog({
       { wch: 30 }, // Answer Option 3
       { wch: 30 }, // Answer Option 4
     ];
-
-    // Set column widths for options sheet
-    optionsWs['!cols'] = [
-      { wch: 25 }, // Available Classes
-      { wch: 25 }, // Available Subjects
-      { wch: 30 }, // Available Lessons
-      { wch: 25 }, // Question Types
-      { wch: 20 }, // Difficulty Levels
-    ];
-
-    // Add data validation for dropdowns
-    // Note: Excel data validation is added through the sheet's dataValidation property
-    const dataValidations: any[] = [];
-
-    // Class Name dropdown (Column B, starting from row 2)
-    const classRange = `Options!$A$2:$A$${classNames.length + 1}`;
-    for (let row = 2; row <= 1000; row++) {
-      dataValidations.push({
-        type: 'list',
-        allowBlank: false,
-        sqref: `B${row}`,
-        formulas: [classRange],
-      });
-    }
-
-    // Subject Name dropdown (Column C, starting from row 2)
-    const subjectRange = `Options!$B$2:$B$${subjectNames.length + 1}`;
-    for (let row = 2; row <= 1000; row++) {
-      dataValidations.push({
-        type: 'list',
-        allowBlank: false,
-        sqref: `C${row}`,
-        formulas: [subjectRange],
-      });
-    }
-
-    // Lesson Name dropdown (Column D, starting from row 2) - Optional
-    if (lessonNames.length > 0) {
-      const lessonRange = `Options!$C$2:$C$${lessonNames.length + 1}`;
-      for (let row = 2; row <= 1000; row++) {
-        dataValidations.push({
-          type: 'list',
-          allowBlank: true,
-          sqref: `D${row}`,
-          formulas: [lessonRange],
-        });
-      }
-    }
-
-    // Question Type dropdown (Column E, starting from row 2)
-    const questionTypeRange = 'Options!$D$2:$D$6';
-    for (let row = 2; row <= 1000; row++) {
-      dataValidations.push({
-        type: 'list',
-        allowBlank: false,
-        sqref: `E${row}`,
-        formulas: [questionTypeRange],
-      });
-    }
-
-    // Difficulty dropdown (Column F, starting from row 2)
-    const difficultyRange = 'Options!$E$2:$E$4';
-    for (let row = 2; row <= 1000; row++) {
-      dataValidations.push({
-        type: 'list',
-        allowBlank: false,
-        sqref: `F${row}`,
-        formulas: [difficultyRange],
-      });
-    }
-
-    // Add data validations to the worksheet
-    ws['!dataValidation'] = dataValidations;
+    XLSX.utils.book_append_sheet(wb, referenceWs, 'Reference');
 
     XLSX.writeFile(wb, 'question_bank_template.xlsx');
 
     toast({
       title: 'Template Downloaded',
-      description: 'The template includes dropdown menus for Class, Subject, Lesson, Question Type, and Difficulty. Check the "Options" sheet for available values.',
+      description: 'The template has 3 sheets: "Questions" (work here with dropdown menus), "Options" (dropdown values), and "Reference" (sample questions for guidance).',
     });
   };
 
@@ -692,7 +748,7 @@ export default function BulkUploadDialog({
               Step 1: Download Template
             </h3>
             <p className="text-sm text-muted-foreground mb-3">
-              Download the Excel template with dropdown menus for Class, Subject, Lesson, Question Type, and Difficulty. The template includes sample questions for all question types.
+              Download the Excel template with 3 sheets: Questions (empty with dropdowns), Options (dropdown values), and Reference (sample questions).
             </p>
             <Button onClick={downloadTemplate} variant="outline" className="w-full">
               <Download className="w-4 h-4 mr-2" />
@@ -764,19 +820,34 @@ export default function BulkUploadDialog({
 
           {/* Instructions */}
           <div className="border rounded-lg p-4 bg-muted/50">
+            <h3 className="font-semibold mb-2">Template Structure (3 Sheets):</h3>
+            <div className="space-y-3 text-sm text-muted-foreground mb-4">
+              <div className="flex gap-2">
+                <span className="font-semibold text-primary min-w-[100px]">Questions:</span>
+                <span>Work here! Empty sheet with dropdown menus for data entry</span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-semibold text-primary min-w-[100px]">Options:</span>
+                <span>Contains all dropdown values (do not modify)</span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-semibold text-primary min-w-[100px]">Reference:</span>
+                <span>Sample questions for each type (use as guide)</span>
+              </div>
+            </div>
             <h3 className="font-semibold mb-2">Important Notes:</h3>
             <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-              <li>✨ The template includes dropdown menus for easy selection of Class, Subject, Lesson, Question Type, and Difficulty</li>
+              <li>✨ Use dropdown menus in the Questions sheet to prevent typing errors</li>
               <li>All question types can be uploaded in the same file</li>
-              <li>Use the dropdown menus to select Class Name and Subject Name - this prevents typing errors</li>
-              <li>Lesson Name is optional - select from dropdown if needed</li>
-              <li>Question Type dropdown: mcq, true_false, short_answer, match_following, or multiple_response</li>
-              <li>Difficulty dropdown: easy, medium, or hard</li>
+              <li>Class Name and Subject Name: Select from dropdown (required)</li>
+              <li>Lesson Name: Select from dropdown (optional)</li>
+              <li>Question Type: mcq, true_false, short_answer, match_following, or multiple_response</li>
+              <li>Difficulty: easy, medium, or hard</li>
               <li>For MCQ: Fill Option A, B, C, D and Correct Answer</li>
               <li>For True/False: Correct Answer must be "True" or "False"</li>
               <li>For Match Following: Fill Match Left and Match Right columns</li>
               <li>For Multiple Response: Fill Options, Correct Answer (e.g., "A,C"), and Answer Options</li>
-              <li>Check the "Options" sheet in the template to see all available values</li>
+              <li>Check the "Reference" sheet for examples of each question type</li>
             </ul>
           </div>
         </div>

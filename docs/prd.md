@@ -30,7 +30,8 @@ Smart • Secure • Scalable Online Exams
   - Student class-section mapping
 - Teacher Management (within assigned school only):
   - View teacher accounts
-  - Teacher-subject-class-section mapping\n  - View class-section overview with assigned teachers per subject
+  - Teacher-subject-class-section mapping
+  - View class-section overview with assigned teachers per subject
   - Edit teacher profiles
 - Student Management (within assigned school only):\n  - View students list
   - View student class-section assignments
@@ -227,8 +228,7 @@ After Principal login, the dashboard displays seven main cards:
 #### 5.2.5 Student Class-Section Mapping
 - Principal can assign students to specific class and section
 - Note: Student accounts are already created via Sign-Up process, only class-section assignment is done here
-- Mapping interface:
-  - Student selection (dropdown or search from existing students in the school)
+- Mapping interface:\n  - Student selection (dropdown or search from existing students in the school)
   - Class selection (dropdown)\n  - Section selection (dropdown, filtered by selected class)
   - Academic Year\n- Bulk assignment option for multiple students
 - View current class-section assignments with edit and reassign options
@@ -361,7 +361,8 @@ Columns:
 - question_type (Enum: Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ)\n- marks (Integer, required)
 - minus_mark (Decimal, optional)
 - difficulty (Enum: Easy, Medium, Hard)\n- options (JSON array)\n- correct_answer (Text or JSON array)\n- question_images (JSON array, optional)
-- created_by (Foreign Key → users.id)\n- created_at (Timestamp)
+- created_by (Foreign Key → users.id)
+- created_at (Timestamp)
 - updated_at (Timestamp)
 \n### 6.3 Question Creation Form
 \n#### 6.3.1 Form Field Order
@@ -421,36 +422,81 @@ Columns:
   3. Validation Results Section
   4. Import Summary Section
 \n#### 6.4.3 Template File Structure
-\nTemplate File Format: Excel (.xlsx) or CSV (.csv)\n
-Template Columns (in order):
-1. Class (Dropdown selection, required) - **Updated: Dropdown with pre-populated class names from school**
-2. Subject (Dropdown selection, required) - **Updated: Dropdown with pre-populated subject names from school**
-3. Lesson (Text, required) - e.g., 'Algebra Basics', 'Photosynthesis'\n4. Question Text (Text, required) - Plain text or basic HTML formatting
-5. Question Type (Dropdown selection, required) - Options: 'Multiple Choice', 'True/False', 'Short Answer', 'Essay', 'Match the Following', 'Multiple Response MCQ'\n6. Marks (Number, required) - e.g., 1, 2, 5\n7. Minus Mark (Number, optional) - e.g., 0.25, 0.5, 1\n8. Difficulty (Dropdown selection, required) - Options: 'Easy', 'Medium', 'Hard'
-9. Option A (Text, conditional) - Required for MCQ types
-10. Option B (Text, conditional) - Required for MCQ types
-11. Option C (Text, conditional) - Optional for MCQ types
-12. Option D (Text, conditional) - Optional for MCQ types
-13. Option E (Text, conditional) - Optional for MCQ types
-14. Correct Answer (Text, required) - Format varies by question type
-15. Image Path (Text, optional) - Path to image file or URL
-\n**Updated Template Features:**
-- **Class Column**: Dropdown list with data validation, populated with all class names from the user's school (e.g., 'Class 6', 'Class 7', 'Class 8', etc.)
-- **Subject Column**: Dropdown list with data validation, populated with all subject names from the user's school (e.g., 'Mathematics', 'Science', 'English', etc.)
-- **Question Type Column**: Dropdown list with data validation, options: 'Multiple Choice', 'True/False', 'Short Answer', 'Essay', 'Match the Following', 'Multiple Response MCQ'
-- **Difficulty Column**: Dropdown list with data validation, options: 'Easy', 'Medium', 'Hard'
-- **Excel Data Validation**: All dropdown columns have Excel data validation rules applied to prevent invalid entries
-- **Dynamic Template Generation**: Template file is generated dynamically based on the logged-in user's school, ensuring Class and Subject dropdowns contain only relevant data
+\n**Updated Template File Format:** Excel (.xlsx) or CSV (.csv)\n
+**Template Structure with Three Sheets:**
 
-Template Instructions Sheet:
-- Separate sheet in Excel file with detailed instructions\n- Column descriptions and data format requirements
-- Examples for each question type
-- Common errors and how to avoid them
-- Validation rules\n- **New Section**: How to use dropdown selections for Class, Subject, Question Type, and Difficulty
+**Sheet 1: Option**
+- Purpose: Contains dropdown values for data validation
+- Columns:\n  1. Class Name (list of all classes from user's school)
+  2. Subject Name (list of all subjects from user's school)
+  3. Lesson Name (list of all lessons from user's school)
+  4. Question Type (list: 'Multiple Choice', 'True/False', 'Short Answer', 'Essay', 'Match the Following', 'Multiple Response MCQ')
+  5. Difficulty (list: 'Easy', 'Medium', 'Hard')
+- This sheet serves as the data source for dropdown validations in the Question sheet
+- Hidden from user view (optional)
+
+**Sheet 2: Question**
+- Purpose: Main data entry sheet with validated dropdowns, no sample data
+- Column Headers (in order):
+  1. Class (Dropdown validation linked to Option sheet, required)
+  2. Subject (Dropdown validation linked to Option sheet, required)
+  3. Lesson (Dropdown validation linked to Option sheet, required)
+  4. Question Text (Text, required)
+  5. Question Type (Dropdown validation linked to Option sheet, required)
+  6. Marks (Number, required)
+  7. Minus Mark (Number, optional)
+  8. Difficulty (Dropdown validation linked to Option sheet, required)
+  9. Option A (Text, conditional)
+  10. Option B (Text, conditional)
+  11. Option C (Text, conditional)
+  12. Option D (Text, conditional)
+  13. Option E (Text, conditional)
+  14. Correct Answer (Text, required)
+  15. Image Path (Text, optional)
+- **Key Feature:** All dropdown columns have Excel data validation rules applied, referencing the Option sheet
+- **No Sample Data:** This sheet contains only column headers and validation rules, no example questions
+- Teachers fill in this sheet with their actual questions using the dropdown selections
+
+**Sheet 3: Reference**
+- Purpose: Contains sample questions as reference/examples for teachers
+- Same column structure as Question sheet
+- Includes sample data rows for each question type:\n  - Multiple Choice example
+  - True/False example
+  - Short Answer example\n  - Essay example
+  - Match the Following example
+  - Multiple Response MCQ example
+- Shows proper formatting and data entry examples
+- Teachers can refer to this sheet while filling the Question sheet
+- This sheet is not processed during upload, it's purely for reference
+
+**Template Generation Process:**
+1. User clicks 'Download Template' button
+2. Backend fetches all classes, subjects, and lessons from user's school
+3. Backend generates Excel file with three sheets:\n   - **Option Sheet:** Populated with school-specific dropdown values (classes, subjects, lessons) and fixed values (question types, difficulty levels)
+   - **Question Sheet:** Contains only column headers with data validation formulas referencing Option sheet, no sample data
+   - **Reference Sheet:** Contains sample questions for each question type as examples
+4. Excel data validation formulas applied to Question sheet columns (Class, Subject, Lesson, Question Type, Difficulty)
+5. File downloaded to user's device
+6. User opens file, sees three sheets:
+   - Option sheet (can be hidden or visible)
+   - Question sheet (empty, ready for data entry with dropdown arrows)
+   - Reference sheet (contains examples for guidance)
+7. User fills Question sheet using dropdown selections, referring to Reference sheet for examples
+8. User uploads completed file
+
+**Template Instructions:**
+- Separate instructions section or sheet explaining:\n  - How to use the three-sheet structure
+  - Option sheet contains dropdown values
+  - Question sheet is for actual data entry (use dropdowns)\n  - Reference sheet contains examples (do not modify)
+  - Column descriptions and data format requirements
+  - Examples for each question type (refer to Reference sheet)
+  - Common errors and how to avoid them
+  - Validation rules\n  - How to use dropdown selections
 \n#### 6.4.4 Question Type Specific Format
 
 **Multiple Choice Questions:**
-- Question Type: 'Multiple Choice'\n- Options: Fill Option A, Option B, and optionally Option C, Option D, Option E
+- Question Type: 'Multiple Choice'
+- Options: Fill Option A, Option B, and optionally Option C, Option D, Option E
 - Correct Answer: Single letter (A, B, C, D, or E)
 - Example: Correct Answer = 'B'
 \n**Multiple Response MCQ:**
@@ -485,28 +531,21 @@ Template Instructions Sheet:
 
 Download Template Button:
 - Prominently displayed in Bulk Upload dialog
-- Downloads pre-formatted Excel file with:\n  - Column headers\n  - **Excel data validation dropdowns for Class, Subject, Question Type, and Difficulty columns**
-  - **Class dropdown populated with all classes from user's school**
-  - **Subject dropdown populated with all subjects from user's school**
-  - Sample data rows for each question type
-  - Instructions sheet\n  - Data validation rules (dropdowns for Class, Subject, Question Type, Difficulty)
-\nTemplate File Contents:
-- Sheet 1: Question Data (with sample rows and dropdown validations)
-- Sheet 2: Instructions and Examples
-- Sheet 3: Valid Values Reference (Class Names, Subject Names, Question Types, Difficulty Levels)
-- **Sheet 4 (Hidden)**: Class List (contains all class names from user's school, used for dropdown validation)
-- **Sheet 5 (Hidden)**: Subject List (contains all subject names from user's school, used for dropdown validation)
-\n**Template Generation Process:**
-1. User clicks 'Download Template' button
-2. Backend fetches all classes and subjects from user's school
-3. Backend generates Excel file with:
-   - Main data sheet with column headers
-   - Excel data validation formulas referencing hidden sheets
-   - Hidden sheets containing class names and subject names
-   - Sample data rows\n   - Instructions sheet
-4. File downloaded to user's device
-5. User opens file and sees dropdown arrows in Class, Subject, Question Type, and Difficulty columns
-6. User selects values from dropdowns instead of typing manually
+- Downloads pre-formatted Excel file with:\n  - **Option Sheet:** Dropdown values (classes, subjects, lessons, question types, difficulty levels)
+  - **Question Sheet:** Column headers with data validation, no sample data
+  - **Reference Sheet:** Sample data rows for each question type as examples
+  - Instructions sheet or section\n  - Data validation rules applied to Question sheet\n\nTemplate File Contents:
+- Sheet 1: Option (dropdown values)
+- Sheet 2: Question (headers + validations, no sample data)
+- Sheet 3: Reference (sample questions for reference)
+- Sheet 4 (Optional): Instructions and Examples
+
+**Benefits of Three-Sheet Structure:**
+- **Separation of Concerns:** Dropdown values, data entry, and examples are clearly separated
+- **Cleaner Data Entry:** Question sheet is clean and ready for actual data, not cluttered with examples
+- **Better Guidance:** Reference sheet provides clear examples without interfering with data entry
+- **Reduced Errors:** Users can refer to examples while filling the Question sheet, reducing mistakes
+- **Easier Validation:** Backend only needs to process Question sheet, ignoring Reference sheet
 \n#### 6.4.6 File Upload Process
 
 Step 1: File Selection
@@ -519,20 +558,19 @@ Step 2: File Validation
   - Check file size (max 10MB)
   - Check if file is not empty
 - Backend validation:
-  - Parse file content
-  - Validate column headers
-  - Validate data types
+  - Parse file content (process only Question sheet, ignore Reference sheet)
+  - Validate column headers\n  - Validate data types
   - Check for required fields
-  - **Validate Class names against user's school classes**
-  - **Validate Subject names against user's school subjects**
+  - Validate Class names against user's school classes
+  - Validate Subject names against user's school subjects
+  - Validate Lesson names against user's school lessons
   - Validate question type specific fields
   - Check for duplicate questions
   - Validate Class, Subject, Lesson existence
-
-Step 3: Validation Results Display
-- Show validation summary:\n  - Total rows in file
-  - Valid rows
-  - Invalid rows\n  - Error details for each invalid row
+\nStep 3: Validation Results Display
+- Show validation summary:\n  - Total rows in file (from Question sheet only)
+  - Valid rows\n  - Invalid rows
+  - Error details for each invalid row
 - Display validation errors in table format:\n  - Row Number
   - Error Type
   - Error Message\n  - Suggested Fix
@@ -579,8 +617,8 @@ Validation Rules:
 Common Errors and Messages:
 - Missing Required Field: 'Row X: [Field Name] is required'
 - Invalid Class: 'Row X: Class [Class Name] does not exist in your school. Please select from dropdown in template.'
-- Invalid Subject: 'Row X: Subject [Subject Name] does not exist for [Class Name]. Please select from dropdown in template.'
-- Invalid Lesson: 'Row X: Lesson [Lesson Name] does not exist for [Subject Name]'\n- Invalid Question Type: 'Row X: Question Type must be selected from dropdown: Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ'\n- Invalid Marks: 'Row X: Marks must be a positive number'
+- Invalid Subject: 'Row X: Subject [Subject Name] does not exist for [Class Name]. Please select from dropdown in template.'\n- Invalid Lesson: 'Row X: Lesson [Lesson Name] does not exist for [Subject Name]'\n- Invalid Question Type: 'Row X: Question Type must be selected from dropdown: Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ'
+- Invalid Marks: 'Row X: Marks must be a positive number'
 - Invalid Difficulty: 'Row X: Difficulty must be selected from dropdown: Easy, Medium, or Hard'
 - Missing Options: 'Row X: At least 2 options required for Multiple Choice questions'
 - Invalid Correct Answer Format: 'Row X: Correct Answer format is invalid for [Question Type]'
@@ -601,8 +639,7 @@ Principal Access:
 - Template file contains all classes and subjects from principal's school
 
 Data Isolation:
-- All uploaded questions are school-scoped
-- Backend validation ensures data isolation
+- All uploaded questions are school-scoped\n- Backend validation ensures data isolation
 - Cross-school upload prevented
 - Questions visible only to users from same school
 - Template file dynamically generated based on user's school and role
@@ -622,20 +659,21 @@ Bulk Upload Button:
   3. Results Section (bottom, shown after upload)
 \nTemplate Download Section:
 - Heading: 'Step 1: Download Template'
-- Description: 'Download the Excel template file with dropdown selections for Class and Subject to avoid input errors'\n- Download Button: 'Download Template' with download icon
+- Description: 'Download the Excel template file with three sheets: Option (dropdown values), Question (data entry with validations), and Reference (sample questions for guidance)'
+- Download Button: 'Download Template' with download icon
 - Template file format info: 'Supports .xlsx and .csv formats'
-- **New Info Badge**: 'Template includes dropdown selections for easy data entry'
+- Info Badge: 'Template includes dropdown selections and reference examples for easy data entry'
 
 File Upload Section:
-- Heading: 'Step 2: Upload File'\n- Description: 'Upload your completed template file with questions. Use dropdown selections in Class and Subject columns.'
+- Heading: 'Step 2: Upload File'
+- Description: 'Upload your completed template file with questions. Fill the Question sheet using dropdown selections. Refer to Reference sheet for examples.'
 - File Picker: Drag-and-drop area or click to browse
 - Accepted formats: .xlsx, .csv
 - Max file size: 10MB
 - Upload Button: 'Upload and Validate' with upload icon
 \nValidation Results Section:
 - Shown after file upload and validation
-- Summary Cards:
-  - Total Rows\n  - Valid Rows (green)
+- Summary Cards:\n  - Total Rows\n  - Valid Rows (green)
   - Invalid Rows (red)
 - Error Table (if errors exist):
   - Columns: Row Number, Error Type, Error Message, Suggested Fix
@@ -703,15 +741,25 @@ Help Resources:
 
 FAQ Topics:
 - How to format questions in template?\n- What question types are supported?
-- How to use dropdown selections in template?
+- How to use the three-sheet template structure?
+- What is the purpose of Option, Question, and Reference sheets?
+- How to use dropdown selections in Question sheet?
+- How to refer to Reference sheet for examples?
 - How to upload images with questions?
 - What to do if validation fails?
 - How to fix common errors?
 - Can I upload questions for multiple classes in one file?
 - Can I upload all question types in same file?
-- Why should I use dropdown selections instead of typing?\n\n**Updated FAQ Answer:**
+- Why should I use dropdown selections instead of typing?\n\n**Updated FAQ Answers:**
+\nQ: How to use the three-sheet template structure?
+A: The template contains three sheets:\n- **Option Sheet:** Contains dropdown values (classes, subjects, lessons, question types, difficulty levels). You don't need to modify this sheet.
+- **Question Sheet:** This is where you enter your actual questions. Use the dropdown arrows in Class, Subject, Lesson, Question Type, and Difficulty columns to select values. This sheet is empty and ready for your data.
+- **Reference Sheet:** Contains sample questions for each question type. Refer to this sheet for examples while filling the Question sheet. Do not modify or delete this sheet.
+
 Q: Why should I use dropdown selections instead of typing?
-A: Using dropdown selections for Class, Subject, Question Type, and Difficulty ensures data accuracy and prevents input errors. The dropdown lists are pre-populated with valid values from your school, so you cannot enter invalid or misspelled names. This significantly reduces validation errors during upload and saves time.\n
+A: Using dropdown selections in the Question sheet ensures data accuracy and prevents input errors. The dropdown lists are pre-populated with valid values from your school (classes, subjects, lessons) and fixed values (question types, difficulty levels), so you cannot enter invalid or misspelled names. This significantly reduces validation errors during upload and saves time.\n
+Q: What is the purpose of the Reference sheet?
+A: The Reference sheet contains sample questions for each question type (Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ). It serves as a guide to help you understand the correct format and data entry for each question type. You can refer to this sheet while filling the Question sheet, but you should not modify or delete it. During upload, only the Question sheet is processed.\n
 ### 6.5 Question Bank Dual View Display
 
 #### 6.5.1 View Toggle Control
@@ -792,7 +840,8 @@ Columns:
 - Backend validation ensures data isolation
 - Teachers can only view and manage question papers created by themselves
 - Principal can view all question papers created by teachers in their school
-\n### 7.5 Question Paper Management Interface
+
+### 7.5 Question Paper Management Interface
 - Question Paper List with filters\n- Actions: View, Edit, Delete, Export PDF, Print, Shuffle and Save
 - All actions preserve question text formatting
 \n### 7.6 Enhanced Question Paper Features
@@ -828,7 +877,8 @@ Display Columns:
 - Creation Date
 - Last Modified Date
 - Paper Status (Draft/Final)
-- Total Marks\n- Total Questions
+- Total Marks
+- Total Questions
 - Version Info\n- Actions\n
 #### 8.2.2 Filter Options
 - Teacher Filter (Principal only)
@@ -866,8 +916,7 @@ Display Columns:
 - Paper Configuration Details
 
 #### 8.3.4 Action Buttons
-- Edit Paper
-- Create New Version
+- Edit Paper\n- Create New Version
 - Preview Paper (opens preview dialog with print option)
 - Export as PDF (preserving formatting)
 - Print (opens print dialog from preview)
@@ -936,8 +985,7 @@ Display Columns:
 - Detailed Statistics
 \n#### 8.5.2 Analytics Dashboard (Teacher View)
 - Overview Cards
-- Charts and Graphs
-- Personal Statistics
+- Charts and Graphs\n- Personal Statistics
 
 ### 8.6 Question Paper History Access Control
 
@@ -969,8 +1017,8 @@ Display Columns:
 #### 8.7.1 Teacher Dashboard Integration
 - Add 'Question Paper History' card to Teacher Dashboard
 - Card displays recent papers and quick action button
-\n#### 8.7.2 Principal Dashboard Integration
-- Add 'Question Paper History' card to Principal Dashboard
+
+#### 8.7.2 Principal Dashboard Integration\n- Add 'Question Paper History' card to Principal Dashboard
 - Card displays school-wide statistics and quick action button
 
 #### 8.7.3 Navigation Menu
@@ -1146,9 +1194,8 @@ Columns:
 - total_marks_obtained (Decimal(10,2), calculated)
 - percentage (Decimal(5,2), calculated)
 - pass_fail_status (Enum: Pass, Fail, Pending)
-- Pass: If total_marks_obtained >= passing_marks (35% of total marks)
-  - Fail: If total_marks_obtained < passing_marks (35% of total marks)
-- attempt_status (Enum: Not Started, In Progress, Submitted, Graded)\n- auto_graded_marks (Decimal(10,2))
+  - Pass: If total_marks_obtained >= passing_marks (35% of total marks)
+  - Fail: If total_marks_obtained < passing_marks (35% of total marks)\n- attempt_status (Enum: Not Started, In Progress, Submitted, Graded)\n- auto_graded_marks (Decimal(10,2))
 - manual_graded_marks (Decimal(10,2))
 - pending_manual_grading (Boolean)
 - teacher_feedback (Text, optional)
@@ -1169,8 +1216,7 @@ Dashboard Card: 'My Exams'
 - Three tabs: 'Upcoming' | 'Ongoing' | 'Completed'
 \nUpcoming Exams Tab:
 - List of scheduled exams not yet started
-\nOngoing Exams Tab:\n- List of exams currently available
-
+\nOngoing Exams Tab:\n- List of exams currently available\n
 Completed Exams Tab:
 - List of exams already submitted
 
@@ -1617,15 +1663,16 @@ The side panel navigation for Teacher role includes the following menu items (in
 ### 13.17 Bulk Upload Questions Feature
 - Bulk upload functionality for Question Bank
 - Support for all question types in single file
-- Excel/CSV template file provided for download
-- **Updated: Template includes dropdown selections for Class and Subject columns**
-- **Dropdown lists populated with school-specific data**
-- **Excel data validation prevents invalid entries**
+- **Updated: Three-sheet Excel template structure (Option, Question, Reference)**
+- **Option Sheet:** Contains dropdown values for data validation
+- **Question Sheet:** Empty sheet with column headers and data validation, no sample data
+- **Reference Sheet:** Contains sample questions as examples for teachers
 - Comprehensive validation and error handling
 - Role-based access control (Teacher and Principal)
 - Efficient import process with progress tracking
 - Detailed import summary and statistics
-- Help documentation and FAQ\n
+- Help documentation and FAQ
+
 ## 14. Language Support\n
 ### 14.1 UI Language\n- UI Language: English Only
 \n### 14.2 Chat/Communication Language
@@ -1763,7 +1810,7 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Large modal dialog with glassmorphism effect
   - Clear section separation with headings
   - Download template button with gradient effect
-  - **New: Info badge highlighting dropdown feature**
+  - Info badge highlighting three-sheet structure
   - Drag-and-drop upload area with hover effect
   - Validation results table with color-coded rows
   - Progress bar for import process
@@ -1836,8 +1883,7 @@ The side panel navigation for Teacher role includes the following menu items (in
 - Primary buttons:\n  - Create Exam (gradient button with glow)
   - View Results (outlined button)
 - Background: Dark purple-blue gradient with subtle pattern
-
-#### 16.5.3 Feature Cards Section
+\n#### 16.5.3 Feature Cards Section
 - Four glassmorphism cards:\n  - Create Exam (with calendar icon)
   - Question Bank (with question mark icon)
   - User Management (with users icon)
@@ -1922,7 +1968,7 @@ Current Issue: In the Edit Question dialog, the 'Question Text' field, 'Image/Cl
 Required Fix: These fields should be moved above the 'Match Pairs' section to maintain the correct form field order as specified in Section 6.3.1.
 
 Additional Requirement: Replace the 'Question Text' field with a rich text editor (Quill, Draft.js, or TinyMCE) to enable formatting (bold, underline, italic, etc.) directly while typing.\n
-### 17.2 Design Reference\nThe uploaded image (image.png) shows the current dashboard design. The new design should follow the dark purple-blue gradient theme with glassmorphism cards as specified in Section 15.\n
+### 17.2 Design Reference\nThe uploaded image (image.png) shows the current dashboard design. The new design should follow the dark purple-blue gradient theme with glassmorphism cards as specified in Section 16.\n
 ### 17.3 Teacher Dashboard Students Card Reference
 The uploaded image (screenshot.png) shows the Principal Dashboard with the Students card highlighted. This card's JSX structure and functionality should be copied to the Teacher Dashboard with appropriate role-based access control modifications.
 
@@ -1939,7 +1985,8 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 ### 18.2 Implementation Changes
 \n#### 18.2.1 Database Changes
 - online_exams table: passing_marks field auto-calculated
-- Data type: Decimal(10,2)\n- Database trigger ensures passing_marks = total_marks × 0.35\n
+- Data type: Decimal(10,2)
+- Database trigger ensures passing_marks = total_marks × 0.35\n
 #### 18.2.2 Exam Creation Form Changes
 - Remove manual passing marks input
 - Add read-only passing marks display
@@ -1949,7 +1996,8 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - All exam cards display passing marks (35% of total)
 - Exam details page displays passing marks
 - Student pre-exam screen displays passing marks
-\n#### 18.2.4 Results Display Changes
+
+#### 18.2.4 Results Display Changes
 - Student results page displays passing marks
 - Pass/Fail status badge based on 35% threshold
 - Analytics displays pass rate based on 35% threshold
@@ -1957,8 +2005,7 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - After grading: Calculate total marks obtained
 - Compare with passing marks (35% of total)
 - Determine Pass/Fail status
-
-### 18.3 User Interface Updates
+\n### 18.3 User Interface Updates
 - Remove manual passing marks input
 - Add read-only display with clear formatting
 - Show calculation formula\n- Update dynamically\n
@@ -2004,7 +2051,7 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - Smooth animations and transitions
 - Rich text editor library (Quill, Draft.js, or TinyMCE)\n- Print CSS styles for optimized print output
 - Excel/CSV parsing library for bulk upload (e.g., SheetJS, PapaParse)
-- **Excel library with data validation support (e.g., ExcelJS, SheetJS with custom validation)**
+- Excel library with data validation support (e.g., ExcelJS, SheetJS with custom validation)
 
 ### 20.2 Backend Technologies
 - RESTful API architecture
@@ -2015,8 +2062,8 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - File upload handling for bulk import
 - Excel/CSV processing library (e.g., Apache POI, OpenCSV)
 - Batch processing for large file imports
-- **Dynamic Excel template generation with data validation**
-- **School-specific data population for dropdown lists**
+- Dynamic Excel template generation with data validation
+- School-specific data population for dropdown lists
 
 ### 20.3 Security\n- Encrypted passwords\n- Secure exam environment
 - Activity logging\n- Data isolation\n- XSS prevention for rich text content
@@ -2030,7 +2077,7 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - Optimized print preview generation
 - Asynchronous file processing for bulk uploads
 - Progress tracking for long-running imports
-- **Efficient template generation with cached school data**
+- Efficient template generation with cached school data
 
 ### 20.5 Scalability
 - Support for multiple schools
@@ -2054,4 +2101,4 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - Help desk support
 - FAQ section
 \n## 22. Conclusion\n
-A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting, bulk upload functionality with dropdown selections for Class and Subject to prevent input errors, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The addition of the Students card to the Teacher Dashboard with role-based access control, combined with the rich text editor functionality, improved bulk upload capability with Excel data validation, and the new preview-print feature in Question Paper History, further enhances teacher productivity by allowing them to create well-formatted questions, import large question banks efficiently with reduced errors, manage students from their assigned sections effectively, and print question papers with all formatting preserved directly from the preview dialog. The updated side panel navigation for both Principal and Teacher roles now includes easy access to Question Paper History, streamlining the workflow and improving overall user experience.
+A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting, **updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples**, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The addition of the Students card to the Teacher Dashboard with role-based access control, combined with the rich text editor functionality, **improved bulk upload capability with cleaner data entry experience and better guidance through separate reference examples**, and the new preview-print feature in Question Paper History, further enhances teacher productivity by allowing them to create well-formatted questions, import large question banks efficiently with reduced errors through dropdown selections and reference examples, manage students from their assigned sections effectively, and print question papers with all formatting preserved directly from the preview dialog. The updated side panel navigation for both Principal and Teacher roles now includes easy access to Question Paper History, streamlining the workflow and improving overall user experience.
