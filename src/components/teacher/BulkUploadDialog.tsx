@@ -520,33 +520,39 @@ export default function BulkUploadDialog({
           const worksheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(worksheet) as any[];
 
+          // Helper function to safely convert to string
+          const toString = (value: any): string => {
+            if (value === null || value === undefined) return '';
+            return String(value);
+          };
+
           const parsedQuestions: ParsedQuestion[] = jsonData.map((row, index) => ({
             row: index + 2,
-            question_text: row['Question Text'] || '',
-            class_name: row['Class Name'] || '',
-            subject_name: row['Subject Name'] || '',
-            lesson_name: row['Lesson Name'] || '',
-            question_type: (row['Question Type'] || '').toLowerCase(),
-            difficulty: (row['Difficulty'] || '').toLowerCase(),
+            question_text: toString(row['Question Text']),
+            class_name: toString(row['Class Name']),
+            subject_name: toString(row['Subject Name']),
+            lesson_name: toString(row['Lesson Name']),
+            question_type: toString(row['Question Type']).toLowerCase(),
+            difficulty: toString(row['Difficulty']).toLowerCase(),
             marks: Number(row['Marks']) || 1,
             negative_marks: Number(row['Negative Marks']) || 0,
-            option_a: row['Option A'] || '',
-            option_b: row['Option B'] || '',
-            option_c: row['Option C'] || '',
-            option_d: row['Option D'] || '',
-            correct_answer: row['Correct Answer'] || '',
-            match_left_1: row['Match Left 1'] || '',
-            match_right_1: row['Match Right 1'] || '',
-            match_left_2: row['Match Left 2'] || '',
-            match_right_2: row['Match Right 2'] || '',
-            match_left_3: row['Match Left 3'] || '',
-            match_right_3: row['Match Right 3'] || '',
-            match_left_4: row['Match Left 4'] || '',
-            match_right_4: row['Match Right 4'] || '',
-            answer_option_1: row['Answer Option 1'] || '',
-            answer_option_2: row['Answer Option 2'] || '',
-            answer_option_3: row['Answer Option 3'] || '',
-            answer_option_4: row['Answer Option 4'] || '',
+            option_a: toString(row['Option A']),
+            option_b: toString(row['Option B']),
+            option_c: toString(row['Option C']),
+            option_d: toString(row['Option D']),
+            correct_answer: toString(row['Correct Answer']),
+            match_left_1: toString(row['Match Left 1']),
+            match_right_1: toString(row['Match Right 1']),
+            match_left_2: toString(row['Match Left 2']),
+            match_right_2: toString(row['Match Right 2']),
+            match_left_3: toString(row['Match Left 3']),
+            match_right_3: toString(row['Match Right 3']),
+            match_left_4: toString(row['Match Left 4']),
+            match_right_4: toString(row['Match Right 4']),
+            answer_option_1: toString(row['Answer Option 1']),
+            answer_option_2: toString(row['Answer Option 2']),
+            answer_option_3: toString(row['Answer Option 3']),
+            answer_option_4: toString(row['Answer Option 4']),
           }));
 
           resolve(parsedQuestions);
