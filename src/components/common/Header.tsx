@@ -103,7 +103,7 @@ export default function Header() {
               <div className="w-10 h-10 gradient-purple-blue rounded-lg flex items-center justify-center glow-primary">
                 <Box className="w-6 h-6 text-white" />
               </div>
-              <span className="font-bold text-xl hidden sm:inline-block smooth-gradient-text">
+              <span className="font-bold text-xl hidden sm:inline-block" style={{ color: '#FFD700' }}>
                 A Cube
               </span>
             </Link>
