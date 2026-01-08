@@ -35,7 +35,8 @@ export default function StudentExams() {
       }
 
       const classId = studentMapping.class_id;
-      const data = await examApi.getExamsByClass(classId);
+      // Use the new getExamsForStudent API to get both class-level and student-specific exams
+      const data = await examApi.getExamsForStudent(profile.id, classId);
       
       const publishedExams = data.filter(exam => exam.status === 'published');
       setExams(publishedExams);

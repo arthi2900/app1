@@ -280,6 +280,19 @@ export interface ExamAnswer {
   updated_at: string;
 }
 
+export interface ExamStudentAllocation {
+  id: string;
+  exam_id: string;
+  student_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ExamStudentAllocationWithDetails extends ExamStudentAllocation {
+  student?: Profile | null;
+  exam?: ExamWithDetails | null;
+}
+
 export interface ExamAnswerWithDetails extends ExamAnswer {
   question?: Question | null;
   evaluator?: Profile | null;

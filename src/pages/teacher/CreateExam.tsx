@@ -13,10 +13,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import MultiSelect from '@/components/ui/multi-select';
 import { useToast } from '@/hooks/use-toast';
-import { examApi, academicApi, profileApi } from '@/db/api';
-import { ArrowLeft, Calendar, Clock, FileText } from 'lucide-react';
-import type { QuestionPaper, Class, Subject, ExamStatus } from '@/types/types';
+import { examApi, academicApi, profileApi, examStudentAllocationApi } from '@/db/api';
+import { ArrowLeft, Calendar, Clock, FileText, Users } from 'lucide-react';
+import type { QuestionPaper, Class, Subject, ExamStatus, StudentClassSectionWithDetails } from '@/types/types';
 import { convertISTInputToUTC } from '@/utils/timezone';
 
 export default function CreateExam() {
@@ -27,6 +28,9 @@ export default function CreateExam() {
   const [classes, setClasses] = useState<Class[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [teacherId, setTeacherId] = useState<string>('');
+  const [students, setStudents] = useState<StudentClassSectionWithDetails[]>([]);
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const [assignmentType, setAssignmentType] = useState<'class' | 'students'>('class');
 
   const [formData, setFormData] = useState({
     title: '',
@@ -60,6 +64,29 @@ export default function CreateExam() {
       }
     }
   }, [formData.questionPaperId, questionPapers]);
+
+  // Load students when class is selected
+  useEffect(() => {
+    if (formData.classId) {
+      loadStudents(formData.classId);
+    } else {
+      setStudents([]);
+      setSelectedStudents([]);
+    }
+  }, [formData.classId]);
+
+  const loadStudents = async (classId: string) => {
+    try {
+      const studentsList = await academicApi.getStudentsByClass(classId);
+      setStudents(studentsList);
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to load students',
+        variant: 'destructive',
+      });
+    }
+  };
 
   const loadInitialData = async () => {
     try {
@@ -99,6 +126,11 @@ export default function CreateExam() {
         throw new Error('Please select a question paper');
       }
 
+      // Validate student selection if assignment type is 'students'
+      if (assignmentType === 'students' && selectedStudents.length === 0) {
+        throw new Error('Please select at least one student');
+      }
+
       const selectedPaper = questionPapers.find(p => p.id === formData.questionPaperId);
       if (!selectedPaper) throw new Error('Question paper not found');
 
@@ -135,7 +167,12 @@ export default function CreateExam() {
         approved_at: null,
       };
 
-      await examApi.createExam(examData);
+      const createdExam = await examApi.createExam(examData);
+
+      // If assignment type is 'students', create student allocations
+      if (assignmentType === 'students' && selectedStudents.length > 0) {
+        await examStudentAllocationApi.createAllocations(createdExam.id, selectedStudents);
+      }
 
       toast({
         title: 'Success',
@@ -251,6 +288,66 @@ export default function CreateExam() {
                 </Select>
               </div>
             </div>
+
+            {/* Assignment Type Selection */}
+            <div className="space-y-2">
+              <Label>Assign Exam To</Label>
+              <RadioGroup
+                value={assignmentType}
+                onValueChange={(value: 'class' | 'students') => {
+                  setAssignmentType(value);
+                  if (value === 'class') {
+                    setSelectedStudents([]);
+                  }
+                }}
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="class" id="assign-class" />
+                  <Label htmlFor="assign-class" className="font-normal cursor-pointer">
+                    Entire Class
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="students" id="assign-students" />
+                  <Label htmlFor="assign-students" className="font-normal cursor-pointer">
+                    Specific Students
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            {/* Student Selection - Only show when assignment type is 'students' */}
+            {assignmentType === 'students' && (
+              <div className="space-y-2">
+                <Label htmlFor="students">
+                  <Users className="inline w-4 h-4 mr-1" />
+                  Select Students *
+                </Label>
+                {!formData.classId ? (
+                  <p className="text-sm text-muted-foreground">
+                    Please select a class first to see available students
+                  </p>
+                ) : students.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    No students found in the selected class
+                  </p>
+                ) : (
+                  <MultiSelect
+                    options={students.map(s => ({
+                      label: `${s.student?.full_name || s.student?.username || 'Unknown'} (${s.section?.section_name || 'N/A'})`,
+                      value: s.student_id,
+                    }))}
+                    value={selectedStudents}
+                    onChange={setSelectedStudents}
+                  />
+                )}
+                {selectedStudents.length > 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    {selectedStudents.length} student{selectedStudents.length > 1 ? 's' : ''} selected
+                  </p>
+                )}
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="questionPaper">Question Paper *</Label>

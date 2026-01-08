@@ -29,6 +29,8 @@ import type {
   StudentExamAllocation,
   ExamAnswer,
   ExamAnswerWithDetails,
+  ExamStudentAllocation,
+  ExamStudentAllocationWithDetails,
 } from '@/types/types';
 
 // Profile APIs
@@ -695,6 +697,22 @@ export const academicApi = {
     return Array.isArray(data) ? data : [];
   },
 
+  async getStudentsByClass(classId: string, academicYear: string = '2024-2025'): Promise<StudentClassSectionWithDetails[]> {
+    const { data, error } = await supabase
+      .from('student_class_sections')
+      .select(`
+        *,
+        student:profiles!student_class_sections_student_id_fkey(*),
+        class:classes!student_class_sections_class_id_fkey(*),
+        section:sections!student_class_sections_section_id_fkey(*)
+      `)
+      .eq('class_id', classId)
+      .eq('academic_year', academicYear)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
   async assignStudentToClassSection(assignment: Omit<StudentClassSection, 'id' | 'created_at'>): Promise<StudentClassSection | null> {
     const { data, error } = await supabase
       .from('student_class_sections')
@@ -1055,6 +1073,122 @@ export const examApi = {
       .order('start_time', { ascending: true });
     if (error) throw error;
     return Array.isArray(data) ? data : [];
+  },
+
+  async getExamsForStudent(studentId: string, classId: string): Promise<ExamWithDetails[]> {
+    // Get all published exams for the student's class
+    const { data: classExams, error: classError } = await supabase
+      .from('exams')
+      .select(`
+        *,
+        question_paper:question_papers(*),
+        class:classes(*),
+        subject:subjects(*),
+        teacher:profiles!exams_teacher_id_fkey(*)
+      `)
+      .eq('class_id', classId)
+      .eq('status', 'published')
+      .order('start_time', { ascending: true });
+    
+    if (classError) throw classError;
+
+    // Get student-specific allocations
+    const { data: allocations, error: allocError } = await supabase
+      .from('exam_student_allocations')
+      .select('exam_id')
+      .eq('student_id', studentId);
+    
+    if (allocError) throw allocError;
+
+    const allocatedExamIds = new Set((allocations || []).map(a => a.exam_id));
+    
+    // Filter exams: include only those that either:
+    // 1. Have no student allocations (class-level exams), OR
+    // 2. Have the student in their allocations (student-specific exams)
+    const filteredExams = await Promise.all(
+      (classExams || []).map(async (exam) => {
+        // Check if this exam has any student allocations
+        const { data: examAllocations, error: examAllocError } = await supabase
+          .from('exam_student_allocations')
+          .select('id')
+          .eq('exam_id', exam.id)
+          .limit(1);
+        
+        if (examAllocError) throw examAllocError;
+
+        // If exam has no allocations, it's a class-level exam (include it)
+        // If exam has allocations, only include if student is allocated
+        if (!examAllocations || examAllocations.length === 0) {
+          return exam;
+        } else if (allocatedExamIds.has(exam.id)) {
+          return exam;
+        }
+        return null;
+      })
+    );
+
+    return filteredExams.filter(exam => exam !== null) as ExamWithDetails[];
+  },
+};
+
+// Exam Student Allocation API
+export const examStudentAllocationApi = {
+  async createAllocations(examId: string, studentIds: string[]): Promise<void> {
+    const allocations = studentIds.map(studentId => ({
+      exam_id: examId,
+      student_id: studentId,
+    }));
+
+    const { error } = await supabase
+      .from('exam_student_allocations')
+      .insert(allocations);
+    
+    if (error) throw error;
+  },
+
+  async getAllocationsByExam(examId: string): Promise<ExamStudentAllocationWithDetails[]> {
+    const { data, error } = await supabase
+      .from('exam_student_allocations')
+      .select(`
+        *,
+        student:profiles!exam_student_allocations_student_id_fkey(*)
+      `)
+      .eq('exam_id', examId);
+    
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getAllocationsByStudent(studentId: string): Promise<ExamStudentAllocationWithDetails[]> {
+    const { data, error } = await supabase
+      .from('exam_student_allocations')
+      .select(`
+        *,
+        exam:exams!exam_student_allocations_exam_id_fkey(*)
+      `)
+      .eq('student_id', studentId);
+    
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async deleteAllocationsByExam(examId: string): Promise<void> {
+    const { error } = await supabase
+      .from('exam_student_allocations')
+      .delete()
+      .eq('exam_id', examId);
+    
+    if (error) throw error;
+  },
+
+  async deleteAllocation(examId: string, studentId: string): Promise<void> {
+    const { error } = await supabase
+      .from('exam_student_allocations')
+      .delete()
+      .eq('exam_id', examId)
+      .eq('student_id', studentId);
+    
+    if (error) throw error;
   },
 };
 
