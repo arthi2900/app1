@@ -343,6 +343,38 @@ export default function CreateExam() {
               </div>
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="questionPaper">Question Paper *</Label>
+              <Select
+                value={formData.questionPaperId}
+                onValueChange={(value) => {
+                  const paper = questionPapers.find(p => p.id === value);
+                  setFormData({ 
+                    ...formData, 
+                    questionPaperId: value,
+                    classId: paper?.class_id || formData.classId,
+                    subjectId: paper?.subject_id || formData.subjectId,
+                  });
+                }}
+                required
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select question paper" />
+                </SelectTrigger>
+                <SelectContent>
+                  {questionPapers.map((paper) => (
+                    <SelectItem 
+                      key={paper.id} 
+                      value={paper.id}
+                      disabled={paper.total_marks === 0}
+                    >
+                      {paper.title} {paper.total_marks === 0 ? '(No questions)' : `(${paper.total_marks} marks)`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Assignment Type Selection */}
             <div className="space-y-2">
               <Label>Assign Exam To</Label>
@@ -439,38 +471,6 @@ export default function CreateExam() {
                 )}
               </div>
             )}
-
-            <div className="space-y-2">
-              <Label htmlFor="questionPaper">Question Paper *</Label>
-              <Select
-                value={formData.questionPaperId}
-                onValueChange={(value) => {
-                  const paper = questionPapers.find(p => p.id === value);
-                  setFormData({ 
-                    ...formData, 
-                    questionPaperId: value,
-                    classId: paper?.class_id || formData.classId,
-                    subjectId: paper?.subject_id || formData.subjectId,
-                  });
-                }}
-                required
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select question paper" />
-                </SelectTrigger>
-                <SelectContent>
-                  {questionPapers.map((paper) => (
-                    <SelectItem 
-                      key={paper.id} 
-                      value={paper.id}
-                      disabled={paper.total_marks === 0}
-                    >
-                      {paper.title} {paper.total_marks === 0 ? '(No questions)' : `(${paper.total_marks} marks)`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
