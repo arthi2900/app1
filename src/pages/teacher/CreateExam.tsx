@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -13,11 +14,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import MultiSelect from '@/components/ui/multi-select';
 import { useToast } from '@/hooks/use-toast';
 import { examApi, academicApi, profileApi, examStudentAllocationApi } from '@/db/api';
 import { ArrowLeft, Calendar, Clock, FileText, Users } from 'lucide-react';
-import type { QuestionPaper, Class, Subject, ExamStatus, StudentClassSectionWithDetails } from '@/types/types';
+import type { QuestionPaper, Class, Subject, Section, ExamStatus, StudentClassSectionWithDetails } from '@/types/types';
 import { convertISTInputToUTC } from '@/utils/timezone';
 
 export default function CreateExam() {
@@ -26,6 +26,7 @@ export default function CreateExam() {
   const [loading, setLoading] = useState(false);
   const [questionPapers, setQuestionPapers] = useState<QuestionPaper[]>([]);
   const [classes, setClasses] = useState<Class[]>([]);
+  const [sections, setSections] = useState<Section[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [teacherId, setTeacherId] = useState<string>('');
   const [students, setStudents] = useState<StudentClassSectionWithDetails[]>([]);
@@ -37,6 +38,7 @@ export default function CreateExam() {
     examType: 'practice' as 'practice' | 'school',
     questionPaperId: '',
     classId: '',
+    sectionId: '',
     subjectId: '',
     startDate: '',
     startTime: '',
@@ -65,19 +67,44 @@ export default function CreateExam() {
     }
   }, [formData.questionPaperId, questionPapers]);
 
-  // Load students when class is selected
+  // Load sections when class is selected
   useEffect(() => {
     if (formData.classId) {
-      loadStudents(formData.classId);
+      loadSections(formData.classId);
     } else {
+      setSections([]);
+      setFormData(prev => ({ ...prev, sectionId: '' }));
       setStudents([]);
       setSelectedStudents([]);
     }
   }, [formData.classId]);
 
-  const loadStudents = async (classId: string) => {
+  // Load students when section is selected (for "Specific Students" option)
+  useEffect(() => {
+    if (formData.classId && formData.sectionId && assignmentType === 'students') {
+      loadStudents(formData.classId, formData.sectionId);
+    } else {
+      setStudents([]);
+      setSelectedStudents([]);
+    }
+  }, [formData.classId, formData.sectionId, assignmentType]);
+
+  const loadSections = async (classId: string) => {
     try {
-      const studentsList = await academicApi.getStudentsByClass(classId);
+      const sectionsList = await academicApi.getSectionsByClassId(classId);
+      setSections(sectionsList);
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to load sections',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const loadStudents = async (classId: string, sectionId: string) => {
+    try {
+      const studentsList = await academicApi.getStudentsByClassSection(classId, sectionId, '2024-2025');
       setStudents(studentsList);
     } catch (error: any) {
       toast({
@@ -247,12 +274,15 @@ export default function CreateExam() {
               />
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-3">
               <div className="space-y-2">
                 <Label htmlFor="class">Class *</Label>
                 <Select
                   value={formData.classId}
-                  onValueChange={(value) => setFormData({ ...formData, classId: value })}
+                  onValueChange={(value) => {
+                    setFormData({ ...formData, classId: value, sectionId: '' });
+                    setSelectedStudents([]);
+                  }}
                   required
                 >
                   <SelectTrigger>
@@ -262,6 +292,30 @@ export default function CreateExam() {
                     {classes.map((cls) => (
                       <SelectItem key={cls.id} value={cls.id}>
                         {cls.class_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="section">Section *</Label>
+                <Select
+                  value={formData.sectionId}
+                  onValueChange={(value) => {
+                    setFormData({ ...formData, sectionId: value });
+                    setSelectedStudents([]);
+                  }}
+                  required
+                  disabled={!formData.classId}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select section" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sections.map((section) => (
+                      <SelectItem key={section.id} value={section.id}>
+                        {section.section_name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -319,27 +373,64 @@ export default function CreateExam() {
             {/* Student Selection - Only show when assignment type is 'students' */}
             {assignmentType === 'students' && (
               <div className="space-y-2">
-                <Label htmlFor="students">
-                  <Users className="inline w-4 h-4 mr-1" />
-                  Select Students *
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="students">
+                    <Users className="inline w-4 h-4 mr-1" />
+                    Select Students *
+                  </Label>
+                  {students.length > 0 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        if (selectedStudents.length === students.length) {
+                          setSelectedStudents([]);
+                        } else {
+                          setSelectedStudents(students.map(s => s.student_id));
+                        }
+                      }}
+                    >
+                      {selectedStudents.length === students.length ? 'Deselect All' : 'Select All'}
+                    </Button>
+                  )}
+                </div>
                 {!formData.classId ? (
                   <p className="text-sm text-muted-foreground">
                     Please select a class first to see available students
                   </p>
+                ) : !formData.sectionId ? (
+                  <p className="text-sm text-muted-foreground">
+                    Please select a section to see available students
+                  </p>
                 ) : students.length === 0 ? (
                   <p className="text-sm text-muted-foreground">
-                    No students found in the selected class
+                    No students found in the selected section
                   </p>
                 ) : (
-                  <MultiSelect
-                    options={students.map(s => ({
-                      label: `${s.student?.full_name || s.student?.username || 'Unknown'} (${s.section?.section_name || 'N/A'})`,
-                      value: s.student_id,
-                    }))}
-                    value={selectedStudents}
-                    onChange={setSelectedStudents}
-                  />
+                  <div className="border rounded-md p-4 max-h-64 overflow-y-auto space-y-3">
+                    {students.map((student) => (
+                      <div key={student.student_id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`student-${student.student_id}`}
+                          checked={selectedStudents.includes(student.student_id)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedStudents([...selectedStudents, student.student_id]);
+                            } else {
+                              setSelectedStudents(selectedStudents.filter(id => id !== student.student_id));
+                            }
+                          }}
+                        />
+                        <Label
+                          htmlFor={`student-${student.student_id}`}
+                          className="font-normal cursor-pointer flex-1"
+                        >
+                          {student.student?.full_name || student.student?.username || 'Unknown'}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
                 )}
                 {selectedStudents.length > 0 && (
                   <p className="text-sm text-muted-foreground">
