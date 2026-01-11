@@ -642,9 +642,9 @@ export default function QuestionPaperPreparation() {
 
       {/* Step 2: Question Selection */}
       {currentStep === 2 && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Main Question Selection */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <Card>
               <CardHeader>
                 <CardTitle>Select Questions</CardTitle>
