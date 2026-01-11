@@ -749,17 +749,17 @@ export default function QuestionPaperPreparation() {
                     <Loader2 className="h-6 w-6 animate-spin text-primary" />
                   </div>
                 ) : (
-                  <div className="border rounded-lg max-h-[500px] overflow-y-auto">
+                  <div className="border rounded-lg max-h-[500px] overflow-auto">
                     <Table>
                       <TableHeader>
                         <TableRow>
                           <TableHead className="w-12">Select</TableHead>
-                          <TableHead>Question</TableHead>
+                          <TableHead className="min-w-[400px]">Question</TableHead>
                           <TableHead>Type</TableHead>
                           <TableHead>Difficulty</TableHead>
                           <TableHead>Marks</TableHead>
-                          <TableHead className="w-24">Usage Count</TableHead>
-                          <TableHead>Used In Papers</TableHead>
+                          <TableHead className="w-32">Usage Count</TableHead>
+                          <TableHead className="min-w-[200px]">Used In Papers</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -774,33 +774,33 @@ export default function QuestionPaperPreparation() {
                             const usage = questionUsageStats[question.id] || { count: 0, papers: [] };
                             return (
                             <TableRow key={question.id}>
-                              <TableCell>
+                              <TableCell className="align-top">
                                 <Checkbox
                                   checked={selectedQuestions.has(question.id)}
                                   onCheckedChange={() => handleQuestionToggle(question.id)}
                                 />
                               </TableCell>
-                              <TableCell className="max-w-md">
+                              <TableCell className="min-w-[400px] max-w-[600px]">
                                 <div 
-                                  className="question-content line-clamp-2"
+                                  className="question-content whitespace-normal"
                                   dangerouslySetInnerHTML={{ __html: question.question_text }}
                                 />
                               </TableCell>
-                              <TableCell>
+                              <TableCell className="align-top">
                                 <Badge variant="outline">{getQuestionTypeLabel(question.question_type)}</Badge>
                               </TableCell>
-                              <TableCell>
+                              <TableCell className="align-top">
                                 <Badge className={getDifficultyColor(question.difficulty)}>
                                   {question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1)}
                                 </Badge>
                               </TableCell>
-                              <TableCell>{question.marks}</TableCell>
-                              <TableCell>
+                              <TableCell className="align-top">{question.marks}</TableCell>
+                              <TableCell className="align-top">
                                 <Badge variant={usage.count === 0 ? "secondary" : "default"}>
                                   {usage.count} {usage.count === 1 ? 'time' : 'times'}
                                 </Badge>
                               </TableCell>
-                              <TableCell>
+                              <TableCell className="align-top min-w-[200px]">
                                 {usage.count === 0 ? (
                                   <span className="text-sm text-muted-foreground">Not used yet</span>
                                 ) : (
