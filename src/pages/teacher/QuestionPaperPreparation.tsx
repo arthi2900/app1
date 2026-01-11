@@ -749,17 +749,17 @@ export default function QuestionPaperPreparation() {
                     <Loader2 className="h-6 w-6 animate-spin text-primary" />
                   </div>
                 ) : (
-                  <div className="border rounded-lg max-h-[500px] overflow-auto">
+                  <div className="border rounded-lg max-h-[500px] overflow-y-auto">
                     <Table>
                       <TableHeader>
                         <TableRow>
                           <TableHead className="w-12">Select</TableHead>
-                          <TableHead className="min-w-[400px]">Question</TableHead>
-                          <TableHead>Type</TableHead>
-                          <TableHead>Difficulty</TableHead>
-                          <TableHead>Marks</TableHead>
-                          <TableHead className="w-32">Usage Count</TableHead>
-                          <TableHead className="min-w-[200px]">Used In Papers</TableHead>
+                          <TableHead className="w-[300px]">Question</TableHead>
+                          <TableHead className="w-32">Type</TableHead>
+                          <TableHead className="w-28">Difficulty</TableHead>
+                          <TableHead className="w-20">Marks</TableHead>
+                          <TableHead className="w-28">Usage Count</TableHead>
+                          <TableHead className="w-40">Used In Papers</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -774,45 +774,45 @@ export default function QuestionPaperPreparation() {
                             const usage = questionUsageStats[question.id] || { count: 0, papers: [] };
                             return (
                             <TableRow key={question.id}>
-                              <TableCell className="align-top">
+                              <TableCell className="align-top w-12">
                                 <Checkbox
                                   checked={selectedQuestions.has(question.id)}
                                   onCheckedChange={() => handleQuestionToggle(question.id)}
                                 />
                               </TableCell>
-                              <TableCell className="min-w-[400px] max-w-[600px]">
+                              <TableCell className="align-top w-[300px]">
                                 <div 
-                                  className="question-content whitespace-normal"
+                                  className="question-content whitespace-normal text-sm"
                                   dangerouslySetInnerHTML={{ __html: question.question_text }}
                                 />
                               </TableCell>
-                              <TableCell className="align-top">
-                                <Badge variant="outline">{getQuestionTypeLabel(question.question_type)}</Badge>
+                              <TableCell className="align-top w-32">
+                                <Badge variant="outline" className="text-xs">{getQuestionTypeLabel(question.question_type)}</Badge>
                               </TableCell>
-                              <TableCell className="align-top">
-                                <Badge className={getDifficultyColor(question.difficulty)}>
+                              <TableCell className="align-top w-28">
+                                <Badge className={getDifficultyColor(question.difficulty) + " text-xs"}>
                                   {question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1)}
                                 </Badge>
                               </TableCell>
-                              <TableCell className="align-top">{question.marks}</TableCell>
-                              <TableCell className="align-top">
-                                <Badge variant={usage.count === 0 ? "secondary" : "default"}>
+                              <TableCell className="align-top w-20 text-center">{question.marks}</TableCell>
+                              <TableCell className="align-top w-28">
+                                <Badge variant={usage.count === 0 ? "secondary" : "default"} className="text-xs whitespace-nowrap">
                                   {usage.count} {usage.count === 1 ? 'time' : 'times'}
                                 </Badge>
                               </TableCell>
-                              <TableCell className="align-top min-w-[200px]">
+                              <TableCell className="align-top w-40">
                                 {usage.count === 0 ? (
-                                  <span className="text-sm text-muted-foreground">Not used yet</span>
+                                  <span className="text-xs text-muted-foreground">Not used yet</span>
                                 ) : (
                                   <div className="space-y-1">
-                                    {usage.papers.slice(0, 2).map((paper) => (
-                                      <div key={paper.id} className="text-sm text-muted-foreground">
+                                    {usage.papers.slice(0, 1).map((paper) => (
+                                      <div key={paper.id} className="text-xs text-muted-foreground truncate" title={paper.title}>
                                         • {paper.title}
                                       </div>
                                     ))}
-                                    {usage.papers.length > 2 && (
+                                    {usage.papers.length > 1 && (
                                       <div className="text-xs text-muted-foreground">
-                                        +{usage.papers.length - 2} more
+                                        +{usage.papers.length - 1} more
                                       </div>
                                     )}
                                   </div>
