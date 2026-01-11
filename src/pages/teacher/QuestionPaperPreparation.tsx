@@ -754,12 +754,12 @@ export default function QuestionPaperPreparation() {
                       <TableHeader>
                         <TableRow>
                           <TableHead className="w-12">Select</TableHead>
-                          <TableHead className="w-[300px]">Question</TableHead>
-                          <TableHead className="w-32">Type</TableHead>
-                          <TableHead className="w-28">Difficulty</TableHead>
-                          <TableHead className="w-20">Marks</TableHead>
-                          <TableHead className="w-28">Usage Count</TableHead>
-                          <TableHead className="w-40">Used In Papers</TableHead>
+                          <TableHead className="min-w-[350px]">Question</TableHead>
+                          <TableHead className="w-36">Type</TableHead>
+                          <TableHead className="w-32">Difficulty</TableHead>
+                          <TableHead className="w-24">Marks</TableHead>
+                          <TableHead className="w-32">Usage Count</TableHead>
+                          <TableHead className="min-w-[250px]">Used In Papers</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -780,41 +780,36 @@ export default function QuestionPaperPreparation() {
                                   onCheckedChange={() => handleQuestionToggle(question.id)}
                                 />
                               </TableCell>
-                              <TableCell className="align-top w-[300px]">
+                              <TableCell className="align-top min-w-[350px]">
                                 <div 
-                                  className="question-content whitespace-normal text-sm"
+                                  className="question-content whitespace-normal"
                                   dangerouslySetInnerHTML={{ __html: question.question_text }}
                                 />
                               </TableCell>
-                              <TableCell className="align-top w-32">
-                                <Badge variant="outline" className="text-xs">{getQuestionTypeLabel(question.question_type)}</Badge>
+                              <TableCell className="align-top w-36">
+                                <Badge variant="outline">{getQuestionTypeLabel(question.question_type)}</Badge>
                               </TableCell>
-                              <TableCell className="align-top w-28">
-                                <Badge className={getDifficultyColor(question.difficulty) + " text-xs"}>
+                              <TableCell className="align-top w-32">
+                                <Badge className={getDifficultyColor(question.difficulty)}>
                                   {question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1)}
                                 </Badge>
                               </TableCell>
-                              <TableCell className="align-top w-20 text-center">{question.marks}</TableCell>
-                              <TableCell className="align-top w-28">
-                                <Badge variant={usage.count === 0 ? "secondary" : "default"} className="text-xs whitespace-nowrap">
+                              <TableCell className="align-top w-24 text-center">{question.marks}</TableCell>
+                              <TableCell className="align-top w-32">
+                                <Badge variant={usage.count === 0 ? "secondary" : "default"}>
                                   {usage.count} {usage.count === 1 ? 'time' : 'times'}
                                 </Badge>
                               </TableCell>
-                              <TableCell className="align-top w-40">
+                              <TableCell className="align-top min-w-[250px]">
                                 {usage.count === 0 ? (
-                                  <span className="text-xs text-muted-foreground">Not used yet</span>
+                                  <span className="text-sm text-muted-foreground">Not used yet</span>
                                 ) : (
                                   <div className="space-y-1">
-                                    {usage.papers.slice(0, 1).map((paper) => (
-                                      <div key={paper.id} className="text-xs text-muted-foreground truncate" title={paper.title}>
+                                    {usage.papers.map((paper) => (
+                                      <div key={paper.id} className="text-sm text-muted-foreground">
                                         • {paper.title}
                                       </div>
                                     ))}
-                                    {usage.papers.length > 1 && (
-                                      <div className="text-xs text-muted-foreground">
-                                        +{usage.papers.length - 1} more
-                                      </div>
-                                    )}
                                   </div>
                                 )}
                               </TableCell>
