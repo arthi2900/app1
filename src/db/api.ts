@@ -454,6 +454,41 @@ export const questionApi = {
     if (error) throw error;
     return Array.isArray(data) ? data : [];
   },
+
+  async getQuestionUsageStats(questionIds: string[]): Promise<Record<string, { count: number; papers: { id: string; title: string }[] }>> {
+    if (questionIds.length === 0) return {};
+
+    const { data, error } = await supabase
+      .from('question_paper_questions')
+      .select(`
+        question_id,
+        question_paper:question_papers(id, title, status)
+      `)
+      .in('question_id', questionIds);
+    
+    if (error) throw error;
+
+    const usageMap: Record<string, { count: number; papers: { id: string; title: string }[] }> = {};
+    
+    (data || []).forEach((item: any) => {
+      const questionId = item.question_id;
+      const paper = item.question_paper;
+      
+      // Only count papers that are in 'final' status
+      if (paper && paper.status === 'final') {
+        if (!usageMap[questionId]) {
+          usageMap[questionId] = { count: 0, papers: [] };
+        }
+        usageMap[questionId].count++;
+        usageMap[questionId].papers.push({
+          id: paper.id,
+          title: paper.title
+        });
+      }
+    });
+
+    return usageMap;
+  },
 };
 
 // Lesson APIs

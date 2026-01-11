@@ -6,7 +6,7 @@
 A Cube - Online Exam System
 
 ### 1.2 Application Purpose
-A comprehensive online exam management platform for educational institutions, focusing on NEET preparation and school-level assessments. The system enables schools to create, conduct, and analyze exams efficiently with features including school management, academic structure setup, teacher-subject-class-section mapping, question bank management with bulk upload capability, question paper preparation, online exam creation with approval workflow, user management with school-based data isolation, student allocation tracking, and detailed performance analytics.
+A comprehensive online exam management platform for educational institutions, focusing on NEET preparation and school-level assessments. The system enables schools to create, conduct, and analyze exams efficiently with features including school management, academic structure setup, teacher-subject-class-section mapping, question bank management with bulk upload capability, question paper preparation with question usage tracking, online exam creation with approval workflow, user management with school-based data isolation, student allocation tracking, and detailed performance analytics.
 
 ### 1.3 Tagline
 Smart • Secure • Scalable Online Exams
@@ -32,7 +32,8 @@ Smart • Secure • Scalable Online Exams
   - View teacher accounts
   - Teacher-subject-class-section mapping\n  - View class-section overview with assigned teachers per subject
   - Edit teacher profiles
-- Student Management (within assigned school only):\n  - View students list
+- Student Management (within assigned school only):
+  - View students list
   - View student class-section assignments
 - Question Bank Management (within assigned school only):
   - Create and manage questions with lesson-level tracking
@@ -40,8 +41,7 @@ Smart • Secure • Scalable Online Exams
   - Insert images/clip arts in questions
   - Use rich text editor for question text formatting (bold, underline, italic, etc.)
   - View question bank analytics
-  - Switch between Row View and Card View
-  - Edit questions in both views
+  - Switch between Row View and Card View\n  - Edit questions in both views
 - Question Paper History Access (within assigned school only):
   - View all question papers created by teachers in their school
   - Filter and search question paper history
@@ -79,6 +79,7 @@ Smart • Secure • Scalable Online Exams
 - Question Paper Preparation:
   - Create question papers from own question bank
   - Select questions by class and subject
+  - **NEW: View question usage count and list of question papers where each question was used**
   - Shuffle questions and MCQ options
   - Preview, save as draft, generate final paper
   - Export as PDF and print
@@ -93,8 +94,7 @@ Smart • Secure • Scalable Online Exams
 - Online Exam Management:
   - Create practice exams (no approval required) to assess student understanding
   - Create school-level exams (requires Principal approval before scheduling)
-  - Configure exam settings (duration, start/end time, negative marking)
-  - Note: Passing marks are automatically calculated as 35% of total marks
+  - Configure exam settings (duration, start/end time, negative marking)\n  - Note: Passing marks are automatically calculated as 35% of total marks
   - Publish practice exams directly to assigned sections
   - Submit school-level exams for Principal approval
   - View student allocation list with attendance status for own exams
@@ -105,8 +105,7 @@ Smart • Secure • Scalable Online Exams
   - Manually grade subjective questions (Short Answer, Essay)\n  - Generate exam reports and analytics
   - Export exam results\n  - Delete own exams (with restrictions, cannot force delete exams with student attempts)
 - Profile editing capability
-- Linked to specific school from school master list
-- School-based isolation: Can only view and interact with students from their assigned sections
+- Linked to specific school from school master list\n- School-based isolation: Can only view and interact with students from their assigned sections
 
 ### 2.4 Student
 - View my class, section, subjects, and teachers
@@ -126,7 +125,8 @@ Smart • Secure • Scalable Online Exams
 
 ### 2.5 User Profile Information
 All users (Admin, Principal, Teacher, Student) will have the following profile information:
-- User name\n- Email address
+- User name
+- Email address
 - Role\n- School name (mandatory field, selected from dropdown list populated from School Master)
 - Contact number
 - Profile picture (optional)\n- Account status (Pending Approval/Active/Suspended)
@@ -196,7 +196,8 @@ After Principal login, the dashboard displays seven main cards:
 - Principal can create classes for their assigned school
 - Class information fields:\n  - Class Name (e.g., Class 6, Class 7, Class 8, etc.)
   - Class Code (auto-generated or manual entry)
-  - Academic Year (e.g., 2024-2025)\n- Class list view with edit and delete options
+  - Academic Year (e.g., 2024-2025)
+- Class list view with edit and delete options
 - Classes are school-specific and isolated\n
 #### 5.2.2 Section Creation
 - Principal can create sections for each class
@@ -227,8 +228,7 @@ After Principal login, the dashboard displays seven main cards:
 #### 5.2.5 Student Class-Section Mapping
 - Principal can assign students to specific class and section
 - Note: Student accounts are already created via Sign-Up process, only class-section assignment is done here
-- Mapping interface:
-  - Student selection (dropdown or search from existing students in the school)
+- Mapping interface:\n  - Student selection (dropdown or search from existing students in the school)
   - Class selection (dropdown)\n  - Section selection (dropdown, filtered by selected class)
   - Academic Year\n- Bulk assignment option for multiple students
 - View current class-section assignments with edit and reassign options
@@ -347,6 +347,7 @@ Principal can review and approve school-level exams submitted by teachers\n\nApp
 - Image/Clip Art support\n- Rich text editor integration for question text formatting
 - Bulk upload functionality for efficient question import
 - Dual view display options: Row View and Card View
+- **NEW: Question usage tracking for question paper preparation**
 
 ### 6.2 Question Bank Table Structure
 Table name: question_bank
@@ -396,8 +397,7 @@ Columns:
   - Basic formatting: Bold, Italic, Underline, Strikethrough
   - Text styling: Font size, Font family, Text color, Background color
   - Alignment: Left, Center, Right, Justify
-  - Lists: Ordered list, Unordered list\n  - Insert: Link, Image (optional)
-  - Clear formatting button
+  - Lists: Ordered list, Unordered list\n  - Insert: Link, Image (optional)\n  - Clear formatting button
 - Implementation Requirements:
   - Responsive design for mobile and desktop
   - Accessibility support (ARIA labels, keyboard navigation)\n  - HTML sanitization to prevent malicious code injection
@@ -801,14 +801,26 @@ Card Layout: Each question displayed as a card with question text (rendered with
 - Access: Available only to Teacher role
 - Workflow: Basic Details → Question Selection → Shuffle Options → Preview/Save/Generate
 - Question text displayed with formatting in all stages
+- **NEW: Display question usage count and list of question papers where each question was used during question selection**
 
 ### 7.2 Question Paper Preparation Workflow
-\n#### 7.2.1 Step 1: Basic Details
+
+#### 7.2.1 Step 1: Basic Details
 - Class Selection (Dropdown, required)
 - Subject Selection (Dropdown, required)
 \n#### 7.2.2 Step 2: Question Selection Source
 - View All Questions or View Questions by Question Bank Name
-- Question list displayed in row format (with formatted text preview)
+- **NEW: Enhanced Question Display with Usage Tracking**
+  - Question list displayed in row format (with formatted text preview)
+  - For each question, display:
+    - Question Text (truncated with expand option)
+    - **Usage Count:** Number of times the question has been used in past question papers
+    - **Used In Papers:** List of question paper names where the question was used (expandable/collapsible)
+  - Display format: Question Text | Usage Count | Used In Papers
+  - Example: \"What is photosynthesis?\" | Used 3 times | [Paper 1, Paper 2, Paper 3]
+  - If question has never been used, display: Usage Count = 0, Used In Papers = \"Not used yet\"
+  - Clickable paper names to view paper details (optional)
+  - Helps teachers decide whether to reuse a question or select a new one
 
 #### 7.2.3 Step 3: Shuffle Functionality
 - Shuffle Questions (Checkbox)
@@ -836,27 +848,146 @@ Columns:
 - parent_paper_id (Foreign Key → question_papers.id, nullable)
 - version_name (Varchar, optional)
 
-### 7.4 Access Control & Data Isolation
+### 7.4 NEW: Question Usage Tracking Implementation
+
+#### 7.4.1 Database Structure for Usage Tracking
+
+**Option 1: Junction Table (Recommended)**
+Table name: question_paper_questions
+
+Columns:
+- id (UUID, Primary Key)
+- question_paper_id (Foreign Key → question_papers.id, required)
+- question_id (Foreign Key → question_bank.id, required)
+- created_at (Timestamp)
+\n**Purpose:** This junction table tracks which questions are used in which question papers. It enables efficient querying of usage count and paper list for each question.
+
+**Query Logic:**
+- To get usage count for a question:\n  ```sql
+  SELECT COUNT(*) FROM question_paper_questions WHERE question_id = [question_id]
+  ```\n- To get list of papers where a question was used:
+  ```sql
+  SELECT qp.paper_name, qp.id \n  FROM question_papers qp\n  JOIN question_paper_questions qpq ON qp.id = qpq.question_paper_id
+  WHERE qpq.question_id = [question_id]
+  ORDER BY qp.created_at DESC
+  ```
+
+**Option 2: Denormalized Approach (Alternative)**
+Add a column to question_bank table:
+- usage_count (Integer, default 0)
+- used_in_papers (JSON array, stores paper IDs)
+
+**Note:** Option 1 (Junction Table) is recommended for better data integrity and easier querying.
+
+#### 7.4.2 Backend Logic for Usage Tracking
+
+**When Creating/Editing Question Paper:**
+1. After teacher selects questions and saves/generates paper:\n   - Insert records into question_paper_questions table for each selected question
+   - Link question_paper_id and question_id\n2. If editing existing paper and questions are changed:
+   - Delete old records from question_paper_questions for that paper
+   - Insert new records for updated question selection
+
+**When Fetching Questions for Selection:**
+1. Query question_bank table for questions matching class and subject
+2. For each question, perform a JOIN query to get:\n   - Usage count from question_paper_questions table
+   - List of paper names from question_papers table
+3. Return question data with usage_count and used_in_papers fields
+4. Frontend displays this data alongside question text
+
+**When Deleting Question Paper:**
+1. Delete records from question_paper_questions table for that paper
+2. This automatically updates usage count for affected questions
+
+#### 7.4.3 Frontend UI for Usage Tracking
+
+**Question Selection Interface:**
+- Display questions in table or card format
+- Add two new columns/fields:
+  - **Usage Count:** Display as badge or number (e.g., \"Used 3 times\")
+  - **Used In Papers:** Display as expandable list or tooltip
+    - If usage count > 0: Show paper names as clickable links or plain text
+    - If usage count = 0: Show \"Not used yet\" in muted text
+- Example Layout:
+  ```\n  | Question Text                     | Usage Count | Used In Papers                  | Actions |
+  |-----------------------------------|-------------|---------------------------------|---------|
+  | What is photosynthesis?           | 3 times     | [Paper 1, Paper 2, Paper 3]     | Select  |
+  | Define Newton's First Law         | 1 time      | [Physics Midterm]               | Select  |
+  | Explain the water cycle           | 0 times     | Not used yet                    | Select  |
+  ```
+
+**Expandable Paper List:**
+- If usage count > 3, show first 3 papers and \"+ X more\" link
+- Clicking \"+ X more\" expands to show all papers
+- Each paper name can be clickable to view paper details (optional)
+
+**Visual Indicators:**
+- Color-code usage count:\n  - Green: 0-1 times (fresh question)
+  - Orange: 2-3 times (moderately used)
+  - Red: 4+ times (heavily used)\n- Icon indicator for heavily used questions (e.g., warning icon)
+\n#### 7.4.4 Performance Optimization
+
+**Caching:**
+- Cache usage count and paper list for frequently accessed questions
+- Invalidate cache when question paper is created/edited/deleted
+
+**Pagination:**
+- Load questions in batches (e.g., 50 questions per page)
+- Fetch usage data only for visible questions
+\n**Indexing:**
+- Add database index on question_paper_questions.question_id for faster queries
+- Add index on question_papers.id for efficient JOIN operations
+
+#### 7.4.5 Access Control for Usage Tracking
+
+**Teacher Access:**
+- Can view usage count and paper list for own questions only
+- Cannot view usage data for questions created by other teachers
+- Backend validation ensures data isolation
+
+**Principal Access:**
+- Can view usage count and paper list for all questions in their school
+- Can see which teachers created which papers
+- Full visibility within school scope
+
+#### 7.4.6 Additional Features (Optional)
+
+**Usage Analytics:**
+- Add analytics dashboard showing:
+  - Most used questions
+  - Least used questions
+  - Questions never used\n  - Usage trends over time
+
+**Smart Recommendations:**
+- Suggest questions with low usage count
+- Warn when selecting heavily used questions
+- Recommend fresh questions for variety
+\n**Bulk Actions:**
+- Filter questions by usage count
+- Sort questions by usage count (ascending/descending)
+- Export usage report
+
+### 7.5 Access Control & Data Isolation
 - Teachers can access only their own question banks
 - Backend validation ensures data isolation
 - Teachers can only view and manage question papers created by themselves
 - Principal can view all question papers created by teachers in their school
+- **NEW: Usage tracking respects data isolation rules**
 
-### 7.5 Question Paper Management Interface
+### 7.6 Question Paper Management Interface
 - Question Paper List with filters\n- Actions: View, Edit, Delete, Export PDF, Print, Shuffle and Save
 - All actions preserve question text formatting
-\n### 7.6 Enhanced Question Paper Features
-- Multiple Question Paper Versions
-- Question Paper Templates
+\n### 7.7 Enhanced Question Paper Features
+- Multiple Question Paper Versions\n- Question Paper Templates
 - Smart Question Selection
 - Preview Enhancements (with formatted text rendering)
-- Bulk Operations\n- Version History
+- Bulk Operations
+- Version History
 - Shuffle and Save with Auto-Versioned Names
+- **NEW: Question usage tracking for informed question selection**
 
 ## 8. Question Paper History Module
 
-### 8.1 Question Paper History Overview
-- Purpose: Provide comprehensive tracking and management of all question papers created by teachers
+### 8.1 Question Paper History Overview\n- Purpose: Provide comprehensive tracking and management of all question papers created by teachers
 - Access:\n  - Teachers can view only their own question paper history
   - Principal can view all question papers created by teachers in their school
 - Key Features:
@@ -897,7 +1028,8 @@ Display Columns:
 - Sort by Class
 - Sort by Total Marks
 \n### 8.3 Question Paper Detail View
-\n#### 8.3.1 Paper Information Section
+
+#### 8.3.1 Paper Information Section
 - Paper Name
 - Paper ID
 - Class and Subject
@@ -960,8 +1092,7 @@ Display Columns:
 - Principal Access:
   - Can preview and print all question papers created by teachers in their school
   - Cannot edit papers created by teachers\n- Data Isolation:
-  - Print functionality respects school-based data isolation
-  - Backend validation ensures proper access control
+  - Print functionality respects school-based data isolation\n  - Backend validation ensures proper access control
 
 #### 8.4.4 Print Quality and Formatting
 - High-quality print output:\n  - Clear, readable text
@@ -996,8 +1127,7 @@ Display Columns:
 - Can create new versions from own papers
 - Cannot view papers created by other teachers
 - Can preview and print own papers
-
-#### 8.6.2 Principal Access Rules
+\n#### 8.6.2 Principal Access Rules
 - Can view all question papers created by teachers in their school
 - Can filter by teacher name
 - Can view detailed analytics for all teachers
@@ -1017,8 +1147,8 @@ Display Columns:
 #### 8.7.1 Teacher Dashboard Integration
 - Add 'Question Paper History' card to Teacher Dashboard
 - Card displays recent papers and quick action button
-
-#### 8.7.2 Principal Dashboard Integration\n- Add 'Question Paper History' card to Principal Dashboard
+\n#### 8.7.2 Principal Dashboard Integration
+- Add 'Question Paper History' card to Principal Dashboard
 - Card displays school-wide statistics and quick action button
 
 #### 8.7.3 Navigation Menu
@@ -1074,20 +1204,19 @@ Display Columns:
   - Secure exam environment\n  - Export and reporting capabilities (preserving formatting)
   - Delete exam functionality with restrictions
   - Force Delete for Principal/Admin with strict confirmation
-  - **NEW: Student-level exam assignment option**
-
-### 9.2 Online Exam Creation Workflow
+  - Student-level exam assignment option
+\n### 9.2 Online Exam Creation Workflow
 
 #### 9.2.1 Step 1: Exam Basic Details
 Form Fields:
 - Exam Name (Text input, required)
 - Exam Type (Radio buttons: Practice Exam / School-Level Exam)\n- Class (Dropdown, required)
 - Subject (Dropdown, required)
-- **NEW: Student Selection Mode (Radio buttons: Entire Class / Specific Students)**
+- Student Selection Mode (Radio buttons: Entire Class / Specific Students)
   - **Entire Class:** Exam assigned to all students in selected sections
   - **Specific Students:** Exam assigned to selected individual students
-- **Section Selection (Multi-select checkbox, required when Student Selection Mode = Entire Class)**
-- **NEW: Select Students (Multi-select dropdown, required when Student Selection Mode = Specific Students)**
+- Section Selection (Multi-select checkbox, required when Student Selection Mode = Entire Class)
+- Select Students (Multi-select dropdown, required when Student Selection Mode = Specific Students)
   - Dropdown list populated dynamically based on selected class
   - Shows student names from the selected class
   - Allows multiple student selection
@@ -1097,7 +1226,8 @@ Form Fields:
   - Clear all selections button
 - Exam Duration (Number input in minutes, required)
 - Start Date and Time (Date-time picker, required)
-- End Date and Time (Date-time picker, required)\n- Passing Marks (Auto-calculated, read-only display)
+- End Date and Time (Date-time picker, required)
+- Passing Marks (Auto-calculated, read-only display)
   - Automatically calculated as 35% of total marks
   - Display format: 'Passing Marks: XX marks (35% of Total Marks)'
   - Updated dynamically when questions are selected/changed
@@ -1126,8 +1256,7 @@ Form Fields:
 #### 9.2.2 Step 2: Question Selection Method
 Method A: Select from Existing Question Paper
 - Question Paper Dropdown\n- Paper Preview (with formatted question text)
-- Auto-Import\n- Modification Options
-
+- Auto-Import\n- Modification Options\n
 Method B: Select Questions from Question Bank
 - Question Bank View (with formatted question text preview)
 - Filter Panel
@@ -1147,7 +1276,7 @@ Settings Panel:
 \n#### 9.2.4 Step 4: Preview and Publish
 Preview Section:
 1. Exam Summary Card
-   - **NEW: Display Student Selection Mode and count**
+   - Display Student Selection Mode and count
    - If Entire Class: Show 'Assigned to: All students in [Section Names]'\n   - If Specific Students: Show 'Assigned to: [X] selected students' with expandable list
 2. Settings Summary Card
 3. Question List Preview (with formatted text)
@@ -1169,13 +1298,13 @@ Columns:
 - exam_type (Enum: Practice, School-Level)\n- approval_status (Enum: Not Required, Pending, Approved, Rejected)
 - approval_notes (Text, nullable)
 - approved_by (Foreign Key → users.id, nullable)
-- approval_date (Timestamp, nullable)
-- school_id (Foreign Key → schools.id, required)
-- class_id (Foreign Key → classes.id, required)\n- subject_id (Foreign Key → subjects.id, required)
+- approval_date (Timestamp, nullable)\n- school_id (Foreign Key → schools.id, required)
+- class_id (Foreign Key → classes.id, required)
+- subject_id (Foreign Key → subjects.id, required)
 - created_by (Foreign Key → users.id, required)
 - question_paper_id (Foreign Key → question_papers.id, nullable)
 - selected_questions (JSON array, required, includes formatted question text)
-- **NEW: student_selection_mode (Enum: Entire Class, Specific Students, required)**
+- student_selection_mode (Enum: Entire Class, Specific Students, required)
 - exam_duration (Integer, minutes, required)
 - start_datetime (Timestamp with timezone, required)
 - end_datetime (Timestamp with timezone, required)
@@ -1206,18 +1335,18 @@ Table name: exam_sections
 
 Columns:
 - id (UUID, Primary Key)
-- exam_id (Foreign Key → online_exams.id, required)
-- section_id (Foreign Key → sections.id, required)
-- total_students (Integer, calculated)\n- students_started (Integer, default 0)
+- exam_id (Foreign Key → online_exams.id, required)\n- section_id (Foreign Key → sections.id, required)
+- total_students (Integer, calculated)
+- students_started (Integer, default 0)
 - students_completed (Integer, default 0)
-- created_at (Timestamp)
-\n**Note:** This table is used only when student_selection_mode = 'Entire Class'
+- created_at (Timestamp)\n\n**Note:** This table is used only when student_selection_mode = 'Entire Class'
 
-#### 9.3.3 NEW: Exam Student Mapping Table
+#### 9.3.3 Exam Student Mapping Table
 Table name: exam_students
 
 Columns:
-- id (UUID, Primary Key)\n- exam_id (Foreign Key → online_exams.id, required)
+- id (UUID, Primary Key)
+- exam_id (Foreign Key → online_exams.id, required)
 - student_id (Foreign Key → users.id, required)
 - assigned_at (Timestamp, default current timestamp)
 - created_at (Timestamp)
@@ -1263,7 +1392,8 @@ Dashboard Card: 'My Exams'\n- Display on student dashboard after login
 - Three tabs: 'Upcoming' | 'Ongoing' | 'Completed'
 \nUpcoming Exams Tab:
 - List of scheduled exams not yet started
-\nOngoing Exams Tab:\n- List of exams currently available\n
+\nOngoing Exams Tab:\n- List of exams currently available
+
 Completed Exams Tab:
 - List of exams already submitted
 
@@ -1321,8 +1451,7 @@ Completed Exams Tab:
 #### 9.5.2 Exam Monitoring Interface
 Real-time Monitoring Dashboard:
 - Overview Cards
-  - **NEW: Display Student Selection Mode**
-  - If Entire Class: Show total students from all assigned sections
+  - Display Student Selection Mode\n  - If Entire Class: Show total students from all assigned sections
   - If Specific Students: Show count of individually assigned students
 - Live Student Status Table
 - Student Detail View
@@ -1355,16 +1484,17 @@ Analytics Dashboard:
 #### 9.5.5 Student Allocation List with Attendance Status
 Student Allocation List Interface:
 - Page Layout
-  - **NEW: Display Student Selection Mode at top**
+  - Display Student Selection Mode at top
   - If Entire Class: Show section-wise grouping
   - If Specific Students: Show flat list of assigned students
 - Student List Table
-  - **NEW: Additional column for Section (when Specific Students mode)**
+  - Additional column for Section (when Specific Students mode)
 - Attendance Status Logic
 - Summary Statistics
-  - **NEW: Total assigned students count (regardless of mode)**
+  - Total assigned students count (regardless of mode)
 - Filter and Sort Options
-  - **NEW: Filter by section (when Specific Students mode)**\n- Export Options (preserving formatting)
+  - Filter by section (when Specific Students mode)
+- Export Options (preserving formatting)
 - Real-time Updates
 - Access Control
 
@@ -1392,7 +1522,7 @@ Online Exams Page Layout:
 - Four tabs: 'All Exams' | 'Pending Approvals' | 'Ongoing' | 'Completed'
 
 All Exams Tab:\n- List of all exams created by teachers and principal
-- **NEW: Display Student Selection Mode badge for each exam**
+- Display Student Selection Mode badge for each exam
 \nPending Approvals Tab:\n- List of school-level exams awaiting approval
 
 Ongoing Exams Tab:
@@ -1422,9 +1552,10 @@ Analytics Dashboard (Principal view):
 - Can view individual student results for own exams
 - Can delete own exams with restrictions
 - Cannot force delete exams with student attempts
-- **NEW: Can assign exams to entire class or specific students**
-- **NEW: Can only select students from assigned classes**
-\n#### 9.7.2 Student Access Rules
+- Can assign exams to entire class or specific students
+- Can only select students from assigned classes
+
+#### 9.7.2 Student Access Rules
 - Can view only assigned exams (section-based or individual assignment)
 - Can take exam only during scheduled time
 - Can take exam only once\n- Use individual login to access exam interface
@@ -1438,10 +1569,10 @@ Analytics Dashboard (Principal view):
 - Can view individual student results for all exams\n- Can view exam analytics\n- Cannot edit or delete teacher exams
 - Can delete self-created exams with restrictions
 - Can force delete self-created exams with strict confirmation
-- **NEW: Can create exams with entire class or specific student assignment**
-\n#### 9.7.4 Admin Access Rules
-- Has cross-school visibility
-- Can view all exams across all schools
+- Can create exams with entire class or specific student assignment
+
+#### 9.7.4 Admin Access Rules
+- Has cross-school visibility\n- Can view all exams across all schools
 - Can view student allocation list for any exam
 - Can view individual student results for any exam
 - Cannot create, edit, or delete exams
@@ -1451,10 +1582,9 @@ Analytics Dashboard (Principal view):
 - Backend validation ensures data isolation
 - Cross-school access prevented
 - Passing marks calculation (35% of total marks) is consistent across all roles
-- **NEW: Student selection respects class-teacher assignments**
-- **NEW: Backend validation ensures selected students belong to selected class**
-
-### 9.8 Online Exam Notifications\n
+- Student selection respects class-teacher assignments
+- Backend validation ensures selected students belong to selected class
+\n### 9.8 Online Exam Notifications\n
 #### 9.8.1 Student Notifications
 - Exam Assigned\n- Exam Reminder (24 hours before)
 - Exam Reminder (1 hour before)
@@ -1514,7 +1644,8 @@ For Teachers:
 - Scheduled Exams: Can delete if no students started
 - Ongoing Exams: Cannot be deleted
 - Completed Exams: Can delete after results published and archived
-- Cannot force delete exams with student attempts\n
+- Cannot force delete exams with student attempts
+
 For Principal:
 - Same restrictions as teachers for self-created exams
 - Cannot delete teacher-created exams
@@ -1554,7 +1685,7 @@ Standard Delete Workflow:
 - Preserve student data
 - Can be restored if needed
 
-### 9.11 NEW: Student-Level Exam Assignment Implementation Details
+### 9.11 Student-Level Exam Assignment Implementation Details
 
 #### 9.11.1 Backend Logic
 - When creating exam:\n  - If student_selection_mode = 'Entire Class': Insert records into exam_sections table
@@ -1594,8 +1725,7 @@ Standard Delete Workflow:
 #### 9.11.4 Migration Plan
 - Add student_selection_mode column to online_exams table
 - Create exam_students table\n- Set default value 'Entire Class' for existing exams
-- Update frontend components
-- Update backend API endpoints
+- Update frontend components\n- Update backend API endpoints
 - Test thoroughly before deployment
 
 ## 10. Teacher Dashboard and Functions
@@ -1612,7 +1742,8 @@ After Teacher login, the dashboard displays:
 - View assigned classes, sections, subjects
 - View students of assigned sections with enhanced search and filter functionality
 - Question Bank Access (with rich text editor for question creation and bulk upload capability)
-- Question Paper Preparation\n- Question Paper History Management (with preview and print functionality)
+- Question Paper Preparation (with question usage tracking)
+- Question Paper History Management (with preview and print functionality)
 - Online Exam Management (with student-level assignment option)
 \n### 10.3 Students Card - Student Management (Teacher Dashboard)
 Note: This card is copied from Principal Dashboard with role-based access control for Teachers\n
@@ -1702,7 +1833,7 @@ The side panel navigation for Teacher role includes the following menu items (in
 \n### 13.5 Teacher Functions
 - View assigned classes, sections, subjects
 - View and manage students from assigned sections
-- Question Bank Access (with rich text editor and bulk upload)\n- Question Paper Preparation
+- Question Bank Access (with rich text editor and bulk upload)\n- Question Paper Preparation (with question usage tracking)
 - Question Paper History Management (with preview and print functionality)
 - Online Exam Management (with student-level assignment option)
 
@@ -1737,7 +1868,7 @@ The side panel navigation for Teacher role includes the following menu items (in
 - Comprehensive analytics
 - Security features
 - Deletion functionality
-- **NEW: Student-level exam assignment option**
+- Student-level exam assignment option
 
 ### 13.13 Teacher Student Management Feature
 - Students card added to Teacher Dashboard
@@ -1766,17 +1897,17 @@ The side panel navigation for Teacher role includes the following menu items (in
 ### 13.17 Bulk Upload Questions Feature
 - Bulk upload functionality for Question Bank
 - Support for all question types in single file
-- **Updated: Three-sheet Excel template structure (Option, Question, Reference)**
-- **Option Sheet:** Contains dropdown values for data validation
-- **Question Sheet:** Empty sheet with column headers and data validation, no sample data
-- **Reference Sheet:** Contains sample questions as examples for teachers
+- Updated: Three-sheet Excel template structure (Option, Question, Reference)
+- Option Sheet: Contains dropdown values for data validation
+- Question Sheet: Empty sheet with column headers and data validation, no sample data
+- Reference Sheet: Contains sample questions as examples for teachers
 - Comprehensive validation and error handling
 - Role-based access control (Teacher and Principal)
 - Efficient import process with progress tracking
 - Detailed import summary and statistics
 - Help documentation and FAQ
 
-### 13.18 NEW: Student-Level Exam Assignment Feature
+### 13.18 Student-Level Exam Assignment Feature
 - Teachers and Principals can assign exams to entire class or specific students
 - Student Selection Mode: Entire Class / Specific Students
 - Dynamic student dropdown with search functionality
@@ -1784,8 +1915,16 @@ The side panel navigation for Teacher role includes the following menu items (in
 - Backend validation ensures data integrity
 - Flexible exam assignment for targeted assessments
 - Improved exam management workflow
-\n## 14. Language Support
 
+### 13.19 NEW: Question Usage Tracking Feature
+- Display question usage count during question paper preparation
+- Show list of question papers where each question was used
+- Helps teachers make informed decisions about question reuse
+- Enhances question paper quality and variety
+- Improves question bank management
+- Supports data-driven question selection
+
+## 14. Language Support\n
 ### 14.1 UI Language\n- UI Language: English Only
 \n### 14.2 Chat/Communication Language
 - Users can communicate in any language
@@ -1851,6 +1990,10 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Not Answered: Gray (#6B7280)
 - Pass/Fail status:
   - Pass: Green (#10B981)\n  - Fail: Red (#EF4444)
+- **NEW: Question Usage Indicator Colors:**
+  - Fresh (0-1 times): Green (#10B981)
+  - Moderately Used (2-3 times): Orange (#F59E0B)
+  - Heavily Used (4+ times): Red (#EF4444)
 \n### 16.3 Visual Details
 - Glassmorphism cards:\n  - Semi-transparent background with backdrop blur
   - Soft border with subtle glow
@@ -1927,14 +2070,24 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Validation results table with color-coded rows
   - Progress bar for import process
   - Success/error messages with appropriate icons
-- **NEW: Student Selection Dropdown Styling:**
+- Student Selection Dropdown Styling:
   - Multi-select dropdown with search bar
   - Checkboxes for each student
   - Selected students displayed as removable tags/chips
   - Tag styling with glassmorphism effect
   - Remove button (X) on each tag with hover effect
   - Clear all button with subtle styling
-  - Selected count badge\n  - Dropdown max-height with scroll\n\n### 16.4 Overall Layout
+  - Selected count badge\n  - Dropdown max-height with scroll\n- **NEW: Question Usage Display Styling:**
+  - Usage count displayed as badge with color coding
+  - Green badge for fresh questions (0-1 times)
+  - Orange badge for moderately used questions (2-3 times)
+  - Red badge for heavily used questions (4+ times)
+  - Paper list displayed as expandable/collapsible section
+  - Paper names as clickable links (optional)
+  - Tooltip on hover showing full paper details
+  - Icon indicator for heavily used questions (warning icon)
+  - Clean, readable layout in question selection table
+\n### 16.4 Overall Layout
 - Responsive design:\n  - Desktop view with side navigation
   - Mobile view with bottom navigation
   - Tablet view with optimized layout
@@ -1955,12 +2108,13 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Clear field labels and helper text
   - Validation feedback with color coding
   - Rich text editor integrated seamlessly in question creation form
-  - **NEW: Student Selection Mode radio buttons with clear labels**
-  - **NEW: Conditional display of Section Selection or Select Students dropdown**
+  - Student Selection Mode radio buttons with clear labels
+  - Conditional display of Section Selection or Select Students dropdown
 - Table layouts:
   - Responsive tables with horizontal scroll
   - Alternating row colors for readability
   - Action buttons aligned to right
+  - **NEW: Additional columns for usage count and paper list in question selection table**
 - Modal dialogs:
   - Centered overlay with backdrop blur
   - Glassmorphism card styling
@@ -2014,7 +2168,8 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Title
   - Brief description
   - Hover effect with enhanced glow
-\n#### 16.5.4 Why Choose Us Section
+
+#### 16.5.4 Why Choose Us Section
 - Four benefit cards:
   - Fast Evaluation
   - Secure Exams
@@ -2058,8 +2213,7 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Exams (clipboard icon)
   - Analytics (chart icon)
   - Profile (user icon)
-
-#### 16.6.2 Mobile Login Screen
+\n#### 16.6.2 Mobile Login Screen
 - Title: 'Welcome to A Cube'
 - Subtitle: 'Login to Exam System'
 - Form fields:
@@ -2084,8 +2238,7 @@ The side panel navigation for Teacher role includes the following menu items (in
 
 ### 17.1 Question Edit Form Layout
 The uploaded image (screenshot.png) shows the question edit form with the following layout issue:
-
-Current Issue: In the Edit Question dialog, the 'Question Text' field, 'Image/Clip Art (Optional)' field, 'Question Type' dropdown, 'Difficulty' dropdown, 'Marks' input, and 'Negative Marks' input are positioned below the 'Match Pairs' section.\n
+\nCurrent Issue: In the Edit Question dialog, the 'Question Text' field, 'Image/Clip Art (Optional)' field, 'Question Type' dropdown, 'Difficulty' dropdown, 'Marks' input, and 'Negative Marks' input are positioned below the 'Match Pairs' section.\n
 Required Fix: These fields should be moved above the 'Match Pairs' section to maintain the correct form field order as specified in Section 6.3.1.
 
 Additional Requirement: Replace the 'Question Text' field with a rich text editor (Quill, Draft.js, or TinyMCE) to enable formatting (bold, underline, italic, etc.) directly while typing.
@@ -2152,15 +2305,13 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 
 ### 19.1 Application Name
 - Primary name: A Cube
-- Full name: A Cube - Online Exam System
-- Tagline: Smart • Secure • Scalable Online Exams
+- Full name: A Cube - Online Exam System\n- Tagline: Smart • Secure • Scalable Online Exams
 
 ### 19.2 Logo
 - Logo text: 'A Cube'
 - Modern, minimalist icon design
 - Consistent with dark purple-blue gradient theme
-
-### 19.3 Branding Consistency
+\n### 19.3 Branding Consistency
 - Use 'A Cube' consistently across all screens
 - Maintain same theme and branding everywhere
 - Professional EdTech look
@@ -2187,6 +2338,7 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - Dynamic Excel template generation with data validation
 - School-specific data population for dropdown lists
 - Student assignment logic for both section-based and individual assignment
+- **NEW: Question usage tracking logic with junction table**
 
 ### 20.3 Security\n- Encrypted passwords\n- Secure exam environment
 - Activity logging\n- Data isolation\n- XSS prevention for rich text content
@@ -2202,6 +2354,8 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - Progress tracking for long-running imports
 - Efficient template generation with cached school data
 - Optimized student list queries for large classes
+- **NEW: Efficient usage count queries with database indexing**
+- **NEW: Caching of usage data for frequently accessed questions**
 
 ### 20.5 Scalability
 - Support for multiple schools
@@ -2210,6 +2364,7 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - Scalable file storage for bulk uploads
 - Queue-based processing for bulk imports
 - Efficient handling of large student lists
+- **NEW: Scalable junction table for question usage tracking**
 
 ## 21. Deployment and Maintenance
 
@@ -2227,4 +2382,4 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - Help desk support
 - FAQ section
 \n## 22. Conclusion\n
-A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting, updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The addition of the Students card to the Teacher Dashboard with role-based access control, combined with the rich text editor functionality, improved bulk upload capability with cleaner data entry experience and better guidance through separate reference examples, and the new preview-print feature in Question Paper History, further enhances teacher productivity by allowing them to create well-formatted questions, import large question banks efficiently with reduced errors through dropdown selections and reference examples, manage students from their assigned sections effectively, and print question papers with all formatting preserved directly from the preview dialog. The updated side panel navigation for both Principal and Teacher roles now includes easy access to Question Paper History, streamlining the workflow and improving overall user experience. **The newly added student-level exam assignment feature provides teachers and principals with the flexibility to assign exams to entire classes or specific individual students, enabling more targeted assessments and personalized learning experiences.**
+A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting, updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The addition of the Students card to the Teacher Dashboard with role-based access control, combined with the rich text editor functionality, improved bulk upload capability with cleaner data entry experience and better guidance through separate reference examples, and the new preview-print feature in Question Paper History, further enhances teacher productivity by allowing them to create well-formatted questions, import large question banks efficiently with reduced errors through dropdown selections and reference examples, manage students from their assigned sections effectively, and print question papers with all formatting preserved directly from the preview dialog. The updated side panel navigation for both Principal and Teacher roles now includes easy access to Question Paper History, streamlining the workflow and improving overall user experience. The newly added student-level exam assignment feature provides teachers and principals with the flexibility to assign exams to entire classes or specific individual students, enabling more targeted assessments and personalized learning experiences. **The latest addition of question usage tracking during question paper preparation empowers teachers to make informed decisions about question reuse by displaying usage count and list of question papers where each question was used, thereby enhancing question paper quality, promoting variety, and supporting data-driven question selection for better assessment outcomes.**

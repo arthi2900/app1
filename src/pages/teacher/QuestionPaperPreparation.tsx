@@ -45,6 +45,7 @@ export default function QuestionPaperPreparation() {
   const [selectedBankName, setSelectedBankName] = useState('');
   const [availableQuestions, setAvailableQuestions] = useState<Question[]>([]);
   const [selectedQuestions, setSelectedQuestions] = useState<Set<string>>(new Set());
+  const [questionUsageStats, setQuestionUsageStats] = useState<Record<string, { count: number; papers: { id: string; title: string }[] }>>({});
 
   // Preview
   const [previewQuestions, setPreviewQuestions] = useState<Question[]>([]);
@@ -213,6 +214,13 @@ export default function QuestionPaperPreparation() {
       }
 
       setAvailableQuestions(Array.isArray(questions) ? questions : []);
+
+      // Load usage statistics for all questions
+      if (questions.length > 0) {
+        const questionIds = questions.map(q => q.id);
+        const usageStats = await questionApi.getQuestionUsageStats(questionIds);
+        setQuestionUsageStats(usageStats);
+      }
     } catch (error) {
       console.error('Error loading questions:', error);
       toast.error('Failed to load questions');
@@ -750,17 +758,21 @@ export default function QuestionPaperPreparation() {
                           <TableHead>Type</TableHead>
                           <TableHead>Difficulty</TableHead>
                           <TableHead>Marks</TableHead>
+                          <TableHead className="w-24">Usage Count</TableHead>
+                          <TableHead>Used In Papers</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {getFilteredQuestions().length === 0 ? (
                           <TableRow>
-                            <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                            <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                               No questions available
                             </TableCell>
                           </TableRow>
                         ) : (
-                          getFilteredQuestions().map((question) => (
+                          getFilteredQuestions().map((question) => {
+                            const usage = questionUsageStats[question.id] || { count: 0, papers: [] };
+                            return (
                             <TableRow key={question.id}>
                               <TableCell>
                                 <Checkbox
@@ -783,8 +795,32 @@ export default function QuestionPaperPreparation() {
                                 </Badge>
                               </TableCell>
                               <TableCell>{question.marks}</TableCell>
+                              <TableCell>
+                                <Badge variant={usage.count === 0 ? "secondary" : "default"}>
+                                  {usage.count} {usage.count === 1 ? 'time' : 'times'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                {usage.count === 0 ? (
+                                  <span className="text-sm text-muted-foreground">Not used yet</span>
+                                ) : (
+                                  <div className="space-y-1">
+                                    {usage.papers.slice(0, 2).map((paper) => (
+                                      <div key={paper.id} className="text-sm text-muted-foreground">
+                                        • {paper.title}
+                                      </div>
+                                    ))}
+                                    {usage.papers.length > 2 && (
+                                      <div className="text-xs text-muted-foreground">
+                                        +{usage.papers.length - 2} more
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </TableCell>
                             </TableRow>
-                          ))
+                          );
+                          })
                         )}
                       </TableBody>
                     </Table>
