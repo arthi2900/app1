@@ -1204,23 +1204,23 @@ export default function AdminQuestionBank() {
       <AlertDialog open={bulkCopyDialog} onOpenChange={setBulkCopyDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>உலகளாவிய கேள்வி வங்கிக்கு கேள்விகளை நகலெடுக்கவா?</AlertDialogTitle>
+            <AlertDialogTitle>Copy Questions to Global Bank?</AlertDialogTitle>
             <AlertDialogDescription>
-              நீங்கள் {selectedQuestions.size} கேள்விகளை உலகளாவிய கேள்வி வங்கிக்கு நகலெடுக்க உள்ளீர்கள். 
-              இந்த கேள்விகள் அனைத்து ஆசிரியர்களுக்கும் கிடைக்கும்.
+              You are about to copy {selectedQuestions.size} question{selectedQuestions.size > 1 ? 's' : ''} to the global question bank. 
+              These questions will be available to all teachers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => {
               setBulkCopyDialog(false);
             }}>
-              ரத்து செய்
+              Cancel
             </AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleBulkCopyToGlobal} 
               className="bg-success text-success-foreground hover:bg-success/90"
             >
-              நகலெடு ({selectedQuestions.size})
+              Copy ({selectedQuestions.size})
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -1440,6 +1440,24 @@ export default function AdminQuestionBank() {
                 User Question Banks
               </CardTitle>
               <div className="flex items-center gap-4 mt-4">
+                <Button
+                  variant={selectedQuestions.size > 0 ? "default" : "outline"}
+                  size="default"
+                  onClick={() => {
+                    if (selectedQuestions.size > 0) {
+                      setBulkCopyDialog(true);
+                    }
+                  }}
+                  disabled={selectedQuestions.size === 0}
+                  className={selectedQuestions.size > 0 
+                    ? "bg-gradient-to-r from-success to-success/80 hover:from-success/90 hover:to-success/70 text-success-foreground shadow-md shrink-0" 
+                    : "shrink-0"}
+                  title={selectedQuestions.size === 0 ? "Select questions to copy" : `Copy ${selectedQuestions.size} question(s) to global bank`}
+                >
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy to Global
+                  {selectedQuestions.size > 0 && ` (${selectedQuestions.size})`}
+                </Button>
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -1489,14 +1507,14 @@ export default function AdminQuestionBank() {
                   {selectedQuestions.size > 0 && (
                     <div className="mb-4 flex items-center justify-between p-3 bg-primary/10 rounded-md">
                       <span className="text-sm font-medium">
-                        {selectedQuestions.size} கேள்விகள் தேர்ந்தெடுக்கப்பட்டன
+                        {selectedQuestions.size} question{selectedQuestions.size > 1 ? 's' : ''} selected
                       </span>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setSelectedQuestions(new Set())}
                       >
-                        தேர்வை அழி
+                        Clear Selection
                       </Button>
                     </div>
                   )}
@@ -1512,34 +1530,14 @@ export default function AdminQuestionBank() {
                               className={isSomeSelected(filteredUserQuestions) ? "data-[state=checked]:bg-primary" : ""}
                             />
                           </TableHead>
-                          <TableHead>கேள்வி</TableHead>
-                          <TableHead>வங்கி பெயர்</TableHead>
-                          <TableHead>பாடம்</TableHead>
-                          <TableHead>வகை</TableHead>
-                          <TableHead>சிரமம்</TableHead>
-                          <TableHead>மதிப்பெண்கள்</TableHead>
-                          <TableHead className="text-center">
-                            <Button
-                              variant={selectedQuestions.size > 0 ? "default" : "ghost"}
-                              size="sm"
-                              onClick={() => {
-                                if (selectedQuestions.size > 0) {
-                                  setBulkCopyDialog(true);
-                                }
-                              }}
-                              disabled={selectedQuestions.size === 0}
-                              className={selectedQuestions.size > 0 
-                                ? "bg-gradient-to-r from-success to-success/80 hover:from-success/90 hover:to-success/70 text-success-foreground shadow-md" 
-                                : ""}
-                              title={selectedQuestions.size === 0 ? "கேள்விகளைத் தேர்ந்தெடுக்கவும்" : `${selectedQuestions.size} கேள்விகளை உலகளாவிய வங்கிக்கு நகலெடுக்கவும்`}
-                            >
-                              <Copy className="h-4 w-4 mr-1" />
-                              உலகளாவிய வங்கிக்கு நகலெடு
-                              {selectedQuestions.size > 0 && ` (${selectedQuestions.size})`}
-                            </Button>
-                          </TableHead>
-                          <TableHead>உருவாக்கியவர்</TableHead>
-                          <TableHead>செயல்கள்</TableHead>
+                          <TableHead>Question</TableHead>
+                          <TableHead>Bank Name</TableHead>
+                          <TableHead>Subject</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Difficulty</TableHead>
+                          <TableHead>Marks</TableHead>
+                          <TableHead>Created By</TableHead>
+                          <TableHead>Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -1557,7 +1555,7 @@ export default function AdminQuestionBank() {
                                   onCheckedChange={() => handleSelectQuestion(question.id)}
                                   disabled={isInGlobal}
                                   aria-label={`Select question ${question.id}`}
-                                  title={isInGlobal ? "ஏற்கனவே உலகளாவிய கேள்வி வங்கியில் உள்ளது" : "கேள்வியைத் தேர்ந்தெடுக்கவும்"}
+                                  title={isInGlobal ? "Already in global question bank" : "Select question"}
                                 />
                               </TableCell>
                               <TableCell className="max-w-md">
@@ -1570,7 +1568,7 @@ export default function AdminQuestionBank() {
                                   {isInGlobal && (
                                     <Badge variant="default" className="bg-success text-success-foreground shrink-0">
                                       <Globe className="h-3 w-3 mr-1" />
-                                      உலகளாவியதில்
+                                      In Global
                                     </Badge>
                                   )}
                                 </div>
@@ -1578,7 +1576,7 @@ export default function AdminQuestionBank() {
                               <TableCell>
                                 <Badge variant="secondary">
                                   <BookOpen className="h-3 w-3 mr-1" />
-                                  {question.bank_name || 'வங்கி இல்லை'}
+                                  {question.bank_name || 'No Bank'}
                                 </Badge>
                               </TableCell>
                               <TableCell>{question.subjects?.subject_name || 'N/A'}</TableCell>
@@ -1593,9 +1591,6 @@ export default function AdminQuestionBank() {
                                 </Badge>
                               </TableCell>
                               <TableCell>{question.marks}</TableCell>
-                              <TableCell className="text-center">
-                                {/* Empty cell for alignment with "Copy to Global" button column */}
-                              </TableCell>
                               <TableCell>
                                 <div className="flex items-center gap-2">
                                   <User className="h-4 w-4 text-muted-foreground" />
@@ -1609,17 +1604,17 @@ export default function AdminQuestionBank() {
                                     size="sm"
                                     onClick={() => handleViewQuestion(question)}
                                   >
-                                    பார்
+                                    View
                                   </Button>
                                   <Button
                                     variant="outline"
                                     size="sm"
                                     onClick={() => handleCopyToGlobal(question.id)}
                                     disabled={isInGlobal}
-                                    title={isInGlobal ? 'ஏற்கனவே உலகளாவிய வங்கியில் உள்ளது' : 'உலகளாவிய வங்கிக்கு நகலெடு'}
+                                    title={isInGlobal ? 'Already in global bank' : 'Copy to global bank'}
                                   >
                                     <Copy className="h-4 w-4 mr-1" />
-                                    {isInGlobal ? 'ஏற்கனவே நகலெடுக்கப்பட்டது' : 'நகலெடு'}
+                                    {isInGlobal ? 'Copied' : 'Copy'}
                                   </Button>
                                 </div>
                               </TableCell>
