@@ -560,17 +560,16 @@ export const questionApi = {
     if (fetchError) throw fetchError;
     if (!originalQuestion) throw new Error('Question not found');
 
-    // Create a copy with is_global = true
-    const { id, created_at, created_by, ...questionData } = originalQuestion;
-    const user = await supabase.auth.getUser();
+    // Create a copy with is_global = true, preserving the original creator
+    const { id, created_at, ...questionData } = originalQuestion;
     
     const { data, error } = await supabase
       .from('questions')
       .insert({
         ...questionData,
         is_global: true,
-        source_question_id: questionId,
-        created_by: user.data.user?.id
+        source_question_id: questionId
+        // created_by is preserved from originalQuestion via ...questionData
       })
       .select()
       .maybeSingle();

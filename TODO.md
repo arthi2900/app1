@@ -291,11 +291,12 @@ The system now provides:
   - Shows with Badge component and BookOpen icon for visual clarity
   - Falls back to "No Bank" if bank_name is null
   - Located at column position 2 in Global Questions table
-- **Created By Column**: Already implemented and working
-  - Displays the full name of the user who originally created the question
+- **Created By Column**: FIXED - Now preserves original creator
+  - Displays the full name of the user who originally created the question (NOT the admin who copied it)
   - Shows question.creator?.full_name with User icon
   - Falls back to "Unknown" if creator data is not available
   - Located at column position 7 in Global Questions table
+  - **Fix Applied**: Modified copyQuestionToGlobal() to preserve created_by field from original question
 
 ✅ **Display Requirements - User Questions Tab**: Already Implemented
 - **Bank Name Column**: Already exists and functional
@@ -313,8 +314,22 @@ The system now provides:
 4. Type
 5. Difficulty
 6. Marks
-7. Created By
+7. Created By ✅ (FIXED - Preserves original creator)
 8. Actions
+
+### Key Fix Details:
+**Problem**: When copying questions to global bank, the created_by field was being replaced with the admin's ID who performed the copy operation.
+
+**Solution**: Modified `copyQuestionToGlobal()` function in api.ts:
+- Removed the line that excluded `created_by` from destructuring
+- Removed the line that set `created_by` to current user's ID
+- Now preserves the original `created_by` field via spread operator `...questionData`
+- Result: Global questions now show the original creator's name, not the admin who copied it
+
+**Example**:
+- Original question created by "Sundharachozan S"
+- Admin "karunanithi" copies it to global bank
+- Global question now shows "Created By: Sundharachozan S" ✅ (not "karunanithi")
 
 ### Implementation Notes
 - Admin should use same question creation form as teachers
