@@ -23,7 +23,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Globe, Users, Copy, Search, BookOpen, User, Filter, Plus, Trash2, Upload, Edit, MoreVertical } from 'lucide-react';
+import { Globe, Users, Copy, Search, BookOpen, User, Filter, Plus, Trash2, Upload, Edit, MoreVertical, ArrowLeft, ChevronRight } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -85,6 +85,7 @@ export default function AdminQuestionBank() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUser, setSelectedUser] = useState<string>('all');
   const [selectedBank, setSelectedBank] = useState<string>('all');
+  const [selectedGlobalBank, setSelectedGlobalBank] = useState<string | null>(null);
   const [viewQuestionDialog, setViewQuestionDialog] = useState(false);
   const [createQuestionDialog, setCreateQuestionDialog] = useState(false);
   const [editQuestionDialog, setEditQuestionDialog] = useState(false);
@@ -496,11 +497,15 @@ export default function AdminQuestionBank() {
 
   const filteredGlobalQuestions = globalQuestions.filter((q) => {
     const searchLower = searchTerm.toLowerCase();
-    return (
+    const matchesSearch = 
       q.question_text.toLowerCase().includes(searchLower) ||
       q.subjects?.subject_name.toLowerCase().includes(searchLower) ||
-      q.creator?.full_name.toLowerCase().includes(searchLower)
-    );
+      q.creator?.full_name.toLowerCase().includes(searchLower);
+    
+    // If a bank is selected, only show questions from that bank
+    const matchesBank = !selectedGlobalBank || q.bank_name === selectedGlobalBank;
+    
+    return matchesSearch && matchesBank;
   });
 
   const filteredUserQuestions = userQuestions.filter((q) => {
@@ -528,6 +533,21 @@ export default function AdminQuestionBank() {
   const uniqueBanks = Array.from(
     new Set(userQuestions.filter((q) => q.bank_name).map((q) => q.bank_name!))
   );
+
+  // Get unique global bank names
+  const globalBankNames = Array.from(
+    new Set(globalQuestions.filter((q) => q.bank_name).map((q) => q.bank_name!))
+  ).sort();
+
+  // Group global questions by bank name for the bank list view
+  const globalBankGroups = globalBankNames.map(bankName => {
+    const questions = globalQuestions.filter(q => q.bank_name === bankName);
+    return {
+      bankName,
+      questionCount: questions.length,
+      subjects: Array.from(new Set(questions.map(q => q.subjects?.subject_name).filter(Boolean))),
+    };
+  });
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -1092,109 +1112,174 @@ export default function AdminQuestionBank() {
         <TabsContent value="global" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="h-5 w-5" />
-                Global Question Bank
-              </CardTitle>
-              <div className="flex items-center gap-4 mt-4">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search questions..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {selectedGlobalBank && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedGlobalBank(null)}
+                      className="mr-2"
+                    >
+                      <ArrowLeft className="h-4 w-4 mr-1" />
+                      Back to Banks
+                    </Button>
+                  )}
+                  <Globe className="h-5 w-5" />
+                  <CardTitle>
+                    {selectedGlobalBank ? `${selectedGlobalBank} - Questions` : 'Global Question Banks'}
+                  </CardTitle>
                 </div>
               </div>
+              {selectedGlobalBank && (
+                <div className="flex items-center gap-4 mt-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search questions..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+              )}
             </CardHeader>
             <CardContent>
               {loading ? (
                 <div className="text-center py-8">Loading...</div>
-              ) : filteredGlobalQuestions.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  No global questions found. Copy questions from user banks to add them here.
-                </div>
-              ) : (
-                <div className="rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Question</TableHead>
-                        <TableHead>Bank Name</TableHead>
-                        <TableHead>Subject</TableHead>
-                        <TableHead>Type</TableHead>
-                        <TableHead>Difficulty</TableHead>
-                        <TableHead>Marks</TableHead>
-                        <TableHead>Created By</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredGlobalQuestions.map((question) => (
-                        <TableRow key={question.id}>
-                          <TableCell className="max-w-md">
-                            <div
-                              className="truncate cursor-pointer hover:text-primary"
-                              onClick={() => handleViewQuestion(question)}
-                              dangerouslySetInnerHTML={{ __html: question.question_text }}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="secondary">
-                              <BookOpen className="h-3 w-3 mr-1" />
-                              {question.bank_name || 'No Bank'}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{question.subjects?.subject_name || 'N/A'}</TableCell>
-                          <TableCell>
-                            <Badge variant="outline">
-                              {getQuestionTypeLabel(question.question_type)}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge className={getDifficultyColor(question.difficulty)}>
-                              {question.difficulty}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{question.marks}</TableCell>
-                          <TableCell>
+              ) : !selectedGlobalBank ? (
+                // Bank List View
+                globalBankGroups.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No global question banks found. Copy questions from user banks to add them here.
+                  </div>
+                ) : (
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {globalBankGroups.map((bank) => (
+                      <Card
+                        key={bank.bankName}
+                        className="cursor-pointer hover:shadow-lg transition-shadow"
+                        onClick={() => setSelectedGlobalBank(bank.bankName)}
+                      >
+                        <CardHeader>
+                          <CardTitle className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <User className="h-4 w-4 text-muted-foreground" />
-                              {question.creator?.full_name || 'Unknown'}
+                              <BookOpen className="h-5 w-5 text-primary" />
+                              <span className="truncate">{bank.bankName}</span>
                             </div>
-                          </TableCell>
-                          <TableCell>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <MoreVertical className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => handleViewQuestion(question)}>
-                                  <Search className="h-4 w-4 mr-2" />
-                                  View
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleEditQuestion(question)}>
-                                  <Edit className="h-4 w-4 mr-2" />
-                                  Edit
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => handleDeleteClick(question.id)}
-                                  className="text-destructive focus:text-destructive"
-                                >
-                                  <Trash2 className="h-4 w-4 mr-2" />
-                                  Delete
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
+                            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-muted-foreground">Questions:</span>
+                              <Badge variant="secondary">{bank.questionCount}</Badge>
+                            </div>
+                            {bank.subjects.length > 0 && (
+                              <div className="space-y-1">
+                                <span className="text-sm text-muted-foreground">Subjects:</span>
+                                <div className="flex flex-wrap gap-1">
+                                  {bank.subjects.slice(0, 3).map((subject, idx) => (
+                                    <Badge key={idx} variant="outline" className="text-xs">
+                                      {subject}
+                                    </Badge>
+                                  ))}
+                                  {bank.subjects.length > 3 && (
+                                    <Badge variant="outline" className="text-xs">
+                                      +{bank.subjects.length - 3} more
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )
+              ) : (
+                // Questions List View for Selected Bank
+                filteredGlobalQuestions.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No questions found in this bank.
+                  </div>
+                ) : (
+                  <div className="rounded-md border">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Question</TableHead>
+                          <TableHead>Subject</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Difficulty</TableHead>
+                          <TableHead>Marks</TableHead>
+                          <TableHead>Created By</TableHead>
+                          <TableHead>Actions</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredGlobalQuestions.map((question) => (
+                          <TableRow key={question.id}>
+                            <TableCell className="max-w-md">
+                              <div
+                                className="truncate cursor-pointer hover:text-primary"
+                                onClick={() => handleViewQuestion(question)}
+                                dangerouslySetInnerHTML={{ __html: question.question_text }}
+                              />
+                            </TableCell>
+                            <TableCell>{question.subjects?.subject_name || 'N/A'}</TableCell>
+                            <TableCell>
+                              <Badge variant="outline">
+                                {getQuestionTypeLabel(question.question_type)}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Badge className={getDifficultyColor(question.difficulty)}>
+                                {question.difficulty}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{question.marks}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <User className="h-4 w-4 text-muted-foreground" />
+                                {question.creator?.full_name || 'Unknown'}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="sm">
+                                    <MoreVertical className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem onClick={() => handleViewQuestion(question)}>
+                                    <Search className="h-4 w-4 mr-2" />
+                                    View
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => handleEditQuestion(question)}>
+                                    <Edit className="h-4 w-4 mr-2" />
+                                    Edit
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => handleDeleteClick(question.id)}
+                                    className="text-destructive focus:text-destructive"
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                    Delete
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )
               )}
             </CardContent>
           </Card>
