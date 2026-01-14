@@ -1522,14 +1522,6 @@ export default function AdminQuestionBank() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-[50px] text-center">
-                            <Checkbox
-                              checked={isAllSelected(filteredUserQuestions)}
-                              onCheckedChange={() => handleSelectAll(filteredUserQuestions)}
-                              aria-label="Select all questions"
-                              className={isSomeSelected(filteredUserQuestions) ? "data-[state=checked]:bg-primary" : ""}
-                            />
-                          </TableHead>
                           <TableHead>Question</TableHead>
                           <TableHead>Bank Name</TableHead>
                           <TableHead>Subject</TableHead>
@@ -1548,17 +1540,16 @@ export default function AdminQuestionBank() {
                               key={question.id}
                               className={isInGlobal ? 'bg-success/10 hover:bg-success/20' : isSelected ? 'bg-primary/5' : ''}
                             >
-                              <TableCell className="text-center">
-                                <Checkbox
-                                  checked={isSelected}
-                                  onCheckedChange={() => handleSelectQuestion(question.id)}
-                                  disabled={isInGlobal}
-                                  aria-label={`Select question ${question.id}`}
-                                  title={isInGlobal ? "Already in global question bank" : "Select question"}
-                                />
-                              </TableCell>
                               <TableCell className="max-w-md">
                                 <div className="flex items-center gap-2">
+                                  <Checkbox
+                                    checked={isSelected}
+                                    onCheckedChange={() => handleSelectQuestion(question.id)}
+                                    disabled={isInGlobal}
+                                    aria-label={`Select question ${question.id}`}
+                                    title={isInGlobal ? "Already in global question bank" : "Select question"}
+                                    className="shrink-0"
+                                  />
                                   <div
                                     className="truncate cursor-pointer hover:text-primary flex-1"
                                     onClick={() => handleViewQuestion(question)}
