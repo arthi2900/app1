@@ -93,6 +93,7 @@ export default function AdminQuestionBank() {
   const [selectedQuestion, setSelectedQuestion] = useState<QuestionWithCreator | null>(null);
   const [questionToDelete, setQuestionToDelete] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [questionsInGlobal, setQuestionsInGlobal] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -127,6 +128,9 @@ export default function AdminQuestionBank() {
       setUserBanks(banks);
       setSubjects(allSubjects);
       setClasses(allClasses);
+
+      // Load questions that are already in global bank
+      await loadQuestionsInGlobal();
     } catch (error) {
       console.error('Error loading questions:', error);
       toast({
@@ -139,8 +143,40 @@ export default function AdminQuestionBank() {
     }
   };
 
+  const loadQuestionsInGlobal = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('questions')
+        .select('source_question_id')
+        .eq('is_global', true)
+        .not('source_question_id', 'is', null);
+
+      if (error) throw error;
+
+      const questionIds = new Set(
+        data
+          .map((q) => q.source_question_id)
+          .filter((id): id is string => id !== null)
+      );
+
+      setQuestionsInGlobal(questionIds);
+    } catch (error) {
+      console.error('Error loading global question IDs:', error);
+    }
+  };
+
   const handleCopyToGlobal = async (questionId: string) => {
     try {
+      // Check if question already exists in global bank
+      if (questionsInGlobal.has(questionId)) {
+        toast({
+          title: 'Already Exists',
+          description: 'This question is already in the global question bank',
+          variant: 'destructive',
+        });
+        return;
+      }
+
       await questionApi.copyQuestionToGlobal(questionId);
       toast({
         title: 'Success',
@@ -1371,60 +1407,76 @@ export default function AdminQuestionBank() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredUserQuestions.map((question) => (
-                        <TableRow key={question.id}>
-                          <TableCell className="max-w-md">
-                            <div
-                              className="truncate cursor-pointer hover:text-primary"
-                              onClick={() => handleViewQuestion(question)}
-                              dangerouslySetInnerHTML={{ __html: question.question_text }}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="secondary">
-                              <BookOpen className="h-3 w-3 mr-1" />
-                              {question.bank_name || 'No Bank'}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{question.subjects?.subject_name || 'N/A'}</TableCell>
-                          <TableCell>
-                            <Badge variant="outline">
-                              {getQuestionTypeLabel(question.question_type)}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge className={getDifficultyColor(question.difficulty)}>
-                              {question.difficulty}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{question.marks}</TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <User className="h-4 w-4 text-muted-foreground" />
-                              {question.creator?.full_name || 'Unknown'}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleViewQuestion(question)}
-                              >
-                                View
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleCopyToGlobal(question.id)}
-                              >
-                                <Copy className="h-4 w-4 mr-1" />
-                                Copy to Global
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {filteredUserQuestions.map((question) => {
+                        const isInGlobal = questionsInGlobal.has(question.id);
+                        return (
+                          <TableRow 
+                            key={question.id}
+                            className={isInGlobal ? 'bg-success/10 hover:bg-success/20' : ''}
+                          >
+                            <TableCell className="max-w-md">
+                              <div className="flex items-center gap-2">
+                                <div
+                                  className="truncate cursor-pointer hover:text-primary flex-1"
+                                  onClick={() => handleViewQuestion(question)}
+                                  dangerouslySetInnerHTML={{ __html: question.question_text }}
+                                />
+                                {isInGlobal && (
+                                  <Badge variant="default" className="bg-success text-success-foreground shrink-0">
+                                    <Globe className="h-3 w-3 mr-1" />
+                                    In Global
+                                  </Badge>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="secondary">
+                                <BookOpen className="h-3 w-3 mr-1" />
+                                {question.bank_name || 'No Bank'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{question.subjects?.subject_name || 'N/A'}</TableCell>
+                            <TableCell>
+                              <Badge variant="outline">
+                                {getQuestionTypeLabel(question.question_type)}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Badge className={getDifficultyColor(question.difficulty)}>
+                                {question.difficulty}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{question.marks}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <User className="h-4 w-4 text-muted-foreground" />
+                                {question.creator?.full_name || 'Unknown'}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleViewQuestion(question)}
+                                >
+                                  View
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleCopyToGlobal(question.id)}
+                                  disabled={isInGlobal}
+                                  title={isInGlobal ? 'Already in global bank' : 'Copy to global bank'}
+                                >
+                                  <Copy className="h-4 w-4 mr-1" />
+                                  {isInGlobal ? 'Already Copied' : 'Copy to Global'}
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </div>
