@@ -39,16 +39,17 @@ export default function Sidebar({ collapsed, onCollapsedChange }: SidebarProps) 
     return () => window.removeEventListener('resize', handleResize);
   }, [onCollapsedChange]);
 
-  const getRoleBasedLinks = () => {
+  const getRoleBasedLinks = (): Array<{ to: string; label: string; icon: any }> => {
     if (!profile) return [];
 
-    const links = [];
+    const links: Array<{ to: string; label: string; icon: any }> = [];
 
     if (profile.role === 'admin') {
       links.push(
         { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
         { to: '/admin/users', label: 'User Management', icon: Users },
-        { to: '/admin/schools', label: 'School Management', icon: Building2 }
+        { to: '/admin/schools', label: 'School Management', icon: Building2 },
+        { to: '/admin/questions', label: 'Question Bank', icon: FileQuestion }
       );
     }
 

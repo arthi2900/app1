@@ -489,6 +489,141 @@ export const questionApi = {
 
     return usageMap;
   },
+
+  // Admin Question Bank APIs
+  async getGlobalQuestions(): Promise<QuestionWithSubject[]> {
+    const { data, error } = await supabase
+      .from('questions')
+      .select(`
+        *,
+        subjects (
+          id,
+          subject_name,
+          subject_code,
+          class_id
+        ),
+        creator:profiles!questions_created_by_fkey (
+          id,
+          full_name,
+          username
+        )
+      `)
+      .eq('is_global', true)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getAllQuestionsWithUsers(): Promise<QuestionWithSubject[]> {
+    const { data, error } = await supabase
+      .from('questions')
+      .select(`
+        *,
+        subjects (
+          id,
+          subject_name,
+          subject_code,
+          class_id
+        ),
+        creator:profiles!questions_created_by_fkey (
+          id,
+          full_name,
+          username,
+          role
+        )
+      `)
+      .eq('is_global', false)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async copyQuestionToGlobal(questionId: string): Promise<Question | null> {
+    // First, get the original question
+    const { data: originalQuestion, error: fetchError } = await supabase
+      .from('questions')
+      .select('*')
+      .eq('id', questionId)
+      .maybeSingle();
+    
+    if (fetchError) throw fetchError;
+    if (!originalQuestion) throw new Error('Question not found');
+
+    // Create a copy with is_global = true
+    const { id, created_at, created_by, ...questionData } = originalQuestion;
+    const user = await supabase.auth.getUser();
+    
+    const { data, error } = await supabase
+      .from('questions')
+      .insert({
+        ...questionData,
+        is_global: true,
+        source_question_id: questionId,
+        created_by: user.data.user?.id
+      })
+      .select()
+      .maybeSingle();
+    
+    if (error) throw error;
+    return data;
+  },
+
+  async getUserQuestionBanks(): Promise<{ userId: string; userName: string; userRole: string; bankNames: string[] }[]> {
+    const { data, error } = await supabase
+      .from('questions')
+      .select(`
+        bank_name,
+        created_by,
+        creator:profiles!questions_created_by_fkey (
+          id,
+          full_name,
+          username,
+          role
+        )
+      `)
+      .eq('is_global', false)
+      .not('bank_name', 'is', null)
+      .order('bank_name', { ascending: true });
+    
+    if (error) throw error;
+
+    // Group by user
+    const userBanksMap = new Map<string, { userName: string; userRole: string; bankNames: Set<string> }>();
+    
+    (Array.isArray(data) ? data : []).forEach((item: any) => {
+      if (item.creator && item.bank_name) {
+        const userId = item.creator.id;
+        if (!userBanksMap.has(userId)) {
+          userBanksMap.set(userId, {
+            userName: item.creator.full_name || item.creator.username,
+            userRole: item.creator.role,
+            bankNames: new Set()
+          });
+        }
+        userBanksMap.get(userId)?.bankNames.add(item.bank_name);
+      }
+    });
+
+    return Array.from(userBanksMap.entries()).map(([userId, data]) => ({
+      userId,
+      userName: data.userName,
+      userRole: data.userRole,
+      bankNames: Array.from(data.bankNames)
+    }));
+  },
+
+  async getQuestionsByUserAndBank(userId: string, bankName: string): Promise<Question[]> {
+    const { data, error } = await supabase
+      .from('questions')
+      .select('*')
+      .eq('created_by', userId)
+      .eq('bank_name', bankName)
+      .eq('is_global', false)
+      .order('created_at', { ascending: true });
+    
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
 };
 
 // Lesson APIs

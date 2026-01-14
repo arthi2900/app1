@@ -34,16 +34,17 @@ export default function Header() {
     }
   };
 
-  const getRoleBasedLinks = () => {
+  const getRoleBasedLinks = (): Array<{ to: string; label: string; icon: any }> => {
     if (!profile) return [];
 
-    const links = [];
+    const links: Array<{ to: string; label: string; icon: any }> = [];
 
     if (profile.role === 'admin') {
       links.push(
         { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
         { to: '/admin/users', label: 'Users', icon: Users },
         { to: '/admin/schools', label: 'Schools', icon: Building2 },
+        { to: '/admin/questions', label: 'Question Bank', icon: FileQuestion },
         { to: '/teacher/exams', label: 'Manage Exams', icon: ClipboardList }
       );
     }

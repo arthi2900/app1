@@ -7,6 +7,7 @@ import ResetPassword from './pages/auth/ResetPassword';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
 import SchoolManagement from './pages/admin/SchoolManagement';
+import AdminQuestionBank from './pages/admin/AdminQuestionBank';
 import PrincipalDashboard from './pages/principal/PrincipalDashboard';
 import TeachersList from './pages/principal/TeachersList';
 import StudentsList from './pages/principal/StudentsList';
@@ -90,6 +91,16 @@ const routes: RouteConfig[] = [
     element: (
       <ProtectedRoute allowedRoles={['admin']}>
         <SchoolManagement />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Question Bank',
+    path: '/admin/questions',
+    element: (
+      <ProtectedRoute allowedRoles={['admin']}>
+        <AdminQuestionBank />
       </ProtectedRoute>
     ),
     visible: false,

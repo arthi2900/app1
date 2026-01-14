@@ -221,3 +221,30 @@ The system now provides:
 ## Documentation
 - See `EXAM_MODULES_REMOVED.md` for detailed documentation of removed features
 - All changes tested and validated with lint checks passing
+
+## Current Task: Admin Question Bank Feature (2025-12-11)
+
+### Plan
+- [x] Step 1: Database Schema Update
+  - [x] Add `is_global` boolean field to questions table
+  - [x] Add `source_question_id` field to track copied questions
+- [x] Step 2: API Functions
+  - [x] Add functions to get global questions
+  - [x] Add functions to get all user question banks grouped by user
+  - [x] Add function to copy question to global bank
+- [x] Step 3: Create AdminQuestionBank Page
+  - [x] Create page with tabs for Global and Users
+  - [x] Implement Global questions view with filters
+  - [x] Implement Users question banks view
+  - [x] Add copy to global functionality
+- [x] Step 4: Routing and Navigation
+  - [x] Add route for admin question bank
+  - [x] Update admin navigation to include question bank link
+- [x] Step 5: Testing and Validation
+  - [x] Run lint to ensure code quality (no errors in new code)
+
+### Notes
+- Global questions should be accessible to all teachers
+- Users tab should show all question banks created by individual users
+- Admin can copy questions from user banks to global bank
+- Need to maintain question ownership and tracking

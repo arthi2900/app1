@@ -63,6 +63,9 @@ export interface Question {
   image_url: string | null;
   created_by: string | null;
   created_at: string;
+  is_global?: boolean;
+  source_question_id?: string | null;
+  match_pairs?: MatchPair[] | null;
 }
 
 export interface QuestionWithSubject extends Question {
