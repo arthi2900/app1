@@ -1155,31 +1155,34 @@ export default function AdminQuestionBank() {
                     No global question banks found. Copy questions from user banks to add them here.
                   </div>
                 ) : (
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {globalBankGroups.map((bank) => (
-                      <Card
-                        key={bank.bankName}
-                        className="cursor-pointer hover:shadow-lg transition-shadow"
-                        onClick={() => setSelectedGlobalBank(bank.bankName)}
-                      >
-                        <CardHeader>
-                          <CardTitle className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <BookOpen className="h-5 w-5 text-primary" />
-                              <span className="truncate">{bank.bankName}</span>
-                            </div>
-                            <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between text-sm">
-                              <span className="text-muted-foreground">Questions:</span>
+                  <div className="rounded-md border">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Bank Name</TableHead>
+                          <TableHead>Questions</TableHead>
+                          <TableHead>Subjects</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {globalBankGroups.map((bank) => (
+                          <TableRow 
+                            key={bank.bankName}
+                            className="cursor-pointer hover:bg-muted/50"
+                            onClick={() => setSelectedGlobalBank(bank.bankName)}
+                          >
+                            <TableCell>
+                              <div className="flex items-center gap-2 font-medium">
+                                <BookOpen className="h-4 w-4 text-primary" />
+                                {bank.bankName}
+                              </div>
+                            </TableCell>
+                            <TableCell>
                               <Badge variant="secondary">{bank.questionCount}</Badge>
-                            </div>
-                            {bank.subjects.length > 0 && (
-                              <div className="space-y-1">
-                                <span className="text-sm text-muted-foreground">Subjects:</span>
+                            </TableCell>
+                            <TableCell>
+                              {bank.subjects.length > 0 ? (
                                 <div className="flex flex-wrap gap-1">
                                   {bank.subjects.slice(0, 3).map((subject, idx) => (
                                     <Badge key={idx} variant="outline" className="text-xs">
@@ -1192,12 +1195,27 @@ export default function AdminQuestionBank() {
                                     </Badge>
                                   )}
                                 </div>
-                              </div>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                              ) : (
+                                <span className="text-muted-foreground text-sm">No subjects</span>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedGlobalBank(bank.bankName);
+                                }}
+                              >
+                                View Questions
+                                <ChevronRight className="h-4 w-4 ml-1" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
                   </div>
                 )
               ) : (
