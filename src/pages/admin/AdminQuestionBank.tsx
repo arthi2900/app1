@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Globe, Users, Copy, Search, BookOpen, User, Filter, Plus, Trash2, Upload, Edit, MoreVertical, ArrowLeft, ChevronRight } from 'lucide-react';
+import { Globe, Users, Copy, Search, BookOpen, User, Filter, Plus, Trash2, Upload, Edit, MoreVertical, ArrowLeft, ChevronRight, Clock } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -642,6 +642,23 @@ export default function AdminQuestionBank() {
     new Set(globalQuestions.filter((q) => q.bank_name).map((q) => q.bank_name!))
   ).sort();
 
+  // Filter pending questions (not yet in global bank)
+  const pendingQuestions = userQuestions.filter((q) => !questionsInGlobal.has(q.id));
+
+  const filteredPendingQuestions = pendingQuestions.filter((q) => {
+    const searchLower = searchTerm.toLowerCase();
+    const matchesSearch =
+      q.question_text.toLowerCase().includes(searchLower) ||
+      q.subjects?.subject_name.toLowerCase().includes(searchLower) ||
+      q.creator?.full_name.toLowerCase().includes(searchLower) ||
+      q.bank_name?.toLowerCase().includes(searchLower);
+
+    const matchesUser = selectedUser === 'all' || q.created_by === selectedUser;
+    const matchesBank = selectedBank === 'all' || q.bank_name === selectedBank;
+
+    return matchesSearch && matchesUser && matchesBank;
+  });
+
   // Group global questions by bank name for the bank list view
   const globalBankGroups = globalBankNames.map(bankName => {
     const questions = globalQuestions.filter(q => q.bank_name === bankName);
@@ -1227,7 +1244,7 @@ export default function AdminQuestionBank() {
       </AlertDialog>
 
       <Tabs defaultValue="global" className="space-y-4">
-        <TabsList className="grid w-full max-w-md grid-cols-2">
+        <TabsList className="grid w-full max-w-2xl grid-cols-3">
           <TabsTrigger value="global" className="flex items-center gap-2">
             <Globe className="h-4 w-4" />
             Global Questions
@@ -1235,6 +1252,15 @@ export default function AdminQuestionBank() {
           <TabsTrigger value="users" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             User Questions
+          </TabsTrigger>
+          <TabsTrigger value="pending" className="flex items-center gap-2">
+            <Clock className="h-4 w-4" />
+            Pending to Add
+            {pendingQuestions.length > 0 && (
+              <Badge variant="secondary" className="ml-1">
+                {pendingQuestions.length}
+              </Badge>
+            )}
           </TabsTrigger>
         </TabsList>
 
@@ -1637,6 +1663,183 @@ export default function AdminQuestionBank() {
                     </Card>
                   ))}
                 </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="pending" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="h-5 w-5" />
+                Pending Questions to Add
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-2">
+                Questions created by users that are not yet in the Global Question Bank
+              </p>
+              <div className="flex items-center gap-4 mt-4">
+                <Button
+                  variant={selectedQuestions.size > 0 ? "default" : "outline"}
+                  size="default"
+                  onClick={() => {
+                    if (selectedQuestions.size > 0) {
+                      setBulkCopyDialog(true);
+                    }
+                  }}
+                  disabled={selectedQuestions.size === 0}
+                  className={selectedQuestions.size > 0 
+                    ? "bg-gradient-to-r from-success to-success/80 hover:from-success/90 hover:to-success/70 text-success-foreground shadow-md shrink-0" 
+                    : "shrink-0"}
+                  title={selectedQuestions.size === 0 ? "Select questions to add" : `Add ${selectedQuestions.size} question(s) to global bank`}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add to Global Bank
+                  {selectedQuestions.size > 0 && ` (${selectedQuestions.size})`}
+                </Button>
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search questions..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <Select value={selectedUser} onValueChange={setSelectedUser}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Filter by user" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Users</SelectItem>
+                    {uniqueUsers.map((user) => (
+                      <SelectItem key={user.id} value={user.id}>
+                        {user.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={selectedBank} onValueChange={setSelectedBank}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Filter by bank" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Banks</SelectItem>
+                    {uniqueBanks.map((bank) => (
+                      <SelectItem key={bank} value={bank}>
+                        {bank}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <div className="text-center py-8">Loading...</div>
+              ) : filteredPendingQuestions.length === 0 ? (
+                <div className="text-center py-12">
+                  <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-lg font-medium text-muted-foreground">
+                    {pendingQuestions.length === 0 
+                      ? "No pending questions found"
+                      : "No questions match your filters"}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {pendingQuestions.length === 0 
+                      ? "All user questions have been added to the global bank"
+                      : "Try adjusting your search or filter criteria"}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {selectedQuestions.size > 0 && (
+                    <div className="mb-4 flex items-center justify-between p-3 bg-primary/10 rounded-md">
+                      <span className="text-sm font-medium">
+                        {selectedQuestions.size} question{selectedQuestions.size > 1 ? 's' : ''} selected
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedQuestions(new Set())}
+                      >
+                        Clear Selection
+                      </Button>
+                    </div>
+                  )}
+                  <div className="rounded-md border">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-12">
+                            <Checkbox
+                              checked={isAllSelected(filteredPendingQuestions)}
+                              onCheckedChange={() => handleSelectAll(filteredPendingQuestions)}
+                              aria-label="Select all questions"
+                            />
+                          </TableHead>
+                          <TableHead>Question</TableHead>
+                          <TableHead>Bank Name</TableHead>
+                          <TableHead>Subject</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Difficulty</TableHead>
+                          <TableHead>Marks</TableHead>
+                          <TableHead>Created By</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredPendingQuestions.map((question) => {
+                          const isSelected = selectedQuestions.has(question.id);
+                          return (
+                            <TableRow 
+                              key={question.id}
+                              className={isSelected ? 'bg-primary/5' : ''}
+                            >
+                              <TableCell>
+                                <Checkbox
+                                  checked={isSelected}
+                                  onCheckedChange={() => handleSelectQuestion(question.id)}
+                                  aria-label={`Select question ${question.id}`}
+                                />
+                              </TableCell>
+                              <TableCell className="max-w-md">
+                                <div
+                                  className="truncate cursor-pointer hover:text-primary"
+                                  onClick={() => handleViewQuestion(question)}
+                                  dangerouslySetInnerHTML={{ __html: question.question_text }}
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="secondary">
+                                  <BookOpen className="h-3 w-3 mr-1" />
+                                  {question.bank_name || 'No Bank'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{question.subjects?.subject_name || 'N/A'}</TableCell>
+                              <TableCell>
+                                <Badge variant="outline">
+                                  {getQuestionTypeLabel(question.question_type)}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge className={getDifficultyColor(question.difficulty)}>
+                                  {question.difficulty}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{question.marks}</TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <User className="h-4 w-4 text-muted-foreground" />
+                                  {question.creator?.full_name || 'Unknown'}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>

@@ -222,6 +222,57 @@ The system now provides:
 - See `EXAM_MODULES_REMOVED.md` for detailed documentation of removed features
 - All changes tested and validated with lint checks passing
 
+## Current Task: Add "Pending to Add" Feature (2025-12-11)
+
+### Requirements
+Add a new tab "Pending to Add" after Global Questions and User Questions tabs that:
+1. Shows only questions created by all users that are NOT yet in the Global Question Bank
+2. Allows selection and bulk addition of these questions into the Global Question Bank
+
+### Plan
+- [x] Step 1: Analyze existing AdminQuestionBank.tsx structure
+  - [x] Understand current tabs (Global Questions, User Questions)
+  - [x] Identify data flow and filtering logic
+  - [x] Review selection and bulk copy functionality
+- [x] Step 2: Implement "Pending to Add" tab
+  - [x] Add Clock icon import
+  - [x] Create pendingQuestions filter (questions not in global bank)
+  - [x] Create filteredPendingQuestions with search/user/bank filters
+  - [x] Update TabsList to include third tab with badge showing count
+  - [x] Create new TabsContent for "Pending to Add"
+  - [x] Add table with checkbox selection
+  - [x] Reuse existing bulk copy functionality
+  - [x] Add appropriate empty states
+- [x] Step 3: Verify implementation
+  - [x] Run lint to check for errors
+  - [x] Confirm no errors in AdminQuestionBank.tsx
+
+### Implementation Summary
+✅ **"Pending to Add" Tab**: Successfully Implemented
+- Added third tab after "User Questions" with Clock icon
+- Badge shows count of pending questions dynamically
+- Filters to show only user questions NOT in global bank (using questionsInGlobal Set)
+- Includes all existing filters: search, user filter, bank filter
+- Table with checkbox selection (individual and "Select All")
+- Button labeled "Add to Global Bank" instead of "Copy to Global"
+- Reuses existing handleBulkCopyToGlobal functionality
+- Empty states with helpful messages:
+  - "No pending questions found" when all questions are in global bank
+  - "No questions match your filters" when filters exclude all results
+- Selection counter shows number of selected questions
+- Clear Selection button to reset selection
+
+### Notes
+- Successfully added "Pending to Add" tab after "User Questions" tab
+- The tab displays only questions that are NOT yet in the Global Question Bank
+- Reused existing selection mechanism and bulk copy functionality
+- Added badge showing count of pending questions
+- Included filters for search, user, and bank name
+- Added "Select All" checkbox in table header
+- Empty state shows helpful messages based on filter state
+- Button changes to "Add to Global Bank" instead of "Copy to Global"
+- No lint errors in AdminQuestionBank.tsx
+
 ## Current Task: Admin Question Bank Feature (2025-12-11)
 
 ### Plan
