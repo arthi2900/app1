@@ -23,6 +23,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Globe, Users, Copy, Search, BookOpen, User, Filter, Plus, Trash2, Upload, Edit, MoreVertical, ArrowLeft, ChevronRight } from 'lucide-react';
 import {
   DropdownMenu,
@@ -94,6 +95,8 @@ export default function AdminQuestionBank() {
   const [questionToDelete, setQuestionToDelete] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [questionsInGlobal, setQuestionsInGlobal] = useState<Set<string>>(new Set());
+  const [selectedQuestions, setSelectedQuestions] = useState<Set<string>>(new Set());
+  const [bulkCopyDialog, setBulkCopyDialog] = useState(false);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -191,6 +194,70 @@ export default function AdminQuestionBank() {
         variant: 'destructive',
       });
     }
+  };
+
+  const handleBulkCopyToGlobal = async () => {
+    try {
+      const questionsToProcess = Array.from(selectedQuestions);
+      const questionsNotInGlobal = questionsToProcess.filter(id => !questionsInGlobal.has(id));
+
+      if (questionsNotInGlobal.length === 0) {
+        toast({
+          title: 'Already Exists',
+          description: 'All selected questions are already in the global question bank',
+          variant: 'destructive',
+        });
+        setBulkCopyDialog(false);
+        return;
+      }
+
+      // Copy all questions in parallel
+      await Promise.all(
+        questionsNotInGlobal.map(questionId => questionApi.copyQuestionToGlobal(questionId))
+      );
+
+      toast({
+        title: 'Success',
+        description: `${questionsNotInGlobal.length} question(s) copied to global bank`,
+      });
+
+      setSelectedQuestions(new Set());
+      setBulkCopyDialog(false);
+      loadData();
+    } catch (error) {
+      console.error('Error copying questions:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to copy questions to global bank',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleSelectQuestion = (questionId: string) => {
+    const newSelected = new Set(selectedQuestions);
+    if (newSelected.has(questionId)) {
+      newSelected.delete(questionId);
+    } else {
+      newSelected.add(questionId);
+    }
+    setSelectedQuestions(newSelected);
+  };
+
+  const handleSelectAll = (questions: QuestionWithCreator[]) => {
+    if (selectedQuestions.size === questions.length) {
+      setSelectedQuestions(new Set());
+    } else {
+      setSelectedQuestions(new Set(questions.map(q => q.id)));
+    }
+  };
+
+  const isAllSelected = (questions: QuestionWithCreator[]) => {
+    return questions.length > 0 && selectedQuestions.size === questions.length;
+  };
+
+  const isSomeSelected = (questions: QuestionWithCreator[]) => {
+    return selectedQuestions.size > 0 && selectedQuestions.size < questions.length;
   };
 
   const handleViewQuestion = (question: QuestionWithCreator) => {
@@ -1133,6 +1200,32 @@ export default function AdminQuestionBank() {
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* Bulk Copy Confirmation Dialog */}
+      <AlertDialog open={bulkCopyDialog} onOpenChange={setBulkCopyDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>உலகளாவிய கேள்வி வங்கிக்கு கேள்விகளை நகலெடுக்கவா?</AlertDialogTitle>
+            <AlertDialogDescription>
+              நீங்கள் {selectedQuestions.size} கேள்விகளை உலகளாவிய கேள்வி வங்கிக்கு நகலெடுக்க உள்ளீர்கள். 
+              இந்த கேள்விகள் அனைத்து ஆசிரியர்களுக்கும் கிடைக்கும்.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => {
+              setBulkCopyDialog(false);
+            }}>
+              ரத்து செய்
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleBulkCopyToGlobal} 
+              className="bg-success text-success-foreground hover:bg-success/90"
+            >
+              நகலெடு ({selectedQuestions.size})
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <Tabs defaultValue="global" className="space-y-4">
         <TabsList className="grid w-full max-w-md grid-cols-2">
           <TabsTrigger value="global" className="flex items-center gap-2">
@@ -1392,94 +1485,151 @@ export default function AdminQuestionBank() {
                   No user questions found.
                 </div>
               ) : (
-                <div className="rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Question</TableHead>
-                        <TableHead>Bank Name</TableHead>
-                        <TableHead>Subject</TableHead>
-                        <TableHead>Type</TableHead>
-                        <TableHead>Difficulty</TableHead>
-                        <TableHead>Marks</TableHead>
-                        <TableHead>Created By</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredUserQuestions.map((question) => {
-                        const isInGlobal = questionsInGlobal.has(question.id);
-                        return (
-                          <TableRow 
-                            key={question.id}
-                            className={isInGlobal ? 'bg-success/10 hover:bg-success/20' : ''}
-                          >
-                            <TableCell className="max-w-md">
-                              <div className="flex items-center gap-2">
-                                <div
-                                  className="truncate cursor-pointer hover:text-primary flex-1"
-                                  onClick={() => handleViewQuestion(question)}
-                                  dangerouslySetInnerHTML={{ __html: question.question_text }}
-                                />
-                                {isInGlobal && (
-                                  <Badge variant="default" className="bg-success text-success-foreground shrink-0">
-                                    <Globe className="h-3 w-3 mr-1" />
-                                    In Global
-                                  </Badge>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant="secondary">
-                                <BookOpen className="h-3 w-3 mr-1" />
-                                {question.bank_name || 'No Bank'}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>{question.subjects?.subject_name || 'N/A'}</TableCell>
-                            <TableCell>
-                              <Badge variant="outline">
-                                {getQuestionTypeLabel(question.question_type)}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <Badge className={getDifficultyColor(question.difficulty)}>
-                                {question.difficulty}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>{question.marks}</TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                <User className="h-4 w-4 text-muted-foreground" />
-                                {question.creator?.full_name || 'Unknown'}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleViewQuestion(question)}
-                                >
-                                  View
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => handleCopyToGlobal(question.id)}
+                <>
+                  {selectedQuestions.size > 0 && (
+                    <div className="mb-4 flex items-center justify-between p-3 bg-primary/10 rounded-md">
+                      <span className="text-sm font-medium">
+                        {selectedQuestions.size} கேள்விகள் தேர்ந்தெடுக்கப்பட்டன
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedQuestions(new Set())}
+                      >
+                        தேர்வை அழி
+                      </Button>
+                    </div>
+                  )}
+                  <div className="rounded-md border">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[50px] text-center">
+                            <Checkbox
+                              checked={isAllSelected(filteredUserQuestions)}
+                              onCheckedChange={() => handleSelectAll(filteredUserQuestions)}
+                              aria-label="Select all questions"
+                              className={isSomeSelected(filteredUserQuestions) ? "data-[state=checked]:bg-primary" : ""}
+                            />
+                          </TableHead>
+                          <TableHead>கேள்வி</TableHead>
+                          <TableHead>வங்கி பெயர்</TableHead>
+                          <TableHead>பாடம்</TableHead>
+                          <TableHead>வகை</TableHead>
+                          <TableHead>சிரமம்</TableHead>
+                          <TableHead>மதிப்பெண்கள்</TableHead>
+                          <TableHead className="text-center">
+                            <Button
+                              variant={selectedQuestions.size > 0 ? "default" : "ghost"}
+                              size="sm"
+                              onClick={() => {
+                                if (selectedQuestions.size > 0) {
+                                  setBulkCopyDialog(true);
+                                }
+                              }}
+                              disabled={selectedQuestions.size === 0}
+                              className={selectedQuestions.size > 0 
+                                ? "bg-gradient-to-r from-success to-success/80 hover:from-success/90 hover:to-success/70 text-success-foreground shadow-md" 
+                                : ""}
+                              title={selectedQuestions.size === 0 ? "கேள்விகளைத் தேர்ந்தெடுக்கவும்" : `${selectedQuestions.size} கேள்விகளை உலகளாவிய வங்கிக்கு நகலெடுக்கவும்`}
+                            >
+                              <Copy className="h-4 w-4 mr-1" />
+                              உலகளாவிய வங்கிக்கு நகலெடு
+                              {selectedQuestions.size > 0 && ` (${selectedQuestions.size})`}
+                            </Button>
+                          </TableHead>
+                          <TableHead>உருவாக்கியவர்</TableHead>
+                          <TableHead>செயல்கள்</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredUserQuestions.map((question) => {
+                          const isInGlobal = questionsInGlobal.has(question.id);
+                          const isSelected = selectedQuestions.has(question.id);
+                          return (
+                            <TableRow 
+                              key={question.id}
+                              className={isInGlobal ? 'bg-success/10 hover:bg-success/20' : isSelected ? 'bg-primary/5' : ''}
+                            >
+                              <TableCell className="text-center">
+                                <Checkbox
+                                  checked={isSelected}
+                                  onCheckedChange={() => handleSelectQuestion(question.id)}
                                   disabled={isInGlobal}
-                                  title={isInGlobal ? 'Already in global bank' : 'Copy to global bank'}
-                                >
-                                  <Copy className="h-4 w-4 mr-1" />
-                                  {isInGlobal ? 'Already Copied' : 'Copy to Global'}
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </div>
+                                  aria-label={`Select question ${question.id}`}
+                                  title={isInGlobal ? "ஏற்கனவே உலகளாவிய கேள்வி வங்கியில் உள்ளது" : "கேள்வியைத் தேர்ந்தெடுக்கவும்"}
+                                />
+                              </TableCell>
+                              <TableCell className="max-w-md">
+                                <div className="flex items-center gap-2">
+                                  <div
+                                    className="truncate cursor-pointer hover:text-primary flex-1"
+                                    onClick={() => handleViewQuestion(question)}
+                                    dangerouslySetInnerHTML={{ __html: question.question_text }}
+                                  />
+                                  {isInGlobal && (
+                                    <Badge variant="default" className="bg-success text-success-foreground shrink-0">
+                                      <Globe className="h-3 w-3 mr-1" />
+                                      உலகளாவியதில்
+                                    </Badge>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="secondary">
+                                  <BookOpen className="h-3 w-3 mr-1" />
+                                  {question.bank_name || 'வங்கி இல்லை'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{question.subjects?.subject_name || 'N/A'}</TableCell>
+                              <TableCell>
+                                <Badge variant="outline">
+                                  {getQuestionTypeLabel(question.question_type)}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge className={getDifficultyColor(question.difficulty)}>
+                                  {question.difficulty}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{question.marks}</TableCell>
+                              <TableCell className="text-center">
+                                {/* Empty cell for alignment with "Copy to Global" button column */}
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <User className="h-4 w-4 text-muted-foreground" />
+                                  {question.creator?.full_name || 'Unknown'}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleViewQuestion(question)}
+                                  >
+                                    பார்
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleCopyToGlobal(question.id)}
+                                    disabled={isInGlobal}
+                                    title={isInGlobal ? 'ஏற்கனவே உலகளாவிய வங்கியில் உள்ளது' : 'உலகளாவிய வங்கிக்கு நகலெடு'}
+                                  >
+                                    <Copy className="h-4 w-4 mr-1" />
+                                    {isInGlobal ? 'ஏற்கனவே நகலெடுக்கப்பட்டது' : 'நகலெடு'}
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>
