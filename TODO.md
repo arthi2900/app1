@@ -248,3 +248,44 @@ The system now provides:
 - Users tab should show all question banks created by individual users
 - Admin can copy questions from user banks to global bank
 - Need to maintain question ownership and tracking
+
+## New Task: Admin Question Management Enhancements (2025-12-11)
+
+### Requirements
+1. **Create Question (Admin)**: Add "Create Question" functionality in Admin login (same as teacher's form)
+2. **Create Question Bank (Admin)**: Show list of all user-created question banks not in global bank, with ability to add them to global
+
+### Plan
+- [x] Step 1: Analyze existing code
+  - [x] Read types.ts to understand data models
+  - [x] Read teacher/QuestionBank.tsx to see question creation form
+  - [x] Read api.ts to understand existing database queries
+- [x] Step 2: Add Admin Create Question functionality
+  - [x] Add createGlobalQuestion API function
+  - [x] Add create question button to AdminQuestionBank page
+  - [x] Implement admin question creation form with proper permissions
+- [x] Step 3: Enhance Question Bank Management
+  - [x] Verify Users tab shows only non-global questions (already implemented - line 546 in api.ts)
+  - [x] Verify "Add to Global" action works (already implemented - copyQuestionToGlobal function)
+- [x] Step 4: Testing and validation
+  - [x] Run lint to check for errors (no errors in new code)
+  - [x] Verify all features work correctly
+
+### Implementation Summary
+✅ **Requirement 1 - Create Question (Admin)**: Implemented
+- Added "Create Question" button in AdminQuestionBank page header
+- Created comprehensive question creation form with support for MCQ, True/False, and Short Answer types
+- Form includes all necessary fields: Class, Subject, Question Text, Question Type, Difficulty, Marks, Negative Marks, Options, Correct Answer, and Image Upload
+- Questions created by admin are automatically marked as global (is_global = true)
+- Added createGlobalQuestion API function to handle admin question creation
+
+✅ **Requirement 2 - Question Bank Management**: Already Implemented
+- Users tab already filters to show only non-global questions (is_global = false)
+- "Copy to Global" button already exists for each user question
+- Admin can easily add user questions to the global bank with one click
+
+### Implementation Notes
+- Admin should use same question creation form as teachers
+- Need to handle admin creating questions (assign to global or specific user)
+- Users tab should clearly show which banks are not yet in global
+- Provide easy action to add selected banks/questions to global

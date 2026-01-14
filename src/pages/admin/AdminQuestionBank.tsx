@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Table,
@@ -15,14 +17,16 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Globe, Users, Copy, Search, BookOpen, User, Filter } from 'lucide-react';
-import { questionApi } from '@/db/api';
+import { Globe, Users, Copy, Search, BookOpen, User, Filter, Plus, Trash2, Upload } from 'lucide-react';
+import { questionApi, subjectApi, academicApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
-import type { Question } from '@/types/types';
+import type { Question, Subject, Class } from '@/types/types';
 import {
   Select,
   SelectContent,
@@ -30,6 +34,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import { supabase } from '@/db/supabase';
 
 interface QuestionWithCreator extends Question {
   creator?: {
@@ -56,13 +62,30 @@ export default function AdminQuestionBank() {
   const [globalQuestions, setGlobalQuestions] = useState<QuestionWithCreator[]>([]);
   const [userQuestions, setUserQuestions] = useState<QuestionWithCreator[]>([]);
   const [userBanks, setUserBanks] = useState<UserQuestionBank[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [classes, setClasses] = useState<Class[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUser, setSelectedUser] = useState<string>('all');
   const [selectedBank, setSelectedBank] = useState<string>('all');
   const [viewQuestionDialog, setViewQuestionDialog] = useState(false);
+  const [createQuestionDialog, setCreateQuestionDialog] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState<QuestionWithCreator | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const { toast } = useToast();
+
+  const [formData, setFormData] = useState({
+    question_text: '',
+    class_id: '',
+    subject_id: '',
+    question_type: 'mcq' as 'mcq' | 'true_false' | 'short_answer',
+    difficulty: 'medium' as 'easy' | 'medium' | 'hard',
+    marks: 1,
+    negative_marks: 0,
+    options: ['', '', '', ''],
+    correct_answer: '',
+    image_url: '',
+  });
 
   useEffect(() => {
     loadData();
@@ -71,14 +94,18 @@ export default function AdminQuestionBank() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [global, users, banks] = await Promise.all([
+      const [global, users, banks, allSubjects, allClasses] = await Promise.all([
         questionApi.getGlobalQuestions(),
         questionApi.getAllQuestionsWithUsers(),
         questionApi.getUserQuestionBanks(),
+        subjectApi.getAllSubjects(),
+        academicApi.getAllClasses(),
       ]);
       setGlobalQuestions(global as QuestionWithCreator[]);
       setUserQuestions(users as QuestionWithCreator[]);
       setUserBanks(banks);
+      setSubjects(allSubjects);
+      setClasses(allClasses);
     } catch (error) {
       console.error('Error loading questions:', error);
       toast({
@@ -112,6 +139,194 @@ export default function AdminQuestionBank() {
   const handleViewQuestion = (question: QuestionWithCreator) => {
     setSelectedQuestion(question);
     setViewQuestionDialog(true);
+  };
+
+  const resetForm = () => {
+    setFormData({
+      question_text: '',
+      class_id: '',
+      subject_id: '',
+      question_type: 'mcq',
+      difficulty: 'medium',
+      marks: 1,
+      negative_marks: 0,
+      options: ['', '', '', ''],
+      correct_answer: '',
+      image_url: '',
+    });
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: 'Invalid File Type',
+        description: 'Please upload an image file (JPEG, PNG, GIF, or WebP)',
+        variant: 'destructive',
+      });
+      event.target.value = '';
+      return;
+    }
+
+    // Validate file size (max 1MB)
+    const maxSize = 1 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast({
+        title: 'File Too Large',
+        description: 'Image must be smaller than 1MB',
+        variant: 'destructive',
+      });
+      event.target.value = '';
+      return;
+    }
+
+    setUploadingImage(true);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { data, error } = await supabase.storage
+        .from('app-85wc5xzx8yyp_question_images')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (error) throw error;
+
+      const { data: urlData } = supabase.storage
+        .from('app-85wc5xzx8yyp_question_images')
+        .getPublicUrl(data.path);
+
+      setFormData({ ...formData, image_url: urlData.publicUrl });
+
+      toast({
+        title: 'Success',
+        description: 'Image uploaded successfully',
+      });
+
+      event.target.value = '';
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      toast({
+        title: 'Upload Failed',
+        description: error.message || 'Failed to upload image',
+        variant: 'destructive',
+      });
+      event.target.value = '';
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleCreateQuestion = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.question_text || !formData.subject_id) {
+      toast({
+        title: 'Error',
+        description: 'Please fill in all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    let options: any = null;
+    let correctAnswer = '';
+
+    if (formData.question_type === 'mcq') {
+      options = formData.options.filter(o => o.trim());
+      correctAnswer = formData.correct_answer;
+      if (!correctAnswer || options.length < 2) {
+        toast({
+          title: 'Error',
+          description: 'MCQ requires at least 2 options and a correct answer',
+          variant: 'destructive',
+        });
+        return;
+      }
+    } else if (formData.question_type === 'true_false') {
+      correctAnswer = formData.correct_answer;
+      if (!correctAnswer) {
+        toast({
+          title: 'Error',
+          description: 'Please select the correct answer',
+          variant: 'destructive',
+        });
+        return;
+      }
+    } else if (formData.question_type === 'short_answer') {
+      correctAnswer = formData.correct_answer;
+      if (!correctAnswer) {
+        toast({
+          title: 'Error',
+          description: 'Please provide the correct answer',
+          variant: 'destructive',
+        });
+        return;
+      }
+    }
+
+    try {
+      await questionApi.createGlobalQuestion({
+        question_text: formData.question_text,
+        subject_id: formData.subject_id,
+        lesson_id: null,
+        question_type: formData.question_type,
+        difficulty: formData.difficulty,
+        marks: formData.marks,
+        negative_marks: formData.negative_marks,
+        options: options,
+        answer_options: null,
+        correct_answer: correctAnswer,
+        image_url: formData.image_url.trim() || null,
+        bank_name: null,
+      });
+
+      toast({
+        title: 'Success',
+        description: 'Global question created successfully',
+      });
+
+      resetForm();
+      setCreateQuestionDialog(false);
+      loadData();
+    } catch (error: any) {
+      toast({
+        title: 'Failed to create question',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const addOption = () => {
+    setFormData({ ...formData, options: [...formData.options, ''] });
+  };
+
+  const removeOption = (index: number) => {
+    if (formData.options.length <= 2) {
+      toast({
+        title: 'Error',
+        description: 'MCQ must have at least 2 options',
+        variant: 'destructive',
+      });
+      return;
+    }
+    const newOptions = formData.options.filter((_, i) => i !== index);
+    setFormData({ ...formData, options: newOptions });
+  };
+
+  const updateOption = (index: number, value: string) => {
+    const newOptions = [...formData.options];
+    newOptions[index] = value;
+    setFormData({ ...formData, options: newOptions });
   };
 
   const getQuestionTypeLabel = (type: string) => {
@@ -176,6 +391,260 @@ export default function AdminQuestionBank() {
           <h1 className="text-3xl font-bold">Question Bank Management</h1>
           <p className="text-muted-foreground">Manage global and user question banks</p>
         </div>
+        <Dialog open={createQuestionDialog} onOpenChange={setCreateQuestionDialog}>
+          <DialogTrigger asChild>
+            <Button className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Create Question
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Create Global Question</DialogTitle>
+              <DialogDescription>
+                Create a new question for the global question bank
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleCreateQuestion} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="class_id">Class *</Label>
+                  <Select
+                    value={formData.class_id}
+                    onValueChange={(value) => {
+                      setFormData({ ...formData, class_id: value, subject_id: '' });
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select class" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {classes.map((cls) => (
+                        <SelectItem key={cls.id} value={cls.id}>
+                          {cls.class_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="subject_id">Subject *</Label>
+                  <Select
+                    value={formData.subject_id}
+                    onValueChange={(value) => setFormData({ ...formData, subject_id: value })}
+                    disabled={!formData.class_id}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select subject" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {subjects
+                        .filter((s) => s.class_id === formData.class_id)
+                        .map((subject) => (
+                          <SelectItem key={subject.id} value={subject.id}>
+                            {subject.subject_name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="question_text">Question Text *</Label>
+                <RichTextEditor
+                  value={formData.question_text}
+                  onChange={(value) => setFormData({ ...formData, question_text: value })}
+                  placeholder="Enter question text..."
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="question_type">Question Type</Label>
+                  <Select
+                    value={formData.question_type}
+                    onValueChange={(value: any) =>
+                      setFormData({ ...formData, question_type: value, correct_answer: '' })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="mcq">Multiple Choice</SelectItem>
+                      <SelectItem value="true_false">True/False</SelectItem>
+                      <SelectItem value="short_answer">Short Answer</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="difficulty">Difficulty</Label>
+                  <Select
+                    value={formData.difficulty}
+                    onValueChange={(value: any) => setFormData({ ...formData, difficulty: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="easy">Easy</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="hard">Hard</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="marks">Marks</Label>
+                  <Input
+                    id="marks"
+                    type="number"
+                    min="0"
+                    value={formData.marks}
+                    onChange={(e) => setFormData({ ...formData, marks: Number(e.target.value) })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="negative_marks">Negative Marks</Label>
+                  <Input
+                    id="negative_marks"
+                    type="number"
+                    min="0"
+                    step="0.25"
+                    value={formData.negative_marks}
+                    onChange={(e) =>
+                      setFormData({ ...formData, negative_marks: Number(e.target.value) })
+                    }
+                  />
+                </div>
+              </div>
+
+              {formData.question_type === 'mcq' && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label>Options *</Label>
+                    <Button type="button" variant="outline" size="sm" onClick={addOption}>
+                      <Plus className="h-4 w-4 mr-1" />
+                      Add Option
+                    </Button>
+                  </div>
+                  {formData.options.map((option, index) => (
+                    <div key={index} className="flex gap-2">
+                      <Input
+                        placeholder={`Option ${index + 1}`}
+                        value={option}
+                        onChange={(e) => updateOption(index, e.target.value)}
+                      />
+                      {formData.options.length > 2 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={() => removeOption(index)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                  <div className="space-y-2 mt-2">
+                    <Label>Correct Answer *</Label>
+                    <Select
+                      value={formData.correct_answer}
+                      onValueChange={(value) => setFormData({ ...formData, correct_answer: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select correct answer" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {formData.options
+                          .filter((o) => o.trim())
+                          .map((option, index) => (
+                            <SelectItem key={index} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+
+              {formData.question_type === 'true_false' && (
+                <div className="space-y-2">
+                  <Label>Correct Answer *</Label>
+                  <Select
+                    value={formData.correct_answer}
+                    onValueChange={(value) => setFormData({ ...formData, correct_answer: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select correct answer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="True">True</SelectItem>
+                      <SelectItem value="False">False</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {formData.question_type === 'short_answer' && (
+                <div className="space-y-2">
+                  <Label htmlFor="correct_answer">Correct Answer *</Label>
+                  <Textarea
+                    id="correct_answer"
+                    placeholder="Enter the correct answer"
+                    value={formData.correct_answer}
+                    onChange={(e) => setFormData({ ...formData, correct_answer: e.target.value })}
+                  />
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="image">Question Image (Optional)</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    disabled={uploadingImage}
+                  />
+                  {uploadingImage && <span className="text-sm text-muted-foreground">Uploading...</span>}
+                </div>
+                {formData.image_url && (
+                  <div className="mt-2">
+                    <img
+                      src={formData.image_url}
+                      alt="Question"
+                      className="max-w-xs rounded border"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setCreateQuestionDialog(false);
+                    resetForm();
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit">Create Question</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <Tabs defaultValue="global" className="space-y-4">

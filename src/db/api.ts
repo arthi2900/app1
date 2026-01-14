@@ -393,6 +393,17 @@ export const questionApi = {
     return data;
   },
 
+  async createGlobalQuestion(question: Omit<Question, 'id' | 'created_at' | 'created_by' | 'is_global'>): Promise<Question | null> {
+    const user = await supabase.auth.getUser();
+    const { data, error } = await supabase
+      .from('questions')
+      .insert({ ...question, created_by: user.data.user?.id, is_global: true })
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
   async updateQuestion(id: string, updates: Partial<Question>): Promise<Question | null> {
     const { data, error } = await supabase
       .from('questions')
