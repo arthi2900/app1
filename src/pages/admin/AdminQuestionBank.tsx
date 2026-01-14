@@ -691,6 +691,7 @@ export default function AdminQuestionBank() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Question</TableHead>
+                        <TableHead>Bank Name</TableHead>
                         <TableHead>Subject</TableHead>
                         <TableHead>Type</TableHead>
                         <TableHead>Difficulty</TableHead>
@@ -708,6 +709,12 @@ export default function AdminQuestionBank() {
                               onClick={() => handleViewQuestion(question)}
                               dangerouslySetInnerHTML={{ __html: question.question_text }}
                             />
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">
+                              <BookOpen className="h-3 w-3 mr-1" />
+                              {question.bank_name || 'No Bank'}
+                            </Badge>
                           </TableCell>
                           <TableCell>{question.subjects?.subject_name || 'N/A'}</TableCell>
                           <TableCell>
