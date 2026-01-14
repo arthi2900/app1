@@ -1537,7 +1537,6 @@ export default function AdminQuestionBank() {
                           <TableHead>Difficulty</TableHead>
                           <TableHead>Marks</TableHead>
                           <TableHead>Created By</TableHead>
-                          <TableHead>Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -1595,27 +1594,6 @@ export default function AdminQuestionBank() {
                                 <div className="flex items-center gap-2">
                                   <User className="h-4 w-4 text-muted-foreground" />
                                   {question.creator?.full_name || 'Unknown'}
-                                </div>
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleViewQuestion(question)}
-                                  >
-                                    View
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => handleCopyToGlobal(question.id)}
-                                    disabled={isInGlobal}
-                                    title={isInGlobal ? 'Already in global bank' : 'Copy to global bank'}
-                                  >
-                                    <Copy className="h-4 w-4 mr-1" />
-                                    {isInGlobal ? 'Copied' : 'Copy'}
-                                  </Button>
                                 </div>
                               </TableCell>
                             </TableRow>
