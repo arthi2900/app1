@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/db/supabase';
 import type { Profile } from '@/types/types';
-import { profileApi } from '@/db/api';
+import { profileApi, loginHistoryApi, activeSessionApi } from '@/db/api';
 
 export function useAuth() {
   const [user, setUser] = useState<any>(null);
@@ -46,6 +46,38 @@ export function useAuth() {
     }
   };
 
+  const trackLogin = async (userProfile: Profile) => {
+    try {
+      // Get browser information
+      const userAgent = navigator.userAgent;
+      
+      // Create login history record
+      await loginHistoryApi.createLoginHistory(
+        userProfile.id,
+        userProfile.username,
+        userProfile.full_name,
+        userProfile.role,
+        userProfile.school_id,
+        null, // IP address (would need backend to get real IP)
+        userAgent
+      );
+
+      // Create or update active session
+      await activeSessionApi.upsertActiveSession(
+        userProfile.id,
+        userProfile.username,
+        userProfile.full_name,
+        userProfile.role,
+        userProfile.school_id,
+        null, // IP address
+        userAgent
+      );
+    } catch (error) {
+      console.error('Error tracking login:', error);
+      // Don't throw error - login tracking should not block authentication
+    }
+  };
+
   const signIn = async (username: string, password: string) => {
     const email = `${username}@miaoda.com`;
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -53,6 +85,19 @@ export function useAuth() {
       password,
     });
     if (error) throw error;
+    
+    // Track login after successful authentication
+    if (data.user) {
+      try {
+        const userProfile = await profileApi.getCurrentProfile();
+        if (userProfile) {
+          await trackLogin(userProfile);
+        }
+      } catch (trackError) {
+        console.error('Error tracking login:', trackError);
+      }
+    }
+    
     return data;
   };
 
@@ -87,6 +132,15 @@ export function useAuth() {
   };
 
   const signOut = async () => {
+    // Update session status before signing out
+    if (user?.id) {
+      try {
+        await activeSessionApi.logoutSession(user.id);
+      } catch (error) {
+        console.error('Error updating session status:', error);
+      }
+    }
+    
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   };

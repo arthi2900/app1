@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Building2, Users, ClipboardList, FileQuestion } from 'lucide-react';
+import { Building2, Users, ClipboardList, FileQuestion, History, Activity } from 'lucide-react';
 import { profileApi, schoolApi } from '@/db/api';
 
 interface UserStats {
@@ -151,6 +151,40 @@ export default function AdminDashboard() {
           <CardContent>
             <p className="text-xs text-white/80 mt-1">
               View and manage all exams
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Login History Card */}
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow rounded-3xl"
+          style={{ backgroundColor: '#608ce6' }}
+          onClick={() => navigate('/admin/login-history')}
+        >
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-white">Login History</CardTitle>
+            <History className="w-5 h-5 text-white" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-white/80 mt-1">
+              Track all user login activities
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Active Users Card */}
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow rounded-3xl"
+          style={{ backgroundColor: '#608ce6' }}
+          onClick={() => navigate('/admin/active-users')}
+        >
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-white">Active Users</CardTitle>
+            <Activity className="w-5 h-5 text-white" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-white/80 mt-1">
+              Monitor real-time logged-in users
             </p>
           </CardContent>
         </Card>

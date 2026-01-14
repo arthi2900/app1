@@ -31,6 +31,10 @@ import type {
   ExamAnswerWithDetails,
   ExamStudentAllocation,
   ExamStudentAllocationWithDetails,
+  LoginHistory,
+  LoginHistoryWithSchool,
+  ActiveSession,
+  ActiveSessionWithSchool,
 } from '@/types/types';
 
 // Profile APIs
@@ -1821,6 +1825,225 @@ export const questionPaperVersionApi = {
       .from('question_paper_versions')
       .delete()
       .eq('question_paper_id', paperId);
+    if (error) throw error;
+  },
+};
+
+// Login History APIs
+export const loginHistoryApi = {
+  async createLoginHistory(
+    userId: string,
+    username: string,
+    fullName: string | null,
+    role: string,
+    schoolId: string | null,
+    ipAddress: string | null = null,
+    userAgent: string | null = null
+  ): Promise<LoginHistory | null> {
+    const { data, error } = await supabase
+      .from('login_history')
+      .insert({
+        user_id: userId,
+        username,
+        full_name: fullName,
+        role,
+        school_id: schoolId,
+        ip_address: ipAddress,
+        user_agent: userAgent,
+      })
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async getAllLoginHistory(): Promise<LoginHistoryWithSchool[]> {
+    const { data, error } = await supabase
+      .from('login_history')
+      .select(`
+        *,
+        schools!login_history_school_id_fkey (
+          school_name
+        )
+      `)
+      .order('login_time', { ascending: false });
+    if (error) throw error;
+    
+    const history = Array.isArray(data) ? data : [];
+    return history.map((item: any) => ({
+      ...item,
+      school_name: item.schools?.school_name || null,
+      schools: undefined,
+    }));
+  },
+
+  async getLoginHistoryByUser(userId: string): Promise<LoginHistoryWithSchool[]> {
+    const { data, error } = await supabase
+      .from('login_history')
+      .select(`
+        *,
+        schools!login_history_school_id_fkey (
+          school_name
+        )
+      `)
+      .eq('user_id', userId)
+      .order('login_time', { ascending: false });
+    if (error) throw error;
+    
+    const history = Array.isArray(data) ? data : [];
+    return history.map((item: any) => ({
+      ...item,
+      school_name: item.schools?.school_name || null,
+      schools: undefined,
+    }));
+  },
+
+  async getLoginHistoryByRole(role: string): Promise<LoginHistoryWithSchool[]> {
+    const { data, error } = await supabase
+      .from('login_history')
+      .select(`
+        *,
+        schools!login_history_school_id_fkey (
+          school_name
+        )
+      `)
+      .eq('role', role)
+      .order('login_time', { ascending: false });
+    if (error) throw error;
+    
+    const history = Array.isArray(data) ? data : [];
+    return history.map((item: any) => ({
+      ...item,
+      school_name: item.schools?.school_name || null,
+      schools: undefined,
+    }));
+  },
+
+  async getLoginHistoryByDateRange(
+    startDate: string,
+    endDate: string
+  ): Promise<LoginHistoryWithSchool[]> {
+    const { data, error } = await supabase
+      .from('login_history')
+      .select(`
+        *,
+        schools!login_history_school_id_fkey (
+          school_name
+        )
+      `)
+      .gte('login_time', startDate)
+      .lte('login_time', endDate)
+      .order('login_time', { ascending: false });
+    if (error) throw error;
+    
+    const history = Array.isArray(data) ? data : [];
+    return history.map((item: any) => ({
+      ...item,
+      school_name: item.schools?.school_name || null,
+      schools: undefined,
+    }));
+  },
+};
+
+// Active Sessions APIs
+export const activeSessionApi = {
+  async upsertActiveSession(
+    userId: string,
+    username: string,
+    fullName: string | null,
+    role: string,
+    schoolId: string | null,
+    ipAddress: string | null = null,
+    userAgent: string | null = null
+  ): Promise<ActiveSession | null> {
+    const { data, error } = await supabase
+      .from('active_sessions')
+      .upsert(
+        {
+          user_id: userId,
+          username,
+          full_name: fullName,
+          role,
+          school_id: schoolId,
+          ip_address: ipAddress,
+          user_agent: userAgent,
+          login_time: new Date().toISOString(),
+          last_activity: new Date().toISOString(),
+          status: 'active',
+        },
+        { onConflict: 'user_id' }
+      )
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateLastActivity(userId: string): Promise<void> {
+    const { error } = await supabase
+      .from('active_sessions')
+      .update({
+        last_activity: new Date().toISOString(),
+        status: 'active',
+      })
+      .eq('user_id', userId);
+    if (error) throw error;
+  },
+
+  async logoutSession(userId: string): Promise<void> {
+    const { error } = await supabase
+      .from('active_sessions')
+      .update({
+        status: 'logged_out',
+        last_activity: new Date().toISOString(),
+      })
+      .eq('user_id', userId);
+    if (error) throw error;
+  },
+
+  async getAllActiveSessions(): Promise<ActiveSessionWithSchool[]> {
+    const { data, error } = await supabase
+      .from('active_sessions')
+      .select(`
+        *,
+        schools!active_sessions_school_id_fkey (
+          school_name
+        )
+      `)
+      .order('last_activity', { ascending: false });
+    if (error) throw error;
+    
+    const sessions = Array.isArray(data) ? data : [];
+    return sessions.map((session: any) => ({
+      ...session,
+      school_name: session.schools?.school_name || null,
+      schools: undefined,
+    }));
+  },
+
+  async getActiveSessionsByStatus(status: string): Promise<ActiveSessionWithSchool[]> {
+    const { data, error } = await supabase
+      .from('active_sessions')
+      .select(`
+        *,
+        schools!active_sessions_school_id_fkey (
+          school_name
+        )
+      `)
+      .eq('status', status)
+      .order('last_activity', { ascending: false });
+    if (error) throw error;
+    
+    const sessions = Array.isArray(data) ? data : [];
+    return sessions.map((session: any) => ({
+      ...session,
+      school_name: session.schools?.school_name || null,
+      schools: undefined,
+    }));
+  },
+
+  async cleanupStaleSessions(): Promise<void> {
+    const { error } = await supabase.rpc('cleanup_stale_sessions');
     if (error) throw error;
   },
 };

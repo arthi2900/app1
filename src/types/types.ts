@@ -1,10 +1,48 @@
 export type UserRole = 'admin' | 'principal' | 'teacher' | 'student';
 export type QuestionType = 'mcq' | 'true_false' | 'short_answer' | 'match_following' | 'multiple_response';
 export type DifficultyLevel = 'easy' | 'medium' | 'hard';
+export type SessionStatus = 'active' | 'idle' | 'logged_out';
 
 export interface MatchPair {
   left: string;
   right: string;
+}
+
+export interface LoginHistory {
+  id: string;
+  user_id: string;
+  username: string;
+  full_name: string | null;
+  role: UserRole;
+  school_id: string | null;
+  login_time: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+}
+
+export interface LoginHistoryWithSchool extends LoginHistory {
+  school_name?: string | null;
+}
+
+export interface ActiveSession {
+  id: string;
+  user_id: string;
+  username: string;
+  full_name: string | null;
+  role: UserRole;
+  school_id: string | null;
+  login_time: string;
+  last_activity: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  status: SessionStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ActiveSessionWithSchool extends ActiveSession {
+  school_name?: string | null;
 }
 
 export interface Profile {

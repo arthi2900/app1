@@ -1,11 +1,119 @@
-# Task: Question Bank Management System (வினாவங்கி மேலாண்மை அமைப்பு)
+# Task: Add Login History and Real-time Active Users Monitoring
+
+## Current Task (2025-12-11)
+Adding comprehensive login tracking and real-time user monitoring features for administrators.
+
+## Plan
+- [x] Step 1: Database Schema Setup
+  - [x] Create login_history table
+  - [x] Create active_sessions table
+  - [x] Add RLS policies for admin access
+- [x] Step 2: Read Key Files
+  - [x] Read src/db/api.ts for API patterns
+  - [x] Read src/hooks/useAuth.ts for login integration
+  - [x] Read src/routes.tsx for routing patterns
+- [x] Step 3: Backend API Implementation
+  - [x] Add login history tracking functions
+  - [x] Add active sessions management functions
+  - [x] Integrate login tracking in useAuth hook
+- [x] Step 4: Frontend Components
+  - [x] Create LoginHistory page component
+  - [x] Create ActiveUsers monitoring component
+  - [x] Add navigation in admin routes
+- [x] Step 5: Testing and Validation
+  - [x] Run lint check (no errors in new code)
+  - [x] Verify functionality
+
+## Implementation Summary
+
+### Database Tables Created
+1. **login_history**: Tracks all user login events
+   - Fields: user_id, username, full_name, role, school_id, login_time, ip_address, user_agent
+   - Indexes on user_id, login_time, role for performance
+   - RLS policy: Admin-only access for viewing
+
+2. **active_sessions**: Tracks currently logged-in users
+   - Fields: user_id, username, full_name, role, school_id, login_time, last_activity, status
+   - Unique constraint on user_id (one session per user)
+   - Status: active, idle, logged_out
+   - Auto-cleanup function for stale sessions (24+ hours inactive)
+
+### API Functions Added
+1. **loginHistoryApi**: 
+   - createLoginHistory()
+   - getAllLoginHistory()
+   - getLoginHistoryByUser()
+   - getLoginHistoryByRole()
+   - getLoginHistoryByDateRange()
+
+2. **activeSessionApi**:
+   - upsertActiveSession()
+   - updateLastActivity()
+   - logoutSession()
+   - getAllActiveSessions()
+   - getActiveSessionsByStatus()
+   - cleanupStaleSessions()
+
+### Authentication Integration
+- Modified useAuth hook to automatically track logins
+- Records login history on successful authentication
+- Creates/updates active session on login
+- Updates session status on logout
+- Captures user agent (browser/device info)
+
+### Admin Pages Created
+1. **LoginHistory** (/admin/login-history):
+   - Complete login history with filters
+   - Search by username, name, school
+   - Filter by role (admin, principal, teacher, student)
+   - Filter by date (today, last 7 days, last 30 days, all time)
+   - Export to CSV functionality
+   - Displays: user info, role, school, login time, device info
+
+2. **ActiveUsers** (/admin/active-users):
+   - Real-time monitoring of logged-in users
+   - Auto-refresh every 10 seconds (toggleable)
+   - Statistics cards: Active, Idle, Logged Out counts
+   - Search and filter capabilities
+   - Status indicators with visual cues
+   - Shows: user info, role, school, status, login time, last activity
+   - Activity status calculation (active < 5 min, idle < 30 min)
+
+### Navigation Updates
+- Added "Login History" card to Admin Dashboard
+- Added "Active Users" card to Admin Dashboard
+- Both accessible only to admin role
+
+## Features
+✅ Automatic login tracking on every user authentication
+✅ Complete audit trail of all login activities
+✅ Real-time monitoring of active users
+✅ Session management with automatic cleanup
+✅ Advanced filtering and search capabilities
+✅ Export functionality for login history
+✅ Visual status indicators for user activity
+✅ Auto-refresh for real-time updates
+✅ Responsive design for all screen sizes
+✅ Role-based access control (admin only)
+
+## Notes
+- Login tracking is non-blocking (errors don't prevent authentication)
+- IP address field prepared but requires backend service for real IP
+- User agent captures browser/device information
+- Sessions auto-expire after 24 hours of inactivity
+- Real-time updates use polling (10-second intervals)
+- All data protected by RLS policies
+
+---
+
+# Previous Task: Question Bank Management System (வினாவங்கி மேலாண்மை அமைப்பு)
 
 ## System Scope Change
 **Date**: 2025-12-18
 **Change**: Removed all exam-related modules. System now focuses exclusively on Question Bank management.
 **Reason**: User request to simplify system and focus on core question management functionality.
 
-## Plan
+## Previous Plan
 - [x] 1. Setup Supabase Database
   - [x] 1.1 Initialize Supabase
   - [x] 1.2 Create database schema with migrations

@@ -8,6 +8,8 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
 import SchoolManagement from './pages/admin/SchoolManagement';
 import AdminQuestionBank from './pages/admin/AdminQuestionBank';
+import LoginHistory from './pages/admin/LoginHistory';
+import ActiveUsers from './pages/admin/ActiveUsers';
 import PrincipalDashboard from './pages/principal/PrincipalDashboard';
 import TeachersList from './pages/principal/TeachersList';
 import StudentsList from './pages/principal/StudentsList';
@@ -101,6 +103,26 @@ const routes: RouteConfig[] = [
     element: (
       <ProtectedRoute allowedRoles={['admin']}>
         <AdminQuestionBank />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Login History',
+    path: '/admin/login-history',
+    element: (
+      <ProtectedRoute allowedRoles={['admin']}>
+        <LoginHistory />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Active Users',
+    path: '/admin/active-users',
+    element: (
+      <ProtectedRoute allowedRoles={['admin']}>
+        <ActiveUsers />
       </ProtectedRoute>
     ),
     visible: false,
