@@ -23,7 +23,23 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Globe, Users, Copy, Search, BookOpen, User, Filter, Plus, Trash2, Upload } from 'lucide-react';
+import { Globe, Users, Copy, Search, BookOpen, User, Filter, Plus, Trash2, Upload, Edit, MoreVertical } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { questionApi, subjectApi, academicApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
 import type { Question, Subject, Class } from '@/types/types';
@@ -48,6 +64,7 @@ interface QuestionWithCreator extends Question {
     id: string;
     subject_name: string;
     subject_code: string;
+    class_id?: string;
   };
 }
 
@@ -70,7 +87,10 @@ export default function AdminQuestionBank() {
   const [selectedBank, setSelectedBank] = useState<string>('all');
   const [viewQuestionDialog, setViewQuestionDialog] = useState(false);
   const [createQuestionDialog, setCreateQuestionDialog] = useState(false);
+  const [editQuestionDialog, setEditQuestionDialog] = useState(false);
+  const [deleteQuestionDialog, setDeleteQuestionDialog] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState<QuestionWithCreator | null>(null);
+  const [questionToDelete, setQuestionToDelete] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const { toast } = useToast();
 
@@ -139,6 +159,52 @@ export default function AdminQuestionBank() {
   const handleViewQuestion = (question: QuestionWithCreator) => {
     setSelectedQuestion(question);
     setViewQuestionDialog(true);
+  };
+
+  const handleEditQuestion = (question: QuestionWithCreator) => {
+    setSelectedQuestion(question);
+    setFormData({
+      question_text: question.question_text,
+      class_id: question.subjects?.class_id || '',
+      subject_id: question.subject_id,
+      question_type: question.question_type as 'mcq' | 'true_false' | 'short_answer',
+      difficulty: question.difficulty as 'easy' | 'medium' | 'hard',
+      marks: question.marks,
+      negative_marks: question.negative_marks || 0,
+      options: Array.isArray(question.options) && question.options.every(o => typeof o === 'string') 
+        ? (question.options as string[]) 
+        : ['', '', '', ''],
+      correct_answer: question.correct_answer || '',
+      image_url: question.image_url || '',
+    });
+    setEditQuestionDialog(true);
+  };
+
+  const handleDeleteClick = (questionId: string) => {
+    setQuestionToDelete(questionId);
+    setDeleteQuestionDialog(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!questionToDelete) return;
+
+    try {
+      await questionApi.deleteQuestion(questionToDelete);
+      toast({
+        title: 'Success',
+        description: 'Question deleted successfully',
+      });
+      setDeleteQuestionDialog(false);
+      setQuestionToDelete(null);
+      loadData();
+    } catch (error) {
+      console.error('Error deleting question:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to delete question',
+        variant: 'destructive',
+      });
+    }
   };
 
   const resetForm = () => {
@@ -300,6 +366,85 @@ export default function AdminQuestionBank() {
     } catch (error: any) {
       toast({
         title: 'Failed to create question',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleUpdateQuestion = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedQuestion || !formData.question_text || !formData.subject_id) {
+      toast({
+        title: 'Error',
+        description: 'Please fill in all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    let options: any = null;
+    let correctAnswer = '';
+
+    if (formData.question_type === 'mcq') {
+      options = formData.options.filter(o => o.trim());
+      correctAnswer = formData.correct_answer;
+      if (!correctAnswer || options.length < 2) {
+        toast({
+          title: 'Error',
+          description: 'MCQ requires at least 2 options and a correct answer',
+          variant: 'destructive',
+        });
+        return;
+      }
+    } else if (formData.question_type === 'true_false') {
+      correctAnswer = formData.correct_answer;
+      if (!correctAnswer) {
+        toast({
+          title: 'Error',
+          description: 'Please select the correct answer',
+          variant: 'destructive',
+        });
+        return;
+      }
+    } else if (formData.question_type === 'short_answer') {
+      correctAnswer = formData.correct_answer;
+      if (!correctAnswer) {
+        toast({
+          title: 'Error',
+          description: 'Please provide the correct answer',
+          variant: 'destructive',
+        });
+        return;
+      }
+    }
+
+    try {
+      await questionApi.updateQuestion(selectedQuestion.id, {
+        question_text: formData.question_text,
+        subject_id: formData.subject_id,
+        question_type: formData.question_type,
+        difficulty: formData.difficulty,
+        marks: formData.marks,
+        negative_marks: formData.negative_marks,
+        options: options,
+        correct_answer: correctAnswer,
+        image_url: formData.image_url.trim() || null,
+      });
+
+      toast({
+        title: 'Success',
+        description: 'Question updated successfully',
+      });
+
+      resetForm();
+      setEditQuestionDialog(false);
+      setSelectedQuestion(null);
+      loadData();
+    } catch (error: any) {
+      toast({
+        title: 'Failed to update question',
         description: error.message,
         variant: 'destructive',
       });
@@ -647,6 +792,291 @@ export default function AdminQuestionBank() {
         </Dialog>
       </div>
 
+      {/* Edit Question Dialog */}
+      <Dialog open={editQuestionDialog} onOpenChange={(open) => {
+        setEditQuestionDialog(open);
+        if (!open) {
+          resetForm();
+          setSelectedQuestion(null);
+        }
+      }}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Global Question</DialogTitle>
+            <DialogDescription>
+              Update the question in the global question bank
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleUpdateQuestion} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit_class_id">Class *</Label>
+                <Select
+                  value={formData.class_id}
+                  onValueChange={(value) => {
+                    setFormData({ ...formData, class_id: value, subject_id: '' });
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select class" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {classes.map((cls) => (
+                      <SelectItem key={cls.id} value={cls.id}>
+                        {cls.class_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit_subject_id">Subject *</Label>
+                <Select
+                  value={formData.subject_id}
+                  onValueChange={(value) => setFormData({ ...formData, subject_id: value })}
+                  disabled={!formData.class_id}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select subject" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {subjects
+                      .filter((s) => s.class_id === formData.class_id)
+                      .map((subject) => (
+                        <SelectItem key={subject.id} value={subject.id}>
+                          {subject.subject_name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit_question_text">Question Text *</Label>
+              <RichTextEditor
+                value={formData.question_text}
+                onChange={(value) => setFormData({ ...formData, question_text: value })}
+                placeholder="Enter question text..."
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit_question_type">Question Type</Label>
+                <Select
+                  value={formData.question_type}
+                  onValueChange={(value: any) =>
+                    setFormData({ ...formData, question_type: value, correct_answer: '' })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="mcq">Multiple Choice</SelectItem>
+                    <SelectItem value="true_false">True/False</SelectItem>
+                    <SelectItem value="short_answer">Short Answer</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit_difficulty">Difficulty</Label>
+                <Select
+                  value={formData.difficulty}
+                  onValueChange={(value: any) => setFormData({ ...formData, difficulty: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="easy">Easy</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="hard">Hard</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit_marks">Marks</Label>
+                <Input
+                  id="edit_marks"
+                  type="number"
+                  min="0"
+                  value={formData.marks}
+                  onChange={(e) => setFormData({ ...formData, marks: Number(e.target.value) })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit_negative_marks">Negative Marks</Label>
+                <Input
+                  id="edit_negative_marks"
+                  type="number"
+                  min="0"
+                  step="0.25"
+                  value={formData.negative_marks}
+                  onChange={(e) =>
+                    setFormData({ ...formData, negative_marks: Number(e.target.value) })
+                  }
+                />
+              </div>
+            </div>
+
+            {formData.question_type === 'mcq' && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>Options *</Label>
+                  <Button type="button" variant="outline" size="sm" onClick={addOption}>
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add Option
+                  </Button>
+                </div>
+                {formData.options.map((option, index) => (
+                  <div key={index} className="flex gap-2">
+                    <Input
+                      placeholder={`Option ${index + 1}`}
+                      value={option}
+                      onChange={(e) => updateOption(index, e.target.value)}
+                    />
+                    {formData.options.length > 2 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => removeOption(index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <div className="space-y-2 mt-2">
+                  <Label>Correct Answer *</Label>
+                  <Select
+                    value={formData.correct_answer}
+                    onValueChange={(value) => setFormData({ ...formData, correct_answer: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select correct answer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {formData.options
+                        .filter((o) => o.trim())
+                        .map((option, index) => (
+                          <SelectItem key={index} value={option}>
+                            {option}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+
+            {formData.question_type === 'true_false' && (
+              <div className="space-y-2">
+                <Label>Correct Answer *</Label>
+                <Select
+                  value={formData.correct_answer}
+                  onValueChange={(value) => setFormData({ ...formData, correct_answer: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select correct answer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="True">True</SelectItem>
+                    <SelectItem value="False">False</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {formData.question_type === 'short_answer' && (
+              <div className="space-y-2">
+                <Label htmlFor="edit_correct_answer">Correct Answer *</Label>
+                <Textarea
+                  id="edit_correct_answer"
+                  placeholder="Enter the correct answer"
+                  value={formData.correct_answer}
+                  onChange={(e) => setFormData({ ...formData, correct_answer: e.target.value })}
+                />
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="edit_image_url">Question Image (Optional)</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="edit_image_url"
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                  onChange={handleFileUpload}
+                  disabled={uploadingImage}
+                />
+                {uploadingImage && (
+                  <Button type="button" variant="outline" disabled>
+                    <Upload className="h-4 w-4 mr-2 animate-spin" />
+                    Uploading...
+                  </Button>
+                )}
+              </div>
+              {formData.image_url && (
+                <div className="mt-2">
+                  <img
+                    src={formData.image_url}
+                    alt="Question"
+                    className="max-w-xs rounded border"
+                  />
+                </div>
+              )}
+            </div>
+
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setEditQuestionDialog(false);
+                  resetForm();
+                  setSelectedQuestion(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="submit">Update Question</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteQuestionDialog} onOpenChange={setDeleteQuestionDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the question from the global question bank.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => {
+              setDeleteQuestionDialog(false);
+              setQuestionToDelete(null);
+            }}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <Tabs defaultValue="global" className="space-y-4">
         <TabsList className="grid w-full max-w-md grid-cols-2">
           <TabsTrigger value="global" className="flex items-center gap-2">
@@ -735,13 +1165,30 @@ export default function AdminQuestionBank() {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleViewQuestion(question)}
-                            >
-                              View
-                            </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="sm">
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => handleViewQuestion(question)}>
+                                  <Search className="h-4 w-4 mr-2" />
+                                  View
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleEditQuestion(question)}>
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Edit
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleDeleteClick(question.id)}
+                                  className="text-destructive focus:text-destructive"
+                                >
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </TableCell>
                         </TableRow>
                       ))}

@@ -12,7 +12,8 @@ A comprehensive online exam management platform for educational institutions, fo
 Smart • Secure • Scalable Online Exams
 
 ## 2. User Roles\n
-### 2.1 Admin\n- Complete system administration
+### 2.1 Admin
+- Complete system administration
 - School management (create, edit, view schools)
 - User account creation and management
 - New user approval management
@@ -32,8 +33,7 @@ Smart • Secure • Scalable Online Exams
   - Student class-section mapping
 - Teacher Management (within assigned school only):
   - View teacher accounts
-  - Teacher-subject-class-section mapping
-  - View class-section overview with assigned teachers per subject
+  - Teacher-subject-class-section mapping\n  - View class-section overview with assigned teachers per subject
   - Edit teacher profiles
 - Student Management (within assigned school only):
   - View students list
@@ -44,8 +44,7 @@ Smart • Secure • Scalable Online Exams
   - Insert images/clip arts in questions
   - Use rich text editor for question text formatting (bold, underline, italic, etc.)
   - View question bank analytics
-  - Switch between Row View and Card View
-  - Edit questions in both views
+  - Switch between Row View and Card View\n  - Edit questions in both views
 - Question Paper History Access (within assigned school only):
   - View all question papers created by teachers in their school
   - Filter and search question paper history
@@ -86,8 +85,7 @@ Smart • Secure • Scalable Online Exams
   - View question usage count and list of question papers where each question was used
   - Shuffle questions and MCQ options
   - Preview, save as draft, generate final paper
-  - Export as PDF and print
-  - Save shuffled papers with auto-versioned names (Shuffled A, Shuffled B, etc.)
+  - Export as PDF and print\n  - Save shuffled papers with auto-versioned names (Shuffled A, Shuffled B, etc.)
 - Question Paper History:\n  - View all question papers created by self
   - Filter by class, subject, date range, status
   - View, edit, delete, export, print historical papers
@@ -109,8 +107,7 @@ Smart • Secure • Scalable Online Exams
   - Manually grade subjective questions (Short Answer, Essay)\n  - Generate exam reports and analytics
   - Export exam results\n  - Delete own exams (with restrictions, cannot force delete exams with student attempts)
 - Profile editing capability
-- Linked to specific school from school master list
-- School-based isolation: Can only view and interact with students from their assigned sections
+- Linked to specific school from school master list\n- School-based isolation: Can only view and interact with students from their assigned sections
 
 ### 2.4 Student
 - View my class, section, subjects, and teachers
@@ -130,8 +127,7 @@ Smart • Secure • Scalable Online Exams
 
 ### 2.5 User Profile Information
 All users (Admin, Principal, Teacher, Student) will have the following profile information:
-- User name
-- Email address
+- User name\n- Email address
 - Role\n- School name (mandatory field, selected from dropdown list populated from School Master)
 - Contact number
 - Profile picture (optional)\n- Account status (Pending Approval/Active/Suspended)
@@ -235,8 +231,7 @@ After Principal login, the dashboard displays seven main cards:
 #### 5.2.5 Student Class-Section Mapping
 - Principal can assign students to specific class and section
 - Note: Student accounts are already created via Sign-Up process, only class-section assignment is done here
-- Mapping interface:
-  - Student selection (dropdown or search from existing students in the school)
+- Mapping interface:\n  - Student selection (dropdown or search from existing students in the school)
   - Class selection (dropdown)\n  - Section selection (dropdown, filtered by selected class)
   - Academic Year\n- Bulk assignment option for multiple students
 - View current class-section assignments with edit and reassign options
@@ -300,7 +295,8 @@ After Principal login, the dashboard displays seven main cards:
   - Row View (table format)\n  - Card View (detailed card format)
 - View all questions with lesson-level filtering
 - Analytics dashboard for question bank performance
-\n### 5.6 Question Paper History Card - Historical Paper Management
+
+### 5.6 Question Paper History Card - Historical Paper Management
 - Principal can access Question Paper History interface
 - View all question papers created by teachers in their school
 - Filter by teacher name, class, subject, date range, paper status
@@ -338,7 +334,8 @@ After Principal login, the dashboard displays seven main cards:
   - Force Delete exam (for self-created exams with student attempts, requires strict confirmation)
 
 ### 5.8 Exam Approvals Card - School-Level Exam Approval Management
-Principal can review and approve school-level exams submitted by teachers\n\nApproval Dashboard Layout:
+Principal can review and approve school-level exams submitted by teachers
+\nApproval Dashboard Layout:
 - Pending Approvals Section
 - Exam Review Page
 - Approval History Section
@@ -374,8 +371,7 @@ Columns:
 - updated_at (Timestamp)
 - is_global (Boolean, default false)
 - source_user_id (Foreign Key → users.id, nullable)
-
-### 6.3 Question Creation Form
+\n### 6.3 Question Creation Form
 \n#### 6.3.1 Form Field Order
 1. Class (Dropdown, required)
 2. Subject (Dropdown, required)
@@ -547,7 +543,8 @@ Download Template Button:
   - **Question Sheet:** Column headers with data validation, no sample data
   - **Reference Sheet:** Sample data rows for each question type as examples
   - Instructions sheet or section\n  - Data validation rules applied to Question sheet\n\nTemplate File Contents:
-- Sheet 1: Option (dropdown values)\n- Sheet 2: Question (headers + validations, no sample data)
+- Sheet 1: Option (dropdown values)
+- Sheet 2: Question (headers + validations, no sample data)
 - Sheet 3: Reference (sample questions for reference)
 - Sheet 4 (Optional): Instructions and Examples
 
@@ -841,7 +838,7 @@ Card Layout: Each question displayed as a card with question text (rendered with
   - Marks
   - Minus Mark
   - Source User (name of user who originally created the question)
-  - Actions (View, Edit, Delete, Remove from Global)
+  - **Actions (View, Edit, Delete, Remove from Global)**
 - Filter Options:
   - Class filter
   - Subject filter
@@ -855,11 +852,11 @@ Card Layout: Each question displayed as a card with question text (rendered with
 - View Options:
   - Row View (table format)
   - Card View (detailed card format)
-- Actions:
-  - View: View full question details
-  - Edit: Edit question details (updates global question)
-  - Delete: Delete question from global bank (with confirmation)
-  - Remove from Global: Remove question from global bank but keep in user's bank (sets is_global = false)
+- **Actions:**
+  - **View: View full question details**
+  - **Edit: Edit question details (updates global question)**
+  - **Delete: Delete question from global bank (with confirmation)**
+  - **Remove from Global: Remove question from global bank but keep in user's bank (sets is_global = false)**
 \n**Tab 2: Users Question Bank**
 - Purpose: Display all questions created by users (teachers and principals) across all schools
 - Display Columns (Row View):\n  - Question (truncated text with expand option)
@@ -896,8 +893,7 @@ Card Layout: Each question displayed as a card with question text (rendered with
   - Displays list of all user-created question banks not yet in Global Question Bank
   - Allows admin to select and add question banks to Global\n
 #### 6.7.4 NEW: Admin Create Question Functionality
-
-**Create Question Button:**
+\n**Create Question Button:**
 - Location: Prominently displayed at the top of Admin Question Bank page (above tabs)
 - Icon: Plus icon with text 'Create Question'
 - Styling: Primary button with gradient effect
@@ -1040,8 +1036,7 @@ Card Layout: Each question displayed as a card with question text (rendered with
 - Confirmation dialog appears:\n  - Question preview\n  - Confirmation message: 'Add this question to Global Question Bank? It will be available to all schools.'
   - Confirm and Cancel buttons\n- On confirmation:
   - Set is_global = true for the question
-  - Set source_user_id = created_by (to track original creator)
-  - Show success message\n  - Update Global Status badge in Users Question Bank\n  - Question now appears in Global Question Bank tab
+  - Set source_user_id = created_by (to track original creator)\n  - Show success message\n  - Update Global Status badge in Users Question Bank\n  - Question now appears in Global Question Bank tab
 \n**Bulk Add to Global:**
 - Admin selects multiple questions using checkboxes in Users Question Bank
 - Bulk action button 'Add Selected to Global' appears
@@ -1053,7 +1048,8 @@ Card Layout: Each question displayed as a card with question text (rendered with
   - Set source_user_id = created_by for each question
   - Show success message with count
   - Update Global Status badges\n  - Questions now appear in Global Question Bank tab
-\n#### 6.7.7 Remove from Global Functionality
+
+#### 6.7.7 Remove from Global Functionality
 
 **Single Question Remove:**
 - Admin clicks 'Remove from Global' button for a question in Global Question Bank
@@ -1129,7 +1125,7 @@ Card Layout: Each question displayed as a card with question text (rendered with
 - **NEW: Create Question Bank button in Users tab**
 \n**Global Question Bank Tab:**
 - Table columns as specified above
-- Action buttons: View, Edit, Delete, Remove from Global
+- **Action buttons: View, Edit, Delete, Remove from Global**
 - Bulk action: Select multiple and remove from global
 - Export button: Export global questions as Excel/CSV
 \n**Users Question Bank Tab:**\n- Table columns as specified above\n- Action buttons: View, Add to Global\n- Bulk action: Select multiple and add to global
@@ -1139,7 +1135,8 @@ Card Layout: Each question displayed as a card with question text (rendered with
 
 **Create Question Button:**
 - Location: Top of Admin Question Bank page (above tabs)
-- Icon: Plus icon with text 'Create Question'\n- Styling: Primary button with gradient effect
+- Icon: Plus icon with text 'Create Question'
+- Styling: Primary button with gradient effect
 - Opens Create Question form dialog
 
 **Create Question Form Dialog:**
@@ -1180,8 +1177,9 @@ Card Layout: Each question displayed as a card with question text (rendered with
 
 **Admin Permissions:**
 - Full access to Global Question Bank:\n  - View all global questions
-  - Edit global questions
-  - Delete global questions\n  - Remove questions from global bank
+  - **Edit global questions**
+  - **Delete global questions**
+  - Remove questions from global bank
 - Full access to Users Question Bank:
   - View all questions created by users across all schools
   - Add questions to global bank
@@ -1197,7 +1195,8 @@ Card Layout: Each question displayed as a card with question text (rendered with
   - Can view questions from all schools
   - Can filter by school
   - Can add questions from any school to global bank
-\n**Teacher and Principal Permissions:**
+
+**Teacher and Principal Permissions:**
 - Can view and use global questions in question papers and exams
 - Cannot edit or delete global questions
 - Cannot add questions to global bank
@@ -1246,7 +1245,8 @@ Card Layout: Each question displayed as a card with question text (rendered with
   - How to add question banks to global bank
   - How to remove questions from global bank\n  - How teachers and principals can use global questions
   - Best practices for managing global question bank
-  - FAQ section\n
+  - FAQ section
+
 **FAQ Topics:**
 - What is Global Question Bank?
 - How to create questions as Admin?
@@ -1446,7 +1446,8 @@ Add a column to question_bank table:
 - Multiple Question Paper Versions\n- Question Paper Templates
 - Smart Question Selection
 - Preview Enhancements (with formatted text rendering)
-- Bulk Operations\n- Version History
+- Bulk Operations
+- Version History
 - Shuffle and Save with Auto-Versioned Names
 - Question usage tracking for informed question selection
 
@@ -1651,8 +1652,7 @@ Display Columns:
 ### 9.1 Online Exam Overview
 - Purpose: Enable teachers to create, publish, and manage online exams for students
 - Exam Types:
-  - Practice Exams: No approval required
-  - School-Level Exams: Requires Principal approval
+  - Practice Exams: No approval required\n  - School-Level Exams: Requires Principal approval
   - Principal-Created Exams: No approval required
 - Access:
   - Teachers can create exams for assigned sections
@@ -1972,7 +1972,8 @@ Individual Student Result Details Page:
 - Student Information Card
 - Exam Performance Summary Card
 - Performance Breakdown Card
-- Teacher Feedback Section\n- Question-wise Performance Section (with formatted question text)
+- Teacher Feedback Section
+- Question-wise Performance Section (with formatted question text)
 - Filter and Sort Options
 - Performance Charts
 - Activity Log Section
@@ -2333,6 +2334,7 @@ The side panel navigation for Teacher role includes the following menu items (in
 - **Question Bank Management with Global and Users sections**
 - **Add questions from Users Question Bank to Global Question Bank**
 - **Remove questions from Global Question Bank**
+- **Edit and delete questions in Global Question Bank**
 - **NEW: Create questions directly**
 - **NEW: Create Question Bank functionality - View and add user-created question banks to Global**
 
@@ -2401,8 +2403,7 @@ The side panel navigation for Teacher role includes the following menu items (in
 - High-quality print output with proper page layout
 \n### 14.16 Side Panel Navigation Enhancement
 - Question Paper History menu item added to Principal side panel
-- Question Paper History menu item added to Teacher side panel\n- **Question Bank menu item added to Admin side panel**
-- Consistent navigation experience across roles
+- Question Paper History menu item added to Teacher side panel\n- **Question Bank menu item added to Admin side panel**\n- Consistent navigation experience across roles
 - Easy access to historical question papers and question bank management
 - Improved user workflow and productivity
 
@@ -2440,7 +2441,7 @@ The side panel navigation for Teacher role includes the following menu items (in
 - Admin can manage Global Question Bank accessible to all schools
 - Two-tab interface: Global Question Bank and Users Question Bank
 - Admin can add questions from Users Question Bank to Global Question Bank
-- Admin can remove questions from Global Question Bank
+- **Admin can edit and delete questions in Global Question Bank**\n- Admin can remove questions from Global Question Bank
 - Teachers and Principals can access global questions for question papers and exams
 - Global questions are read-only for teachers and principals
 - Enhances question sharing across schools
@@ -2640,6 +2641,8 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Global Status badge with color coding
   - Add to Global button with green gradient
   - Remove from Global button with red gradient
+  - **Edit button with blue gradient**
+  - **Delete button with red gradient**
   - Bulk action buttons with appropriate styling
   - Confirmation dialogs with glassmorphism effect
   - Source User column with user icon
@@ -3008,4 +3011,4 @@ The uploaded image (screenshot.png) shows the Question Paper History interface w
 - Help desk support
 - FAQ section
 \n## 23. Conclusion\n
-A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting, updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The addition of the Students card to the Teacher Dashboard with role-based access control, combined with the rich text editor functionality, improved bulk upload capability with cleaner data entry experience and better guidance through separate reference examples, and the new preview-print feature in Question Paper History, further enhances teacher productivity by allowing them to create well-formatted questions, import large question banks efficiently with reduced errors through dropdown selections and reference examples, manage students from their assigned sections effectively, and print question papers with all formatting preserved directly from the preview dialog. The updated side panel navigation for both Principal and Teacher roles now includes easy access to Question Paper History, streamlining the workflow and improving overall user experience. The newly added student-level exam assignment feature provides teachers and principals with the flexibility to assign exams to entire classes or specific individual students, enabling more targeted assessments and personalized learning experiences. The latest addition of question usage tracking during question paper preparation empowers teachers to make informed decisions about question reuse by displaying usage count and list of question papers where each question was used, thereby enhancing question paper quality, promoting variety, and supporting data-driven question selection for better assessment outcomes. The Admin Global Question Bank Management feature introduces a centralized repository of high-quality questions accessible to all schools, enabling administrators to curate and share questions across the platform. With two distinct sections—Global Question Bank and Users Question Bank—admins can efficiently manage question visibility, add user-created questions to the global pool, and remove questions as needed. Teachers and principals benefit from access to both school-specific and global questions when creating question papers and exams, significantly expanding their question selection options and promoting standardized assessments across multiple schools. This feature enhances collaboration, improves question quality through centralized curation, and supports consistent educational standards across the entire platform. **The newest enhancements—Admin Create Question and Admin Create Question Bank functionalities—further empower administrators with direct question creation capabilities and streamlined bulk addition of user-created question banks to the Global Question Bank. Admins can now create questions for any school directly from the Admin Question Bank page, with the option to add them to Global immediately. Additionally, the Create Question Bank feature allows admins to view all user-created question banks not yet in Global, select multiple banks, preview their contents, and add them to Global in bulk. These features significantly enhance admin control over question bank content, support centralized question creation and management, and streamline the process of curating high-quality questions for the Global Question Bank, ultimately improving question quality, promoting standardized assessments, and supporting efficient management of large question repositories across the entire platform.**
+A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting, updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The addition of the Students card to the Teacher Dashboard with role-based access control, combined with the rich text editor functionality, improved bulk upload capability with cleaner data entry experience and better guidance through separate reference examples, and the new preview-print feature in Question Paper History, further enhances teacher productivity by allowing them to create well-formatted questions, import large question banks efficiently with reduced errors through dropdown selections and reference examples, manage students from their assigned sections effectively, and print question papers with all formatting preserved directly from the preview dialog. The updated side panel navigation for both Principal and Teacher roles now includes easy access to Question Paper History, streamlining the workflow and improving overall user experience. The newly added student-level exam assignment feature provides teachers and principals with the flexibility to assign exams to entire classes or specific individual students, enabling more targeted assessments and personalized learning experiences. The latest addition of question usage tracking during question paper preparation empowers teachers to make informed decisions about question reuse by displaying usage count and list of question papers where each question was used, thereby enhancing question paper quality, promoting variety, and supporting data-driven question selection for better assessment outcomes. The Admin Global Question Bank Management feature introduces a centralized repository of high-quality questions accessible to all schools, enabling administrators to curate and share questions across the platform. With two distinct sections—Global Question Bank and Users Question Bank—admins can efficiently manage question visibility, add user-created questions to the global pool, edit and delete global questions, and remove questions as needed. Teachers and principals benefit from access to both school-specific and global questions when creating question papers and exams, significantly expanding their question selection options and promoting standardized assessments across multiple schools. This feature enhances collaboration, improves question quality through centralized curation, and supports consistent educational standards across the entire platform. **The newest enhancements—Admin Create Question and Admin Create Question Bank functionalities—further empower administrators with direct question creation capabilities and streamlined bulk addition of user-created question banks to the Global Question Bank. Admins can now create questions for any school directly from the Admin Question Bank page, with the option to add them to Global immediately. Additionally, the Create Question Bank feature allows admins to view all user-created question banks not yet in Global, select multiple banks, preview their contents, and add them to Global in bulk. These features significantly enhance admin control over question bank content, support centralized question creation and management, and streamline the process of curating high-quality questions for the Global Question Bank, ultimately improving question quality, promoting standardized assessments, and supporting efficient management of large question repositories across the entire platform.**
