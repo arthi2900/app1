@@ -284,6 +284,17 @@ The system now provides:
 - "Copy to Global" button already exists for each user question
 - Admin can easily add user questions to the global bank with one click
 
+✅ **Display Requirements**: Already Implemented
+- **Bank Name Column**: Displays the auto-generated bank name in format "ClassName_SubjectName" (e.g., "Class10_English")
+  - Located in Users tab table, column 2
+  - Shows question.bank_name with a badge and BookOpen icon
+  - Falls back to "No Bank" if bank_name is null
+- **Created By Column**: Displays the full name of the user who created the question
+  - Located in both Global and Users tab tables
+  - Shows question.creator?.full_name with a User icon
+  - Falls back to "Unknown" if creator data is not available
+- Both columns are properly implemented and functional in the current code (lines 807, 812, 826-831, 844-849 in AdminQuestionBank.tsx)
+
 ### Implementation Notes
 - Admin should use same question creation form as teachers
 - Need to handle admin creating questions (assign to global or specific user)
