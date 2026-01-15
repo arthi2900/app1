@@ -275,11 +275,19 @@ export default function UserManagement() {
         throw new Error(data.error || 'Failed to reset password');
       }
 
+      // Save the password to the profiles table
+      await profileApi.updateUserPassword(resetPasswordUser.id, newPassword);
+
+      // Update the local state to show the new password
+      setProfiles(profiles.map(p =>
+        p.id === resetPasswordUser.id ? { ...p, password: newPassword } : p
+      ));
+
       setGeneratedPassword(newPassword);
 
       toast({
         title: 'Success',
-        description: 'Password reset successfully',
+        description: 'Password reset successfully and saved to database',
       });
     } catch (error: any) {
       console.error('Password reset error:', error);
@@ -391,6 +399,9 @@ export default function UserManagement() {
           <Badge variant={profile.suspended ? 'destructive' : 'secondary'}>
             {profile.suspended ? 'Suspended' : 'Active'}
           </Badge>
+        </TableCell>
+        <TableCell className="font-mono text-sm">
+          {profile.password || '-'}
         </TableCell>
         <TableCell>
           <div className="flex items-center gap-2">
@@ -669,6 +680,7 @@ export default function UserManagement() {
                       <TableHead>Role</TableHead>
                       <TableHead>School Name</TableHead>
                       <TableHead>Status</TableHead>
+                      <TableHead>Password</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -701,6 +713,7 @@ export default function UserManagement() {
                       <TableHead>Role</TableHead>
                       <TableHead>School Name</TableHead>
                       <TableHead>Status</TableHead>
+                      <TableHead>Password</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>

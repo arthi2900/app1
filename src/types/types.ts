@@ -56,6 +56,7 @@ export interface Profile {
   role: UserRole;
   approved: boolean;
   suspended: boolean;
+  password: string | null;
   created_at: string;
 }
 

@@ -141,6 +141,14 @@ export const profileApi = {
     if (error) throw error;
   },
 
+  async updateUserPassword(userId: string, password: string): Promise<void> {
+    const { error } = await supabase
+      .from('profiles')
+      .update({ password })
+      .eq('id', userId);
+    if (error) throw error;
+  },
+
   async getTeachersBySchoolId(schoolId: string): Promise<Profile[]> {
     const { data, error } = await supabase
       .from('profiles')
