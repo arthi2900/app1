@@ -36,7 +36,13 @@ import type {
   ActiveSession,
   ActiveSessionWithSchool,
 } from '@/types/types';
-import type { UserStorageUsage } from '@/types/storage';
+import type { 
+  UserStorageUsage, 
+  SystemCapacityStatus, 
+  StorageGrowthRate, 
+  StorageHistoryPoint,
+  SystemCapacity 
+} from '@/types/storage';
 
 // Profile APIs
 export const profileApi = {
@@ -2073,5 +2079,72 @@ export const storageApi = {
   async recalculateAllStorage(): Promise<void> {
     const { error } = await supabase.rpc('recalculate_all_storage');
     if (error) throw error;
+  },
+
+  async getSystemCapacityStatus(): Promise<SystemCapacityStatus | null> {
+    const { data, error } = await supabase.rpc('get_system_capacity_status');
+    if (error) throw error;
+    return Array.isArray(data) && data.length > 0 ? data[0] : null;
+  },
+
+  async getStorageGrowthRate(): Promise<StorageGrowthRate | null> {
+    const { data, error } = await supabase.rpc('get_storage_growth_rate');
+    if (error) throw error;
+    return Array.isArray(data) && data.length > 0 ? data[0] : null;
+  },
+
+  async getStorageHistory(daysBack: number = 30): Promise<StorageHistoryPoint[]> {
+    const { data, error } = await supabase.rpc('get_storage_history', { days_back: daysBack });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async captureStorageSnapshot(): Promise<void> {
+    const { error } = await supabase.rpc('capture_storage_snapshot');
+    if (error) throw error;
+  },
+
+  async getSystemCapacity(): Promise<SystemCapacity | null> {
+    const { data, error } = await supabase
+      .from('system_capacity')
+      .select('*')
+      .limit(1)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateSystemCapacity(
+    maxStorageBytes: number,
+    warningThreshold: number,
+    criticalThreshold: number
+  ): Promise<SystemCapacity | null> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
+    const { data: capacity } = await supabase
+      .from('system_capacity')
+      .select('id')
+      .limit(1)
+      .maybeSingle();
+
+    if (capacity) {
+      const { data, error } = await supabase
+        .from('system_capacity')
+        .update({
+          max_storage_bytes: maxStorageBytes,
+          warning_threshold_percent: warningThreshold,
+          critical_threshold_percent: criticalThreshold,
+          updated_by: user.id,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', capacity.id)
+        .select()
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    }
+
+    return null;
   },
 };

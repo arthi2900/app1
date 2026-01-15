@@ -103,6 +103,56 @@ Adding real-time file and database storage monitoring feature for administrators
 - Last calculated timestamp helps track data freshness
 - No lint errors introduced in new code
 
+### Dynamic Storage Monitoring System (2025-12-11)
+**Enhancement**: Implemented automatic, real-time storage calculation and capacity planning
+
+**Features Added**:
+1. **Automatic Storage Updates**:
+   - Database triggers automatically recalculate storage when content changes
+   - Triggers on: questions, exams, exam_attempts, exam_answers, question_papers
+   - No manual refresh needed for user storage data
+   - Real-time accuracy for all storage metrics
+
+2. **Capacity Planning Dashboard** (`/admin/capacity`):
+   - **System Capacity Status**: Real-time utilization with color-coded alerts
+     - Healthy (< 80%), Warning (80-90%), Critical (> 90%)
+     - Available space vs total capacity display
+     - Configurable warning and critical thresholds
+   - **Storage Growth Rate**: Average daily growth calculation
+     - Projected growth for 7, 30, and 90 days
+     - Based on historical data trends
+   - **Capacity Forecast**: Days until storage is full
+     - Projected full date estimation
+     - Automatic alerts when approaching limits
+   - **Storage History**: Historical snapshots over last 30 days
+     - Trend visualization
+     - User count tracking alongside storage growth
+
+3. **Configurable Capacity Settings**:
+   - Maximum storage capacity (default: 100 GB)
+   - Warning threshold (default: 80%)
+   - Critical threshold (default: 90%)
+   - Admin-only configuration via UI
+
+**Database Changes**:
+- New table: `storage_history` (tracks system-wide snapshots)
+- New table: `system_capacity` (stores capacity configuration)
+- New trigger: `auto_update_user_storage()` (automatic storage updates)
+- New RPC: `capture_storage_snapshot()` (manual snapshot capture)
+- New RPC: `get_system_capacity_status()` (current capacity status)
+- New RPC: `get_storage_growth_rate()` (growth rate calculation)
+- New RPC: `get_storage_history(days_back)` (historical data retrieval)
+
+**Benefits**:
+- ✅ Real-time storage updates (no manual refresh)
+- ✅ Proactive capacity planning with forecasts
+- ✅ Growth rate tracking for server planning
+- ✅ Historical trends for data-driven decisions
+- ✅ Automatic alerts for capacity thresholds
+- ✅ Helps optimize server costs and prevent outages
+
+**Documentation**: See `DYNAMIC_STORAGE_MONITORING.md` for complete guide
+
 ### Bug Fix: Storage Calculation Function (2025-12-11)
 **Issue**: User "chozan" with 31 questions showed 0 Bytes for all storage metrics
 

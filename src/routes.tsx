@@ -11,6 +11,7 @@ import AdminQuestionBank from './pages/admin/AdminQuestionBank';
 import LoginHistory from './pages/admin/LoginHistory';
 import ActiveUsers from './pages/admin/ActiveUsers';
 import StorageMonitoring from './pages/admin/StorageMonitoring';
+import CapacityPlanning from './pages/admin/CapacityPlanning';
 import PrincipalDashboard from './pages/principal/PrincipalDashboard';
 import TeachersList from './pages/principal/TeachersList';
 import StudentsList from './pages/principal/StudentsList';
@@ -134,6 +135,16 @@ const routes: RouteConfig[] = [
     element: (
       <ProtectedRoute allowedRoles={['admin']}>
         <StorageMonitoring />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Capacity Planning',
+    path: '/admin/capacity',
+    element: (
+      <ProtectedRoute allowedRoles={['admin']}>
+        <CapacityPlanning />
       </ProtectedRoute>
     ),
     visible: false,
