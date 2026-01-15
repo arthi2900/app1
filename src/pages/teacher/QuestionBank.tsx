@@ -107,39 +107,62 @@ export default function QuestionBank() {
         return;
       }
 
-      // Get teacher assignments for current academic year
-      const assignments = await academicApi.getTeacherAssignments(profile.id, '2024-2025');
-      setTeacherAssignments(assignments);
-
-      // Extract unique classes from assignments
-      const uniqueClasses = Array.from(
-        new Map(assignments.map(a => [a.class_id, a.class])).values()
-      );
-      setClasses(uniqueClasses);
-
       // Load all questions
       const questionsData = await questionApi.getAllQuestions();
       
-      // Filter questions based on teacher's assigned subjects
-      // Teachers can only see questions from classes and subjects they are assigned to
-      // This is determined by matching the question's subject_id with the teacher's assignments
-      const assignedSubjectIds = assignments.map(a => a.subject_id);
-      const filteredQuestions = questionsData.filter(q => 
-        assignedSubjectIds.includes(q.subject_id)
-      );
-      setQuestions(filteredQuestions);
+      if (profile.role === 'principal') {
+        // Principals can see all questions from their school
+        // Filter questions by school_id through subjects
+        const filteredQuestions = questionsData.filter(q => 
+          q.subjects?.school_id === profile.school_id
+        );
+        setQuestions(filteredQuestions);
 
-      // Load only subjects assigned to the teacher
-      const subjectsData = await subjectApi.getTeacherAssignedSubjects(profile.id);
-      setSubjects(subjectsData);
+        // Load all subjects from the principal's school
+        const subjectsData = await academicApi.getSubjectsBySchoolId(profile.school_id || '');
+        setSubjects(subjectsData);
 
-      // Load all lessons and filter by assigned subjects
-      // Only show lessons from subjects the teacher is assigned to
-      const lessonsData = await lessonApi.getAllLessons();
-      const filteredLessons = lessonsData.filter(l => 
-        assignedSubjectIds.includes(l.subject_id)
-      );
-      setLessons(filteredLessons);
+        // Load all classes from the principal's school
+        const classesData = await academicApi.getClassesBySchoolId(profile.school_id || '');
+        setClasses(classesData);
+
+        // Load all lessons from subjects in the principal's school
+        const lessonsData = await lessonApi.getAllLessons();
+        const subjectIds = subjectsData.map(s => s.id);
+        const filteredLessons = lessonsData.filter(l => 
+          subjectIds.includes(l.subject_id)
+        );
+        setLessons(filteredLessons);
+      } else {
+        // Teachers can only see questions from their assigned subjects
+        // Get teacher assignments for current academic year
+        const assignments = await academicApi.getTeacherAssignments(profile.id, '2024-2025');
+        setTeacherAssignments(assignments);
+
+        // Extract unique classes from assignments
+        const uniqueClasses = Array.from(
+          new Map(assignments.map(a => [a.class_id, a.class])).values()
+        );
+        setClasses(uniqueClasses);
+
+        // Filter questions based on teacher's assigned subjects
+        const assignedSubjectIds = assignments.map(a => a.subject_id);
+        const filteredQuestions = questionsData.filter(q => 
+          assignedSubjectIds.includes(q.subject_id)
+        );
+        setQuestions(filteredQuestions);
+
+        // Load only subjects assigned to the teacher
+        const subjectsData = await subjectApi.getTeacherAssignedSubjects(profile.id);
+        setSubjects(subjectsData);
+
+        // Load all lessons and filter by assigned subjects
+        const lessonsData = await lessonApi.getAllLessons();
+        const filteredLessons = lessonsData.filter(l => 
+          assignedSubjectIds.includes(l.subject_id)
+        );
+        setLessons(filteredLessons);
+      }
     } catch (error: any) {
       console.error('Error loading data:', error);
       toast({
@@ -632,10 +655,16 @@ export default function QuestionBank() {
     }));
   };
 
-  // Get subjects for selected class that are assigned to the teacher
+  // Get subjects for selected class
   const getAvailableSubjects = () => {
     if (!formData.class_id) return [];
     
+    // Principals can see all subjects for the selected class
+    if (currentProfile?.role === 'principal') {
+      return subjects.filter(s => s.class_id === formData.class_id);
+    }
+    
+    // Teachers can only see subjects they are assigned to
     const assignedSubjectIds = teacherAssignments
       .filter(a => a.class_id === formData.class_id)
       .map(a => a.subject_id);
@@ -745,7 +774,7 @@ export default function QuestionBank() {
     );
   }
 
-  // Show message if teacher has no assignments
+  // Show message if teacher has no assignments or principal has no classes
   if (!loading && classes.length === 0) {
     return (
       <div className="space-y-6">
@@ -757,9 +786,14 @@ export default function QuestionBank() {
           <CardContent className="py-12">
             <div className="flex flex-col items-center justify-center text-center">
               <FileQuestion className="w-16 h-16 text-muted-foreground mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No Class Assignments</h3>
+              <h3 className="text-xl font-semibold mb-2">
+                {currentProfile?.role === 'principal' ? 'No Classes Available' : 'No Class Assignments'}
+              </h3>
               <p className="text-muted-foreground max-w-md">
-                You don't have any class or subject assignments yet. Please contact your principal or administrator to assign you to classes and subjects before creating questions.
+                {currentProfile?.role === 'principal' 
+                  ? 'There are no classes set up in your school yet. Please set up classes and subjects in the Academic Management section before creating questions.'
+                  : 'You don\'t have any class or subject assignments yet. Please contact your principal or administrator to assign you to classes and subjects before creating questions.'
+                }
               </p>
             </div>
           </CardContent>
@@ -774,13 +808,16 @@ export default function QuestionBank() {
         <div>
           <h1 className="text-3xl font-bold">Question Bank</h1>
           <p className="text-muted-foreground mt-2">
-            Manage questions for your assigned classes and subjects
+            {currentProfile?.role === 'principal' 
+              ? 'Manage questions for all classes and subjects in your school'
+              : 'Manage questions for your assigned classes and subjects'
+            }
           </p>
-          {teacherAssignments.length > 0 && (
+          {currentProfile?.role === 'teacher' && teacherAssignments.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-3">
               {teacherAssignments.map((assignment, index) => (
                 <Badge key={index} variant="secondary" className="text-xs">
-                  {assignment.class.class_name} - {assignment.subject.subject_name}
+                  {assignment.class?.class_name} - {assignment.subject?.subject_name}
                 </Badge>
               ))}
             </div>

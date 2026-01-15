@@ -56,6 +56,7 @@ export default function Sidebar({ collapsed, onCollapsedChange }: SidebarProps) 
     if (profile.role === 'principal') {
       links.push(
         { to: '/principal', label: 'Dashboard', icon: LayoutDashboard },
+        { to: '/principal/questions', label: 'Question Bank', icon: FileQuestion },
         { to: '/principal/exam-approvals', label: 'Exam Approvals', icon: ClipboardList },
         { to: '/principal/question-papers', label: 'Question Paper History', icon: FolderOpen }
       );

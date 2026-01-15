@@ -190,6 +190,16 @@ const routes: RouteConfig[] = [
     visible: false,
   },
   {
+    name: 'Question Bank',
+    path: '/principal/questions',
+    element: (
+      <ProtectedRoute allowedRoles={['principal']}>
+        <QuestionBank />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
     name: 'Teacher Dashboard',
     path: '/teacher',
     element: (
