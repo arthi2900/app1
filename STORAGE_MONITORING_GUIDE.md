@@ -50,10 +50,13 @@ Manual refresh button to recalculate storage:
 ### Database Storage Calculation
 Calculates storage from user-related data in tables:
 - `profiles`: User profile data
-- `questions`: Questions created by user
-- `exams`: Exams created by user
-- `student_answers`: Student answer submissions
-- `exam_results`: Exam result records
+- `questions`: Questions created by user (created_by)
+- `exams`: Exams created by teacher (teacher_id)
+- `exam_attempts`: Student exam attempts (student_id)
+- `exam_answers`: Student answers (via attempt_id)
+- `question_papers`: Question papers created (created_by)
+- `login_history`: User login records (user_id)
+- `active_sessions`: Active user sessions (user_id)
 
 Uses PostgreSQL's `pg_column_size()` function to calculate actual storage size.
 
@@ -64,6 +67,8 @@ Uses PostgreSQL's `pg_column_size()` function to calculate actual storage size.
 4. Database storage is recalculated via RPC function
 5. Results are stored in `storage_usage` table
 6. UI refreshes to show updated data
+
+**Important**: On first use, click "Refresh Storage" to populate initial data for all users.
 
 ## Database Schema
 
@@ -116,9 +121,10 @@ CREATE TABLE storage_usage (
 ## Troubleshooting
 
 ### No Data Showing
-- Click "Refresh Storage" to calculate initial data
+- **Solution**: Click "Refresh Storage" to calculate initial data
 - Ensure you're logged in as admin
 - Check browser console for errors
+- First-time use requires manual refresh to populate data
 
 ### Calculation Takes Long Time
 - Normal for systems with many users or large files
@@ -130,6 +136,12 @@ CREATE TABLE storage_usage (
 - Database storage uses PostgreSQL's pg_column_size()
 - Values are estimates, not exact disk usage
 - Recalculate to get fresh data
+
+### User Shows 0 Bytes Despite Having Data
+- Click "Refresh Storage" to recalculate
+- Ensure the user has created content (questions, exams, etc.)
+- Check that the user_id matches in the database
+- Verify the calculate_user_database_size function is working
 
 ## Technical Details
 

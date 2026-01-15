@@ -103,6 +103,36 @@ Adding real-time file and database storage monitoring feature for administrators
 - Last calculated timestamp helps track data freshness
 - No lint errors introduced in new code
 
+### Bug Fix: Storage Calculation Function (2025-12-11)
+**Issue**: User "chozan" with 31 questions showed 0 Bytes for all storage metrics
+
+**Root Cause**: 
+1. The `calculate_user_database_size` function referenced incorrect column names
+   - Used `exams.created_by` but actual column is `exams.teacher_id`
+   - Referenced non-existent tables `student_answers` and `exam_results`
+2. Storage data was never populated in the `storage_usage` table
+
+**Fix Applied**:
+1. Updated `calculate_user_database_size` function to use correct schema:
+   - Changed `exams.created_by` → `exams.teacher_id`
+   - Removed references to non-existent tables
+   - Added calculations for: question_papers, login_history, active_sessions
+   - Added calculations for: exam_attempts, exam_answers (via student_id)
+2. Ran `recalculate_all_storage()` to populate data for all users
+3. Verified user "chozan" now shows 9,021 bytes (9 KB) for database storage
+
+**Tables Included in Database Size Calculation**:
+- profiles (user profile data)
+- questions (created_by = user_id)
+- exams (teacher_id = user_id)
+- exam_attempts (student_id = user_id)
+- exam_answers (via exam_attempts.student_id)
+- question_papers (created_by = user_id)
+- login_history (user_id)
+- active_sessions (user_id)
+
+**Result**: Storage monitoring now correctly displays database usage for all users
+
 ### Database Tables Created
 1. **login_history**: Tracks all user login events
    - Fields: user_id, username, full_name, role, school_id, login_time, ip_address, user_agent
