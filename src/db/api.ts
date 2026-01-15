@@ -36,6 +36,7 @@ import type {
   ActiveSession,
   ActiveSessionWithSchool,
 } from '@/types/types';
+import type { UserStorageUsage } from '@/types/storage';
 
 // Profile APIs
 export const profileApi = {
@@ -2044,6 +2045,33 @@ export const activeSessionApi = {
 
   async cleanupStaleSessions(): Promise<void> {
     const { error } = await supabase.rpc('cleanup_stale_sessions');
+    if (error) throw error;
+  },
+};
+
+// Storage Monitoring APIs
+export const storageApi = {
+  async getAllUsersStorage(): Promise<UserStorageUsage[]> {
+    const { data, error } = await supabase.rpc('get_all_users_storage');
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  },
+
+  async calculateFileStorage(): Promise<void> {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) throw new Error('Not authenticated');
+
+    const { error } = await supabase.functions.invoke('calculate-storage', {
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+      },
+    });
+    
+    if (error) throw error;
+  },
+
+  async recalculateAllStorage(): Promise<void> {
+    const { error } = await supabase.rpc('recalculate_all_storage');
     if (error) throw error;
   },
 };

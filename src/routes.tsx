@@ -10,6 +10,7 @@ import SchoolManagement from './pages/admin/SchoolManagement';
 import AdminQuestionBank from './pages/admin/AdminQuestionBank';
 import LoginHistory from './pages/admin/LoginHistory';
 import ActiveUsers from './pages/admin/ActiveUsers';
+import StorageMonitoring from './pages/admin/StorageMonitoring';
 import PrincipalDashboard from './pages/principal/PrincipalDashboard';
 import TeachersList from './pages/principal/TeachersList';
 import StudentsList from './pages/principal/StudentsList';
@@ -123,6 +124,16 @@ const routes: RouteConfig[] = [
     element: (
       <ProtectedRoute allowedRoles={['admin']}>
         <ActiveUsers />
+      </ProtectedRoute>
+    ),
+    visible: false,
+  },
+  {
+    name: 'Storage Monitoring',
+    path: '/admin/storage',
+    element: (
+      <ProtectedRoute allowedRoles={['admin']}>
+        <StorageMonitoring />
       </ProtectedRoute>
     ),
     visible: false,

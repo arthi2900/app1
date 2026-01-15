@@ -1,30 +1,107 @@
-# Task: Add Login History and Real-time Active Users Monitoring
+# Task: Add Real-Time Storage Monitoring Feature for Admin Dashboard
 
 ## Current Task (2025-12-11)
-Adding comprehensive login tracking and real-time user monitoring features for administrators.
+Adding real-time file and database storage monitoring feature for administrators to track storage usage per user.
 
 ## Plan
 - [x] Step 1: Database Schema Setup
-  - [x] Create login_history table
-  - [x] Create active_sessions table
-  - [x] Add RLS policies for admin access
-- [x] Step 2: Read Key Files
-  - [x] Read src/db/api.ts for API patterns
-  - [x] Read src/hooks/useAuth.ts for login integration
-  - [x] Read src/routes.tsx for routing patterns
-- [x] Step 3: Backend API Implementation
-  - [x] Add login history tracking functions
-  - [x] Add active sessions management functions
-  - [x] Integrate login tracking in useAuth hook
-- [x] Step 4: Frontend Components
-  - [x] Create LoginHistory page component
-  - [x] Create ActiveUsers monitoring component
-  - [x] Add navigation in admin routes
-- [x] Step 5: Testing and Validation
-  - [x] Run lint check (no errors in new code)
-  - [x] Verify functionality
+  - [x] Create storage_usage table to track file and database sizes per user
+  - [x] Create RPC function to calculate database size per user
+  - [x] Create helper functions for storage calculations
+- [x] Step 2: Edge Function for File Storage Calculation
+  - [x] Create edge function to calculate file sizes from Supabase storage buckets
+  - [x] Deploy edge function
+- [x] Step 3: Frontend Types and API
+  - [x] Create storage types in src/types/storage.ts
+  - [x] Add storage API functions in src/db/api.ts
+- [x] Step 4: Admin UI Page
+  - [x] Create StorageMonitoring page component
+  - [x] Add real-time refresh capability
+  - [x] Display user-wise file and database sizes
+  - [x] Add total storage statistics
+- [x] Step 5: Routing and Integration
+  - [x] Add route to src/routes.tsx
+  - [x] Add card to AdminDashboard
+  - [x] Verify admin access control
+- [x] Step 6: Testing and Validation
+  - [x] Run lint to ensure code quality (no errors in new storage monitoring code)
+  - [x] Verify all features work correctly
 
 ## Implementation Summary
+
+### Storage Monitoring Feature (2025-12-11)
+
+#### Database Schema
+1. **storage_usage table**: Tracks file and database storage per user
+   - Fields: user_id, file_storage_bytes, database_storage_bytes, last_calculated_at
+   - Unique constraint on user_id
+   - Indexes on user_id and last_calculated_at for performance
+
+2. **RPC Functions**:
+   - `calculate_user_database_size(user_id)`: Calculates database size for a specific user
+   - `get_all_users_storage()`: Returns storage data for all users (admin only)
+   - `update_user_storage_usage(user_id, file_bytes)`: Updates storage usage for a user
+   - `recalculate_all_storage()`: Recalculates database storage for all users (admin only)
+
+3. **RLS Policies**: Admin-only access for viewing and managing storage data
+
+#### Edge Function
+- **calculate-storage**: Scans all Supabase storage buckets and calculates file sizes per user
+- Deployed and accessible via Supabase Functions
+- Requires admin authentication
+
+#### Frontend Implementation
+1. **Types** (src/types/storage.ts):
+   - UserStorageUsage interface
+   - StorageStats interface
+   - StorageCalculationResult interface
+
+2. **API** (src/db/api.ts):
+   - storageApi.getAllUsersStorage(): Fetch all users' storage data
+   - storageApi.calculateFileStorage(): Trigger file storage calculation
+   - storageApi.recalculateAllStorage(): Recalculate database storage
+
+3. **UI Page** (src/pages/admin/StorageMonitoring.tsx):
+   - Statistics cards showing total users, file storage, database storage, and total storage
+   - User storage table with search functionality
+   - Real-time refresh button to recalculate storage
+   - Formatted display (Bytes, KB, MB, GB, TB)
+   - Role badges for user identification
+   - Last calculated timestamp for each user
+
+4. **Navigation**:
+   - Added route: /admin/storage
+   - Added card in AdminDashboard with HardDrive icon
+   - Protected route (admin only)
+
+#### Features
+✅ Real-time storage monitoring for all users
+✅ User-wise file storage tracking from Supabase storage buckets
+✅ User-wise database storage calculation from all tables
+✅ Manual refresh capability to recalculate storage
+✅ Search and filter by username, email, or role
+✅ Total storage statistics with visual cards
+✅ Formatted byte display (auto-converts to KB/MB/GB/TB)
+✅ Last calculated timestamp for data freshness
+✅ Admin-only access with RLS policies
+✅ Responsive design for all screen sizes
+✅ Loading states and error handling
+
+#### Technical Details
+- File storage calculated by scanning Supabase storage buckets per user
+- Database storage calculated using pg_column_size() for all user-related data
+- Includes data from: profiles, questions, exams, student_answers, exam_results
+- Edge function handles file storage calculation asynchronously
+- RPC functions handle database storage calculation efficiently
+- All operations protected by admin-only RLS policies
+
+## Notes
+- Storage calculation may take time for large datasets
+- File storage requires edge function invocation
+- Database storage uses PostgreSQL pg_column_size() function
+- All storage values stored in bytes, formatted on display
+- Last calculated timestamp helps track data freshness
+- No lint errors introduced in new code
 
 ### Database Tables Created
 1. **login_history**: Tracks all user login events

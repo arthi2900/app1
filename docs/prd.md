@@ -6,15 +6,14 @@
 A Cube - Online Exam System
 
 ### 1.2 Application Purpose
-A comprehensive online exam management platform for educational institutions, focusing on NEET preparation and school-level assessments. The system enables schools to create, conduct, and analyze exams efficiently with features including school management, academic structure setup, teacher-subject-class-section mapping, question bank management with bulk upload capability, question paper preparation with question usage tracking, online exam creation with approval workflow, user management with school-based data isolation, student allocation tracking, detailed performance analytics, and real-time user login monitoring.
+A comprehensive online exam management platform for educational institutions, focusing on NEET preparation and school-level assessments. The system enables schools to create, conduct, and analyze exams efficiently with features including school management, academic structure setup, teacher-subject-class-section mapping, question bank management with bulk upload capability, question paper preparation with question usage tracking, online exam creation with approval workflow, user management with school-based data isolation, student allocation tracking, detailed performance analytics, real-time user login monitoring, and **real-time storage monitoring for files and databases with user-wise tracking**.
 
 ### 1.3 Tagline
 Smart • Secure • Scalable Online Exams
 
 ## 2. User Roles\n
 ### 2.1 Admin
-- Complete system administration
-- School management (create, edit, view schools)
+- Complete system administration\n- School management (create, edit, view schools)
 - User account creation and management
 - New user approval management
 - Role-based Access Control setup
@@ -25,10 +24,9 @@ Smart • Secure • Scalable Online Exams
 - Force Delete Exam capability: Can permanently delete exams with student attempts after strict confirmation
 - Question Bank Management with Global, Users, and Pending to Add sections
 - Create Question functionality - Admin can create questions directly\n- Create Question Bank functionality - Admin can view all user-created question banks not in Global and add them to Global
-- Pending to Add section - Admin can view all user-created questions not yet in Global and add them to Global\n- **NEW: Login History Monitoring - Admin can view login history of all users across all schools**
-- **NEW: Real-Time User Monitoring - Admin can monitor currently logged-in users in real-time with detailed information**
-
-### 2.2 Principal
+- Pending to Add section - Admin can view all user-created questions not yet in Global and add them to Global\n- Login History Monitoring - Admin can view login history of all users across all schools\n- Real-Time User Monitoring - Admin can monitor currently logged-in users in real-time with detailed information
+- **NEW: Real-Time Storage Monitoring - Admin can monitor file sizes and database sizes for all users in real-time with user-wise tracking**
+\n### 2.2 Principal
 - Academic Management (within assigned school only):\n  - Class creation\n  - Section creation
   - Subject creation (class-wise)
   - Lesson creation (subject-wise)
@@ -66,9 +64,8 @@ Smart • Secure • Scalable Online Exams
   - Delete exams created by self (with restrictions)
   - Force Delete Exam capability: Can permanently delete exams with student attempts after strict confirmation
 - Profile editing capability\n- Linked to specific school from school master list
-- School-based isolation: Can only view and manage users (teachers and students) from their assigned school
-- **NEW: Login History Access - Principal can view login history of teachers and students in their assigned school**
-- **NEW: Real-Time User Monitoring - Principal can monitor currently logged-in teachers and students from their school in real-time**
+- School-based isolation: Can only view and manage users (teachers and students) from their assigned school\n- Login History Access - Principal can view login history of teachers and students in their assigned school
+- Real-Time User Monitoring - Principal can monitor currently logged-in teachers and students from their school in real-time
 \n### 2.3 Teacher
 - View assigned classes, sections, and subjects
 - View students of assigned sections only
@@ -87,7 +84,8 @@ Smart • Secure • Scalable Online Exams
   - Create question papers from own question bank
   - Select questions by class and subject
   - View question usage count and list of question papers where each question was used
-  - Shuffle questions and MCQ options\n  - Preview, save as draft, generate final paper
+  - Shuffle questions and MCQ options
+  - Preview, save as draft, generate final paper
   - Export as PDF and print\n  - Save shuffled papers with auto-versioned names (Shuffled A, Shuffled B, etc.)
 - Question Paper History:\n  - View all question papers created by self
   - Filter by class, subject, date range, status
@@ -232,8 +230,7 @@ After Principal login, the dashboard displays seven main cards:
 #### 5.2.5 Student Class-Section Mapping
 - Principal can assign students to specific class and section
 - Note: Student accounts are already created via Sign-Up process, only class-section assignment is done here
-- Mapping interface:
-  - Student selection (dropdown or search from existing students in the school)
+- Mapping interface:\n  - Student selection (dropdown or search from existing students in the school)
   - Class selection (dropdown)\n  - Section selection (dropdown, filtered by selected class)
   - Academic Year\n- Bulk assignment option for multiple students
 - View current class-section assignments with edit and reassign options
@@ -298,14 +295,14 @@ After Principal login, the dashboard displays seven main cards:
   - Row View (table format)\n  - Card View (detailed card format)
 - View all questions with lesson-level filtering
 - Analytics dashboard for question bank performance
-\n### 5.6 Question Paper History Card - Historical Paper Management
+
+### 5.6 Question Paper History Card - Historical Paper Management
 - Principal can access Question Paper History interface
 - View all question papers created by teachers in their school
 - Filter by teacher name, class, subject, date range, paper status
 - Search by paper name or paper ID
 - View detailed paper information\n- Actions available:
-  - View paper details
-  - Preview paper with print option
+  - View paper details\n  - Preview paper with print option
   - Export as PDF
   - Print paper directly from preview dialog
 - Analytics dashboard showing paper creation trends
@@ -331,8 +328,7 @@ After Principal login, the dashboard displays seven main cards:
   - View student allocation list with attendance status
   - View individual student exam results
   - View student participation report
-  - Export exam results
-  - View exam analytics
+  - Export exam results\n  - View exam analytics
   - Delete exam (for self-created exams only, with restrictions)
   - Force Delete exam (for self-created exams with student attempts, requires strict confirmation)
 
@@ -368,7 +364,8 @@ Columns:
 - question_type (Enum: Multiple Choice, True/False, Short Answer, Essay, Match the Following, Multiple Response MCQ)\n- marks (Integer, required)
 - minus_mark (Decimal, optional)
 - difficulty (Enum: Easy, Medium, Hard)\n- options (JSON array)\n- correct_answer (Text or JSON array)\n- question_images (JSON array, optional)
-- created_by (Foreign Key → users.id)\n- created_at (Timestamp)
+- created_by (Foreign Key → users.id)
+- created_at (Timestamp)
 - updated_at (Timestamp)
 - is_global (Boolean, default false)
 - source_user_id (Foreign Key → users.id, nullable)
@@ -902,7 +899,8 @@ Card Layout: Each question displayed as a card with question text (rendered with
 - View Options:
   - Row View (table format)
   - Card View (detailed card format)
-- Actions:\n  - View: View full question details (read-only)
+- Actions:
+  - View: View full question details (read-only)
   - Add to Global: Add single question to global bank (sets is_global = true, copies source_user_id)
   - Copy to Global (Bulk): Add multiple selected questions to global bank at once
 - Create Question Bank button\n  - Opens Create Question Bank interface
@@ -1034,7 +1032,8 @@ Card Layout: Each question displayed as a card with question text (rendered with
   - Confirmation dialog before adding:\n    - Shows list of selected question banks with question counts
     - Confirmation message: 'Add X question banks (total Y questions) to Global Question Bank? All questions will be available to all schools.'
     - Confirm and Cancel buttons
-\n**Add to Global Process:**
+
+**Add to Global Process:**
 - On confirmation:
   - For each selected question bank:
     - Set is_global = true for all questions in the bank
@@ -1115,7 +1114,7 @@ Card Layout: Each question displayed as a card with question text (rendered with
 **Single Question Remove:**
 - Admin clicks 'Remove from Global' button for a question in Global Question Bank\n- Confirmation dialog appears:
   - Question preview
-  - Warning message: 'Remove this question from Global Question Bank? It will no longer be available to all schools, but will remain in the original user's question bank.'
+  - Warning message: 'Remove this question from Global Question Bank? It will no longer be available to all schools, but will remain in the original user\\'s question bank.'
   - Confirm and Cancel buttons
 - On confirmation:
   - Set is_global = false for the question
@@ -1278,7 +1277,8 @@ Card Layout: Each question displayed as a card with question text (rendered with
 - List of selected questions (first 5 shown, expandable)
 - Confirmation message: 'Copy X selected questions to Global Question Bank? They will be available to all schools.'
 - Confirm button (gradient, green) with text 'Copy to Global'
-- Cancel button (outlined)\n- Progress indicator during processing
+- Cancel button (outlined)
+- Progress indicator during processing
 
 **Add to Global Confirmation Dialog (Pending to Add Tab):**
 - Modal dialog with glassmorphism styling
@@ -2008,8 +2008,7 @@ Dashboard Card: 'My Exams'\n- Display on student dashboard after login
 Completed Exams Tab:
 - List of exams already submitted
 
-**Note:** Students will see exams assigned to them through either:\n- Section-based assignment (when student_selection_mode = 'Entire Class')
-- Individual assignment (when student_selection_mode = 'Specific Students')
+**Note:** Students will see exams assigned to them through either:\n- Section-based assignment (when student_selection_mode = 'Entire Class')\n- Individual assignment (when student_selection_mode = 'Specific Students')
 
 #### 9.4.2 Exam Taking Interface\nPre-Exam Screen:
 - Display before student starts exam
@@ -2191,8 +2190,7 @@ Analytics Dashboard (Principal view):
 - Can view individual student results for any exam
 - Cannot create, edit, or delete exams
 - Can force delete any exam with strict confirmation
-\n#### 9.7.5 Data Isolation
-- All exam data is school-scoped
+\n#### 9.7.5 Data Isolation\n- All exam data is school-scoped
 - Backend validation ensures data isolation
 - Cross-school access prevented
 - Passing marks calculation (35% of total marks) is consistent across all roles
@@ -2398,18 +2396,22 @@ After Admin login, the dashboard displays:
 - Question Bank Card
 - User Management\n- School Management
 - System Configuration
-- **NEW: Login History Card**
-- **NEW: Real-Time Users Card**
-\n### 12.2 Admin Functions
+- Login History Card
+- Real-Time Users Card
+- **NEW: Storage Monitoring Card**
+
+### 12.2 Admin Functions
 - Create and manage schools
 - User account management
 - Force delete exams with student attempts
 - Question Bank Management with Global, Users, and Pending to Add sections
 - Create questions directly\n- Create Question Bank functionality - View and add user-created question banks to Global\n- Bulk copy multiple questions to Global using checkboxes
 - Pending to Add section - View and add user-created questions not yet in Global
-- **NEW: View login history of all users across all schools**
-- **NEW: Monitor currently logged-in users in real-time with detailed information**
-\n### 12.3 Admin Question Bank Card
+- View login history of all users across all schools
+- Monitor currently logged-in users in real-time with detailed information
+- **NEW: Monitor real-time file sizes and database sizes for all users with user-wise tracking**
+
+### 12.3 Admin Question Bank Card
 - Card title: 'Question Bank'
 - Card displays:
   - Total Global Questions count
@@ -2417,20 +2419,28 @@ After Admin login, the dashboard displays:
   - Total Pending to Add Questions count
   - Quick action button: 'Manage Question Bank'
 - Clicking card navigates to Admin Question Bank page
-\n### 12.4 NEW: Admin Login History Card
+\n### 12.4 Admin Login History Card
 - Card title: 'Login History'
 - Card displays:\n  - Total logins today count
   - Total unique users logged in today count
   - Quick action button: 'View Login History'
 - Clicking card navigates to Login History page
 
-### 12.5 NEW: Admin Real-Time Users Card
+### 12.5 Admin Real-Time Users Card
 - Card title: 'Real-Time Users'
 - Card displays:
   - Currently logged-in users count
   - Active sessions count
   - Quick action button: 'Monitor Users'
 - Clicking card navigates to Real-Time User Monitoring page
+
+### 12.6 NEW: Admin Storage Monitoring Card
+- Card title: 'Storage Monitoring'\n- Card displays:
+  - Total file storage used (e.g., '2.5 GB')
+  - Total database storage used (e.g., '1.8 GB')
+  - Total storage used (files + database, e.g., '4.3 GB')
+  - Quick action button: 'Monitor Storage'
+- Clicking card navigates to Storage Monitoring page
 
 ## 13. Navigation and Side Panel Configuration
 
@@ -2440,11 +2450,12 @@ The side panel navigation for Admin role includes the following menu items (in o
 2. Schools (Building icon)
 3. Users (Users icon)
 4. Question Bank (Question mark icon)
-5. **NEW: Login History (Clock icon)**
-6. **NEW: Real-Time Users (Activity icon)**
-7. System Settings (Settings icon)
-8. Profile (User circle icon)
-9. Logout (Sign out icon)
+5. Login History (Clock icon)
+6. Real-Time Users (Activity icon)
+7. **NEW: Storage Monitoring (Database icon)**
+8. System Settings (Settings icon)
+9. Profile (User circle icon)
+10. Logout (Sign out icon)
 
 ### 13.2 Principal Side Panel Menu
 The side panel navigation for Principal role includes the following menu items (in order):
@@ -2456,8 +2467,8 @@ The side panel navigation for Principal role includes the following menu items (
 6. Question Paper History (Document icon)
 7. Online Exams (Clipboard icon)
 8. Exam Approvals (Check circle icon)
-9. **NEW: Login History (Clock icon)**
-10. **NEW: Real-Time Users (Activity icon)**\n11. Profile (User circle icon)
+9. Login History (Clock icon)
+10. Real-Time Users (Activity icon)\n11. Profile (User circle icon)
 12. Logout (Sign out icon)
 
 ### 13.3 Teacher Side Panel Menu
@@ -2483,7 +2494,9 @@ The side panel navigation for Teacher role includes the following menu items (in
 
 ### 13.5 Navigation Behavior
 - Clicking 'Question Bank' menu item navigates to Question Bank page\n- For Admin: Opens Admin Question Bank page with Global, Users, and Pending to Add tabs
-- For Principal/Teacher: Opens standard Question Bank page\n- **NEW: Clicking 'Login History' menu item navigates to Login History page**\n- **NEW: Clicking 'Real-Time Users' menu item navigates to Real-Time User Monitoring page**
+- For Principal/Teacher: Opens standard Question Bank page\n- Clicking 'Login History' menu item navigates to Login History page
+- Clicking 'Real-Time Users' menu item navigates to Real-Time User Monitoring page
+- **NEW: Clicking 'Storage Monitoring' menu item navigates to Storage Monitoring page**
 - Active menu item remains highlighted
 - Breadcrumb navigation updates accordingly
 - Page title updates to 'Question Bank' or 'Question Bank Management' (Admin)\n- Access control enforced based on role
@@ -2504,19 +2517,18 @@ The side panel navigation for Teacher role includes the following menu items (in
 - Remove questions from Global Question Bank
 - Edit and delete questions in Global Question Bank
 - Create questions directly\n- Create Question Bank functionality - View and add user-created question banks to Global
-- Bulk copy multiple questions to Global using checkboxes
-- Bulk add multiple questions from Pending to Add section to Global using checkboxes
-- **NEW: View login history of all users across all schools**
-- **NEW: Monitor currently logged-in users in real-time with detailed information**
+- Bulk copy multiple questions to Global using checkboxes\n- Bulk add multiple questions from Pending to Add section to Global using checkboxes
+- View login history of all users across all schools
+- Monitor currently logged-in users in real-time with detailed information
+- **NEW: Monitor real-time file sizes and database sizes for all users with user-wise tracking**
 
 ### 14.4 Principal Functions
 - Academic Management\n- Teacher Management
 - Student Management
 - Question Bank Management (with rich text editor, bulk upload, and access to global questions)
-- Question Paper History Management (with preview and print functionality)\n- Online Exam Monitoring\n- **NEW: View login history of teachers and students in their assigned school**
-- **NEW: Monitor currently logged-in teachers and students from their school in real-time**
-
-### 14.5 Teacher Functions
+- Question Paper History Management (with preview and print functionality)\n- Online Exam Monitoring\n- View login history of teachers and students in their assigned school
+- Monitor currently logged-in teachers and students from their school in real-time
+\n### 14.5 Teacher Functions
 - View assigned classes, sections, subjects
 - View and manage students from assigned sections
 - Question Bank Access (with rich text editor, bulk upload, and access to global questions)
@@ -2534,9 +2546,9 @@ The side panel navigation for Teacher role includes the following menu items (in
 - Total Users Card
 - Total Schools Card
 - Question Bank Card
-- **NEW: Login History Card**
-- **NEW: Real-Time Users Card**
-
+- Login History Card
+- Real-Time Users Card
+- **NEW: Storage Monitoring Card**\n
 ### 14.10 Landing Page Features
 - Updated design without login/register buttons in hero section
 \n### 14.11 Question Paper History Feature
@@ -2568,8 +2580,7 @@ The side panel navigation for Teacher role includes the following menu items (in
 - Integrated rich text editor (Quill, Draft.js, or TinyMCE) in question creation form
 - Teachers and Principals can apply bold, underline, italic, and other formatting directly while typing questions
 - Formatted text preserved and displayed correctly in all interfaces (exam, reports, exports)
-- HTML sanitization to prevent XSS attacks
-- Responsive design for mobile and desktop
+- HTML sanitization to prevent XSS attacks\n- Responsive design for mobile and desktop
 - Accessibility support (ARIA labels, keyboard navigation)\n
 ### 14.15 Question Paper Preview and Print Feature
 - Preview button in Question Paper History
@@ -2581,8 +2592,9 @@ The side panel navigation for Teacher role includes the following menu items (in
 \n### 14.16 Side Panel Navigation Enhancement
 - Question Paper History menu item added to Principal side panel
 - Question Paper History menu item added to Teacher side panel
-- Question Bank menu item added to Admin side panel\n- **NEW: Login History menu item added to Admin and Principal side panels**
-- **NEW: Real-Time Users menu item added to Admin and Principal side panels**
+- Question Bank menu item added to Admin side panel\n- Login History menu item added to Admin and Principal side panels
+- Real-Time Users menu item added to Admin and Principal side panels
+- **NEW: Storage Monitoring menu item added to Admin side panel**
 - Consistent navigation experience across roles
 - Easy access to historical question papers and question bank management
 - Improved user workflow and productivity
@@ -2615,10 +2627,10 @@ The side panel navigation for Teacher role includes the following menu items (in
 - Enhances question paper quality and variety
 - Improves question bank management
 - Supports data-driven question selection
-
-### 14.20 Admin Global Question Bank Feature
+\n### 14.20 Admin Global Question Bank Feature
 - Admin can manage Global Question Bank accessible to all schools
-- Three-tab interface: Global Question Bank, Users Question Bank, and Pending to Add\n- Admin can add questions from Users Question Bank to Global Question Bank
+- Three-tab interface: Global Question Bank, Users Question Bank, and Pending to Add
+- Admin can add questions from Users Question Bank to Global Question Bank
 - Admin can add questions from Pending to Add section to Global Question Bank
 - Admin can edit and delete questions in Global Question Bank\n- Admin can remove questions from Global Question Bank
 - Teachers and Principals can access global questions for question papers and exams
@@ -2666,26 +2678,34 @@ The side panel navigation for Teacher role includes the following menu items (in
 - Improves efficiency of question bank management
 - Supports data-driven decision making for question selection
 
-### 14.25 NEW: Login History Monitoring Feature
-- **Admin can view login history of all users across all schools**
-- **Principal can view login history of teachers and students in their assigned school**
-- **Comprehensive login tracking with detailed information**
-- **Advanced filtering and search capabilities**
-- **Export login history reports**
-- **Analytics dashboard for login patterns**
-- **Role-based access control for login history data**
-- **School-based data isolation for Principal access**
-\n### 14.26 NEW: Real-Time User Monitoring Feature
-- **Admin can monitor currently logged-in users in real-time across all schools**
-- **Principal can monitor currently logged-in teachers and students from their school in real-time**
-- **Live user status display with auto-refresh**
-- **Detailed user session information**
-- **Filter and search active users**
-- **Export active user reports**
-- **Role-based access control for real-time monitoring**
-- **School-based data isolation for Principal access**
-
-## 15. Language Support
+### 14.25 Login History Monitoring Feature
+- Admin can view login history of all users across all schools
+- Principal can view login history of teachers and students in their assigned school
+- Comprehensive login tracking with detailed information
+- Advanced filtering and search capabilities
+- Export login history reports
+- Analytics dashboard for login patterns\n- Role-based access control for login history data
+- School-based data isolation for Principal access
+\n### 14.26 Real-Time User Monitoring Feature
+- Admin can monitor currently logged-in users in real-time across all schools
+- Principal can monitor currently logged-in teachers and students from their school in real-time
+- Live user status display with auto-refresh
+- Detailed user session information\n- Filter and search active users
+- Export active user reports
+- Role-based access control for real-time monitoring
+- School-based data isolation for Principal access\n
+### 14.27 NEW: Real-Time Storage Monitoring Feature
+- **Admin can monitor file sizes and database sizes for all users in real-time**
+- **User-wise tracking of storage usage**
+- **Display total file storage, total database storage, and combined total storage**
+- **Filter and search by user, school, role, or date range**
+- **Export storage usage reports**
+- **Analytics dashboard showing storage trends and top users by storage**
+- **Real-time updates with auto-refresh**
+- **Role-based access control (Admin only)**
+- **Alerts for users exceeding storage thresholds**
+- **Storage optimization recommendations**
+\n## 15. Language Support
 
 ### 15.1 UI Language\n- UI Language: English Only
 \n### 15.2 Chat/Communication Language
@@ -2723,8 +2743,7 @@ The side panel navigation for Teacher role includes the following menu items (in
 - Card background: Semi-transparent glassmorphism with backdrop blur
 - Accent colors:\n  - Success/Active: Green (#10B981)
   - Warning/Pending: Orange (#F59E0B)
-  - Error/Danger: Red (#EF4444)\n  - Info: Blue (#3B82F6)
-  - Purple accent: (#8B5CF6)
+  - Error/Danger: Red (#EF4444)\n  - Info: Blue (#3B82F6)\n  - Purple accent: (#8B5CF6)
   - Teal accent: (#14B8A6)
   - Indigo accent: (#6366F1)
 - Text colors:\n  - Primary text: White (#FFFFFF)
@@ -2763,17 +2782,22 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Global: Blue (#3B82F6)
   - My School: Purple (#8B5CF6)
 - Global Status Badge (Admin):
-  - In Global: Green (#10B981)\n  - Not in Global: Gray (#6B7280)
+  - In Global: Green (#10B981)
+  - Not in Global: Gray (#6B7280)
 - Copy to Global Button:
   - Button color: Green (#10B981) with gradient effect
   - Disabled state: Gray (#6B7280)\n  - Hover state: Enhanced green glow
 - Add to Global Button (Pending to Add Tab):
   - Button color: Green (#10B981) with gradient effect
   - Disabled state: Gray (#6B7280)\n  - Hover state: Enhanced green glow
-- **NEW: Login Status Indicator:**
+- Login Status Indicator:
   - Online: Green (#10B981)
   - Offline: Gray (#6B7280)
   - Away: Orange (#F59E0B)
+- **NEW: Storage Status Indicator:**
+  - **Normal (< 80% of limit): Green (#10B981)**
+  - **Warning (80-95% of limit): Orange (#F59E0B)**
+  - **Critical (> 95% of limit): Red (#EF4444)**
 \n### 17.3 Visual Details
 - Glassmorphism cards:\n  - Semi-transparent background with backdrop blur
   - Soft border with subtle glow
@@ -2793,8 +2817,7 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Proper line spacing for readability
 - Icons:
   - Modern, rounded icon style
-  - Consistent icon set throughout
-  - Color-coded icons for different actions
+  - Consistent icon set throughout\n  - Color-coded icons for different actions
 - Status badges:
   - Rounded pill-shaped badges
   - Color-coded with appropriate background and text
@@ -2896,7 +2919,8 @@ The side panel navigation for Teacher role includes the following menu items (in
     - Hover state: Enhanced green glow
     - Loading state: Spinner icon during processing
   - Add to Global button styling (Pending to Add tab):
-    - Gradient button with green color (#10B981)\n    - Placement below filter dropdowns
+    - Gradient button with green color (#10B981)
+    - Placement below filter dropdowns
     - Placement above table column headers
     - Button label: 'Add to Global'
     - Shows selected count when questions are selected (e.g., 'Add to Global (10)')
@@ -2909,8 +2933,7 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Prominent placement at top of page
   - Hover effect with enhanced glow
   - Tooltip on hover\n- Create Question Form Dialog Styling:
-  - Large modal dialog with glassmorphism effect
-  - School dropdown at top with clear label
+  - Large modal dialog with glassmorphism effect\n  - School dropdown at top with clear label
   - Cascading dropdowns with smooth transitions
   - Rich text editor with consistent styling
   - Add to Global checkbox with clear label
@@ -2946,7 +2969,7 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Confirm button with green gradient and glow effect
   - Cancel button with outlined styling
   - Progress indicator during processing
-  - Success message with checkmark icon\n- **NEW: Login History Page Styling:**
+  - Success message with checkmark icon\n- Login History Page Styling:
   - Large table with glassmorphism effect
   - Sortable columns with clear headers
   - Filter panel on left (collapsible)
@@ -2958,7 +2981,7 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Device info icons (desktop, mobile, tablet)
   - IP address display with copy button
   - Timestamp display with relative time (e.g., '2 hours ago')
-- **NEW: Real-Time User Monitoring Page Styling:**
+- Real-Time User Monitoring Page Styling:
   - Live user status cards with glassmorphism effect
   - Auto-refresh indicator with animated icon
   - Filter panel on left (collapsible)\n  - Search bar at top\n  - User status badges with color coding (Online, Offline, Away)
@@ -2968,6 +2991,24 @@ The side panel navigation for Teacher role includes the following menu items (in
   - IP address display with copy button
   - Export button with download icon
   - Refresh button with manual refresh option
+- **NEW: Storage Monitoring Page Styling:**
+  - **Large table with glassmorphism effect**
+  - **Sortable columns with clear headers**
+  - **Filter panel on left (collapsible)**
+  - **Search bar at top**
+  - **Storage usage bars with color coding (Normal: green, Warning: orange, Critical: red)**
+  - **File size display with icon (e.g., '250 MB')**
+  - **Database size display with icon (e.g., '180 MB')**
+  - **Total storage display with icon (e.g., '430 MB')**
+  - **Export button with download icon**
+  - **Pagination at bottom**
+  - **Storage status badges with color coding**
+  - **User profile picture and name**
+  - **School name (if applicable)**
+  - **Role badge**
+  - **Last updated timestamp with relative time**
+  - **Storage trend chart (line chart showing storage growth over time)**
+  - **Top users by storage chart (bar chart showing users with highest storage usage)**
 \n### 17.4 Overall Layout
 - Responsive design:\n  - Desktop view with side navigation
   - Mobile view with bottom navigation
@@ -3010,8 +3051,7 @@ The side panel navigation for Teacher role includes the following menu items (in
 - Modal dialogs:
   - Centered overlay with backdrop blur
   - Glassmorphism card styling
-  - Clear action buttons
-- Exam interface:
+  - Clear action buttons\n- Exam interface:
   - Clean, distraction-free design
   - Question palette panel on left (collapsible)
   - Timer in header (sticky)
@@ -3043,7 +3083,8 @@ The side panel navigation for Teacher role includes the following menu items (in
     - Checkbox column as first column in table
     - Copy to Global button below filters, above table headers
     - Clear visual hierarchy: Filters → Copy to Global button → Table headers → Table rows
-  - In Pending to Add tab:\n    - Checkbox column as first column in table
+  - In Pending to Add tab:
+    - Checkbox column as first column in table
     - Add to Global button below filters, above table headers
     - Clear visual hierarchy: Filters → Add to Global button → Table headers → Table rows
   - Question list/grid in main area
@@ -3058,8 +3099,7 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Image upload field
   - Question type and difficulty dropdowns
   - Marks and minus mark inputs
-  - Options fields (conditional)
-  - Correct answer field
+  - Options fields (conditional)\n  - Correct answer field
   - Add to Global checkbox at bottom
   - Save and Cancel buttons
 - Create Question Bank Dialog Layout:
@@ -3070,7 +3110,8 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Checkbox selection for each bank
   - View Details button for each bank
   - Add to Global button at bottom
-  - Close button in top-right corner\n- **NEW: Login History Page Layout:**\n  - Page title: 'Login History'
+  - Close button in top-right corner\n- Login History Page Layout:
+  - Page title: 'Login History'
   - Filter panel on left (collapsible):
     - Role filter (Admin only)
     - School filter (Admin only)
@@ -3085,7 +3126,7 @@ The side panel navigation for Teacher role includes the following menu items (in
     - Login trends chart
     - Peak login times chart
     - Device distribution chart
-- **NEW: Real-Time User Monitoring Page Layout:**
+- Real-Time User Monitoring Page Layout:
   - Page title: 'Real-Time Users'
   - Auto-refresh indicator at top-right (e.g., 'Auto-refresh: ON | Last updated: 2 seconds ago')
   - Manual refresh button at top-right
@@ -3108,6 +3149,30 @@ The side panel navigation for Teacher role includes the following menu items (in
   - Summary statistics at top:\n    - Total online users
     - Total active sessions
     - Peak concurrent users today
+- **NEW: Storage Monitoring Page Layout:**
+  - **Page title: 'Storage Monitoring'**
+  - **Auto-refresh indicator at top-right (e.g., 'Auto-refresh: ON | Last updated: 5 seconds ago')**
+  - **Manual refresh button at top-right**
+  - **Filter panel on left (collapsible):**
+    - **User filter (search by name or email)**
+    - **School filter (Admin only)**
+    - **Role filter (Admin only)**
+    - **Storage status filter (Normal, Warning, Critical)**
+    - **Date range filter (for historical data)**
+  - **Search bar at top**
+  - **Export button at top-right**
+  - **Main table area:**
+    - **Columns: User Name, Role, School, File Storage, Database Storage, Total Storage, Storage Status, Last Updated**
+    - **Sortable columns**
+    - **Pagination at bottom**\n  - **Summary statistics at top:**
+    - **Total file storage used (all users)**
+    - **Total database storage used (all users)**\n    - **Total storage used (files + database)**
+    - **Average storage per user**
+    - **Users exceeding storage threshold count**
+  - **Analytics section (optional):**
+    - **Storage trend chart (line chart showing storage growth over time)**
+    - **Top users by storage chart (bar chart showing users with highest storage usage)**\n    - **Storage distribution by role chart (pie chart)**
+    - **Storage distribution by school chart (bar chart)**
 \n### 17.5 Website (Desktop View) Specific Design
 \n#### 17.5.1 Header
 - Logo: 'A Cube' with modern icon
@@ -3303,8 +3368,7 @@ The uploaded image (screenshot.png) shows the Admin Users Question Bank interfac
 - Excel/CSV parsing library for bulk upload (e.g., SheetJS, PapaParse)
 - Excel library with data validation support (e.g., ExcelJS, SheetJS with custom validation)
 - Multi-select dropdown component with search functionality
-
-### 21.2 Backend Technologies
+\n### 21.2 Backend Technologies
 - RESTful API architecture
 - Database with foreign key constraints
 - Authentication and authorization\n- Role-based access control
@@ -3322,17 +3386,23 @@ The uploaded image (screenshot.png) shows the Admin Users Question Bank interfac
 - Question bank addition logic for bulk adding to Global\n- Bulk copy to Global logic with checkbox selection
 - Pending to Add section logic to filter questions with is_global = false
 - Bulk add to Global logic from Pending to Add section
-- **NEW: User session management and tracking**
-- **NEW: Login history logging and storage**
-- **NEW: Real-time user status monitoring**
-- **NEW: WebSocket or Server-Sent Events for real-time updates**
+- User session management and tracking
+- Login history logging and storage
+- Real-time user status monitoring
+- WebSocket or Server-Sent Events for real-time updates
+- **NEW: File storage monitoring and tracking**
+- **NEW: Database size monitoring and tracking**
+- **NEW: User-wise storage calculation and aggregation**
+- **NEW: Storage usage analytics and reporting**
 \n### 21.3 Security\n- Encrypted passwords\n- Secure exam environment
 - Activity logging\n- Data isolation\n- XSS prevention for rich text content
 - File upload validation and sanitization
 - Secure file storage for uploaded templates
-- **NEW: Secure session management with token-based authentication**
-- **NEW: IP address logging and validation**
-- **NEW: Device fingerprinting for security**
+- Secure session management with token-based authentication
+- IP address logging and validation
+- Device fingerprinting for security
+- **NEW: Secure storage monitoring with role-based access control**
+- **NEW: Storage data encryption at rest and in transit**
 \n### 21.4 Performance
 - Fast page load times
 - Optimized database queries
@@ -3350,9 +3420,12 @@ The uploaded image (screenshot.png) shows the Admin Users Question Bank interfac
 - Optimized bulk copy operations with batch processing
 - Efficient Pending to Add queries with is_global = false filter
 - Optimized bulk add operations from Pending to Add section
-- **NEW: Efficient login history queries with pagination**
-- **NEW: Real-time user status updates with minimal latency**
-- **NEW: Optimized session tracking with minimal overhead**
+- Efficient login history queries with pagination
+- Real-time user status updates with minimal latency
+- Optimized session tracking with minimal overhead
+- **NEW: Efficient storage monitoring queries with aggregation**
+- **NEW: Real-time storage updates with minimal performance impact**
+- **NEW: Optimized storage calculation with caching**
 
 ### 21.5 Scalability
 - Support for multiple schools
@@ -3365,9 +3438,12 @@ The uploaded image (screenshot.png) shows the Admin Users Question Bank interfac
 - Scalable global question bank accessible to all schools
 - Efficient bulk copy operations for large question sets
 - Scalable Pending to Add section for large question repositories
-- **NEW: Scalable session management for thousands of concurrent users**
-- **NEW: Efficient login history storage with archiving strategy**
-- **NEW: Real-time monitoring scalable to large user bases**
+- Scalable session management for thousands of concurrent users
+- Efficient login history storage with archiving strategy
+- Real-time monitoring scalable to large user bases
+- **NEW: Scalable storage monitoring for thousands of users**
+- **NEW: Efficient storage data aggregation for large datasets**
+- **NEW: Distributed storage calculation for high-volume systems**
 
 ## 22. Deployment and Maintenance
 
@@ -3375,8 +3451,7 @@ The uploaded image (screenshot.png) shows the Admin Users Question Bank interfac
 - Continuous integration/deployment
 - Automated testing\n- Staging and production environments
 \n### 22.2 Maintenance
-- Regular backups
-- Security updates
+- Regular backups\n- Security updates
 - Performance monitoring
 - Bug fixes and improvements
 \n### 22.3 Support
@@ -3384,7 +3459,7 @@ The uploaded image (screenshot.png) shows the Admin Users Question Bank interfac
 - Training materials
 - Help desk support
 - FAQ section
-\n## 23. NEW: Login History Module
+\n## 23. Login History Module
 
 ### 23.1 Login History Overview
 - Purpose: Track and monitor user login activity across the platform
@@ -3490,8 +3565,7 @@ Columns:
   - Bar chart showing hourly distribution of logins
   - X-axis: Hour of day (0-23)
   - Y-axis: Number of logins\n  - Helps identify peak usage times
-- Device Distribution Chart:
-  - Pie chart showing percentage of logins by device type
+- Device Distribution Chart:\n  - Pie chart showing percentage of logins by device type
   - Segments: Desktop, Mobile, Tablet\n  - Helps understand user device preferences
 
 ### 23.4 Login History Access Control
@@ -3584,7 +3658,8 @@ Columns:
 - Export button at top-right
 - Main table area with columns as specified\n- Pagination at bottom
 - Analytics section (optional)
-\n#### 23.6.4 Login History Table
+
+#### 23.6.4 Login History Table
 - Responsive table with horizontal scroll
 - Alternating row colors for readability
 - Sortable columns with sort indicators
@@ -3617,8 +3692,7 @@ Columns:
 \n#### 23.7.2 Principal Notifications
 - Daily summary of login activity for their school (optional)
 - Alert on suspicious login activity for their school users
-
-### 23.8 Login History Analytics
+\n### 23.8 Login History Analytics
 
 #### 23.8.1 Analytics Dashboard (Admin)
 - Overview Cards:
@@ -3671,7 +3745,7 @@ Columns:
 - How is session duration calculated?
 - What is device type detection?
 - How to identify suspicious login activity?
-\n## 24. NEW: Real-Time User Monitoring Module
+\n## 24. Real-Time User Monitoring Module
 
 ### 24.1 Real-Time User Monitoring Overview
 - Purpose: Monitor currently logged-in users in real-time across the platform
@@ -3705,7 +3779,8 @@ Columns:
 - updated_at (Timestamp)
 
 **Note:** This table stores only active sessions. When a user logs out or session expires, the record is deleted from this table and moved to user_login_history table.
-\n### 24.3 Real-Time User Monitoring Interface
+
+### 24.3 Real-Time User Monitoring Interface
 
 #### 24.3.1 Real-Time User Monitoring Page Layout
 - Page title: 'Real-Time Users'
@@ -3842,16 +3917,15 @@ Columns:
 #### 24.6.1 Real-Time Users Card (Admin Dashboard)
 - Card title: 'Real-Time Users'
 - Card content:
-  - Currently logged-in users count with icon
-  - Active sessions count with icon
+  - Currently logged-in users count with icon\n  - Active sessions count with icon
   - Quick action button: 'Monitor Users'
 - Card styling: Glassmorphism with gradient effect\n
 #### 24.6.2 Real-Time Users Card (Principal Dashboard)
 - Card title: 'Real-Time Users'\n- Card content:
-  - Currently logged-in users (school-specific) count with icon
-  - Active sessions (school-specific) count with icon
-  - Quick action button: 'Monitor Users'\n- Card styling: Glassmorphism with gradient effect
-\n#### 24.6.3 Real-Time User Monitoring Page
+  - Currently logged-in users (school-specific) count with icon\n  - Active sessions (school-specific) count with icon
+  - Quick action button: 'Monitor Users'
+- Card styling: Glassmorphism with gradient effect\n
+#### 24.6.3 Real-Time User Monitoring Page
 - Page title: 'Real-Time Users'
 - Auto-refresh indicator at top-right\n- Manual refresh button at top-right
 - Filter panel on left (collapsible)
@@ -3929,6 +4003,351 @@ Columns:
 - How is session duration calculated?
 - How often does the page refresh?
 - Can I disable auto-refresh?
-\n## 25. Conclusion
+\n## 25. NEW: Real-Time Storage Monitoring Module
 
-A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting, updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The addition of the Students card to the Teacher Dashboard with role-based access control, combined with the rich text editor functionality, improved bulk upload capability with cleaner data entry experience and better guidance through separate reference examples, and the new preview-print feature in Question Paper History, further enhances teacher productivity by allowing them to create well-formatted questions, import large question banks efficiently with reduced errors through dropdown selections and reference examples, manage students from their assigned sections effectively, and print question papers with all formatting preserved directly from the preview dialog. The updated side panel navigation for both Principal and Teacher roles now includes easy access to Question Paper History, streamlining the workflow and improving overall user experience. The newly added student-level exam assignment feature provides teachers and principals with the flexibility to assign exams to entire classes or specific individual students, enabling more targeted assessments and personalized learning experiences. The latest addition of question usage tracking during question paper preparation empowers teachers to make informed decisions about question reuse by displaying usage count and list of question papers where each question was used, thereby enhancing question paper quality, promoting variety, and supporting data-driven question selection for better assessment outcomes. The Admin Global Question Bank Management feature introduces a centralized repository of high-quality questions accessible to all schools, enabling administrators to curate and share questions across the platform. With three distinct sections—Global Question Bank, Users Question Bank, and the newly added Pending to Add section—admins can efficiently manage question visibility, add user-created questions to the global pool, edit and delete global questions, and remove questions as needed. The Pending to Add section provides a focused view of all user-created questions not yet in Global, streamlining the workflow for admins to quickly identify and add pending questions. Teachers and principals benefit from access to both school-specific and global questions when creating question papers and exams, significantly expanding their question selection options and promoting standardized assessments across multiple schools. This feature enhances collaboration, improves question quality through centralized curation, and supports consistent educational standards across the entire platform. The newest enhancements—Admin Create Question, Admin Create Question Bank functionalities, and the Pending to Add section—further empower administrators with direct question creation capabilities, streamlined bulk addition of user-created question banks to the Global Question Bank, and a focused view for managing pending questions. Admins can now create questions for any school directly from the Admin Question Bank page, with the option to add them to Global immediately. Additionally, the Create Question Bank feature allows admins to view all user-created question banks not yet in Global, select multiple banks, preview their contents, and add them to Global in bulk. The Pending to Add section displays only questions not yet in Global (is_global = false), providing a clean and efficient interface for admins to review and add pending questions without sifting through all user questions. The latest addition—Admin Bulk Copy to Global feature and Bulk Add to Global from Pending to Add section—introduces checkbox-based bulk selection in both the Users Question Bank tab and the Pending to Add tab, allowing admins to select multiple questions at once and copy or add them to Global Question Bank with a single click. The Copy to Global button (Users tab) and Add to Global button (Pending to Add tab) are strategically placed below the filter dropdowns and above the table headers for easy access, and display the selected count dynamically. **The newest addition—Login History Monitoring and Real-Time User Monitoring modules—provides comprehensive user activity tracking and real-time monitoring capabilities. Admins can view login history of all users across all schools and monitor currently logged-in users in real-time with detailed session information. Principals can view login history and monitor active users from their assigned school only, with school-based data isolation ensuring proper access control. These features enhance security, improve user management, support compliance requirements, and provide valuable insights into user behavior and platform usage patterns.** These features collectively enhance admin control over question bank content, support centralized question creation and management, streamline the process of curating high-quality questions for the Global Question Bank, reduce time and effort required for question bank management, improve security and user monitoring, and ultimately improve question quality, promote standardized assessments, support efficient management of large question repositories, enhance platform security, and provide comprehensive user activity insights across the entire platform.
+### 25.1 Real-Time Storage Monitoring Overview
+- Purpose: Monitor file sizes and database sizes for all users in real-time across the platform
+- Access:
+  - Admin can monitor storage usage of all users across all schools
+- Key Features:
+  - Real-time file storage monitoring with user-wise tracking
+  - Real-time database storage monitoring with user-wise tracking
+  - Display total file storage, total database storage, and combined total storage
+  - Filter and search by user, school, role, or date range
+  - Export storage usage reports
+  - Analytics dashboard showing storage trends and top users by storage
+  - Real-time updates with auto-refresh
+  - Role-based access control (Admin only)
+  - Alerts for users exceeding storage thresholds
+  - Storage optimization recommendations
+
+### 25.2 Real-Time Storage Monitoring Database Structure
+
+#### 25.2.1 User Storage Usage Table
+Table name: user_storage_usage
+
+Columns:
+- id (UUID, Primary Key)
+- user_id (Foreign Key → users.id, required)
+- school_id (Foreign Key → schools.id, nullable)\n- file_storage_bytes (BigInt, required)
+  - Total size of all files uploaded by the user (in bytes)
+  - Includes question images, profile pictures, uploaded documents, etc.
+- database_storage_bytes (BigInt, required)\n  - Total size of database records associated with the user (in bytes)
+  - Includes questions, question papers, exams, student attempts, etc.
+- total_storage_bytes (BigInt, calculated)
+  - Sum of file_storage_bytes and database_storage_bytes
+- storage_status (Enum: Normal, Warning, Critical, required)
+  - Normal: < 80% of storage limit
+  - Warning: 80-95% of storage limit
+  - Critical: > 95% of storage limit
+- last_calculated_at (Timestamp with timezone, required)
+  - Timestamp of last storage calculation
+- created_at (Timestamp)
+- updated_at (Timestamp)\n
+**Note:** This table stores aggregated storage usage data for each user. Storage calculations are performed periodically (e.g., every 5 minutes) and updated in this table.
+
+#### 25.2.2 Storage Calculation Logic
+- File Storage Calculation:
+  - Sum of all file sizes uploaded by the user
+  - Includes:\n    - Question images (from question_bank table)
+    - Profile pictures (from users table)
+    - Uploaded documents (if any)
+    - Bulk upload template files (if stored)\n- Database Storage Calculation:
+  - Sum of estimated database record sizes for the user
+  - Includes:
+    - Questions created (from question_bank table)
+    - Question papers created (from question_papers table)
+    - Exams created (from online_exams table)
+    - Student exam attempts (from student_exam_attempts table)
+    - Login history records (from user_login_history table)
+    - Active session records (from active_user_sessions table)
+- Total Storage Calculation:
+  - total_storage_bytes = file_storage_bytes + database_storage_bytes
+- Storage Status Calculation:
+  - Define storage limit per user (e.g., 1 GB = 1,073,741,824 bytes)
+  - Calculate percentage: (total_storage_bytes / storage_limit) * 100
+  - Set storage_status based on percentage:
+    - Normal: < 80%
+    - Warning: 80-95%\n    - Critical: > 95%
+\n### 25.3 Real-Time Storage Monitoring Interface
+
+#### 25.3.1 Real-Time Storage Monitoring Page Layout\n- Page title: 'Storage Monitoring'
+- Auto-refresh indicator at top-right (e.g., 'Auto-refresh: ON | Last updated: 5 seconds ago')
+- Manual refresh button at top-right
+- Filter panel on left (collapsible):
+  - User filter (search by name or email)
+  - School filter (Admin only)
+  - Role filter (Admin only)
+  - Storage status filter (Normal, Warning, Critical)\n  - Date range filter (for historical data)
+- Search bar at top\n  - Search by user name or email
+- Export button at top-right
+  - Export as Excel/CSV
+- Main table area:
+  - Columns:\n    - User Name
+    - Role\n    - School
+    - File Storage\n    - Database Storage
+    - Total Storage
+    - Storage Status
+    - Last Updated
+  - Sortable columns
+  - Pagination at bottom
+- Summary statistics at top:\n  - Total file storage used (all users)
+  - Total database storage used (all users)
+  - Total storage used (files + database)
+  - Average storage per user
+  - Users exceeding storage threshold count
+- Analytics section (optional):
+  - Storage trend chart (line chart showing storage growth over time)
+  - Top users by storage chart (bar chart showing users with highest storage usage)
+  - Storage distribution by role chart (pie chart)\n  - Storage distribution by school chart (bar chart)
+
+#### 25.3.2 Storage Usage Display Columns
+- User Name: Display user's full name with profile picture
+- Role: Display role badge (Admin, Principal, Teacher, Student)
+- School: Display school name\n- File Storage: Display file storage size with icon (e.g., '250 MB')
+- Database Storage: Display database storage size with icon (e.g., '180 MB')
+- Total Storage: Display total storage size with icon (e.g., '430 MB')
+- Storage Status: Display status badge (Normal: green, Warning: orange, Critical: red)
+- Last Updated: Display timestamp with relative time (e.g., '5 minutes ago')
+
+#### 25.3.3 Filter Options
+- User Filter:\n  - Text search by user name or email
+- School Filter (Admin only):
+  - Dropdown populated with all schools
+  - Multi-select capability
+- Role Filter (Admin only):
+  - Dropdown with options: All, Admin, Principal, Teacher, Student
+- Storage Status Filter:
+  - Dropdown with options: All, Normal, Warning, Critical
+- Date Range Filter:\n  - Date range picker for historical data analysis
+
+#### 25.3.4 Search Functionality\n- Text search bar at top\n- Search by:
+  - User name
+  - Email address
+- Real-time search with auto-suggestions
+- Combined search and filter capability
+
+#### 25.3.5 Auto-Refresh Functionality
+- Auto-refresh enabled by default
+- Refresh interval: 10 seconds
+- Auto-refresh indicator at top-right showing last update time
+- Manual refresh button to force immediate refresh
+- Toggle button to enable/disable auto-refresh\n
+#### 25.3.6 Export Functionality
+- Export button at top-right\n- Export formats: Excel (.xlsx), CSV (.csv)
+- Export options:
+  - Export current page
+  - Export all filtered results
+  - Export all data
+- Exported file includes all columns with proper formatting
+- File name format: StorageUsage_[Date]_[Time].xlsx
+
+### 25.4 Real-Time Storage Monitoring Access Control
+
+#### 25.4.1 Admin Access Rules
+- Can monitor storage usage of all users across all schools\n- Can filter by user, school, role, or storage status
+- Can export storage usage data
+- Can view analytics for all users
+- Cross-school visibility
+
+#### 25.4.2 Principal, Teacher, and Student Access Rules
+- Cannot access Storage Monitoring module
+- No visibility into storage usage data
+
+#### 25.4.3 Data Isolation\n- Storage monitoring is Admin-only feature
+- Backend validation ensures only Admin can access storage data
+- Cross-school visibility for Admin
+\n### 25.5 Real-Time Storage Monitoring Backend Logic\n
+#### 25.5.1 Storage Calculation Process
+- Scheduled Job:\n  - Run storage calculation job every 5 minutes (configurable)
+  - For each user:\n    - Calculate file_storage_bytes\n    - Calculate database_storage_bytes
+    - Calculate total_storage_bytes
+    - Determine storage_status
+    - Update user_storage_usage table
+    - Set last_calculated_at to current timestamp
+
+#### 25.5.2 File Storage Calculation
+- Query all file records associated with the user
+- Sum file sizes:\n  ```sql
+  SELECT SUM(file_size) FROM files WHERE user_id = [user_id]
+  ```
+- Include:
+  - Question images
+  - Profile pictures
+  - Uploaded documents
+  - Any other user-uploaded files
+
+#### 25.5.3 Database Storage Calculation
+- Estimate database record sizes for the user\n- Sum estimated sizes:
+  ```sql
+  SELECT \n    (SELECT COUNT(*) * [avg_question_size] FROM question_bank WHERE created_by = [user_id]) +
+    (SELECT COUNT(*) * [avg_paper_size] FROM question_papers WHERE created_by = [user_id]) +
+    (SELECT COUNT(*) * [avg_exam_size] FROM online_exams WHERE created_by = [user_id]) +
+    (SELECT COUNT(*) * [avg_attempt_size] FROM student_exam_attempts WHERE student_id = [user_id]) +
+    (SELECT COUNT(*) * [avg_login_size] FROM user_login_history WHERE user_id = [user_id])
+  AS total_database_storage
+  ```
+- Note: Average record sizes ([avg_question_size], [avg_paper_size], etc.) are pre-calculated constants based on typical record sizes\n
+#### 25.5.4 Query Logic
+- Get storage usage for all users:
+  ```sql
+  SELECT usu.*, u.name, u.email, u.role, s.school_name
+  FROM user_storage_usage usu
+  JOIN users u ON usu.user_id = u.id
+  LEFT JOIN schools s ON usu.school_id = s.id
+  WHERE [filters applied]
+  ORDER BY usu.total_storage_bytes DESC
+  ```
+\n#### 25.5.5 Real-Time Update Mechanism
+- Use WebSocket or Server-Sent Events (SSE) for real-time updates
+- Backend pushes updates to frontend every 10 seconds
+- Frontend updates storage usage table without full page refresh
+- Efficient delta updates (only changed data sent to frontend)
+
+### 25.6 Real-Time Storage Monitoring UI Components
+
+#### 25.6.1 Storage Monitoring Card (Admin Dashboard)
+- Card title: 'Storage Monitoring'
+- Card content:
+  - Total file storage used (e.g., '2.5 GB') with icon
+  - Total database storage used (e.g., '1.8 GB') with icon
+  - Total storage used (files + database, e.g., '4.3 GB') with icon
+  - Quick action button: 'Monitor Storage'
+- Card styling: Glassmorphism with gradient effect\n
+#### 25.6.2 Storage Monitoring Page
+- Page title: 'Storage Monitoring'
+- Auto-refresh indicator at top-right
+- Manual refresh button at top-right
+- Filter panel on left (collapsible)\n- Search bar at top
+- Export button at top-right\n- Main table area with columns as specified\n- Pagination at bottom
+- Summary statistics at top
+- Analytics section (optional)
+
+#### 25.6.3 Storage Usage Table
+- Responsive table with horizontal scroll
+- Alternating row colors for readability
+- Sortable columns with sort indicators
+- Hover effects on rows
+- Storage status badges with color coding (Normal: green, Warning: orange, Critical: red)
+- Storage usage bars with color coding
+- File size display with icon
+- Database size display with icon
+- Total storage display with icon
+- User profile picture and name
+- Role badge
+- School name
+- Last updated timestamp with relative time
+
+#### 25.6.4 Filter Panel
+- Collapsible panel on left
+- Clear section separation
+- Text search for user filter
+- Dropdown filters with multi-select capability
+- Date range picker for historical data
+- Apply Filters button
+- Clear Filters button
+
+#### 25.6.5 Auto-Refresh Indicator
+- Display at top-right
+- Shows auto-refresh status (ON/OFF)
+- Shows last update time (e.g., 'Last updated: 5 seconds ago')
+- Toggle button to enable/disable auto-refresh
+- Manual refresh button with icon
+
+#### 25.6.6 Export Dialog
+- Modal dialog with glassmorphism styling
+- Export format selection (Excel, CSV)
+- Export scope selection (Current page, All filtered results, All data)
+- Export button with download icon
+- Cancel button
+
+#### 25.6.7 Summary Statistics Cards
+- Total File Storage Used:\n  - Display total file storage across all users
+  - Icon: File icon
+  - Color: Blue
+- Total Database Storage Used:
+  - Display total database storage across all users\n  - Icon: Database icon\n  - Color: Purple
+- Total Storage Used:
+  - Display combined total storage (files + database)
+  - Icon: Storage icon
+  - Color: Teal
+- Average Storage Per User:
+  - Display average storage usage per user
+  - Icon: User icon
+  - Color: Green
+- Users Exceeding Threshold:
+  - Display count of users with Warning or Critical status
+  - Icon: Alert icon
+  - Color: Orange/Red
+
+#### 25.6.8 Analytics Section (Optional)
+- Storage Trend Chart:
+  - Line chart showing storage growth over time
+  - X-axis: Date/Time
+  - Y-axis: Storage size (GB)
+  - Multiple lines for file storage, database storage, and total storage\n  - Filter by date range
+- Top Users by Storage Chart:
+  - Bar chart showing users with highest storage usage
+  - X-axis: User names
+  - Y-axis: Storage size (GB)
+  - Color-coded bars based on storage status
+- Storage Distribution by Role Chart:
+  - Pie chart showing percentage of storage by role
+  - Segments: Admin, Principal, Teacher, Student
+- Storage Distribution by School Chart:
+  - Bar chart showing storage usage by school
+  - X-axis: School names
+  - Y-axis: Storage size (GB)
+\n### 25.7 Real-Time Storage Monitoring Notifications
+
+#### 25.7.1 Admin Notifications
+- Alert when user exceeds storage threshold (Warning or Critical status)
+- Daily summary of storage usage (optional)
+- Alert on unusual storage growth patterns (optional)
+\n### 25.8 Real-Time Storage Monitoring Analytics
+
+#### 25.8.1 Summary Statistics
+- Total File Storage Used: Sum of file_storage_bytes for all users
+- Total Database Storage Used: Sum of database_storage_bytes for all users
+- Total Storage Used: Sum of total_storage_bytes for all users
+- Average Storage Per User: Total storage / Number of users
+- Users Exceeding Threshold: Count of users with Warning or Critical status\n
+### 25.9 Real-Time Storage Monitoring Help and Documentation
+
+#### 25.9.1 Help Resources
+- Help icon in Storage Monitoring page
+- Opens help dialog with:
+  - Overview of Storage Monitoring module
+  - How to filter storage usage data
+  - How to search for specific user
+  - How to export storage usage reports
+  - How to interpret storage status (Normal, Warning, Critical)
+  - How to optimize storage usage
+  - FAQ section
+
+#### 25.9.2 FAQ Topics
+- What is Storage Monitoring?
+- How to view storage usage for all users?
+- How to filter storage usage by school or role?
+- How to search for specific user's storage usage?
+- How to export storage usage reports?
+- What does 'Normal' storage status mean?
+- What does 'Warning' storage status mean?
+- What does 'Critical' storage status mean?
+- How is file storage calculated?
+- How is database storage calculated?
+- How often is storage data updated?
+- Can I disable auto-refresh?
+- How to optimize storage usage?
+- What happens when a user exceeds storage limit?
+\n#### 25.9.3 Storage Optimization Recommendations
+- Delete unused questions from question bank
+- Delete old question papers that are no longer needed
+- Delete completed exams after archiving results
+- Compress images before uploading
+- Remove duplicate questions
+- Archive old login history records
+- Clean up draft exams that were never published
+\n## 26. Conclusion
+
+A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting, updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The addition of the Students card to the Teacher Dashboard with role-based access control, combined with the rich text editor functionality, improved bulk upload capability with cleaner data entry experience and better guidance through separate reference examples, and the new preview-print feature in Question Paper History, further enhances teacher productivity by allowing them to create well-formatted questions, import large question banks efficiently with reduced errors through dropdown selections and reference examples, manage students from their assigned sections effectively, and print question papers with all formatting preserved directly from the preview dialog. The updated side panel navigation for both Principal and Teacher roles now includes easy access to Question Paper History, streamlining the workflow and improving overall user experience. The newly added student-level exam assignment feature provides teachers and principals with the flexibility to assign exams to entire classes or specific individual students, enabling more targeted assessments and personalized learning experiences. The latest addition of question usage tracking during question paper preparation empowers teachers to make informed decisions about question reuse by displaying usage count and list of question papers where each question was used, thereby enhancing question paper quality, promoting variety, and supporting data-driven question selection for better assessment outcomes. The Admin Global Question Bank Management feature introduces a centralized repository of high-quality questions accessible to all schools, enabling administrators to curate and share questions across the platform. With three distinct sections—Global Question Bank, Users Question Bank, and the newly added Pending to Add section—admins can efficiently manage question visibility, add user-created questions to the global pool, edit and delete global questions, and remove questions as needed. The Pending to Add section provides a focused view of all user-created questions not yet in Global, streamlining the workflow for admins to quickly identify and add pending questions. Teachers and principals benefit from access to both school-specific and global questions when creating question papers and exams, significantly expanding their question selection options and promoting standardized assessments across multiple schools. This feature enhances collaboration, improves question quality through centralized curation, and supports consistent educational standards across the entire platform. The newest enhancements—Admin Create Question, Admin Create Question Bank functionalities, and the Pending to Add section—further empower administrators with direct question creation capabilities, streamlined bulk addition of user-created question banks to the Global Question Bank, and a focused view for managing pending questions. Admins can now create questions for any school directly from the Admin Question Bank page, with the option to add them to Global immediately. Additionally, the Create Question Bank feature allows admins to view all user-created question banks not yet in Global, select multiple banks, preview their contents, and add them to Global in bulk. The Pending to Add section displays only questions not yet in Global (is_global = false), providing a clean and efficient interface for admins to review and add pending questions without sifting through all user questions. The latest addition—Admin Bulk Copy to Global feature and Bulk Add to Global from Pending to Add section—introduces checkbox-based bulk selection in both the Users Question Bank tab and the Pending to Add tab, allowing admins to select multiple questions at once and copy or add them to Global Question Bank with a single click. The Copy to Global button (Users tab) and Add to Global button (Pending to Add tab) are strategically placed below the filter dropdowns and above the table headers for easy access, and display the selected count dynamically. The newest addition—Login History Monitoring and Real-Time User Monitoring modules—provides comprehensive user activity tracking and real-time monitoring capabilities. Admins can view login history of all users across all schools and monitor currently logged-in users in real-time with detailed session information. Principals can view login history and monitor active users from their assigned school only, with school-based data isolation ensuring proper access control. These features enhance security, improve user management, support compliance requirements, and provide valuable insights into user behavior and platform usage patterns. **The latest addition—Real-Time Storage Monitoring module—introduces comprehensive file and database storage monitoring capabilities. Admins can monitor storage usage of all users in real-time with user-wise tracking, displaying total file storage, total database storage, and combined total storage. The module includes advanced filtering and search capabilities, export functionality for storage usage reports, analytics dashboard showing storage trends and top users by storage, real-time updates with auto-refresh, role-based access control (Admin only), alerts for users exceeding storage thresholds, and storage optimization recommendations. This feature enhances platform management, supports capacity planning, improves resource allocation, identifies storage bottlenecks, and provides actionable insights for storage optimization.** These features collectively enhance admin control over question bank content, support centralized question creation and management, streamline the process of curating high-quality questions for the Global Question Bank, reduce time and effort required for question bank management, improve security and user monitoring, **enable comprehensive storage monitoring and optimization**, and ultimately improve question quality, promote standardized assessments, support efficient management of large question repositories, enhance platform security, provide comprehensive user activity insights, **and ensure optimal storage utilization** across the entire platform.

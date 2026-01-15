@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Building2, Users, ClipboardList, FileQuestion, History, Activity } from 'lucide-react';
+import { Building2, Users, ClipboardList, FileQuestion, History, Activity, HardDrive } from 'lucide-react';
 import { profileApi, schoolApi } from '@/db/api';
 
 interface UserStats {
@@ -185,6 +185,23 @@ export default function AdminDashboard() {
           <CardContent>
             <p className="text-xs text-white/80 mt-1">
               Monitor real-time logged-in users
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Storage Monitoring Card */}
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow rounded-3xl"
+          style={{ backgroundColor: '#608ce6' }}
+          onClick={() => navigate('/admin/storage')}
+        >
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-white">Storage Monitoring</CardTitle>
+            <HardDrive className="w-5 h-5 text-white" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-white/80 mt-1">
+              Track file and database storage usage
             </p>
           </CardContent>
         </Card>
