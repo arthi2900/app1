@@ -60,10 +60,20 @@ export default function StorageMonitoring() {
       });
 
       // Calculate file storage first
-      await storageApi.calculateFileStorage();
+      try {
+        await storageApi.calculateFileStorage();
+      } catch (fileError) {
+        console.error('Error calculating file storage:', fileError);
+        // Continue even if file storage calculation fails
+      }
       
       // Then recalculate database storage
-      await storageApi.recalculateAllStorage();
+      try {
+        await storageApi.recalculateAllStorage();
+      } catch (dbError) {
+        console.error('Error recalculating database storage:', dbError);
+        // Continue even if database recalculation fails
+      }
 
       // Reload data
       await loadStorageData();
@@ -74,9 +84,10 @@ export default function StorageMonitoring() {
       });
     } catch (error) {
       console.error('Error refreshing storage:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to refresh storage data. Please try again.';
       toast({
         title: 'Error',
-        description: 'Failed to refresh storage data. Please try again.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {

@@ -2059,7 +2059,10 @@ export const activeSessionApi = {
 export const storageApi = {
   async getAllUsersStorage(): Promise<UserStorageUsage[]> {
     const { data, error } = await supabase.rpc('get_all_users_storage');
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching storage data:', error);
+      throw new Error(`Failed to fetch storage data: ${error.message}`);
+    }
     return Array.isArray(data) ? data : [];
   },
 
@@ -2067,18 +2070,29 @@ export const storageApi = {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) throw new Error('Not authenticated');
 
-    const { error } = await supabase.functions.invoke('calculate-storage', {
+    const { data, error } = await supabase.functions.invoke('calculate-storage', {
       headers: {
         Authorization: `Bearer ${session.access_token}`,
       },
     });
     
-    if (error) throw error;
+    if (error) {
+      console.error('Edge function error:', error);
+      throw new Error(`Failed to calculate file storage: ${error.message}`);
+    }
+
+    if (data?.error) {
+      console.error('Edge function returned error:', data.error);
+      throw new Error(`Failed to calculate file storage: ${data.error}`);
+    }
   },
 
   async recalculateAllStorage(): Promise<void> {
     const { error } = await supabase.rpc('recalculate_all_storage');
-    if (error) throw error;
+    if (error) {
+      console.error('Error recalculating storage:', error);
+      throw new Error(`Failed to recalculate storage: ${error.message}`);
+    }
   },
 
   async getSystemCapacityStatus(): Promise<SystemCapacityStatus | null> {
