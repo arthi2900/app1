@@ -1978,7 +1978,7 @@ export default function QuestionBank() {
                     <TableCell className="max-w-md">
                       <div className="space-y-2">
                         <div 
-                          className="question-content line-clamp-2"
+                          className="question-content line-clamp-3"
                           dangerouslySetInnerHTML={{ __html: question.question_text }}
                         />
                         {question.image_url && (
@@ -2058,7 +2058,7 @@ export default function QuestionBank() {
                           {question.bank_name || '-'}
                         </Badge>
                         <div 
-                          className="question-content text-base line-clamp-2"
+                          className="question-content text-base"
                           dangerouslySetInnerHTML={{ __html: question.question_text }}
                         />
                         {question.image_url && (
