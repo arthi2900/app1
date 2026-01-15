@@ -383,7 +383,8 @@ export const questionApi = {
           id,
           subject_name,
           subject_code,
-          class_id
+          class_id,
+          school_id
         )
       `)
       .order('created_at', { ascending: false });
@@ -553,7 +554,8 @@ export const questionApi = {
           id,
           subject_name,
           subject_code,
-          class_id
+          class_id,
+          school_id
         ),
         creator:profiles!questions_created_by_fkey (
           id,
