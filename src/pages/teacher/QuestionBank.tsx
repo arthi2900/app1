@@ -2048,258 +2048,170 @@ export default function QuestionBank() {
               </TableBody>
             </Table>
           ) : (
-            <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+            <div className="space-y-3">
               {questions.map((question) => (
-                <Card key={question.id} className="relative">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1 space-y-2">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant="secondary">
+                <Card key={question.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-4">
+                      {/* Left Section: Question Number & Image */}
+                      <div className="flex flex-col items-center gap-2 shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-sm font-semibold text-primary">Q</span>
+                        </div>
+                        {question.image_url && (
+                          <img
+                            src={question.image_url}
+                            alt="Question"
+                            className="w-20 h-20 rounded border object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                        )}
+                      </div>
+
+                      {/* Middle Section: Question Content */}
+                      <div className="flex-1 min-w-0 space-y-3">
+                        {/* Question Text */}
+                        <div>
+                          <div 
+                            className="question-content text-base line-clamp-2"
+                            dangerouslySetInnerHTML={{ __html: question.question_text }}
+                          />
+                        </div>
+
+                        {/* Options Display - Compact Inline */}
+                        <div className="flex flex-wrap items-center gap-2">
+                          {/* MCQ Options */}
+                          {question.question_type === 'mcq' && question.options && Array.isArray(question.options) && question.options.length > 0 && (
+                            <>
+                              {(question.options as string[]).map((option, idx) => (
+                                <div 
+                                  key={idx}
+                                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border ${
+                                    option === question.correct_answer 
+                                      ? 'bg-green-50 border-green-300 text-green-700 dark:bg-green-950 dark:border-green-700 dark:text-green-400' 
+                                      : 'bg-muted/50 border-border'
+                                  }`}
+                                >
+                                  <span className="font-medium">{String.fromCharCode(65 + idx)}</span>
+                                  <span 
+                                    className="question-content max-w-[150px] truncate"
+                                    dangerouslySetInnerHTML={{ __html: option }}
+                                  />
+                                  {option === question.correct_answer && <span>✓</span>}
+                                </div>
+                              ))}
+                            </>
+                          )}
+
+                          {/* True/False Options */}
+                          {question.question_type === 'true_false' && (
+                            <>
+                              {['True', 'False'].map((option) => (
+                                <div 
+                                  key={option}
+                                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border ${
+                                    option === question.correct_answer 
+                                      ? 'bg-green-50 border-green-300 text-green-700 dark:bg-green-950 dark:border-green-700 dark:text-green-400' 
+                                      : 'bg-muted/50 border-border'
+                                  }`}
+                                >
+                                  <span>{option}</span>
+                                  {option === question.correct_answer && <span>✓</span>}
+                                </div>
+                              ))}
+                            </>
+                          )}
+
+                          {/* Multiple Response - Show Answer Option */}
+                          {question.question_type === 'multiple_response' && (
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border bg-green-50 border-green-300 text-green-700 dark:bg-green-950 dark:border-green-700 dark:text-green-400">
+                              <span className="font-medium">Answer:</span>
+                              <span>{normalizeAnswerOption(question.correct_answer)}</span>
+                              <span>✓</span>
+                            </div>
+                          )}
+
+                          {/* Short Answer */}
+                          {question.question_type === 'short_answer' && (
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border bg-green-50 border-green-300 text-green-700 dark:bg-green-950 dark:border-green-700 dark:text-green-400">
+                              <span className="font-medium">Answer:</span>
+                              <span className="max-w-[200px] truncate">{question.correct_answer}</span>
+                              <span>✓</span>
+                            </div>
+                          )}
+
+                          {/* Match Following */}
+                          {question.question_type === 'match_following' && (
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-950 dark:border-blue-700 dark:text-blue-400">
+                              <span className="font-medium">{question.options && Array.isArray(question.options) ? question.options.length : 0} pairs</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Metadata Tags */}
+                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                          <Badge variant="secondary" className="text-xs">
                             {question.bank_name || 'Question Bank'}
                           </Badge>
-                          <Badge variant="outline">
-                            {question.question_type === 'mcq' && 'MCQ (Single)'}
-                            {question.question_type === 'multiple_response' && 'MCQ (Multiple)'}
-                            {question.question_type === 'true_false' && 'True/False'}
-                            {question.question_type === 'short_answer' && 'Short Answer'}
-                            {question.question_type === 'match_following' && 'Match Following'}
+                          <Badge variant="outline" className="text-xs">
+                            {subjects.find((s) => s.id === question.subject_id)?.subject_name || '-'}
                           </Badge>
-                          <Badge className={getDifficultyColor(question.difficulty)}>
+                          {question.lesson_id && (
+                            <Badge variant="outline" className="text-xs">
+                              {lessons.find((l) => l.id === question.lesson_id)?.lesson_name || '-'}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Right Section: Metadata & Actions */}
+                      <div className="flex flex-col items-end gap-3 shrink-0">
+                        {/* Type & Difficulty Badges */}
+                        <div className="flex flex-col items-end gap-1.5">
+                          <Badge variant="outline" className="text-xs">
+                            {question.question_type === 'mcq' && 'MCQ'}
+                            {question.question_type === 'multiple_response' && 'MCQ-M'}
+                            {question.question_type === 'true_false' && 'T/F'}
+                            {question.question_type === 'short_answer' && 'Short'}
+                            {question.question_type === 'match_following' && 'Match'}
+                          </Badge>
+                          <Badge className={`${getDifficultyColor(question.difficulty)} text-xs`}>
                             {question.difficulty === 'easy' && 'Easy'}
                             {question.difficulty === 'medium' && 'Medium'}
                             {question.difficulty === 'hard' && 'Hard'}
                           </Badge>
-                          <Badge variant="secondary">
-                            {question.marks} {question.marks === 1 ? 'mark' : 'marks'}
+                          <Badge variant="secondary" className="text-xs">
+                            {question.marks}m
                           </Badge>
+                          {question.negative_marks > 0 && (
+                            <Badge variant="destructive" className="text-xs">
+                              -{question.negative_marks}m
+                            </Badge>
+                          )}
                         </div>
-                      </div>
-                      <div className="flex gap-1 shrink-0">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEdit(question)}
-                        >
-                          <Pencil className="w-4 h-4 text-primary" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(question.id)}
-                        >
-                          <Trash2 className="w-4 h-4 text-destructive" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    {/* Question Text - Exam Style Display */}
-                    <div className="prose max-w-none">
-                      <div 
-                        className="question-content text-lg"
-                        dangerouslySetInnerHTML={{ __html: question.question_text }}
-                      />
-                      {question.image_url && (
-                        <img
-                          src={question.image_url}
-                          alt="Question"
-                          className="max-w-full h-auto rounded-md mt-4"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                          }}
-                        />
-                      )}
-                    </div>
 
-                    {/* MCQ (Single Answer) Options - Exam Style */}
-                    {question.question_type === 'mcq' && question.options && Array.isArray(question.options) && question.options.length > 0 && (
-                      <div className="space-y-2">
-                        {(question.options as string[]).map((option, idx) => (
-                          <div 
-                            key={idx} 
-                            className={`flex items-start space-x-3 p-3 border rounded-md ${
-                              option === question.correct_answer 
-                                ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800' 
-                                : 'bg-muted/50'
-                            }`}
+                        {/* Action Buttons */}
+                        <div className="flex gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEdit(question)}
+                            className="h-8 w-8 p-0"
                           >
-                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
-                              option === question.correct_answer 
-                                ? 'border-green-600 bg-green-600' 
-                                : 'border-muted-foreground'
-                            }`}>
-                              {option === question.correct_answer && (
-                                <div className="w-2 h-2 rounded-full bg-white" />
-                              )}
-                            </div>
-                            <div className="flex-1">
-                              <span 
-                                className="question-content"
-                                dangerouslySetInnerHTML={{ __html: option }}
-                              />
-                              {option === question.correct_answer && (
-                                <span className="ml-2 text-xs font-medium text-green-700 dark:text-green-400">✓ Correct Answer</span>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* True/False Options - Exam Style */}
-                    {question.question_type === 'true_false' && (
-                      <div className="space-y-2">
-                        {['True', 'False'].map((option) => (
-                          <div 
-                            key={option}
-                            className={`flex items-center space-x-3 p-3 border rounded-md ${
-                              option === question.correct_answer 
-                                ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800' 
-                                : 'bg-muted/50'
-                            }`}
+                            <Pencil className="w-3.5 h-3.5 text-primary" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(question.id)}
+                            className="h-8 w-8 p-0"
                           >
-                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                              option === question.correct_answer 
-                                ? 'border-green-600 bg-green-600' 
-                                : 'border-muted-foreground'
-                            }`}>
-                              {option === question.correct_answer && (
-                                <div className="w-2 h-2 rounded-full bg-white" />
-                              )}
-                            </div>
-                            <span className="flex-1">{option}</span>
-                            {option === question.correct_answer && (
-                              <span className="text-xs font-medium text-green-700 dark:text-green-400">✓ Correct Answer</span>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Multiple Response Options - Exam Style */}
-                    {question.question_type === 'multiple_response' && question.options && Array.isArray(question.options) && question.options.length > 0 && (
-                      <div className="space-y-4">
-                        {/* Display main options (A, B, C, D) */}
-                        <div className="space-y-2 p-4 bg-muted/50 rounded-md">
-                          <p className="text-sm font-medium mb-2">Options:</p>
-                          {(question.options as string[]).map((option, idx) => (
-                            <div key={idx} className="text-sm pl-2">
-                              <span className="font-medium">{String.fromCharCode(65 + idx)}.</span> {option}
-                            </div>
-                          ))}
-                        </div>
-                        
-                        {/* Display answer options (i, ii, iii, iv) */}
-                        {question.answer_options && Array.isArray(question.answer_options) && question.answer_options.length > 0 && (
-                          <div className="space-y-2">
-                            <p className="text-sm font-medium mb-2">Select the correct answer:</p>
-                            {question.answer_options.map((answerOption, idx) => {
-                              const normalizedCorrectAnswer = normalizeAnswerOption(question.correct_answer);
-                              const normalizedAnswerOption = normalizeAnswerOption(answerOption);
-                              const isCorrect = normalizedCorrectAnswer === normalizedAnswerOption;
-                              return (
-                                <div 
-                                  key={idx} 
-                                  className={`flex items-center space-x-3 p-3 border rounded-md ${
-                                    isCorrect
-                                      ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800' 
-                                      : 'bg-muted/50'
-                                  }`}
-                                >
-                                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                                    isCorrect
-                                      ? 'border-green-600 bg-green-600' 
-                                      : 'border-muted-foreground'
-                                  }`}>
-                                    {isCorrect && (
-                                      <div className="w-2 h-2 rounded-full bg-white" />
-                                    )}
-                                  </div>
-                                  <span className="flex-1">{answerOption}</span>
-                                  {isCorrect && (
-                                    <span className="text-xs font-medium text-green-700 dark:text-green-400">✓ Correct Answer</span>
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Short Answer - Exam Style */}
-                    {question.question_type === 'short_answer' && (
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium text-muted-foreground">Expected Answer:</p>
-                        <div className="p-3 border rounded-md bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800">
-                          <p className="text-sm">{question.correct_answer}</p>
+                            <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                          </Button>
                         </div>
                       </div>
-                    )}
-
-                    {/* Match Following Pairs - Exam Style */}
-                    {question.question_type === 'match_following' && question.options && Array.isArray(question.options) && question.options.length > 0 && (
-                      <div className="space-y-4">
-                        <p className="text-sm text-muted-foreground">
-                          Match the items from the left column with the appropriate items from the right column
-                        </p>
-                        {(() => {
-                          let correctMatches: Record<string, string> = {};
-                          try {
-                            correctMatches = JSON.parse(question.correct_answer);
-                          } catch {}
-                          return (
-                            <div className="space-y-2">
-                              {(question.options as MatchPair[]).map((pair, idx) => {
-                                const isCorrectMatch = correctMatches[pair.left] === pair.right;
-                                return (
-                                  <div 
-                                    key={idx} 
-                                    className={`flex items-center gap-4 p-3 border rounded-md ${
-                                      isCorrectMatch 
-                                        ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800' 
-                                        : 'bg-muted/50'
-                                    }`}
-                                  >
-                                    <div className="flex-1 font-medium">{pair.left}</div>
-                                    <div className="text-muted-foreground">→</div>
-                                    <div className="flex-1">{pair.right}</div>
-                                    {isCorrectMatch && (
-                                      <span className="text-xs font-medium text-green-700 dark:text-green-400">✓</span>
-                                    )}
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          );
-                        })()}
-                      </div>
-                    )}
-
-                    {/* Metadata Footer */}
-                    <div className="pt-4 border-t grid grid-cols-2 gap-3 text-sm">
-                      <div>
-                        <p className="text-muted-foreground">Subject</p>
-                        <p className="font-medium">
-                          {subjects.find((s) => s.id === question.subject_id)?.subject_name || '-'}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">Lesson</p>
-                        <p className="font-medium">
-                          {question.lesson_id 
-                            ? lessons.find((l) => l.id === question.lesson_id)?.lesson_name || '-'
-                            : '-'
-                          }
-                        </p>
-                      </div>
-                      {question.negative_marks > 0 && (
-                        <div>
-                          <p className="text-muted-foreground">Negative Marks</p>
-                          <p className="font-medium text-destructive">{question.negative_marks}</p>
-                        </div>
-                      )}
                     </div>
                   </CardContent>
                 </Card>
