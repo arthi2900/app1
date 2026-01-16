@@ -5,14 +5,14 @@
 A Cube - Online Exam System
 
 ### 1.2 Application Purpose
-A comprehensive online exam management platform for educational institutions, focusing on NEET preparation and school-level assessments. The system enables schools to create, conduct, and analyze exams efficiently with features including school management, academic structure setup, teacher-subject-class-section mapping, question bank management with bulk upload capability, question paper preparation with question usage tracking, online exam creation with approval workflow, user management with school-based data isolation, student allocation tracking, detailed performance analytics, real-time user login monitoring, and **dynamic real-time storage monitoring for files and databases with user-wise tracking and server capacity comparison**.
+A comprehensive online exam management platform for educational institutions, focusing on NEET preparation and school-level assessments. The system enables schools to create, conduct, and analyze exams efficiently with features including school management, academic structure setup, teacher-subject-class-section mapping, question bank management with bulk upload capability, question paper preparation with question usage tracking, online exam creation with approval workflow, user management with school-based data isolation, student allocation tracking, detailed performance analytics, real-time user login monitoring, and dynamic real-time storage monitoring for files and databases with user-wise tracking and server capacity comparison.
 
 ### 1.3 Tagline
 Smart • Secure • Scalable Online Exams
 
 ---
 
-## 8. Principal Dashboard - Question Bank Module (NEW)
+## 8. Principal Dashboard - Question Bank Module (UPDATED)
 
 ### 8.1 Question Bank Overview (Principal Access)
 - Purpose: Enable Principal to access and manage all question bank features available to Teachers within their school
@@ -58,7 +58,7 @@ Smart • Secure • Scalable Online Exams
   - Questions by difficulty (Easy, Medium, Hard counts)
   - Questions by type (MCQ, True/False, etc. counts)
   - Most used questions count
-\n#### 8.2.2 Add/Edit Question Dialog
+\n#### 8.2.2 Add/Edit Question Dialog (UPDATED)
 - Modal dialog with glassmorphism styling
 - Title: 'Add Question' or 'Edit Question'
 - Form fields:
@@ -70,11 +70,20 @@ Smart • Secure • Scalable Online Exams
   - **Question Text:** Rich text editor (required)
     - Supports formatting: bold, italic, underline, lists, tables\n    - Supports image upload\n    - Supports mathematical equations (LaTeX)
   - **Options:** (for MCQ and True/False)
-    - Option A: Text input with rich text support
-    - Option B: Text input with rich text support
-    - Option C: Text input with rich text support (MCQ only)
-    - Option D: Text input with rich text support (MCQ only)
-    - Correct Answer: Radio buttons to select correct option
+    - **Option A:** Rich text editor with full formatting support
+      - Supports formatting: bold, italic, underline, lists, tables
+      - Supports image upload
+      - Supports mathematical equations (LaTeX)
+    - **Option B:** Rich text editor with full formatting support
+      - Supports formatting: bold, italic, underline, lists, tables
+      - Supports image upload
+      - Supports mathematical equations (LaTeX)\n    - **Option C:** Rich text editor with full formatting support (MCQ only)
+      - Supports formatting: bold, italic, underline, lists, tables
+      - Supports image upload
+      - Supports mathematical equations (LaTeX)\n    - **Option D:** Rich text editor with full formatting support (MCQ only)
+      - Supports formatting: bold, italic, underline, lists, tables
+      - Supports image upload
+      - Supports mathematical equations (LaTeX)\n    - Correct Answer: Radio buttons to select correct option
   - **Answer:** (for Fill in the Blanks, Short Answer, Long Answer)
     - Text input or rich text editor
   - **Marks:** Number input (required)
@@ -85,10 +94,11 @@ Smart • Secure • Scalable Online Exams
 - Cancel button (outlined)
 - Validation messages
 
-#### 8.2.3 Bulk Upload Questions
-- Same functionality as Teacher bulk upload
+#### 8.2.3 Bulk Upload Questions\n- Same functionality as Teacher bulk upload
 - Excel template with three sheets:
-  - **Option Sheet:** Dropdown values for Subject, Class, Chapter, Question Type, Difficulty Level\n  - **Question Sheet:** Data entry columns (Subject, Class, Chapter, Question Type, Difficulty Level, Question Text, Option A, Option B, Option C, Option D, Correct Answer, Marks, Tags, Explanation)\n  - **Reference Sheet:** Example questions with filled data for reference
+  - **Option Sheet:** Dropdown values for Subject, Class, Chapter, Question Type, Difficulty Level
+  - **Question Sheet:** Data entry columns (Subject, Class, Chapter, Question Type, Difficulty Level, Question Text, Option A, Option B, Option C, Option D, Correct Answer, Marks, Tags, Explanation)
+  - **Reference Sheet:** Example questions with filled data for reference
 - Upload process:
   1. Principal clicks 'Bulk Upload' button\n  2. Download template link provided
   3. Principal fills template with question data
@@ -129,7 +139,8 @@ Smart • Secure • Scalable Online Exams
   - Require confirmation\n- If not used:
   - Display confirmation message: 'Are you sure you want to delete this question?'
   - Require confirmation
-- After deletion:\n  - Display success message\n  - Refresh question list
+- After deletion:
+  - Display success message\n  - Refresh question list
 
 ### 8.3 Question Bank Database Structure (Principal Access)
 
@@ -145,8 +156,7 @@ Smart • Secure • Scalable Online Exams
 
 ### 8.4 Question Bank Backend Logic (Principal Access)
 
-#### 8.4.1 Get Questions API (Principal)
-- **Endpoint:** GET /api/principal/question-bank
+#### 8.4.1 Get Questions API (Principal)\n- **Endpoint:** GET /api/principal/question-bank
 - **Query Parameters:**
   - subject_id (optional)\n  - class_id (optional)
   - chapter_id (optional)
@@ -169,8 +179,7 @@ Smart • Secure • Scalable Online Exams
           \"difficulty_level\": \"Medium\",
           \"question_text\": \"What is the SI unit of electric charge?\",
           \"options\": [\"Ampere\", \"Coulomb\", \"Volt\", \"Ohm\"],
-          \"correct_answer\": \"Coulomb\",
-          \"marks\": 4,
+          \"correct_answer\": \"Coulomb\",\n          \"marks\": 4,
           \"tags\": [\"electric charge\", \"SI units\"],
           \"created_by_name\": \"John Doe\",
           \"created_at\": \"2026-01-10T10:00:00Z\",
@@ -231,15 +240,19 @@ Smart • Secure • Scalable Online Exams
 - Created date (relative time, e.g., '2 days ago')
 - Usage count badge (e.g., 'Used in 5 papers')\n- Action buttons (Edit, Delete, View Details) on hover
 
-#### 8.5.3 Add/Edit Question Dialog\n- Modal dialog with glassmorphism styling
+#### 8.5.3 Add/Edit Question Dialog (UPDATED)
+- Modal dialog with glassmorphism styling
 - Form layout with proper spacing
-- Rich text editor with toolbar
+- Rich text editor with toolbar for Question Text
+- **Rich text editor with toolbar for each Option (A, B, C, D)**
+  - Full formatting support: bold, italic, underline, lists, tables
+  - Image upload capability
+  - LaTeX equation editor
 - Image upload with preview
 - LaTeX equation editor\n- Validation messages inline
 - Save and Cancel buttons at bottom
 
-#### 8.5.4 Bulk Upload Dialog
-- Modal dialog with glassmorphism styling
+#### 8.5.4 Bulk Upload Dialog\n- Modal dialog with glassmorphism styling
 - Step-by-step upload process:\n  1. Download template
   2. Fill template\n  3. Upload filled template\n  4. Preview and validate
   5. Confirm upload
@@ -254,7 +267,8 @@ Smart • Secure • Scalable Online Exams
 - Usage list with question paper names
 - Edit and Delete buttons at bottom
 
-### 8.6 Question Bank Help and Documentation (Principal)\n
+### 8.6 Question Bank Help and Documentation (Principal)
+
 #### 8.6.1 Help Resources
 - Help icon in Question Bank page
 - Opens help dialog with:
@@ -283,30 +297,33 @@ Smart • Secure • Scalable Online Exams
 - How to use rich text editor for question formatting?
 - How to add images to questions?
 - How to add mathematical equations to questions?
+- **How to format option text with rich text editor?**
+- **Can I add images to option text?**
+- **Can I add equations to option text?**
 \n---
 
 ## 25. UPDATED: Real-Time Storage Monitoring Module\n
 ### 25.1 Real-Time Storage Monitoring Overview
-- Purpose: **Dynamically monitor file sizes and database sizes for all users in real-time across the platform with server capacity comparison**
+- Purpose: Dynamically monitor file sizes and database sizes for all users in real-time across the platform with server capacity comparison
 - Access:\n  - Admin can monitor storage usage of all users across all schools
 - Key Features:
-  - **Dynamic real-time file storage monitoring with user-wise tracking**
-  - **Dynamic real-time database storage monitoring with user-wise tracking**
-  - **Display total file storage, total database storage, and combined total storage**
-  - **Server capacity comparison: Display current usage vs. total server capacity**
-  - **Real-time percentage calculation: (Current Usage / Server Capacity) × 100**\n  - **Visual capacity indicators: Progress bars, gauges, and charts showing usage levels**
+  - Dynamic real-time file storage monitoring with user-wise tracking
+  - Dynamic real-time database storage monitoring with user-wise tracking
+  - Display total file storage, total database storage, and combined total storage
+  - Server capacity comparison: Display current usage vs. total server capacity
+  - Real-time percentage calculation: (Current Usage / Server Capacity) × 100
+  - Visual capacity indicators: Progress bars, gauges, and charts showing usage levels
   - Filter and search by user, school, role, or date range
   - Export storage usage reports
-  - Analytics dashboard showing storage trends and top users by storage\n  - **Real-time updates with auto-refresh (every 10 seconds)**
-  - Role-based access control (Admin only)\n  - **Dynamic alerts for users exceeding storage thresholds**
-  - **Server capacity alerts when total usage exceeds thresholds (e.g., 80%, 90%, 95%)**
-  - Storage optimization recommendations
-  - **Predictive analytics: Estimate when server capacity will be reached based on current growth trends**
+  - Analytics dashboard showing storage trends and top users by storage\n  - Real-time updates with auto-refresh (every 10 seconds)
+  - Role-based access control (Admin only)\n  - Dynamic alerts for users exceeding storage thresholds
+  - Server capacity alerts when total usage exceeds thresholds (e.g., 80%, 90%, 95%)
+  - Storage optimization recommendations\n  - Predictive analytics: Estimate when server capacity will be reached based on current growth trends
 
-### 25.2 Real-Time Storage Monitoring Database Structure\n
+### 25.2 Real-Time Storage Monitoring Database Structure
+
 #### 25.2.1 User Storage Usage Table
-Table name: user_storage_usage
-
+Table name: user_storage_usage\n
 Columns:
 - id (UUID, Primary Key)
 - user_id (Foreign Key → users.id, required)
@@ -331,8 +348,8 @@ Columns:
 #### 25.2.2 NEW: Server Capacity Configuration Table
 Table name: server_capacity_config
 
-Columns:\n- id (UUID, Primary Key)
-- total_file_storage_capacity_bytes (BigInt, required)
+Columns:
+- id (UUID, Primary Key)\n- total_file_storage_capacity_bytes (BigInt, required)
   - Total file storage capacity of the server (in bytes)
   - Example: 1 TB = 1,099,511,627,776 bytes
 - total_database_storage_capacity_bytes (BigInt, required)
@@ -442,8 +459,7 @@ Columns:
   - User filter (search by name or email)
   - School filter (Admin only)
   - Role filter (Admin only)
-  - Storage status filter (Normal, Warning, Critical)
-  - Date range filter (for historical data)
+  - Storage status filter (Normal, Warning, Critical)\n  - Date range filter (for historical data)
 - Search bar at top\n  - Search by user name or email
 - Export button at top-right
   - Export as Excel/CSV
@@ -523,7 +539,8 @@ Columns:
   SELECT SUM(file_size) FROM files WHERE user_id = [user_id]
   ```
 - Include:
-  - Question images\n  - Profile pictures
+  - Question images
+  - Profile pictures
   - Uploaded documents
   - Any other user-uploaded files
 - **No static caching:** Always fetch latest data from database
@@ -592,11 +609,12 @@ Columns:
       \"available_storage_bytes\": 951335256064,
       \"available_storage_gb\": 886,
       \"server_status\": \"Normal\",
-      \"last_calculated_at\": \"2026-01-15T04:18:02Z\"
+      \"last_calculated_at\": \"2026-01-16T15:27:23Z\"
     }
   }
   ```
-- **Access Control:** Admin only\n- **Real-time data:** Fetched from server_storage_summary table (updated every 10 seconds)
+- **Access Control:** Admin only
+- **Real-time data:** Fetched from server_storage_summary table (updated every 10 seconds)
 \n#### 25.5.6 NEW: Predictive Analytics Logic
 - **Storage Growth Rate Calculation:**
   - Calculate daily storage growth over past 30 days:\n    ```sql
@@ -632,7 +650,8 @@ Columns:
 ### 25.6 Real-Time Storage Monitoring UI Components (UPDATED)
 
 #### 25.6.1 Storage Monitoring Card (Admin Dashboard) (UPDATED)
-- Card title: 'Storage Monitoring'\n- Card content:
+- Card title: 'Storage Monitoring'
+- Card content:
   - **Total storage used with percentage** (e.g., '650 GB / 1.5 TB (43.3%)') with icon
   - **Server status badge** (Normal: green, Warning: orange, Critical: red)
   - **Mini progress bar** showing usage level
@@ -675,8 +694,7 @@ Columns:
 - Last updated timestamp with relative time
 
 #### 25.6.4 NEW: Configure Server Capacity Dialog
-- Modal dialog with glassmorphism styling
-- Title: 'Configure Server Capacity'
+- Modal dialog with glassmorphism styling\n- Title: 'Configure Server Capacity'
 - Form layout:
   - **Total File Storage Capacity:**
     - Number input field\n    - Unit selector dropdown (GB/TB)
@@ -693,7 +711,8 @@ Columns:
 - Save button (gradient, green)\n- Cancel button (outlined)\n- Validation messages
 \n#### 25.6.5 UPDATED: Summary Statistics Cards
 - **Total File Storage Used:**
-  - Display: '400 GB / 1 TB (40%)'\n  - Icon: File icon
+  - Display: '400 GB / 1 TB (40%)'
+  - Icon: File icon
   - Color: Blue
   - Progress bar showing percentage
 - **Total Database Storage Used:**
@@ -829,4 +848,4 @@ Columns:
 
 ## 26. Conclusion (UPDATED)
 
-A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting, updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. **The latest enhancements include: (1) Full Question Bank access for Principals with all Teacher-level features including create, edit, delete, bulk upload, filter, search, export, and question usage tracking capabilities, enabling Principals to manage questions across their school efficiently; and (2) Dynamic Real-Time Storage Monitoring with Server Capacity Comparison—a powerful tool for administrators to monitor storage usage across the platform in real-time, compare current usage against total server capacity, receive dynamic alerts when thresholds are exceeded, and leverage predictive analytics to forecast capacity exhaustion dates. These features enable proactive server management, support capacity planning, improve resource allocation, identify storage bottlenecks, provide actionable insights for storage optimization, and ensure the platform can scale efficiently to meet growing demands. With dynamic calculations updated every 10 seconds, visual capacity indicators, server capacity configuration options, and comprehensive analytics dashboards, administrators have complete visibility and control over storage resources, enabling them to make informed decisions about server upgrades, data cleanup policies, and user storage limits.**
+A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting with full formatting support for both question text and option text (including bold, italic, underline, lists, tables, image upload, and LaTeX equations), updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The latest enhancements include: (1) Full Question Bank access for Principals with all Teacher-level features including create, edit, delete, bulk upload, filter, search, export, and question usage tracking capabilities, enabling Principals to manage questions across their school efficiently; (2) Rich text editor support for option text in questions, allowing Teachers and Principals to format option text with bold, italic, underline, lists, tables, images, and mathematical equations, providing the same formatting flexibility for options as for question text; and (3) Dynamic Real-Time Storage Monitoring with Server Capacity Comparison—a powerful tool for administrators to monitor storage usage across the platform in real-time, compare current usage against total server capacity, receive dynamic alerts when thresholds are exceeded, and leverage predictive analytics to forecast capacity exhaustion dates. These features enable proactive server management, support capacity planning, improve resource allocation, identify storage bottlenecks, provide actionable insights for storage optimization, and ensure the platform can scale efficiently to meet growing demands. With dynamic calculations updated every 10 seconds, visual capacity indicators, server capacity configuration options, and comprehensive analytics dashboards, administrators have complete visibility and control over storage resources, enabling them to make informed decisions about server upgrades, data cleanup policies, and user storage limits.

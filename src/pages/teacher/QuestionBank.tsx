@@ -1117,18 +1117,21 @@ export default function QuestionBank() {
                       </Button>
                     </div>
                     {formData.options.map((option, index) => (
-                      <div key={index} className="flex gap-2">
-                        <Input
-                          value={option}
-                          onChange={(e) => updateOption(index, e.target.value)}
-                          placeholder={`Option ${index + 1}`}
-                        />
+                      <div key={index} className="flex gap-2 items-start">
+                        <div className="flex-1">
+                          <RichTextEditor
+                            value={option}
+                            onChange={(value) => updateOption(index, value)}
+                            placeholder={`Option ${index + 1}`}
+                          />
+                        </div>
                         {formData.options.length > 4 && (
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
                             onClick={() => removeOption(index)}
+                            className="mt-2"
                           >
                             <Trash2 className="w-4 h-4 text-destructive" />
                           </Button>
@@ -1158,19 +1161,21 @@ export default function QuestionBank() {
                         These are the answer choices that will be labeled A, B, C, D
                       </p>
                       {formData.options.map((option, index) => (
-                        <div key={index} className="flex gap-2">
-                          <Input
-                            value={option}
-                            onChange={(e) => updateOption(index, e.target.value)}
-                            placeholder={`Option ${String.fromCharCode(65 + index)}`}
-                            className="bg-background"
-                          />
+                        <div key={index} className="flex gap-2 items-start">
+                          <div className="flex-1">
+                            <RichTextEditor
+                              value={option}
+                              onChange={(value) => updateOption(index, value)}
+                              placeholder={`Option ${String.fromCharCode(65 + index)}`}
+                            />
+                          </div>
                           {formData.options.length > 4 && (
                             <Button
                               type="button"
                               variant="ghost"
                               size="sm"
                               onClick={() => removeOption(index)}
+                              className="mt-2"
                             >
                               <Trash2 className="w-4 h-4 text-destructive" />
                             </Button>
@@ -1202,17 +1207,18 @@ export default function QuestionBank() {
                         These are the answer choices students will select from (e.g., "A and C only", "All of the above")
                       </p>
                       {formData.answer_options.map((answerOption, index) => (
-                        <div key={index} className="flex gap-2">
-                          <Input
-                            value={answerOption}
-                            onChange={(e) => {
-                              const newAnswerOptions = [...formData.answer_options];
-                              newAnswerOptions[index] = e.target.value;
-                              setFormData({ ...formData, answer_options: newAnswerOptions });
-                            }}
-                            placeholder={`Answer Option (${['i', 'ii', 'iii', 'iv', 'v', 'vi'][index] || index + 1})`}
-                            className="bg-background"
-                          />
+                        <div key={index} className="flex gap-2 items-start">
+                          <div className="flex-1">
+                            <RichTextEditor
+                              value={answerOption}
+                              onChange={(value) => {
+                                const newAnswerOptions = [...formData.answer_options];
+                                newAnswerOptions[index] = value;
+                                setFormData({ ...formData, answer_options: newAnswerOptions });
+                              }}
+                              placeholder={`Answer Option (${['i', 'ii', 'iii', 'iv', 'v', 'vi'][index] || index + 1})`}
+                            />
+                          </div>
                           {formData.answer_options.length > 4 && (
                             <Button
                               type="button"
@@ -1222,6 +1228,7 @@ export default function QuestionBank() {
                                 const newAnswerOptions = formData.answer_options.filter((_, i) => i !== index);
                                 setFormData({ ...formData, answer_options: newAnswerOptions });
                               }}
+                              className="mt-2"
                             >
                               <Trash2 className="w-4 h-4 text-destructive" />
                             </Button>
@@ -1650,12 +1657,12 @@ export default function QuestionBank() {
                   <div className="space-y-2">
                     <Label>Options</Label>
                     {formData.options.map((option, index) => (
-                      <Input
+                      <RichTextEditor
                         key={index}
                         value={option}
-                        onChange={(e) => {
+                        onChange={(value) => {
                           const newOptions = [...formData.options];
-                          newOptions[index] = e.target.value;
+                          newOptions[index] = value;
                           setFormData({ ...formData, options: newOptions });
                         }}
                         placeholder={`Option ${index + 1}`}
@@ -1672,16 +1679,15 @@ export default function QuestionBank() {
                         These are the answer choices that will be labeled A, B, C, D
                       </p>
                       {formData.options.map((option, index) => (
-                        <Input
+                        <RichTextEditor
                           key={index}
                           value={option}
-                          onChange={(e) => {
+                          onChange={(value) => {
                             const newOptions = [...formData.options];
-                            newOptions[index] = e.target.value;
+                            newOptions[index] = value;
                             setFormData({ ...formData, options: newOptions });
                           }}
                           placeholder={`Option ${String.fromCharCode(65 + index)}`}
-                          className="bg-background"
                         />
                       ))}
                     </div>
@@ -1692,16 +1698,15 @@ export default function QuestionBank() {
                         These are the answer choices students will select from (e.g., "A and C only", "All of the above")
                       </p>
                       {formData.answer_options.map((answerOption, index) => (
-                        <Input
+                        <RichTextEditor
                           key={index}
                           value={answerOption}
-                          onChange={(e) => {
+                          onChange={(value) => {
                             const newAnswerOptions = [...formData.answer_options];
-                            newAnswerOptions[index] = e.target.value;
+                            newAnswerOptions[index] = value;
                             setFormData({ ...formData, answer_options: newAnswerOptions });
                           }}
                           placeholder={`Answer Option (${['i', 'ii', 'iii', 'iv', 'v', 'vi'][index] || index + 1})`}
-                          className="bg-background"
                         />
                       ))}
                     </div>
