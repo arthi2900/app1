@@ -2075,7 +2075,7 @@ export default function QuestionBank() {
                         {/* Question Text */}
                         <div>
                           <div 
-                            className="question-content text-base line-clamp-2"
+                            className="question-content text-base"
                             dangerouslySetInnerHTML={{ __html: question.question_text }}
                           />
                         </div>
@@ -2096,7 +2096,7 @@ export default function QuestionBank() {
                                 >
                                   <span className="font-medium">{String.fromCharCode(65 + idx)}</span>
                                   <span 
-                                    className="question-content max-w-[150px] truncate"
+                                    className="question-content"
                                     dangerouslySetInnerHTML={{ __html: option }}
                                   />
                                   {option === question.correct_answer && <span>✓</span>}
@@ -2137,7 +2137,7 @@ export default function QuestionBank() {
                           {question.question_type === 'short_answer' && (
                             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border bg-green-50 border-green-300 text-green-700 dark:bg-green-950 dark:border-green-700 dark:text-green-400">
                               <span className="font-medium">Answer:</span>
-                              <span className="max-w-[200px] truncate">{question.correct_answer}</span>
+                              <span>{question.correct_answer}</span>
                               <span>✓</span>
                             </div>
                           )}
