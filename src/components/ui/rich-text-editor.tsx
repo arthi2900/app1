@@ -53,6 +53,7 @@ export function RichTextEditor({
   id,
 }: RichTextEditorProps) {
   const quillRef = useRef<ReactQuill>(null);
+  const previousValueRef = useRef<string>(value);
 
   useEffect(() => {
     // Apply custom styles to the Quill editor
@@ -68,6 +69,19 @@ export function RichTextEditor({
       }
     }
   }, []);
+
+  // Update the ref when value prop changes from parent
+  useEffect(() => {
+    previousValueRef.current = value;
+  }, [value]);
+
+  const handleChange = (newValue: string) => {
+    // Only call onChange if the value has actually changed
+    if (newValue !== previousValueRef.current) {
+      previousValueRef.current = newValue;
+      onChange(newValue);
+    }
+  };
 
   const modules = {
     toolbar: [
@@ -106,7 +120,7 @@ export function RichTextEditor({
         ref={quillRef}
         theme="snow"
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         modules={modules}
         formats={formats}
         placeholder={placeholder}
