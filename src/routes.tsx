@@ -223,7 +223,7 @@ const routes: RouteConfig[] = [
     name: 'Question Bank',
     path: '/teacher/questions',
     element: (
-      <ProtectedRoute allowedRoles={['teacher']}>
+      <ProtectedRoute allowedRoles={['teacher', 'principal']}>
         <QuestionBank />
       </ProtectedRoute>
     ),
