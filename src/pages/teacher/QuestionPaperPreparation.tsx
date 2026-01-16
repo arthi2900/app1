@@ -23,6 +23,13 @@ const normalizeAnswerOption = (answer: string): string => {
   return answer.replace(/^\([ivxIVX]+\)\s*/, '').trim();
 };
 
+// Utility function to strip HTML tags from text
+const stripHtmlTags = (html: string): string => {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+};
+
 export default function QuestionPaperPreparation() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -943,7 +950,7 @@ export default function QuestionPaperPreparation() {
                       <div className="ml-4 space-y-1 mt-2">
                         {(question.options as string[]).map((option, idx) => (
                           <div key={idx} className="text-sm">
-                            {String.fromCharCode(65 + idx)}. {option}
+                            {String.fromCharCode(65 + idx)}. <span dangerouslySetInnerHTML={{ __html: option }} />
                           </div>
                         ))}
                       </div>
@@ -955,7 +962,7 @@ export default function QuestionPaperPreparation() {
                         <div className="space-y-1">
                           {(question.options as string[]).map((option, idx) => (
                             <div key={idx} className="text-sm">
-                              {String.fromCharCode(65 + idx)}. {option}
+                              {String.fromCharCode(65 + idx)}. <span dangerouslySetInnerHTML={{ __html: option }} />
                             </div>
                           ))}
                         </div>
@@ -965,7 +972,7 @@ export default function QuestionPaperPreparation() {
                           <div className="space-y-1 pt-2 border-t">
                             {question.answer_options.map((answerOption, idx) => (
                               <div key={idx} className="text-sm">
-                                ({['i', 'ii', 'iii', 'iv', 'v', 'vi'][idx] || idx + 1}) {answerOption}
+                                ({['i', 'ii', 'iii', 'iv', 'v', 'vi'][idx] || idx + 1}) <span dangerouslySetInnerHTML={{ __html: answerOption }} />
                               </div>
                             ))}
                           </div>
@@ -989,7 +996,7 @@ export default function QuestionPaperPreparation() {
                               <div className="space-y-2">
                                 {(question.options as any[]).map((pair: any, idx: number) => (
                                   <div key={idx} className="text-sm p-2 rounded border bg-muted">
-                                    {idx + 1}. {pair.left}
+                                    {idx + 1}. <span dangerouslySetInnerHTML={{ __html: pair.left }} />
                                   </div>
                                 ))}
                               </div>
@@ -999,7 +1006,7 @@ export default function QuestionPaperPreparation() {
                               <div className="space-y-2">
                                 {(question.options as any[]).map((pair: any, idx: number) => (
                                   <div key={idx} className="text-sm p-2 rounded border bg-muted">
-                                    {String.fromCharCode(65 + idx)}. {pair.right}
+                                    {String.fromCharCode(65 + idx)}. <span dangerouslySetInnerHTML={{ __html: pair.right }} />
                                   </div>
                                 ))}
                               </div>
@@ -1023,11 +1030,11 @@ export default function QuestionPaperPreparation() {
                           ✓ Answer: {' '}
                           {question.question_type === 'multiple_response'
                             ? question.correct_answer.includes(',')
-                              ? question.correct_answer.split(',').map(a => normalizeAnswerOption(a.trim())).join(', ')
-                              : normalizeAnswerOption(question.correct_answer)
+                              ? question.correct_answer.split(',').map(a => stripHtmlTags(normalizeAnswerOption(a.trim()))).join(', ')
+                              : stripHtmlTags(normalizeAnswerOption(question.correct_answer))
                             : question.question_type === 'match_following'
                             ? 'See correct pairs in question'
-                            : question.correct_answer || 'Subjective answer required'}
+                            : stripHtmlTags(question.correct_answer || 'Subjective answer required')}
                         </p>
                       </div>
                     )}
