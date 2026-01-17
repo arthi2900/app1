@@ -30,68 +30,79 @@ export function MathRenderer({ content, className = '' }: MathRendererProps) {
   useEffect(() => {
     if (!containerRef.current || !content) return;
 
-    // Set the HTML content
+    // First, set the HTML content
     containerRef.current.innerHTML = content;
 
-    // Find all text nodes and render LaTeX formulas
-    const renderMath = (node: Node) => {
+    // Get all text content including from nested elements
+    const getAllTextNodes = (node: Node): Text[] => {
+      const textNodes: Text[] = [];
+      
       if (node.nodeType === Node.TEXT_NODE) {
-        const text = node.textContent || '';
-        
-        // Match inline math: $...$
-        const inlineMathRegex = /\$([^$]+)\$/g;
-        
-        if (inlineMathRegex.test(text)) {
-          const span = document.createElement('span');
-          let lastIndex = 0;
-          let match;
-          
-          // Reset regex
-          inlineMathRegex.lastIndex = 0;
-          
-          while ((match = inlineMathRegex.exec(text)) !== null) {
-            // Add text before the formula
-            if (match.index > lastIndex) {
-              span.appendChild(
-                document.createTextNode(text.substring(lastIndex, match.index))
-              );
-            }
-            
-            // Render the formula
-            const formulaSpan = document.createElement('span');
-            try {
-              katex.render(match[1], formulaSpan, {
-                throwOnError: false,
-                displayMode: false,
-              });
-            } catch (error) {
-              // If rendering fails, show the original text
-              formulaSpan.textContent = match[0];
-              formulaSpan.className = 'text-destructive';
-            }
-            span.appendChild(formulaSpan);
-            
-            lastIndex = match.index + match[0].length;
-          }
-          
-          // Add remaining text
-          if (lastIndex < text.length) {
-            span.appendChild(document.createTextNode(text.substring(lastIndex)));
-          }
-          
-          // Replace the text node with the span
-          node.parentNode?.replaceChild(span, node);
-        }
-      } else if (node.nodeType === Node.ELEMENT_NODE) {
-        // Recursively process child nodes
-        const children = Array.from(node.childNodes);
-        children.forEach(renderMath);
+        textNodes.push(node as Text);
+      } else {
+        node.childNodes.forEach(child => {
+          textNodes.push(...getAllTextNodes(child));
+        });
       }
+      
+      return textNodes;
     };
 
-    // Process all nodes
-    const children = Array.from(containerRef.current.childNodes);
-    children.forEach(renderMath);
+    // Process each text node
+    const textNodes = getAllTextNodes(containerRef.current);
+    
+    textNodes.forEach(textNode => {
+      const text = textNode.textContent || '';
+      
+      // Check if this text node contains a formula
+      const inlineMathRegex = /\$([^$]+)\$/g;
+      
+      if (!inlineMathRegex.test(text)) return;
+      
+      // Reset regex
+      inlineMathRegex.lastIndex = 0;
+      
+      // Create a container for the new content
+      const fragment = document.createDocumentFragment();
+      let lastIndex = 0;
+      let match;
+      
+      while ((match = inlineMathRegex.exec(text)) !== null) {
+        // Add text before the formula
+        if (match.index > lastIndex) {
+          fragment.appendChild(
+            document.createTextNode(text.substring(lastIndex, match.index))
+          );
+        }
+        
+        // Render the formula
+        const formulaSpan = document.createElement('span');
+        formulaSpan.className = 'math-formula';
+        
+        try {
+          katex.render(match[1], formulaSpan, {
+            throwOnError: false,
+            displayMode: false,
+          });
+        } catch (error) {
+          // If rendering fails, show the original text
+          formulaSpan.textContent = match[0];
+          formulaSpan.className = 'math-formula-error text-destructive';
+          console.error('KaTeX rendering error:', error, 'Formula:', match[1]);
+        }
+        
+        fragment.appendChild(formulaSpan);
+        lastIndex = match.index + match[0].length;
+      }
+      
+      // Add remaining text
+      if (lastIndex < text.length) {
+        fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
+      }
+      
+      // Replace the text node with the fragment
+      textNode.parentNode?.replaceChild(fragment, textNode);
+    });
   }, [content]);
 
   return (

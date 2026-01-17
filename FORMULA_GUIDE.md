@@ -3,6 +3,13 @@
 ## Overview
 The Online Exam Management System now supports **LaTeX mathematical formulas** for creating complex equations with proper mathematical notation, including extended square roots, fractions, integrals, and more.
 
+## Quick Start
+
+### See Your Formulas Rendered
+1. After inserting a formula, click the **"Show Preview"** button (eye icon) in the toolbar
+2. The preview panel will show exactly how your formulas will appear to students
+3. This helps you verify that formulas are correct before saving
+
 ## Two Ways to Add Math Content
 
 ### 1. **Insert Formula** Button (For Complex Equations)
@@ -150,6 +157,41 @@ Formulas will automatically render correctly when:
 - Viewing exam results
 - Previewing question papers
 - Reviewing question bank
+
+## Troubleshooting
+
+### "I inserted a formula but don't see it rendered in the editor"
+**Solution**: This is normal! The editor shows the raw LaTeX code (e.g., `$\sqrt{x}$`). To see how it will look:
+1. Click the **"Show Preview"** button (eye icon) in the toolbar
+2. The preview panel below will show the rendered formula
+3. When students take the exam, they will see the beautifully rendered formula
+
+### "The formula appears as plain text like $\sqrt{x}$ instead of a square root"
+**Possible causes**:
+1. **Missing $ delimiters**: Ensure your formula is wrapped in `$...$`
+   - ✅ Correct: `$\sqrt{x^2 + y^2}$`
+   - ❌ Wrong: `\sqrt{x^2 + y^2}` (missing $ signs)
+
+2. **Check the preview**: Click "Show Preview" to verify the formula renders correctly
+
+3. **Browser console**: Open browser developer tools (F12) and check for any KaTeX errors
+
+### "The square root only covers the first character"
+**Solution**: You're using the Unicode √ symbol instead of LaTeX. Use the **Insert Formula** button:
+- ❌ Wrong: `√5gR+2W/m` (Unicode symbol)
+- ✅ Correct: `$\sqrt{5gR+2W/m}$` (LaTeX formula)
+
+### "How do I edit a formula I already inserted?"
+1. In the editor, you'll see the formula as text: `$\sqrt{x}$`
+2. Simply edit the text directly
+3. Click "Show Preview" to see the updated rendering
+4. Or click "Insert Formula" to create a new formula and replace the old one
+
+### "The preview shows an error in red"
+**Solution**: There's a syntax error in your LaTeX code. Common issues:
+- Unmatched braces: `\sqrt{x` (missing closing `}`)
+- Invalid commands: `\squareroot{x}` (should be `\sqrt{x}`)
+- Check the Quick Reference in the Formula Dialog for correct syntax
 
 ## Need Help?
 

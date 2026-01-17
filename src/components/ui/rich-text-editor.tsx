@@ -13,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from './dropdown-menu';
 import { FormulaDialog } from './formula-dialog';
+import { MathRenderer } from './math-renderer';
+import { Eye, EyeOff } from 'lucide-react';
 
 /**
  * RichTextEditor Component
@@ -190,6 +192,7 @@ export function RichTextEditor({
   const quillRef = useRef<ReactQuill>(null);
   const previousValueRef = useRef<string>(value);
   const [symbolsOpen, setSymbolsOpen] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const insertSymbol = (symbol: string) => {
     const editor = quillRef.current?.getEditor();
@@ -209,9 +212,17 @@ export function RichTextEditor({
       const range = editor.getSelection();
       if (range) {
         // Insert the LaTeX formula wrapped in delimiters
+        console.log('Inserting formula:', latex);
         editor.insertText(range.index, latex);
         editor.setSelection(range.index + latex.length, 0);
+        
+        // Log the current content
+        console.log('Editor content after insert:', editor.getText());
+      } else {
+        console.warn('No selection range available');
       }
+    } else {
+      console.error('Editor not available');
     }
   };
 
@@ -446,9 +457,17 @@ export function RichTextEditor({
           </DropdownMenuContent>
         </DropdownMenu>
         
-        <span className="text-xs text-muted-foreground">
-          Use "Insert Formula" for complex equations with extended square roots, or "Symbols" for quick character insertion
-        </span>
+        {/* Preview Toggle Button */}
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setShowPreview(!showPreview)}
+          className="gap-2 ml-auto"
+        >
+          {showPreview ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          <span className="text-sm">{showPreview ? 'Hide' : 'Show'} Preview</span>
+        </Button>
       </div>
 
       {/* Quill Editor */}
@@ -462,6 +481,26 @@ export function RichTextEditor({
         placeholder={placeholder}
         className="bg-background"
       />
+      
+      {/* Live Preview Panel */}
+      {showPreview && value && (
+        <div className="border rounded-lg p-4 bg-muted/30">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-sm font-medium text-muted-foreground">Preview (How formulas will appear):</div>
+            <div className="text-xs text-muted-foreground">
+              Formulas wrapped in $...$ will render as mathematical notation
+            </div>
+          </div>
+          <MathRenderer content={value} className="preview-content" />
+        </div>
+      )}
+      
+      {/* Helpful hint when no preview */}
+      {!showPreview && (
+        <div className="text-xs text-muted-foreground px-2">
+          💡 Tip: Click "Show Preview" to see how your formulas will render
+        </div>
+      )}
     </div>
   );
 }
