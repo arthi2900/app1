@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import Layout from '@/components/common/Layout';
 import routes from './routes';
 
@@ -38,7 +39,9 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <AppContent />
+      <TooltipProvider>
+        <AppContent />
+      </TooltipProvider>
     </Router>
   );
 }
