@@ -9,6 +9,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './dialog';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './tooltip';
 import { Label } from './label';
 import { Textarea } from './textarea';
 import { InlineMath } from 'react-katex';
@@ -107,14 +113,23 @@ export function FormulaDialog({ onInsert, trigger }: FormulaDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger || (
-          <Button type="button" variant="outline" size="sm" className="gap-2">
-            <span className="text-lg">∫</span>
-            <span className="text-sm">Insert Formula</span>
-          </Button>
-        )}
-      </DialogTrigger>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DialogTrigger asChild>
+              {trigger || (
+                <Button type="button" variant="outline" size="sm" className="gap-2">
+                  <span className="text-lg">∫</span>
+                  <span className="text-sm">Insert Formula</span>
+                </Button>
+              )}
+            </DialogTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Insert LaTeX formulas with extended square roots, fractions, etc.</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Insert Mathematical Formula</DialogTitle>
