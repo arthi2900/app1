@@ -15,6 +15,7 @@ import { profileApi, academicApi, subjectApi, questionApi, lessonApi } from '@/d
 import { TemplateManagementDialog } from '@/components/teacher/TemplateManagementDialog';
 import { VersionGenerationDialog } from '@/components/teacher/VersionGenerationDialog';
 import { SmartSelectionPanel } from '@/components/teacher/SmartSelectionPanel';
+import { MathRenderer } from '@/components/ui/math-renderer';
 import type { Profile, Class, Subject, Question, QuestionPaper, QuestionPaperWithDetails, QuestionPaperTemplate, Lesson } from '@/types/types';
 
 // Utility function to remove segment prefix from answer options
@@ -788,9 +789,9 @@ export default function QuestionPaperPreparation() {
                                 />
                               </TableCell>
                               <TableCell className="align-top min-w-[350px]">
-                                <div 
+                                <MathRenderer 
+                                  content={question.question_text}
                                   className="question-content whitespace-normal"
-                                  dangerouslySetInnerHTML={{ __html: question.question_text }}
                                 />
                               </TableCell>
                               <TableCell className="align-top w-36">
@@ -917,9 +918,9 @@ export default function QuestionPaperPreparation() {
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
                         <span className="font-medium">Q{index + 1}. </span>
-                        <span 
-                          className="question-content font-medium"
-                          dangerouslySetInnerHTML={{ __html: question.question_text }}
+                        <MathRenderer 
+                          content={question.question_text}
+                          className="question-content font-medium inline"
                         />
                       </div>
                       {/* Print version - simple text badge */}
@@ -950,7 +951,7 @@ export default function QuestionPaperPreparation() {
                       <div className="ml-4 space-y-1 mt-2">
                         {(question.options as string[]).map((option, idx) => (
                           <div key={idx} className="text-sm">
-                            {String.fromCharCode(65 + idx)}. <span dangerouslySetInnerHTML={{ __html: option }} />
+                            {String.fromCharCode(65 + idx)}. <MathRenderer content={option} className="inline" />
                           </div>
                         ))}
                       </div>

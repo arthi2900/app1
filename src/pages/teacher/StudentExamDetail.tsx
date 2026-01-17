@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { examApi, examAttemptApi, examAnswerApi } from '@/db/api';
 import { ArrowLeft, CheckCircle2, XCircle, User, Calendar, Clock, Award } from 'lucide-react';
+import { MathRenderer } from '@/components/ui/math-renderer';
 import type { ExamWithDetails, ExamAttemptWithDetails, ExamAnswerWithDetails } from '@/types/types';
 
 export default function StudentExamDetail() {
@@ -443,9 +444,9 @@ export default function StudentExamDetail() {
                               className="max-w-md mb-2 rounded-md"
                             />
                           )}
-                          <div 
+                          <MathRenderer 
+                            content={question.question_text}
                             className="text-base question-content"
-                            dangerouslySetInnerHTML={{ __html: question.question_text }}
                           />
                         </div>
                       </div>

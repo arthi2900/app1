@@ -34,6 +34,7 @@ import { useToast } from '@/hooks/use-toast';
 import type { Question, Subject, Class, Lesson, TeacherAssignmentWithDetails, Profile, MatchPair } from '@/types/types';
 import { supabase } from '@/db/supabase';
 import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import { MathRenderer } from '@/components/ui/math-renderer';
 import BulkUploadDialog from '@/components/teacher/BulkUploadDialog';
 
 // Utility function to remove segment prefix from answer options
@@ -2004,9 +2005,9 @@ export default function QuestionBank() {
                   <TableRow key={question.id}>
                     <TableCell className="max-w-md">
                       <div className="space-y-2">
-                        <div 
+                        <MathRenderer 
+                          content={question.question_text}
                           className="question-content line-clamp-3"
-                          dangerouslySetInnerHTML={{ __html: question.question_text }}
                         />
                         {question.image_url && (
                           <img
@@ -2101,9 +2102,9 @@ export default function QuestionBank() {
                       <div className="flex-1 min-w-0 space-y-3">
                         {/* Question Text */}
                         <div>
-                          <div 
+                          <MathRenderer 
+                            content={question.question_text}
                             className="question-content text-base"
-                            dangerouslySetInnerHTML={{ __html: question.question_text }}
                           />
                         </div>
 
@@ -2122,9 +2123,9 @@ export default function QuestionBank() {
                                   }`}
                                 >
                                   <span className="font-medium">{String.fromCharCode(65 + idx)}</span>
-                                  <span 
-                                    className="question-content"
-                                    dangerouslySetInnerHTML={{ __html: option }}
+                                  <MathRenderer 
+                                    content={option}
+                                    className="question-content inline"
                                   />
                                   {option === question.correct_answer && <span>✓</span>}
                                 </div>

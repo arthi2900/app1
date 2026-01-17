@@ -22,9 +22,10 @@ import 'katex/dist/katex.min.css';
 interface MathRendererProps {
   content: string;
   className?: string;
+  onClick?: () => void;
 }
 
-export function MathRenderer({ content, className = '' }: MathRendererProps) {
+export function MathRenderer({ content, className = '', onClick }: MathRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -109,6 +110,7 @@ export function MathRenderer({ content, className = '' }: MathRendererProps) {
     <div
       ref={containerRef}
       className={`math-content ${className}`}
+      onClick={onClick}
       style={{
         // Ensure proper spacing for math elements
         lineHeight: '1.8',

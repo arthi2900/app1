@@ -52,6 +52,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import { MathRenderer } from '@/components/ui/math-renderer';
 import { supabase } from '@/db/supabase';
 
 interface QuestionWithCreator extends Question {
@@ -1397,10 +1398,10 @@ export default function AdminQuestionBank() {
                         {filteredGlobalQuestions.map((question) => (
                           <TableRow key={question.id}>
                             <TableCell className="max-w-md">
-                              <div
+                              <MathRenderer
+                                content={question.question_text}
                                 className="truncate cursor-pointer hover:text-primary"
                                 onClick={() => handleViewQuestion(question)}
-                                dangerouslySetInnerHTML={{ __html: question.question_text }}
                               />
                             </TableCell>
                             <TableCell>{question.subjects?.subject_name || 'N/A'}</TableCell>
@@ -1576,10 +1577,10 @@ export default function AdminQuestionBank() {
                                     title={isInGlobal ? "Already in global question bank" : "Select question"}
                                     className="shrink-0"
                                   />
-                                  <div
+                                  <MathRenderer
+                                    content={question.question_text}
                                     className="truncate cursor-pointer hover:text-primary flex-1"
                                     onClick={() => handleViewQuestion(question)}
-                                    dangerouslySetInnerHTML={{ __html: question.question_text }}
                                   />
                                   {isInGlobal && (
                                     <Badge variant="default" className="bg-success text-success-foreground shrink-0">
@@ -1803,10 +1804,10 @@ export default function AdminQuestionBank() {
                                 />
                               </TableCell>
                               <TableCell className="max-w-md">
-                                <div
+                                <MathRenderer
+                                  content={question.question_text}
                                   className="truncate cursor-pointer hover:text-primary"
                                   onClick={() => handleViewQuestion(question)}
-                                  dangerouslySetInnerHTML={{ __html: question.question_text }}
                                 />
                               </TableCell>
                               <TableCell>
@@ -1857,9 +1858,9 @@ export default function AdminQuestionBank() {
             <div className="space-y-4">
               <div>
                 <h3 className="font-semibold mb-2">Question:</h3>
-                <div
+                <MathRenderer
+                  content={selectedQuestion.question_text}
                   className="p-4 bg-muted rounded-md"
-                  dangerouslySetInnerHTML={{ __html: selectedQuestion.question_text }}
                 />
               </div>
 
