@@ -68,33 +68,68 @@ Smart • Secure • Scalable Online Exams
   - **Question Type:** Dropdown (MCQ, True/False, Fill in the Blanks, Short Answer, Long Answer) (required)
   - **Difficulty Level:** Dropdown (Easy, Medium, Hard) (required)
   - **Question Text:** Rich text editor (required)
-    - Supports formatting: bold, italic, underline, lists, tables\n    - Supports image upload\n    - Supports mathematical equations (LaTeX)
-  - **Options:** (for MCQ and True/False)
-    - **Option A:** Rich text editor with full formatting support
+    - Supports formatting: bold, italic, underline, lists, tables\n    - Supports image upload\n    - **Supports mathematical equations (LaTeX) with comprehensive symbol library including:**
+      - **Square root (√) symbol**
+      - **Division (÷) symbol**
+      - **All basic mathematical operators:** +, −, ×, ÷, =, ≠, <, >, ≤, ≥
+      - **Fractions and exponents**
+      - **Greek letters:** α, β, γ, δ, θ, λ, μ, π, σ, ω, etc.
+      - **Mathematical symbols:** ∑, ∫, ∂, ∞, √, ∛, ∜, ±, ∓, ×, ÷, ≈, ≡, ∝, ∠, ⊥, ∥, °\n      - **Set theory symbols:** ∈, ∉, ⊂, ⊃, ∪, ∩, ∅\n      - **Logic symbols:** ∧, ∨, ¬, ⇒, ⇔, ∀, ∃\n      - **Science symbols:** Å, ℃, ℉, Ω, μ, ℓ, mol, etc.
+      - **Chemistry symbols:** →, ⇌, ↑, ↓, Δ, etc.
+      - **Physics symbols:** ℏ, ε₀, μ₀, c, g, etc.
+    - **Enhanced equation editor toolbar with quick access buttons for:**
+      - Square root button (√)
+      - Division button (÷)
+      - Fraction button (a/b)
+      - Exponent button (x²)
+      - Subscript button (x₁)\n      - Symbol palette dropdown with categorized symbols:\n        - Basic Math
+        - Greek Letters
+        - Operators
+        - Relations
+        - Arrows
+        - Set Theory
+        - Logic
+        - Science & Chemistry
+        - Physics
+  - **Options:** (for MCQ and True/False)\n    - **Option A:** Rich text editor with full formatting support
       - Supports formatting: bold, italic, underline, lists, tables
       - Supports image upload
-      - Supports mathematical equations (LaTeX)
+      - **Supports mathematical equations (LaTeX) with comprehensive symbol library including:**
+        - **Square root (√) symbol**
+        - **Division (÷) symbol**
+        - **All mathematical and science symbols as listed above**
+      - **Enhanced equation editor toolbar with quick access to all symbols**
     - **Option B:** Rich text editor with full formatting support
       - Supports formatting: bold, italic, underline, lists, tables
       - Supports image upload
-      - Supports mathematical equations (LaTeX)\n    - **Option C:** Rich text editor with full formatting support (MCQ only)
+      - **Supports mathematical equations (LaTeX) with comprehensive symbol library including:**\n        - **Square root (√) symbol**
+        - **Division (÷) symbol**\n        - **All mathematical and science symbols as listed above**
+      - **Enhanced equation editor toolbar with quick access to all symbols**
+    - **Option C:** Rich text editor with full formatting support (MCQ only)
       - Supports formatting: bold, italic, underline, lists, tables
       - Supports image upload
-      - Supports mathematical equations (LaTeX)\n    - **Option D:** Rich text editor with full formatting support (MCQ only)
+      - **Supports mathematical equations (LaTeX) with comprehensive symbol library including:**\n        - **Square root (√) symbol**
+        - **Division (÷) symbol**\n        - **All mathematical and science symbols as listed above**
+      - **Enhanced equation editor toolbar with quick access to all symbols**
+    - **Option D:** Rich text editor with full formatting support (MCQ only)
       - Supports formatting: bold, italic, underline, lists, tables
       - Supports image upload
-      - Supports mathematical equations (LaTeX)\n    - Correct Answer: Radio buttons to select correct option
-  - **Answer:** (for Fill in the Blanks, Short Answer, Long Answer)
-    - Text input or rich text editor
+      - **Supports mathematical equations (LaTeX) with comprehensive symbol library including:**\n        - **Square root (√) symbol**
+        - **Division (÷) symbol**\n        - **All mathematical and science symbols as listed above**
+      - **Enhanced equation editor toolbar with quick access to all symbols**
+    - Correct Answer: Radio buttons to select correct option
+  - **Answer:** (for Fill in the Blanks, Short Answer, Long Answer)\n    - Rich text editor with full formatting support
+    - **Supports mathematical equations (LaTeX) with comprehensive symbol library**
+    - **Enhanced equation editor toolbar with quick access to all symbols**
   - **Marks:** Number input (required)
   - **Tags:** Text input (comma-separated, optional)
   - **Explanation:** Rich text editor (optional)
     - Detailed explanation of the answer
+    - **Supports mathematical equations (LaTeX) with comprehensive symbol library**
+    - **Enhanced equation editor toolbar with quick access to all symbols**
 - Save button (gradient, green)
 - Cancel button (outlined)
-- Validation messages
-
-#### 8.2.3 Bulk Upload Questions\n- Same functionality as Teacher bulk upload
+- Validation messages\n\n#### 8.2.3 Bulk Upload Questions\n- Same functionality as Teacher bulk upload
 - Excel template with three sheets:
   - **Option Sheet:** Dropdown values for Subject, Class, Chapter, Question Type, Difficulty Level
   - **Question Sheet:** Data entry columns (Subject, Class, Chapter, Question Type, Difficulty Level, Question Text, Option A, Option B, Option C, Option D, Correct Answer, Marks, Tags, Explanation)
@@ -213,7 +248,8 @@ Smart • Secure • Scalable Online Exams
 - **Validation:** Check if question is used in any question paper\n
 #### 8.4.5 Bulk Upload Questions API (Principal)
 - **Endpoint:** POST /api/principal/question-bank/bulk-upload
-- **Request:** Multipart form data with Excel file\n- **Response:** Same as Teacher bulk upload API
+- **Request:** Multipart form data with Excel file
+- **Response:** Same as Teacher bulk upload API
 - **Access Control:** Principal only
 - **Logic:** Same as Teacher bulk upload, created_by set to Principal's user_id
 
@@ -243,18 +279,37 @@ Smart • Secure • Scalable Online Exams
 #### 8.5.3 Add/Edit Question Dialog (UPDATED)
 - Modal dialog with glassmorphism styling
 - Form layout with proper spacing
-- Rich text editor with toolbar for Question Text
-- **Rich text editor with toolbar for each Option (A, B, C, D)**
+- **Rich text editor with enhanced toolbar for Question Text:**
+  - Standard formatting buttons: bold, italic, underline, lists, tables
+  - Image upload button
+  - **Enhanced equation editor button with dropdown symbol palette:**
+    - **Quick access buttons for frequently used symbols:**
+      - Square root (√) button
+      - Division (÷) button
+      - Fraction (a/b) button
+      - Exponent (x²) button
+      - Subscript (x₁) button
+    - **Symbol palette dropdown organized by categories:**
+      - **Basic Math:** +, −, ×, ÷, =, ≠, <, >, ≤, ≥, ±, ∓, ≈, ≡, ∝, °
+      - **Greek Letters:** α, β, γ, δ, ε, ζ, η, θ, ι, κ, λ, μ, ν, ξ, π, ρ, σ, τ, υ, φ, χ, ψ, ω, Α, Β, Γ, Δ, Θ, Λ, Ξ, Π, Σ, Φ, Ψ, Ω
+      - **Operators:** √, ∛, ∜, ∑, ∏, ∫, ∂, ∇, Δ\n      - **Relations:** ≤, ≥, ≠, ≈, ≡, ∝, ∞\n      - **Arrows:** →, ←, ↑, ↓, ⇒, ⇐, ⇔, ⇌\n      - **Set Theory:** ∈, ∉, ⊂, ⊃, ⊆, ⊇, ∪, ∩, ∅, ℕ, ℤ, ℚ, ℝ, ℂ\n      - **Logic:** ∧, ∨, ¬, ⇒, ⇔, ∀, ∃\n      - **Geometry:** ∠, ⊥, ∥, △, ○, □, ◇\n      - **Science & Chemistry:** Å, ℃, ℉, Ω, μ, ℓ, mol, ⇌, Δ\n      - **Physics:** ℏ, ε₀, μ₀, c, g, λ, ν, ρ\n    - **Search functionality within symbol palette**
+    - **Recently used symbols section for quick access**
+- **Rich text editor with enhanced toolbar for each Option (A, B, C, D):**
   - Full formatting support: bold, italic, underline, lists, tables
   - Image upload capability
-  - LaTeX equation editor
+  - **Enhanced equation editor with comprehensive symbol library (same as Question Text)**
+  - **Quick access buttons for square root (√) and division (÷)**
+  - **Symbol palette dropdown with all mathematical and science symbols**
+- **Rich text editor with enhanced toolbar for Answer field:**
+  - Full formatting support\n  - **Enhanced equation editor with comprehensive symbol library**
+- **Rich text editor with enhanced toolbar for Explanation field:**
+  - Full formatting support
+  - **Enhanced equation editor with comprehensive symbol library**
 - Image upload with preview
-- LaTeX equation editor\n- Validation messages inline
+- Validation messages inline
 - Save and Cancel buttons at bottom
 
-#### 8.5.4 Bulk Upload Dialog\n- Modal dialog with glassmorphism styling
-- Step-by-step upload process:\n  1. Download template
-  2. Fill template\n  3. Upload filled template\n  4. Preview and validate
+#### 8.5.4 Bulk Upload Dialog\n- Modal dialog with glassmorphism styling\n- Step-by-step upload process:\n  1. Download template\n  2. Fill template\n  3. Upload filled template\n  4. Preview and validate
   5. Confirm upload
 - Progress indicator for each step
 - Error display with row-wise details
@@ -267,8 +322,7 @@ Smart • Secure • Scalable Online Exams
 - Usage list with question paper names
 - Edit and Delete buttons at bottom
 
-### 8.6 Question Bank Help and Documentation (Principal)
-
+### 8.6 Question Bank Help and Documentation (Principal)\n
 #### 8.6.1 Help Resources
 - Help icon in Question Bank page
 - Opens help dialog with:
@@ -280,9 +334,10 @@ Smart • Secure • Scalable Online Exams
   - How to filter and search questions
   - How to export questions
   - Understanding question usage tracking
-  - FAQ section
-
-#### 8.6.2 FAQ Topics
+  - **How to use the enhanced equation editor**
+  - **How to insert square root and division symbols**
+  - **How to access all mathematical and science symbols**
+  - FAQ section\n\n#### 8.6.2 FAQ Topics
 - What is Question Bank?
 - How to add a new question?
 - How to bulk upload questions?
@@ -297,12 +352,19 @@ Smart • Secure • Scalable Online Exams
 - How to use rich text editor for question formatting?
 - How to add images to questions?
 - How to add mathematical equations to questions?
-- **How to format option text with rich text editor?**
-- **Can I add images to option text?**
-- **Can I add equations to option text?**
+- How to format option text with rich text editor?
+- Can I add images to option text?
+- Can I add equations to option text?
+- **How to insert square root symbol in questions and options?**
+- **How to insert division symbol in questions and options?**
+- **What mathematical symbols are available in the equation editor?**
+- **How to access Greek letters and science symbols?**
+- **How to search for specific symbols in the symbol palette?**
+- **Can I use LaTeX syntax for complex equations?**
 \n---
 
-## 25. UPDATED: Real-Time Storage Monitoring Module\n
+## 25. UPDATED: Real-Time Storage Monitoring Module
+
 ### 25.1 Real-Time Storage Monitoring Overview
 - Purpose: Dynamically monitor file sizes and database sizes for all users in real-time across the platform with server capacity comparison
 - Access:\n  - Admin can monitor storage usage of all users across all schools
@@ -314,8 +376,7 @@ Smart • Secure • Scalable Online Exams
   - Real-time percentage calculation: (Current Usage / Server Capacity) × 100
   - Visual capacity indicators: Progress bars, gauges, and charts showing usage levels
   - Filter and search by user, school, role, or date range
-  - Export storage usage reports
-  - Analytics dashboard showing storage trends and top users by storage\n  - Real-time updates with auto-refresh (every 10 seconds)
+  - Export storage usage reports\n  - Analytics dashboard showing storage trends and top users by storage\n  - Real-time updates with auto-refresh (every 10 seconds)
   - Role-based access control (Admin only)\n  - Dynamic alerts for users exceeding storage thresholds
   - Server capacity alerts when total usage exceeds thresholds (e.g., 80%, 90%, 95%)
   - Storage optimization recommendations\n  - Predictive analytics: Estimate when server capacity will be reached based on current growth trends
@@ -323,7 +384,8 @@ Smart • Secure • Scalable Online Exams
 ### 25.2 Real-Time Storage Monitoring Database Structure
 
 #### 25.2.1 User Storage Usage Table
-Table name: user_storage_usage\n
+Table name: user_storage_usage
+
 Columns:
 - id (UUID, Primary Key)
 - user_id (Foreign Key → users.id, required)
@@ -383,8 +445,7 @@ Columns:
   - Normal: total_storage_usage_percentage < alert_threshold_percentage
   - Warning: alert_threshold_percentage ≤ total_storage_usage_percentage < critical_threshold_percentage
   - Critical: total_storage_usage_percentage ≥ critical_threshold_percentage\n- last_calculated_at (Timestamp with timezone, required)
-- created_at (Timestamp)
-- updated_at (Timestamp)
+- created_at (Timestamp)\n- updated_at (Timestamp)
 
 **Purpose:** This table stores aggregated server-wide storage summary. Updated dynamically every 10 seconds.
 
@@ -392,8 +453,8 @@ Columns:
 - **Dynamic File Storage Calculation:**
   - Real-time sum of all file sizes uploaded by the user
   - Query executed every 10 seconds:\n    ```sql
-    SELECT SUM(file_size) FROM files WHERE user_id = [user_id]
-    ```\n  - Includes:\n    - Question images (from question_bank table)
+    SELECT SUM(file_size) FROM files WHERE user_id = [user_id]\n    ```
+  - Includes:\n    - Question images (from question_bank table)
     - Profile pictures (from users table)
     - Uploaded documents (if any)
     - Bulk upload template files (if stored)\n\n- **Dynamic Database Storage Calculation:**
@@ -427,15 +488,15 @@ Columns:
     FROM user_storage_usage
     ```
   - Fetch server capacity from server_capacity_config table
-  - Calculate usage percentages:\n    - file_storage_usage_percentage = (total_file_storage_used_bytes / total_file_storage_capacity_bytes) × 100\n    - database_storage_usage_percentage = (total_database_storage_used_bytes / total_database_storage_capacity_bytes) × 100
+  - Calculate usage percentages:\n    - file_storage_usage_percentage = (total_file_storage_used_bytes / total_file_storage_capacity_bytes) × 100
+    - database_storage_usage_percentage = (total_database_storage_used_bytes / total_database_storage_capacity_bytes) × 100
     - total_storage_usage_percentage = (total_storage_used_bytes / total_storage_capacity_bytes) × 100
   - Determine server_status based on total_storage_usage_percentage and thresholds
   - Update server_storage_summary table\n
 ### 25.3 Real-Time Storage Monitoring Interface (UPDATED)
 
 #### 25.3.1 Real-Time Storage Monitoring Page Layout (UPDATED)
-- Page title: 'Storage Monitoring'
-- **NEW: Server Capacity Overview Section (Top of Page)**
+- Page title: 'Storage Monitoring'\n- **NEW: Server Capacity Overview Section (Top of Page)**
   - Large glassmorphism card displaying:
     - **Total Server Capacity:** Display total storage capacity (e.g., '1.5 TB')
     - **Total Storage Used:** Display current total storage usage (e.g., '650 GB')
@@ -495,7 +556,8 @@ Columns:
 - Storage Status: Display status badge (Normal: green, Warning: orange, Critical: red)
 - Last Updated: Display timestamp with relative time (e.g., '10 seconds ago')
 \n#### 25.3.3 NEW: Configure Server Capacity Dialog\n- Modal dialog with glassmorphism styling
-- Title: 'Configure Server Capacity'\n- Form fields:
+- Title: 'Configure Server Capacity'
+- Form fields:
   - **Total File Storage Capacity:** Number input with unit selector (GB/TB)
   - **Total Database Storage Capacity:** Number input with unit selector (GB/TB)
   - **Alert Threshold Percentage:** Number input (e.g., 80)\n  - **Critical Threshold Percentage:** Number input (e.g., 95)
@@ -577,7 +639,8 @@ Columns:
       \"total_file_storage_capacity_bytes\": 1099511627776,
       \"total_database_storage_capacity_bytes\": 549755813888,
       \"total_storage_capacity_bytes\": 1649267441664,
-      \"alert_threshold_percentage\": 80,\n      \"critical_threshold_percentage\": 95
+      \"alert_threshold_percentage\": 80,
+      \"critical_threshold_percentage\": 95
     }
   }
   ```
@@ -729,8 +792,7 @@ Columns:
   - Display average storage usage per user
   - Icon: User icon
   - Color: Green
-- Users Exceeding Threshold:
-  - Display count of users with Warning or Critical status
+- Users Exceeding Threshold:\n  - Display count of users with Warning or Critical status
   - Icon: Alert icon
   - Color: Orange/Red
 
@@ -771,8 +833,7 @@ Columns:
   - Capacity limit line (horizontal)
   - Shaded area showing safe zone
   - Display projected exhaustion date with warning badge
-
-### 25.7 Real-Time Storage Monitoring Notifications (UPDATED)
+\n### 25.7 Real-Time Storage Monitoring Notifications (UPDATED)
 
 #### 25.7.1 Admin Notifications (UPDATED)
 - **Alert when user exceeds storage threshold** (Warning or Critical status)
@@ -848,4 +909,6 @@ Columns:
 
 ## 26. Conclusion (UPDATED)
 
-A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting with full formatting support for both question text and option text (including bold, italic, underline, lists, tables, image upload, and LaTeX equations), updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The latest enhancements include: (1) Full Question Bank access for Principals with all Teacher-level features including create, edit, delete, bulk upload, filter, search, export, and question usage tracking capabilities, enabling Principals to manage questions across their school efficiently; (2) Rich text editor support for option text in questions, allowing Teachers and Principals to format option text with bold, italic, underline, lists, tables, images, and mathematical equations, providing the same formatting flexibility for options as for question text; and (3) Dynamic Real-Time Storage Monitoring with Server Capacity Comparison—a powerful tool for administrators to monitor storage usage across the platform in real-time, compare current usage against total server capacity, receive dynamic alerts when thresholds are exceeded, and leverage predictive analytics to forecast capacity exhaustion dates. These features enable proactive server management, support capacity planning, improve resource allocation, identify storage bottlenecks, provide actionable insights for storage optimization, and ensure the platform can scale efficiently to meet growing demands. With dynamic calculations updated every 10 seconds, visual capacity indicators, server capacity configuration options, and comprehensive analytics dashboards, administrators have complete visibility and control over storage resources, enabling them to make informed decisions about server upgrades, data cleanup policies, and user storage limits.
+A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting with full formatting support for both question text and option text (including bold, italic, underline, lists, tables, image upload, and LaTeX equations with comprehensive mathematical and science symbol library), updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The latest enhancements include: (1) Full Question Bank access for Principals with all Teacher-level features including create, edit, delete, bulk upload, filter, search, export, and question usage tracking capabilities, enabling Principals to manage questions across their school efficiently; (2) Enhanced rich text editor support for question text and option text with comprehensive mathematical and science symbol library, including quick access buttons for square root (√) and division (÷) symbols, organized symbol palette with categories (Basic Math, Greek Letters, Operators, Relations, Arrows, Set Theory, Logic, Geometry, Science & Chemistry, Physics), search functionality, and recently used symbols section, providing Teachers and Principals with powerful tools to create complex mathematical and scientific questions with ease; and (3) Dynamic Real-Time Storage Monitoring with Server Capacity Comparison—a powerful tool for administrators to monitor storage usage across the platform in real-time, compare current usage against total server capacity, receive dynamic alerts when thresholds are exceeded, and leverage predictive analytics to forecast capacity exhaustion dates. These features enable proactive server management, support capacity planning, improve resource allocation, identify storage bottlenecks, provide actionable insights for storage optimization, and ensure the platform can scale efficiently to meet growing demands. With dynamic calculations updated every 10 seconds, visual capacity indicators, server capacity configuration options, and comprehensive analytics dashboards, administrators have complete visibility and control over storage resources, enabling them to make informed decisions about server upgrades, data cleanup policies, and user storage limits.\n
+## Reference Files
+1. User-provided image: formula.jpg
