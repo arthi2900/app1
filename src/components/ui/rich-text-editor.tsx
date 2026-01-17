@@ -214,18 +214,17 @@ export function RichTextEditor({
   const insertFormula = (latex: string) => {
     const editor = quillRef.current?.getEditor();
     if (editor) {
-      const range = editor.getSelection();
-      if (range) {
-        // Insert the LaTeX formula wrapped in delimiters
-        console.log('Inserting formula:', latex);
-        editor.insertText(range.index, latex);
-        editor.setSelection(range.index + latex.length, 0);
-        
-        // Log the current content
-        console.log('Editor content after insert:', editor.getText());
-      } else {
-        console.warn('No selection range available');
-      }
+      const range = editor.getSelection() || { index: editor.getLength(), length: 0 };
+      
+      // Insert the LaTeX formula wrapped in delimiters
+      console.log('Inserting formula:', latex);
+      editor.insertText(range.index, latex);
+      editor.setSelection(range.index + latex.length, 0);
+      
+      // Manually trigger the change event to update parent state
+      const newContent = editor.root.innerHTML;
+      console.log('Editor HTML after insert:', newContent);
+      onChange(newContent);
     } else {
       console.error('Editor not available');
     }
