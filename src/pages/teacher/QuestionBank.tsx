@@ -42,6 +42,13 @@ const normalizeAnswerOption = (answer: string): string => {
   return answer.replace(/^\([ivxIVX]+\)\s*/, '').trim();
 };
 
+// Utility function to strip HTML tags from text
+const stripHtmlTags = (html: string): string => {
+  const tmp = document.createElement('DIV');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+};
+
 export default function QuestionBank() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -1296,14 +1303,16 @@ export default function QuestionBank() {
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select correct answer" />
+                        <SelectValue placeholder="Select correct answer">
+                          {formData.correct_answer ? stripHtmlTags(formData.correct_answer) : 'Select correct answer'}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {formData.options
                           .filter((opt) => opt.trim())
                           .map((option, index) => (
                             <SelectItem key={index} value={option}>
-                              {option}
+                              {stripHtmlTags(option)}
                             </SelectItem>
                           ))}
                       </SelectContent>
@@ -1316,14 +1325,16 @@ export default function QuestionBank() {
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select correct answer option" />
+                        <SelectValue placeholder="Select correct answer option">
+                          {formData.correct_answer ? stripHtmlTags(formData.correct_answer) : 'Select correct answer option'}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {formData.answer_options
                           .filter((opt) => opt.trim())
                           .map((answerOption, index) => (
                             <SelectItem key={index} value={answerOption}>
-                              {answerOption}
+                              {stripHtmlTags(answerOption)}
                             </SelectItem>
                           ))}
                       </SelectContent>
@@ -1754,14 +1765,16 @@ export default function QuestionBank() {
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select correct answer" />
+                        <SelectValue placeholder="Select correct answer">
+                          {formData.correct_answer ? stripHtmlTags(formData.correct_answer) : 'Select correct answer'}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {formData.options
                           .filter((opt) => opt.trim())
                           .map((option, index) => (
                             <SelectItem key={index} value={option}>
-                              {option}
+                              {stripHtmlTags(option)}
                             </SelectItem>
                           ))}
                       </SelectContent>
@@ -1774,14 +1787,16 @@ export default function QuestionBank() {
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select correct answer option" />
+                        <SelectValue placeholder="Select correct answer option">
+                          {formData.correct_answer ? stripHtmlTags(formData.correct_answer) : 'Select correct answer option'}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {formData.answer_options
                           .filter((opt) => opt.trim())
                           .map((answerOption, index) => (
                             <SelectItem key={index} value={answerOption}>
-                              {answerOption}
+                              {stripHtmlTags(answerOption)}
                             </SelectItem>
                           ))}
                       </SelectContent>
