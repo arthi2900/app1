@@ -161,6 +161,16 @@ export function FormulaDialog({ onInsert, trigger }: FormulaDialogProps) {
             </div>
           </div>
 
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-2 pt-2">
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="button" onClick={handleInsert} disabled={!latex.trim()}>
+              Insert Formula
+            </Button>
+          </div>
+
           {/* Examples */}
           <div className="space-y-2">
             <Label>Common Examples (Click to use)</Label>
@@ -202,15 +212,6 @@ export function FormulaDialog({ onInsert, trigger }: FormulaDialogProps) {
             </div>
           </div>
         </div>
-
-        <DialogFooter>
-          <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-            Cancel
-          </Button>
-          <Button type="button" onClick={handleInsert} disabled={!latex.trim()}>
-            Insert Formula
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
