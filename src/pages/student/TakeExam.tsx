@@ -29,6 +29,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { hasExamStarted, hasExamEnded, getExamRemainingTime, formatSecondsToTime } from '@/utils/timezone';
+import { MathRenderer } from '@/components/ui/math-renderer';
 
 export default function TakeExam() {
   const { examId } = useParams<{ examId: string }>();
@@ -393,9 +394,9 @@ export default function TakeExam() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="prose max-w-none">
-                  <div 
+                  <MathRenderer 
+                    content={currentQuestion.question?.question_text || ''}
                     className="question-content text-lg"
-                    dangerouslySetInnerHTML={{ __html: currentQuestion.question?.question_text || '' }}
                   />
                   {currentQuestion.question?.image_url && (
                     <img
@@ -416,9 +417,9 @@ export default function TakeExam() {
                         <div key={index} className="flex items-center space-x-2 p-3 border rounded-md hover:bg-muted">
                           <RadioGroupItem value={option} id={`option-${index}`} />
                           <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
-                            <span 
+                            <MathRenderer 
+                              content={option}
                               className="question-content"
-                              dangerouslySetInnerHTML={{ __html: option }}
                             />
                           </Label>
                         </div>

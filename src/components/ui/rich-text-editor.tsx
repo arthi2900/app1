@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import 'katex/dist/katex.min.css';
 import { cn } from '@/lib/utils';
 import { Button } from './button';
 import {
@@ -11,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './dropdown-menu';
+import { FormulaDialog } from './formula-dialog';
 
 /**
  * RichTextEditor Component
@@ -27,6 +29,7 @@ import {
  * - Text alignment
  * - Links and images
  * - Mathematical and science symbols
+ * - LaTeX formula support for complex equations
  * - Clean formatting option
  * 
  * Usage:
@@ -200,6 +203,18 @@ export function RichTextEditor({
     setSymbolsOpen(false);
   };
 
+  const insertFormula = (latex: string) => {
+    const editor = quillRef.current?.getEditor();
+    if (editor) {
+      const range = editor.getSelection();
+      if (range) {
+        // Insert the LaTeX formula wrapped in delimiters
+        editor.insertText(range.index, latex);
+        editor.setSelection(range.index + latex.length, 0);
+      }
+    }
+  };
+
   useEffect(() => {
     // Apply custom styles to the Quill editor
     const editor = quillRef.current?.getEditor();
@@ -261,8 +276,12 @@ export function RichTextEditor({
 
   return (
     <div className={cn('rich-text-editor-wrapper space-y-2', className)} id={id}>
-      {/* Symbols Dropdown */}
-      <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg border">
+      {/* Toolbar with Symbols and Formula buttons */}
+      <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg border flex-wrap">
+        {/* Formula Dialog Button */}
+        <FormulaDialog onInsert={insertFormula} />
+        
+        {/* Math Symbols Dropdown */}
         <DropdownMenu open={symbolsOpen} onOpenChange={setSymbolsOpen}>
           <DropdownMenuTrigger asChild>
             <Button
@@ -272,7 +291,7 @@ export function RichTextEditor({
               className="gap-2"
             >
               <span className="text-lg">∑</span>
-              <span className="text-sm">Math Symbols</span>
+              <span className="text-sm">Symbols</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-[400px] max-h-[500px] overflow-y-auto">
@@ -428,7 +447,7 @@ export function RichTextEditor({
         </DropdownMenu>
         
         <span className="text-xs text-muted-foreground">
-          Click to insert mathematical and science symbols into your text
+          Use "Insert Formula" for complex equations with extended square roots, or "Symbols" for quick character insertion
         </span>
       </div>
 

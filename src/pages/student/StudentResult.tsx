@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { examApi, examAttemptApi, examAnswerApi, profileApi } from '@/db/api';
 import { ArrowLeft, Award, CheckCircle2, XCircle, TrendingUp } from 'lucide-react';
 import type { ExamWithDetails, ExamAttempt, ExamAnswerWithDetails } from '@/types/types';
+import { MathRenderer } from '@/components/ui/math-renderer';
 
 export default function StudentResult() {
   const { examId } = useParams<{ examId: string }>();
@@ -301,9 +302,9 @@ export default function StudentResult() {
                               className="max-w-md mb-2 rounded-md"
                             />
                           )}
-                          <div 
+                          <MathRenderer 
+                            content={question.question_text}
                             className="question-content text-base"
-                            dangerouslySetInnerHTML={{ __html: question.question_text }}
                           />
                         </div>
                       </div>
