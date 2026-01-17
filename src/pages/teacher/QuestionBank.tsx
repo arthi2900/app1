@@ -64,6 +64,7 @@ export default function QuestionBank() {
   const [viewMode, setViewMode] = useState<'row' | 'card'>('row');
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [formResetKey, setFormResetKey] = useState(0); // Key to force RichTextEditor reset
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -660,6 +661,8 @@ export default function QuestionBank() {
       correctMatches: {},
       multipleCorrectAnswers: [],
     }));
+    // Increment key to force RichTextEditor components to reset
+    setFormResetKey(prev => prev + 1);
   };
 
   // Get subjects for selected class
@@ -1029,6 +1032,7 @@ export default function QuestionBank() {
                 <div className="space-y-2">
                   <Label htmlFor="question">Question Text</Label>
                   <RichTextEditor
+                    key={`question-text-${formResetKey}`}
                     id="question"
                     value={formData.question_text}
                     onChange={(value) =>
@@ -1127,6 +1131,7 @@ export default function QuestionBank() {
                       <div key={index} className="flex gap-2 items-start">
                         <div className="flex-1">
                           <RichTextEditor
+                            key={`mcq-option-${index}-${formResetKey}`}
                             value={option}
                             onChange={(value) => updateOption(index, value)}
                             placeholder={`Option ${index + 1}`}
@@ -1171,6 +1176,7 @@ export default function QuestionBank() {
                         <div key={index} className="flex gap-2 items-start">
                           <div className="flex-1">
                             <RichTextEditor
+                              key={`mr-option-${index}-${formResetKey}`}
                               value={option}
                               onChange={(value) => updateOption(index, value)}
                               placeholder={`Option ${String.fromCharCode(65 + index)}`}
@@ -1217,6 +1223,7 @@ export default function QuestionBank() {
                         <div key={index} className="flex gap-2 items-start">
                           <div className="flex-1">
                             <RichTextEditor
+                              key={`mr-answer-${index}-${formResetKey}`}
                               value={answerOption}
                               onChange={(value) => {
                                 const newAnswerOptions = [...formData.answer_options];
