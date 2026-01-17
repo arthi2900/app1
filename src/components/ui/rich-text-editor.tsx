@@ -15,7 +15,6 @@ import {
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from './tooltip';
 import { FormulaDialog } from './formula-dialog';
@@ -464,25 +463,23 @@ export function RichTextEditor({
         </DropdownMenu>
         
         {/* Preview Toggle Button */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setShowPreview(!showPreview)}
-                className="gap-2 ml-auto"
-              >
-                {showPreview ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                <span className="text-sm">{showPreview ? 'Hide' : 'Show'} Preview</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Toggle preview to see how formulas will render</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowPreview(!showPreview)}
+              className="gap-2 ml-auto"
+            >
+              {showPreview ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              <span className="text-sm">{showPreview ? 'Hide' : 'Show'} Preview</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Toggle preview to see how formulas will render</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
 
       {/* Quill Editor */}
