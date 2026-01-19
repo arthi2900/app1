@@ -781,8 +781,8 @@ export default function QuestionPaperPreparation() {
                         ) : (
                           getFilteredQuestions().map((question, index) => {
                             const usage = questionUsageStats[question.id] || { count: 0, papers: [] };
-                            // Find the original index in availableQuestions for serial number
-                            const serialNumber = availableQuestions.findIndex(q => q.id === question.id) + 1;
+                            // Use the persistent serial_number from the database
+                            const serialNumber = question.serial_number || (index + 1).toString().padStart(3, '0');
                             return (
                             <TableRow key={question.id}>
                               <TableCell className="align-top w-12">
@@ -792,7 +792,7 @@ export default function QuestionPaperPreparation() {
                                 />
                               </TableCell>
                               <TableCell className="align-top w-16">
-                                <span className="font-medium text-muted-foreground">{serialNumber}</span>
+                                <span className="font-medium text-muted-foreground">#{serialNumber}</span>
                               </TableCell>
                               <TableCell className="align-top min-w-[350px]">
                                 <MathRenderer 

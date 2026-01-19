@@ -2005,7 +2005,7 @@ export default function QuestionBank() {
                 {questions.map((question, index) => (
                   <TableRow key={question.id}>
                     <TableCell className="font-medium text-muted-foreground">
-                      {index + 1}
+                      #{question.serial_number || (index + 1).toString().padStart(3, '0')}
                     </TableCell>
                     <TableCell className="max-w-md">
                       <div className="space-y-2">

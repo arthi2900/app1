@@ -55,8 +55,7 @@ Smart • Secure • Scalable Online Exams
     - Created by (Teacher name)
     - Created date
     - Usage count (number of papers using this question)
-    - Action buttons: Edit, Delete, View Details
-  - Pagination at bottom
+    - Action buttons: Edit, Delete, View Details\n  - Pagination at bottom
 - Summary statistics at top:\n  - Total questions count
   - Questions by difficulty (Easy, Medium, Hard counts)
   - Questions by type (MCQ, True/False, etc. counts)
@@ -88,12 +87,13 @@ Smart • Secure • Scalable Online Exams
       - Division button (÷)
       - Fraction button (a/b)
       - Exponent button (x²)
-      - Subscript button (x₁)\n      - Symbol palette dropdown with categorized symbols:\n        - Basic Math\n        - Greek Letters
-        - Operators\n        - Relations
+      - Subscript button (x₁)\n      - Symbol palette dropdown with categorized symbols:\n        - Basic Math
+        - Greek Letters
+        - Operators
+        - Relations
         - Arrows
         - Set Theory
-        - Logic
-        - Geometry
+        - Logic\n        - Geometry
         - Science & Chemistry
         - Physics
     - **Rendered output area shows formatted text, equations, and images in real-time**
@@ -143,8 +143,7 @@ Smart • Secure • Scalable Online Exams
   3. Principal fills template with question data (Serial Number auto-generated during upload if not provided)
   4. Principal uploads filled template
   5. System validates data and shows preview
-  6. Principal confirms upload
-  7. Questions added to question bank with Principal as creator and auto-generated serial numbers
+  6. Principal confirms upload\n  7. Questions added to question bank with Principal as creator and auto-generated serial numbers
 - Validation rules:
   - All required fields must be filled
   - Subject, Class, Chapter must exist in system
@@ -173,30 +172,29 @@ Smart • Secure • Scalable Online Exams
 - Action buttons:
   - Edit button\n  - Delete button
   - Close button
-\n#### 8.2.5 Delete Question Validation\n- Before deleting, system checks if question is used in any question paper
+\n#### 8.2.5 Delete Question Validation
+- Before deleting, system checks if question is used in any question paper
 - If used:\n  - Display warning message: 'This question is used in X question paper(s). Deleting it will affect those papers. Are you sure you want to delete?'
   - List affected question papers
   - Require confirmation\n- If not used:
   - Display confirmation message: 'Are you sure you want to delete this question?'
   - Require confirmation
-- After deletion:
-  - Display success message\n  - Refresh question list
+- After deletion:\n  - Display success message\n  - Refresh question list
 
 ### 8.3 Question Bank Database Structure (Principal Access) (UPDATED)
 
 #### 8.3.1 Question Bank Table (UPDATED)
 - Existing table structure with new column:
   - **serial_number (String, unique within school, required)**
-    - Format: Zero-padded 3-digit number (e.g., 001, 002, 003)
-    - Auto-generated sequentially within each school
+    - Format: Zero-padded 3-digit number (e.g., 001, 002, 003)\n    - Auto-generated sequentially within each school
     - Displayed as #001, #002, #003 in UI
 - Principal can create questions with their user_id as created_by
 - Principal can edit/delete questions created by Teachers in their school
 - Serial number generation logic:
   - When creating new question, system finds highest serial_number in school
   - Increments by 1 and assigns to new question
-  - Format: LPAD(next_number, 3, '0')\n\n#### 8.3.2 Access Control Logic\n- Principal can access all questions where:
-  - created_by is a Teacher in their school, OR
+  - Format: LPAD(next_number, 3, '0')
+\n#### 8.3.2 Access Control Logic\n- Principal can access all questions where:\n  - created_by is a Teacher in their school, OR
   - created_by is the Principal themselves
 - Principal cannot access questions from other schools
 - Principal has full CRUD permissions on accessible questions
@@ -423,9 +421,11 @@ Smart • Secure • Scalable Online Exams
 - Access: Teachers and Principals can create question papers for their school
 - Key Features:
   - Select questions from question bank
-  - **NEW: Display Serial Number for each question in the Select Questions interface**
-  - **NEW: Filter and search questions by Serial Number**
-  - **NEW: Sort questions by Serial Number**
+  - **Display Original Serial Number from Question Bank for each question in the Select Questions interface**
+  - **Filter and search questions by Original Serial Number**
+  - **Sort questions by Original Serial Number**
+  - **Maintain Original Serial Numbers throughout the selection process**
+  - **Re-sequence selected questions as 1, 2, 3, etc. after selection is completed**
   - Filter questions by subject, class, chapter, difficulty, question type\n  - View question details before selection
   - Real-time statistics showing total marks, question count, difficulty distribution
   - Smart selection features (balanced distribution, even lesson coverage, easy question only)
@@ -439,7 +439,8 @@ Smart • Secure • Scalable Online Exams
 - Multi-step wizard:
   - Step 1: Basic Details (paper name, subject, class, total marks, duration)
   - Step 2: Select Questions (UPDATED)
-  - Step 3: Preview & Save\n\n#### 15.2.2 Step 2: Select Questions Interface (UPDATED)
+  - Step 3: Preview & Save (UPDATED)
+\n#### 15.2.2 Step 2: Select Questions Interface (UPDATED)
 - Section title: 'Select Questions'
 - Subtitle: 'Choose questions from your question bank'
 - Two view modes:
@@ -448,7 +449,7 @@ Smart • Secure • Scalable Online Exams
 - **UPDATED: Filter panel on left (collapsible):**
   - All Difficulty dropdown (Easy, Medium, Hard)
   - All Lessons dropdown (filter by chapter/lesson)
-  - **NEW: Serial Number filter (text input for exact match or range, e.g., 001 or 001-010)**
+  - **Original Serial Number filter (text input for exact match or range, e.g., 001 or 001-010)**
   - Subject filter (auto-filled from Step 1)
   - Class filter (auto-filled from Step 1)
   - Chapter filter (dropdown)\n  - Question type filter (MCQ, True/False, Fill in the Blanks, Short Answer, Long Answer)
@@ -458,19 +459,20 @@ Smart • Secure • Scalable Online Exams
   - Select Medium
   - Select Hard
   - Clear\n- **UPDATED: Search bar at top:**
-  - Search by question text, tags, **Serial Number**, or ID
-  - Placeholder: 'Search by question text, tags, serial number, or ID'
+  - Search by question text, tags, **Original Serial Number**, or ID
+  - Placeholder: 'Search by question text, tags, original serial number, or ID'
 - **UPDATED: Main question selection table:**
   - Columns:\n    - **Select (Checkbox)**
-    - **NEW: Serial Number (e.g., #001, #002, #003) - Sortable column**
+    - **NEW: Original Serial Number (e.g., #001, #002, #003) - Sortable column**
     - **Question (truncated text with 'View Details' link)**
     - **Type (MCQ, True/False, etc.)**
     - **Difficulty (Easy, Medium, Hard badge)**
     - **Marks**
-  - **NEW: Serial Number column displayed prominently as the second column (after Select checkbox)**
-  - **NEW: Serial Number is sortable (ascending/descending)**
+  - **NEW: Original Serial Number column displayed prominently as the second column (after Select checkbox)**
+  - **NEW: Original Serial Number is sortable (ascending/descending)**
+  - **IMPORTANT: Original Serial Number always displays the question's serial number from the Question Bank (e.g., if a question is #002 in Question Bank, it displays as #002 here)**
   - Each row displays:\n    - Checkbox for selection
-    - **Serial Number (e.g., #001) with badge styling**
+    - **Original Serial Number (e.g., #002) with badge styling - this is the question's serial number from Question Bank**
     - Question text (truncated, with tooltip showing full text on hover)
     - Question type badge
     - Difficulty level badge (color-coded)\n    - Marks
@@ -496,7 +498,7 @@ Smart • Secure • Scalable Online Exams
 - Modal dialog with glassmorphism styling
 - Title: 'Question Details'
 - Display full question details:
-  - **Serial Number (displayed prominently at top, e.g., Question #001)**
+  - **Original Serial Number (displayed prominently at top, e.g., Question #002 - this is the question's serial number from Question Bank)**
   - **Question text (rendered output with full formatting, equations, and images)**
   - Question type\n  - Subject, Class, Chapter
   - Difficulty level
@@ -512,10 +514,13 @@ Smart • Secure • Scalable Online Exams
   - **Select Question button (if not already selected)**
   - **Deselect Question button (if already selected)**
   - Close button
-\n#### 15.2.4 Step 3: Preview & Save\n- Section title: 'Preview & Save'\n- Preview area:
+\n#### 15.2.4 Step 3: Preview & Save (UPDATED)
+- Section title: 'Preview & Save'\n- Preview area:
   - Display question paper in formatted layout
   - Show paper name, subject, class, total marks, duration at top
-  - **Display questions with Serial Numbers (e.g., Question #001, Question #002)**
+  - **Display questions with Re-sequenced Serial Numbers (1, 2, 3, 4, etc.)**
+  - **IMPORTANT: After selection is completed, questions are re-sequenced starting from 1**
+  - **Example: If selected questions have Original Serial Numbers #002, #005, #010 in Question Bank, they will be displayed as Question 1, Question 2, Question 3 in the preview**
   - Display questions grouped by section (if applicable)
   - Display question text, options, marks for each question
   - Print button to print question paper
@@ -572,9 +577,9 @@ Smart • Secure • Scalable Online Exams
 - **Logic:**
   - Fetch questions matching filters from question_bank table
   - **NEW: Support filtering by serial_number (exact match or range)**\n  - **NEW: Support sorting by serial_number (ascending/descending)**
-  - Include serial_number in response for each question
-  - Return paginated results
-\n#### 15.3.2 Create Question Paper API (UPDATED)
+  - **Include serial_number in response for each question - this is the Original Serial Number from Question Bank**
+  - Return paginated results\n
+#### 15.3.2 Create Question Paper API (UPDATED)
 - **Endpoint:** POST /api/question-paper/create
 - **Request Body:**
   ```json
@@ -584,13 +589,11 @@ Smart • Secure • Scalable Online Exams
     \"class_id\": \"uuid\",\n    \"total_marks\": 100,
     \"duration_minutes\": 180,
     \"question_ids\": [\"uuid1\", \"uuid2\", \"uuid3\"],
-    \"status\": \"draft\" // or \"published\"
-  }\n  ```
-- **Response:**
+    \"status\": \"draft\"\n  }
+  ```\n- **Response:**
   ```json
   {
-    \"success\": true,
-    \"message\": \"Question paper created successfully\",
+    \"success\": true,\n    \"message\": \"Question paper created successfully\",
     \"data\": {
       \"paper_id\": \"uuid\",
       \"paper_name\": \"Physics Mid-Term Exam\",
@@ -608,47 +611,81 @@ Smart • Secure • Scalable Online Exams
   - Ensure at least one question is selected
 - **Logic:**
   - Create question_papers record
-  - Create question_paper_questions records linking paper to questions
+  - **Create question_paper_questions records linking paper to questions with re-sequenced order (1, 2, 3, etc.)**
+  - **Store both original_serial_number (from Question Bank) and paper_question_number (re-sequenced 1, 2, 3, etc.) in question_paper_questions table**
   - Update usage_count for each selected question
   - Return created paper details
+
+#### 15.3.3 NEW: Question Paper Questions Table Structure (UPDATED)
+Table name: question_paper_questions\n
+Columns:
+- id (UUID, Primary Key)
+- paper_id (Foreign Key → question_papers.id, required)
+- question_id (Foreign Key → question_bank.id, required)
+- **original_serial_number (String, required)**
+  - The serial number of the question from Question Bank (e.g., 001, 002, 010)\n  - This is the question's original serial number and remains unchanged
+- **paper_question_number (Integer, required)**
+  - The re-sequenced question number in the question paper (e.g., 1, 2, 3, 4, etc.)
+  - This is the display order in the question paper
+- marks (Integer, required)
+- created_at (Timestamp)\n- updated_at (Timestamp)
+\n**Purpose:** This table links questions to question papers and stores both the original serial number from Question Bank and the re-sequenced question number for display in the question paper.
 
 ### 15.4 Create Question Paper UI Components (UPDATED)
 
 #### 15.4.1 Question Selection Table (UPDATED)
 - Responsive table with horizontal scroll
 - **UPDATED: Columns:**
-  - **Select (Checkbox)**\n  - **NEW: Serial Number (e.g., #001) - Sortable column with sort indicator**
+  - **Select (Checkbox)**\n  - **NEW: Original Serial Number (e.g., #001, #002, #010) - Sortable column with sort indicator**
   - **Question (truncated text)**
   - **Type (badge)**
   - **Difficulty (color-coded badge)**
   - **Marks**
-- **NEW: Serial Number column styling:**
+- **NEW: Original Serial Number column styling:**
   - Badge styling with purple-blue gradient background
-  - Bold text\n  - Displayed prominently as second column
-  - Sortable with ascending/descending indicators
+  - Bold text\n  - Displayed prominently as second column\n  - Sortable with ascending/descending indicators
+  - **Always displays the question's serial number from Question Bank (e.g., #002, #005, #010)**
 - Hover effects on rows
 - Click on question text to open details modal
 - Checkbox selection with visual feedback
 - Pagination at bottom
-\n#### 15.4.2 Real-time Statistics Panel\n- Glassmorphism card on right side
+
+#### 15.4.2 Real-time Statistics Panel\n- Glassmorphism card on right side
 - Sticky positioning (stays visible while scrolling)
 - Statistics displayed with icons and large numbers
 - Progress bars for difficulty distribution
 - Color-coded badges for difficulty levels
 - Lesson coverage percentage with progress bar
 - Smart Selection buttons with gradient styling
-
-#### 15.4.3 Question Details Modal (UPDATED)
+\n#### 15.4.3 Question Details Modal (UPDATED)
 - Modal dialog with glassmorphism styling
 - **Full question display with rendered output:**
-  - **Serial Number displayed prominently at top (e.g., Question #001)**
+  - **Original Serial Number displayed prominently at top (e.g., Question #002 - this is the question's serial number from Question Bank)**
   - **Question text (rendered with full formatting, equations, and images)**
   - **Options (rendered with full formatting, equations, and images for MCQ/True-False)**
   - **Correct answer (rendered with full formatting, equations, and images)**
-  - **Answer (rendered with full formatting, equations, and images for other question types)**\n  - **Explanation (rendered with full formatting, equations, and images)**
+  - **Answer (rendered with full formatting, equations, and images for other question types)**
+  - **Explanation (rendered with full formatting, equations, and images)**
 - All metadata displayed\n- Usage list with question paper names
 - **Select/Deselect Question button** at bottom
 - Close button
+
+#### 15.4.4 NEW: Question Paper Preview Section (UPDATED)
+- Display question paper in formatted layout
+- Show paper name, subject, class, total marks, duration at top
+- **Display questions with Re-sequenced Serial Numbers (1, 2, 3, 4, etc.)**\n- **IMPORTANT: Questions are re-sequenced starting from 1 after selection is completed**
+- **Example display:**
+  - Question 1: [Question text from Original Serial Number #002]
+  - Question 2: [Question text from Original Serial Number #005]
+  - Question 3: [Question text from Original Serial Number #010]
+- Each question displays:
+  - Re-sequenced question number (1, 2, 3, etc.)
+  - Question text with full formatting
+  - Options (for MCQ/True-False)
+  - Marks
+- Print button to print question paper
+- Save as Draft button
+- Publish button
 
 ### 15.5 Create Question Paper Help and Documentation (UPDATED)
 
@@ -658,21 +695,31 @@ Smart • Secure • Scalable Online Exams
   - Overview of Create Question Paper module
   - How to create a new question paper
   - How to select questions from question bank
-  - **NEW: How to filter questions by Serial Number**
-  - **NEW: How to sort questions by Serial Number**
-  - **NEW: How to search questions by Serial Number**
+  - **NEW: Understanding Original Serial Numbers vs. Re-sequenced Question Numbers**
+  - **NEW: How Original Serial Numbers are maintained during selection**
+  - **NEW: How questions are re-sequenced after selection**
+  - **NEW: How to filter questions by Original Serial Number**
+  - **NEW: How to sort questions by Original Serial Number**
+  - **NEW: How to search questions by Original Serial Number**
   - How to use filters and search
   - How to view question details
   - Understanding real-time statistics
   - How to use Smart Selection features
   - How to preview and print question paper
   - How to save question paper as draft or publish
-  - FAQ section\n\n#### 15.5.2 FAQ Topics (UPDATED)
+  - FAQ section\n
+#### 15.5.2 FAQ Topics (UPDATED)
 - What is Create Question Paper?
 - How to create a new question paper?\n- How to select questions from question bank?
-- **NEW: How to filter questions by Serial Number?**
-- **NEW: How to sort questions by Serial Number?**
-- **NEW: How to search questions by Serial Number?**\n- **NEW: Can I select questions based on Serial Number range?**
+- **NEW: What is Original Serial Number?**
+- **NEW: What is Re-sequenced Question Number?**
+- **NEW: Why do questions have different numbers in Question Bank and Question Paper?**
+- **NEW: How to filter questions by Original Serial Number?**
+- **NEW: How to sort questions by Original Serial Number?**
+- **NEW: How to search questions by Original Serial Number?**
+- **NEW: Can I select questions based on Original Serial Number range?**
+- **NEW: How are questions re-sequenced after selection?**
+- **NEW: Can I change the re-sequenced order of questions?**
 - How to filter questions by subject/class/chapter?
 - How to search for specific questions?
 - How to view question details before selection?
@@ -690,8 +737,7 @@ Smart • Secure • Scalable Online Exams
 
 ## 25. UPDATED: Real-Time Storage Monitoring Module
 
-### 25.1 Real-Time Storage Monitoring Overview
-- Purpose: Dynamically monitor file sizes and database sizes for all users in real-time across the platform with server capacity comparison
+### 25.1 Real-Time Storage Monitoring Overview\n- Purpose: Dynamically monitor file sizes and database sizes for all users in real-time across the platform with server capacity comparison
 - Access:\n  - Admin can monitor storage usage of all users across all schools
 - Key Features:
   - Dynamic real-time file storage monitoring with user-wise tracking
@@ -709,7 +755,8 @@ Smart • Secure • Scalable Online Exams
 ### 25.2 Real-Time Storage Monitoring Database Structure
 
 #### 25.2.1 User Storage Usage Table
-Table name: user_storage_usage\n
+Table name: user_storage_usage
+
 Columns:
 - id (UUID, Primary Key)
 - user_id (Foreign Key → users.id, required)
@@ -813,7 +860,8 @@ Columns:
     FROM user_storage_usage
     ```
   - Fetch server capacity from server_capacity_config table
-  - Calculate usage percentages:\n    - file_storage_usage_percentage = (total_file_storage_used_bytes / total_file_storage_capacity_bytes) × 100\n    - database_storage_usage_percentage = (total_database_storage_used_bytes / total_database_storage_capacity_bytes) × 100
+  - Calculate usage percentages:\n    - file_storage_usage_percentage = (total_file_storage_used_bytes / total_file_storage_capacity_bytes) × 100
+    - database_storage_usage_percentage = (total_database_storage_used_bytes / total_database_storage_capacity_bytes) × 100
     - total_storage_usage_percentage = (total_storage_used_bytes / total_storage_capacity_bytes) × 100
   - Determine server_status based on total_storage_usage_percentage and thresholds
   - Update server_storage_summary table
@@ -849,15 +897,15 @@ Columns:
 - Search bar at top\n  - Search by user name or email
 - Export button at top-right
   - Export as Excel/CSV
-- Main table area:\n  - Columns:\n    - User Name
+- Main table area:
+  - Columns:\n    - User Name
     - Role
     - School
     - File Storage\n    - Database Storage
     - Total Storage
     - **NEW: % of User Limit** (e.g., '65%')
     - Storage Status
-    - Last Updated\n  - Sortable columns
-  - Pagination at bottom
+    - Last Updated\n  - Sortable columns\n  - Pagination at bottom
 - **UPDATED: Summary statistics at top:**
   - Total file storage used (all users) with **percentage of server capacity** (e.g., '400 GB / 1 TB (40%)')
   - Total database storage used (all users) with **percentage of server capacity** (e.g., '250 GB / 500 GB (50%)')
@@ -925,8 +973,7 @@ Columns:
   SELECT SUM(file_size) FROM files WHERE user_id = [user_id]
   ```
 - Include:
-  - Question images
-  - Profile pictures
+  - Question images\n  - Profile pictures
   - Uploaded documents
   - Any other user-uploaded files
 - **No static caching:** Always fetch latest data from database
@@ -1097,7 +1144,8 @@ Columns:
 - Save button (gradient, green)\n- Cancel button (outlined)\n- Validation messages
 \n#### 25.6.5 UPDATED: Summary Statistics Cards
 - **Total File Storage Used:**
-  - Display: '400 GB / 1 TB (40%)'\n  - Icon: File icon
+  - Display: '400 GB / 1 TB (40%)'
+  - Icon: File icon
   - Color: Blue
   - Progress bar showing percentage
 - **Total Database Storage Used:**
@@ -1114,8 +1162,7 @@ Columns:
   - Display average storage usage per user
   - Icon: User icon
   - Color: Green
-- Users Exceeding Threshold:
-  - Display count of users with Warning or Critical status
+- Users Exceeding Threshold:\n  - Display count of users with Warning or Critical status
   - Icon: Alert icon
   - Color: Orange/Red
 
@@ -1233,7 +1280,7 @@ Columns:
 
 ## 26. Conclusion (UPDATED)
 
-A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting with full formatting support for both question text and option text (including bold, italic, underline, lists, tables, image upload, and LaTeX equations with comprehensive mathematical and science symbol library), updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The latest enhancements include: (1) Full Question Bank access for Principals with all Teacher-level features including create, edit, delete, bulk upload, filter, search, export, and question usage tracking capabilities, enabling Principals to manage questions across their school efficiently; (2) Enhanced rich text editor support for question text and option text with comprehensive mathematical and science symbol library, including quick access buttons for square root (√) and division (÷) symbols, organized symbol palette with categories (Basic Math, Greek Letters, Operators, Relations, Arrows, Set Theory, Logic, Geometry, Science & Chemistry, Physics), search functionality, and recently used symbols section, providing Teachers and Principals with powerful tools to create complex mathematical and scientific questions with ease; (3) Live Rendered Output Display—a powerful feature that eliminates the need for separate preview options by displaying rendered output directly in the question editor and card view. As users type in the rich text editor for Question Text, Options, Correct Answer, Answer, and Explanation fields, the formatted content (including text formatting, mathematical equations, and images) is rendered in real-time below the editor, providing immediate visual feedback. This rendered output is also displayed directly in the question card view on the Question Bank page and in the Question Details panel, ensuring users can see exactly how their questions will appear without needing to click a preview button. This seamless integration enhances the user experience by providing instant visual confirmation of formatting, equations, and images, reducing errors, and streamlining the question creation and editing workflow; (4) Dynamic Real-Time Storage Monitoring with Server Capacity Comparison—a powerful tool for administrators to monitor storage usage across the platform in real-time, compare current usage against total server capacity, receive dynamic alerts when thresholds are exceeded, and leverage predictive analytics to forecast capacity exhaustion dates. These features enable proactive server management, support capacity planning, improve resource allocation, identify storage bottlenecks, provide actionable insights for storage optimization, and ensure the platform can scale efficiently to meet growing demands. With dynamic calculations updated every 10 seconds, visual capacity indicators, server capacity configuration options, and comprehensive analytics dashboards, administrators have complete visibility and control over storage resources, enabling them to make informed decisions about server upgrades, data cleanup policies, and user storage limits; (5) Serial Number System for Question Bank—a new feature that assigns a unique, auto-generated serial number to every question in the Question Bank, displayed prominently in question cards, question details, and the question editor. Serial numbers are formatted as zero-padded 3-digit numbers (e.g., #001, #002, #003) and are unique within each school. This enhancement improves question identification, tracking, and organization, making it easier for Principals and Teachers to reference specific questions in discussions, reports, and question papers. Serial numbers are auto-generated during question creation and bulk upload, remain unchanged during edits, and are not re-sequenced when questions are deleted, ensuring consistency and reliability across the platform; and (6) **NEW: Serial Number Display in Create Question Paper Module**—a critical enhancement that addresses the user's requirement to display Serial Numbers in the Select Questions interface during question paper creation. This update enables Teachers and Principals to easily identify, filter, search, and sort questions by their Serial Numbers when creating question papers. The Serial Number column is now prominently displayed as the second column (after the Select checkbox) in the question selection table, with full sorting capability (ascending/descending). Users can filter questions by Serial Number (exact match or range, e.g., 001 or 001-010), search by Serial Number in the search bar, and view Serial Numbers in the Question Details modal. This enhancement significantly improves the question selection workflow by allowing users to pick questions based on their unique Serial Numbers, making it easier to create question papers with specific questions, track question usage, and maintain consistency across multiple question papers. The Serial Number is also displayed in the Preview & Save step, ensuring complete visibility throughout the question paper creation process.\n
+A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting with full formatting support for both question text and option text (including bold, italic, underline, lists, tables, image upload, and LaTeX equations with comprehensive mathematical and science symbol library), updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The latest enhancements include: (1) Full Question Bank access for Principals with all Teacher-level features including create, edit, delete, bulk upload, filter, search, export, and question usage tracking capabilities, enabling Principals to manage questions across their school efficiently; (2) Enhanced rich text editor support for question text and option text with comprehensive mathematical and science symbol library, including quick access buttons for square root (√) and division (÷) symbols, organized symbol palette with categories (Basic Math, Greek Letters, Operators, Relations, Arrows, Set Theory, Logic, Geometry, Science & Chemistry, Physics), search functionality, and recently used symbols section, providing Teachers and Principals with powerful tools to create complex mathematical and scientific questions with ease; (3) Live Rendered Output Display—a powerful feature that eliminates the need for separate preview options by displaying rendered output directly in the question editor and card view. As users type in the rich text editor for Question Text, Options, Correct Answer, Answer, and Explanation fields, the formatted content (including text formatting, mathematical equations, and images) is rendered in real-time below the editor, providing immediate visual feedback. This rendered output is also displayed directly in the question card view on the Question Bank page and in the Question Details panel, ensuring users can see exactly how their questions will appear without needing to click a preview button. This seamless integration enhances the user experience by providing instant visual confirmation of formatting, equations, and images, reducing errors, and streamlining the question creation and editing workflow; (4) Dynamic Real-Time Storage Monitoring with Server Capacity Comparison—a powerful tool for administrators to monitor storage usage across the platform in real-time, compare current usage against total server capacity, receive dynamic alerts when thresholds are exceeded, and leverage predictive analytics to forecast capacity exhaustion dates. These features enable proactive server management, support capacity planning, improve resource allocation, identify storage bottlenecks, provide actionable insights for storage optimization, and ensure the platform can scale efficiently to meet growing demands. With dynamic calculations updated every 10 seconds, visual capacity indicators, server capacity configuration options, and comprehensive analytics dashboards, administrators have complete visibility and control over storage resources, enabling them to make informed decisions about server upgrades, data cleanup policies, and user storage limits; (5) Serial Number System for Question Bank—a new feature that assigns a unique, auto-generated serial number to every question in the Question Bank, displayed prominently in question cards, question details, and the question editor. Serial numbers are formatted as zero-padded 3-digit numbers (e.g., #001, #002, #003) and are unique within each school. This enhancement improves question identification, tracking, and organization, making it easier for Principals and Teachers to reference specific questions in discussions, reports, and question papers. Serial numbers are auto-generated during question creation and bulk upload, remain unchanged during edits, and are not re-sequenced when questions are deleted, ensuring consistency and reliability across the platform; and (6) **NEW: Original Serial Number Maintenance and Re-sequencing in Create Question Paper Module**—a critical enhancement that addresses the user's requirement to maintain Original Serial Numbers from the Question Bank during the question selection process, while re-sequencing selected questions for display in the final question paper. This update ensures that when Teachers and Principals select questions for a question paper, the Original Serial Number from the Question Bank (e.g., #002, #005, #010) is displayed throughout the selection interface, including the question selection table, filters, search, sorting, and question details modal. This allows users to easily identify and select questions based on their Original Serial Numbers. After the selection is completed, the selected questions are automatically re-sequenced starting from 1 (e.g., Question 1, Question 2, Question 3) for display in the question paper preview and final output. This dual-numbering system provides the best of both worlds: maintaining traceability to the original Question Bank during selection, while presenting a clean, sequential numbering in the final question paper. The backend stores both the original_serial_number (from Question Bank) and the paper_question_number (re-sequenced 1, 2, 3, etc.) in the question_paper_questions table, ensuring complete data integrity and enabling future features such as question paper analysis, question reuse tracking, and cross-referencing between question papers and the Question Bank. This enhancement significantly improves the question paper creation workflow by providing clear identification during selection and professional presentation in the final output.\n
 ## Reference Files
 1. User-provided image: formula.jpg
 2. User-provided screenshot: screenshot.png
