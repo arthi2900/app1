@@ -1989,6 +1989,7 @@ export default function QuestionBank() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-16">#</TableHead>
                   <TableHead>Question</TableHead>
                   <TableHead>Bank Name</TableHead>
                   <TableHead>Subject</TableHead>
@@ -2001,8 +2002,11 @@ export default function QuestionBank() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {questions.map((question) => (
+                {questions.map((question, index) => (
                   <TableRow key={question.id}>
+                    <TableCell className="font-medium text-muted-foreground">
+                      {index + 1}
+                    </TableCell>
                     <TableCell className="max-w-md">
                       <div className="space-y-2">
                         <MathRenderer 
@@ -2077,14 +2081,14 @@ export default function QuestionBank() {
             </Table>
           ) : (
             <div className="space-y-3">
-              {questions.map((question) => (
+              {questions.map((question, index) => (
                 <Card key={question.id} className="hover:shadow-md transition-shadow">
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
                       {/* Left Section: Question Number & Image */}
                       <div className="flex flex-col items-center gap-2 shrink-0">
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-sm font-semibold text-primary">Q</span>
+                          <span className="text-sm font-semibold text-primary">{index + 1}</span>
                         </div>
                         {question.image_url && (
                           <img

@@ -1,6 +1,7 @@
 # A Cube - Online Exam System Requirements Document (Updated)
 
-## 1. Application Description\n
+## 1. Application Description
+
 ### 1.1 Application Name
 A Cube - Online Exam System
 
@@ -27,6 +28,7 @@ Smart • Secure • Scalable Online Exams
   - Filter and search questions by subject, class, chapter, difficulty, etc.
   - Export question bank data\n  - Question usage tracking and analytics
   - Question approval workflow (if enabled)
+  - **Serial number display for every question**
 \n### 8.2 Question Bank Interface (Principal Dashboard)
 \n#### 8.2.1 Question Bank Page Layout
 - Page title: 'Question Bank'
@@ -39,21 +41,22 @@ Smart • Secure • Scalable Online Exams
   - Question type filter (MCQ, True/False, Fill in the Blanks, Short Answer, Long Answer)
   - Created by filter (dropdown showing all Teachers in school)
   - Date range filter (created date)\n  - Usage status filter (Used in papers, Not used)\n- Search bar at top
-  - Search by question text, tags, or ID
+  - Search by question text, tags, serial number, or ID
 - Action buttons at top-right:
   - Add Question button (gradient, purple-blue)
   - Bulk Upload button (outlined)\n  - Export button (outlined)
 - Main question list area:\n  - Card-based layout with glassmorphism effect
   - Each card displays:
-    - Question text (truncated with 'Read more' link)
-    - Question type badge
-    - Subject, Class, Chapter tags
+    - **Serial Number (displayed prominently at top-left corner of card, e.g., #001, #002, #003)**
+    - **Question text (rendered output with full formatting, equations, and images displayed directly)**
+    - Question type badge\n    - Subject, Class, Chapter tags
     - Difficulty level badge (color-coded)
+    - **Options (rendered output with full formatting, equations, and images displayed directly for MCQ/True-False)**
+    - **Correct Answer (rendered output with full formatting, equations, and images displayed directly)**
     - Created by (Teacher name)
     - Created date
     - Usage count (number of papers using this question)
-    - Action buttons: Edit, Delete, View Details
-  - Pagination at bottom
+    - Action buttons: Edit, Delete, View Details\n  - Pagination at bottom
 - Summary statistics at top:\n  - Total questions count
   - Questions by difficulty (Easy, Medium, Hard counts)
   - Questions by type (MCQ, True/False, etc. counts)
@@ -62,12 +65,15 @@ Smart • Secure • Scalable Online Exams
 - Modal dialog with glassmorphism styling
 - Title: 'Add Question' or 'Edit Question'
 - Form fields:
+  - **Serial Number:** Auto-generated, displayed as read-only field (e.g., #001, #002, #003)
   - **Subject:** Dropdown (required)
   - **Class:** Dropdown (required)
   - **Chapter:** Dropdown (required, dependent on subject)
   - **Question Type:** Dropdown (MCQ, True/False, Fill in the Blanks, Short Answer, Long Answer) (required)
   - **Difficulty Level:** Dropdown (Easy, Medium, Hard) (required)
-  - **Question Text:** Rich text editor (required)
+  - **Question Text:** Rich text editor with live rendered output (required)
+    - Editor area with toolbar at top
+    - **Live rendered output displayed directly below editor as user types**
     - Supports formatting: bold, italic, underline, lists, tables\n    - Supports image upload\n    - **Supports mathematical equations (LaTeX) with comprehensive symbol library including:**
       - **Square root (√) symbol**
       - **Division (÷) symbol**
@@ -88,78 +94,79 @@ Smart • Secure • Scalable Online Exams
         - Relations
         - Arrows
         - Set Theory
-        - Logic
+        - Logic\n        - Geometry
         - Science & Chemistry
         - Physics
-  - **Options:** (for MCQ and True/False)\n    - **Option A:** Rich text editor with full formatting support
+    - **Rendered output area shows formatted text, equations, and images in real-time**
+  - **Options:** (for MCQ and True/False)\n    - **Option A:** Rich text editor with live rendered output
+      - Editor area with toolbar\n      - **Live rendered output displayed directly below editor**
       - Supports formatting: bold, italic, underline, lists, tables
       - Supports image upload
-      - **Supports mathematical equations (LaTeX) with comprehensive symbol library including:**
-        - **Square root (√) symbol**
-        - **Division (÷) symbol**
-        - **All mathematical and science symbols as listed above**
+      - **Supports mathematical equations (LaTeX) with comprehensive symbol library**
       - **Enhanced equation editor toolbar with quick access to all symbols**
-    - **Option B:** Rich text editor with full formatting support
+    - **Option B:** Rich text editor with live rendered output
+      - Editor area with toolbar
+      - **Live rendered output displayed directly below editor**
       - Supports formatting: bold, italic, underline, lists, tables
       - Supports image upload
-      - **Supports mathematical equations (LaTeX) with comprehensive symbol library including:**\n        - **Square root (√) symbol**
-        - **Division (÷) symbol**\n        - **All mathematical and science symbols as listed above**
-      - **Enhanced equation editor toolbar with quick access to all symbols**
-    - **Option C:** Rich text editor with full formatting support (MCQ only)
-      - Supports formatting: bold, italic, underline, lists, tables
+      - **Supports mathematical equations (LaTeX) with comprehensive symbol library**\n      - **Enhanced equation editor toolbar with quick access to all symbols**\n    - **Option C:** Rich text editor with live rendered output (MCQ only)
+      - Editor area with toolbar
+      - **Live rendered output displayed directly below editor**\n      - Supports formatting: bold, italic, underline, lists, tables
       - Supports image upload
-      - **Supports mathematical equations (LaTeX) with comprehensive symbol library including:**\n        - **Square root (√) symbol**
-        - **Division (÷) symbol**\n        - **All mathematical and science symbols as listed above**
+      - **Supports mathematical equations (LaTeX) with comprehensive symbol library**
       - **Enhanced equation editor toolbar with quick access to all symbols**
-    - **Option D:** Rich text editor with full formatting support (MCQ only)
-      - Supports formatting: bold, italic, underline, lists, tables
+    - **Option D:** Rich text editor with live rendered output (MCQ only)
+      - Editor area with toolbar
+      - **Live rendered output displayed directly below editor**\n      - Supports formatting: bold, italic, underline, lists, tables
       - Supports image upload
-      - **Supports mathematical equations (LaTeX) with comprehensive symbol library including:**\n        - **Square root (√) symbol**
-        - **Division (÷) symbol**\n        - **All mathematical and science symbols as listed above**
+      - **Supports mathematical equations (LaTeX) with comprehensive symbol library**
       - **Enhanced equation editor toolbar with quick access to all symbols**
-    - Correct Answer: Radio buttons to select correct option
-  - **Answer:** (for Fill in the Blanks, Short Answer, Long Answer)\n    - Rich text editor with full formatting support
+    - **Correct Answer:** Radio buttons to select correct option
+      - **Selected correct answer displayed with rendered output below radio buttons**
+  - **Answer:** (for Fill in the Blanks, Short Answer, Long Answer)
+    - Rich text editor with live rendered output
+    - **Live rendered output displayed directly below editor**
     - **Supports mathematical equations (LaTeX) with comprehensive symbol library**
     - **Enhanced equation editor toolbar with quick access to all symbols**
   - **Marks:** Number input (required)
   - **Tags:** Text input (comma-separated, optional)
-  - **Explanation:** Rich text editor (optional)
+  - **Explanation:** Rich text editor with live rendered output (optional)
     - Detailed explanation of the answer
-    - **Supports mathematical equations (LaTeX) with comprehensive symbol library**
-    - **Enhanced equation editor toolbar with quick access to all symbols**
-- Save button (gradient, green)
+    - **Live rendered output displayed directly below editor**
+    - **Supports mathematical equations (LaTeX) with comprehensive symbol library**\n    - **Enhanced equation editor toolbar with quick access to all symbols**\n- Save button (gradient, green)
 - Cancel button (outlined)
-- Validation messages\n\n#### 8.2.3 Bulk Upload Questions\n- Same functionality as Teacher bulk upload
+- Validation messages
+\n#### 8.2.3 Bulk Upload Questions\n- Same functionality as Teacher bulk upload
 - Excel template with three sheets:
-  - **Option Sheet:** Dropdown values for Subject, Class, Chapter, Question Type, Difficulty Level
-  - **Question Sheet:** Data entry columns (Subject, Class, Chapter, Question Type, Difficulty Level, Question Text, Option A, Option B, Option C, Option D, Correct Answer, Marks, Tags, Explanation)
+  - **Option Sheet:** Dropdown values for Subject, Class, Chapter, Question Type, Difficulty Level\n  - **Question Sheet:** Data entry columns (Serial Number, Subject, Class, Chapter, Question Type, Difficulty Level, Question Text, Option A, Option B, Option C, Option D, Correct Answer, Marks, Tags, Explanation)
   - **Reference Sheet:** Example questions with filled data for reference
 - Upload process:
   1. Principal clicks 'Bulk Upload' button\n  2. Download template link provided
-  3. Principal fills template with question data
+  3. Principal fills template with question data (Serial Number auto-generated during upload if not provided)
   4. Principal uploads filled template
   5. System validates data and shows preview
   6. Principal confirms upload
-  7. Questions added to question bank with Principal as creator
+  7. Questions added to question bank with Principal as creator and auto-generated serial numbers
 - Validation rules:
   - All required fields must be filled
   - Subject, Class, Chapter must exist in system
   - Question Type and Difficulty Level must match dropdown values
   - Correct Answer must be one of the options (for MCQ/True-False)
   - Marks must be positive number
+  - Serial Number auto-generated if not provided
 - Error handling:
   - Display row-wise errors if validation fails
   - Allow Principal to download error report
   - Allow Principal to fix errors and re-upload
-
-#### 8.2.4 Question Details View
-- Modal dialog or side panel\n- Display full question details:
-  - Question text with formatting
-  - Question type\n  - Subject, Class, Chapter
-  - Difficulty level\n  - Options and correct answer (if applicable)
-  - Answer (if applicable)
-  - Marks\n  - Tags
-  - Explanation
+\n#### 8.2.4 Question Details View (UPDATED)
+- Modal dialog or side panel\n- Display full question details:\n  - **Serial Number (displayed prominently at top, e.g., Question #001)**
+  - **Question text (rendered output with full formatting, equations, and images)**
+  - Question type\n  - Subject, Class, Chapter\n  - Difficulty level
+  - **Options (rendered output with full formatting, equations, and images for MCQ/True-False)**\n  - **Correct answer (rendered output with full formatting, equations, and images)**
+  - **Answer (rendered output with full formatting, equations, and images for other question types)**
+  - Marks
+  - Tags
+  - **Explanation (rendered output with full formatting, equations, and images)**
   - Created by (Teacher name)
   - Created date
   - Last modified date
@@ -174,31 +181,36 @@ Smart • Secure • Scalable Online Exams
   - Require confirmation\n- If not used:
   - Display confirmation message: 'Are you sure you want to delete this question?'
   - Require confirmation
-- After deletion:
-  - Display success message\n  - Refresh question list
+- After deletion:\n  - Display success message\n  - Refresh question list
 
-### 8.3 Question Bank Database Structure (Principal Access)
+### 8.3 Question Bank Database Structure (Principal Access) (UPDATED)
 
-#### 8.3.1 Question Bank Table (No Changes)
-- Existing table structure remains same
+#### 8.3.1 Question Bank Table (UPDATED)
+- Existing table structure with new column:
+  - **serial_number (String, unique within school, required)**
+    - Format: Zero-padded 3-digit number (e.g., 001, 002, 003)
+    - Auto-generated sequentially within each school
+    - Displayed as #001, #002, #003 in UI
 - Principal can create questions with their user_id as created_by
 - Principal can edit/delete questions created by Teachers in their school
-\n#### 8.3.2 Access Control Logic
-- Principal can access all questions where:\n  - created_by is a Teacher in their school, OR
+- Serial number generation logic:
+  - When creating new question, system finds highest serial_number in school
+  - Increments by 1 and assigns to new question
+  - Format: LPAD(next_number, 3, '0')\n\n#### 8.3.2 Access Control Logic\n- Principal can access all questions where:
+  - created_by is a Teacher in their school, OR
   - created_by is the Principal themselves
 - Principal cannot access questions from other schools
 - Principal has full CRUD permissions on accessible questions
 
-### 8.4 Question Bank Backend Logic (Principal Access)
-
-#### 8.4.1 Get Questions API (Principal)\n- **Endpoint:** GET /api/principal/question-bank
+### 8.4 Question Bank Backend Logic (Principal Access) (UPDATED)
+\n#### 8.4.1 Get Questions API (Principal)\n- **Endpoint:** GET /api/principal/question-bank
 - **Query Parameters:**
   - subject_id (optional)\n  - class_id (optional)
   - chapter_id (optional)
   - difficulty_level (optional)
   - question_type (optional)
   - created_by (optional, Teacher user_id)
-  - search (optional, search text)
+  - search (optional, search text including serial number)
   - page (optional, default: 1)
   - limit (optional, default: 20)
 - **Response:**
@@ -207,14 +219,18 @@ Smart • Secure • Scalable Online Exams
     \"success\": true,
     \"data\": {\n      \"questions\": [\n        {
           \"id\": \"uuid\",
+          \"serial_number\": \"001\",
           \"subject_name\": \"Physics\",
           \"class_name\": \"Class 12\",
           \"chapter_name\": \"Electrostatics\",
           \"question_type\": \"MCQ\",
           \"difficulty_level\": \"Medium\",
           \"question_text\": \"What is the SI unit of electric charge?\",
-          \"options\": [\"Ampere\", \"Coulomb\", \"Volt\", \"Ohm\"],
-          \"correct_answer\": \"Coulomb\",\n          \"marks\": 4,
+          \"question_text_rendered\": \"<p>What is the SI unit of electric charge?</p>\",\n          \"options\": [\"Ampere\", \"Coulomb\", \"Volt\", \"Ohm\"],
+          \"options_rendered\": [\"<p>Ampere</p>\", \"<p>Coulomb</p>\", \"<p>Volt</p>\", \"<p>Ohm</p>\"],
+          \"correct_answer\": \"Coulomb\",
+          \"correct_answer_rendered\": \"<p>Coulomb</p>\",
+          \"marks\": 4,
           \"tags\": [\"electric charge\", \"SI units\"],
           \"created_by_name\": \"John Doe\",
           \"created_at\": \"2026-01-10T10:00:00Z\",
@@ -229,37 +245,42 @@ Smart • Secure • Scalable Online Exams
   }
   ```
 - **Access Control:** Principal only, school-based data isolation
-\n#### 8.4.2 Create Question API (Principal)
+\n#### 8.4.2 Create Question API (Principal) (UPDATED)
 - **Endpoint:** POST /api/principal/question-bank
-- **Request Body:** Same as Teacher create question API
-- **Response:** Same as Teacher create question API
+- **Request Body:** Same as Teacher create question API (serial_number auto-generated)
+- **Response:** Same as Teacher create question API with serial_number included
 - **Access Control:** Principal only\n- **Logic:**
   - created_by set to Principal's user_id
   - school_id set to Principal's school_id
-\n#### 8.4.3 Update Question API (Principal)
-- **Endpoint:** PUT /api/principal/question-bank/:id
-- **Request Body:** Same as Teacher update question API
-- **Response:** Same as Teacher update question API
-- **Access Control:** Principal only, can edit questions created by Teachers in their school
-\n#### 8.4.4 Delete Question API (Principal)
-- **Endpoint:** DELETE /api/principal/question-bank/:id
+  - **serial_number auto-generated sequentially within school**
+  - **Backend renders question_text, options, correct_answer, and explanation to HTML and stores both raw and rendered versions**
+
+#### 8.4.3 Update Question API (Principal)\n- **Endpoint:** PUT /api/principal/question-bank/:id
+- **Request Body:** Same as Teacher update question API\n- **Response:** Same as Teacher update question API\n- **Access Control:** Principal only, can edit questions created by Teachers in their school
+- **Logic:**
+  - **serial_number remains unchanged during edit**
+  - **Backend re-renders question_text, options, correct_answer, and explanation to HTML and updates both raw and rendered versions**
+
+#### 8.4.4 Delete Question API (Principal)\n- **Endpoint:** DELETE /api/principal/question-bank/:id
 - **Response:** Same as Teacher delete question API
 - **Access Control:** Principal only, can delete questions created by Teachers in their school
-- **Validation:** Check if question is used in any question paper\n
-#### 8.4.5 Bulk Upload Questions API (Principal)
+- **Validation:** Check if question is used in any question paper\n- **Logic:**
+  - **Serial numbers of remaining questions remain unchanged (no re-sequencing)**
+\n#### 8.4.5 Bulk Upload Questions API (Principal) (UPDATED)
 - **Endpoint:** POST /api/principal/question-bank/bulk-upload
 - **Request:** Multipart form data with Excel file
 - **Response:** Same as Teacher bulk upload API
 - **Access Control:** Principal only
-- **Logic:** Same as Teacher bulk upload, created_by set to Principal's user_id
+- **Logic:** Same as Teacher bulk upload, created_by set to Principal's user_id\n  - **Serial numbers auto-generated sequentially for all uploaded questions**
+  - **Backend renders all question_text, options, correct_answer, and explanation fields to HTML during bulk upload**
 
 #### 8.4.6 Export Questions API (Principal)
 - **Endpoint:** GET /api/principal/question-bank/export
 - **Query Parameters:** Same as Get Questions API filters
-- **Response:** Excel file download\n- **Access Control:** Principal only
+- **Response:** Excel file download with serial_number column included
+- **Access Control:** Principal only
 - **Logic:** Export all questions matching filters to Excel file
-
-### 8.5 Question Bank UI Components (Principal Dashboard)
+\n### 8.5 Question Bank UI Components (Principal Dashboard) (UPDATED)
 
 #### 8.5.1 Question Bank Card (Principal Dashboard)
 - Card title: 'Question Bank'
@@ -267,19 +288,25 @@ Smart • Secure • Scalable Online Exams
   - Total questions count with icon
   - Quick action button: 'Manage Questions'
 - Card styling: Glassmorphism with gradient effect
-\n#### 8.5.2 Question Card (Question List)
+\n#### 8.5.2 Question Card (Question List) (UPDATED)
 - Glassmorphism card with hover effect
-- Question text (truncated, max 2 lines)
+- **Serial Number displayed prominently at top-left corner (e.g., #001) with badge styling**
+- **Question text (rendered output with full formatting, equations, and images displayed directly)**
 - Question type badge (top-right corner)
 - Subject, Class, Chapter tags (bottom)\n- Difficulty level badge (color-coded: Easy=green, Medium=orange, Hard=red)
+- **Options (rendered output with full formatting, equations, and images displayed directly for MCQ/True-False)**\n- **Correct Answer (rendered output with full formatting, equations, and images displayed directly)**
 - Created by (Teacher name with small profile picture)
 - Created date (relative time, e.g., '2 days ago')
-- Usage count badge (e.g., 'Used in 5 papers')\n- Action buttons (Edit, Delete, View Details) on hover
+- Usage count badge (e.g., 'Used in 5 papers')
+- Action buttons (Edit, Delete, View Details) on hover
 
 #### 8.5.3 Add/Edit Question Dialog (UPDATED)
 - Modal dialog with glassmorphism styling
 - Form layout with proper spacing
-- **Rich text editor with enhanced toolbar for Question Text:**
+- **Serial Number field displayed at top as read-only (auto-generated, e.g., #001)**
+- **Rich text editor with live rendered output for Question Text:**
+  - Editor area at top with toolbar
+  - **Rendered output area directly below editor showing formatted text, equations, and images in real-time**
   - Standard formatting buttons: bold, italic, underline, lists, tables
   - Image upload button
   - **Enhanced equation editor button with dropdown symbol palette:**
@@ -288,41 +315,55 @@ Smart • Secure • Scalable Online Exams
       - Division (÷) button
       - Fraction (a/b) button
       - Exponent (x²) button
-      - Subscript (x₁) button
-    - **Symbol palette dropdown organized by categories:**
-      - **Basic Math:** +, −, ×, ÷, =, ≠, <, >, ≤, ≥, ±, ∓, ≈, ≡, ∝, °
-      - **Greek Letters:** α, β, γ, δ, ε, ζ, η, θ, ι, κ, λ, μ, ν, ξ, π, ρ, σ, τ, υ, φ, χ, ψ, ω, Α, Β, Γ, Δ, Θ, Λ, Ξ, Π, Σ, Φ, Ψ, Ω
-      - **Operators:** √, ∛, ∜, ∑, ∏, ∫, ∂, ∇, Δ\n      - **Relations:** ≤, ≥, ≠, ≈, ≡, ∝, ∞\n      - **Arrows:** →, ←, ↑, ↓, ⇒, ⇐, ⇔, ⇌\n      - **Set Theory:** ∈, ∉, ⊂, ⊃, ⊆, ⊇, ∪, ∩, ∅, ℕ, ℤ, ℚ, ℝ, ℂ\n      - **Logic:** ∧, ∨, ¬, ⇒, ⇔, ∀, ∃\n      - **Geometry:** ∠, ⊥, ∥, △, ○, □, ◇\n      - **Science & Chemistry:** Å, ℃, ℉, Ω, μ, ℓ, mol, ⇌, Δ\n      - **Physics:** ℏ, ε₀, μ₀, c, g, λ, ν, ρ\n    - **Search functionality within symbol palette**
+      - Subscript (x₁) button\n    - **Symbol palette dropdown organized by categories:**
+      - **Basic Math:** +, −, ×, ÷, =, ≠, <, >, ≤, ≥, ±, ∓, ≈, ≡, ∝, °\n      - **Greek Letters:** α, β, γ, δ, ε, ζ, η, θ, ι, κ, λ, μ, ν, ξ, π, ρ, σ, τ, υ, φ, χ, ψ, ω, Α, Β, Γ, Δ, Θ, Λ, Ξ, Π, Σ, Φ, Ψ, Ω
+      - **Operators:** √, ∛, ∜, ∑, ∏, ∫, ∂, ∇, Δ\n      - **Relations:** ≤, ≥, ≠, ≈, ≡, ∝, ∞\n      - **Arrows:** →, ←, ↑, ↓, ⇒, ⇐, ⇔, ⇌
+      - **Set Theory:** ∈, ∉, ⊂, ⊃, ⊆, ⊇, ∪, ∩, ∅, ℕ, ℤ, ℚ, ℝ, ℂ\n      - **Logic:** ∧, ∨, ¬, ⇒, ⇔, ∀, ∃\n      - **Geometry:** ∠, ⊥, ∥, △, ○, □, ◇\n      - **Science & Chemistry:** Å, ℃, ℉, Ω, μ, ℓ, mol, ⇌, Δ\n      - **Physics:** ℏ, ε₀, μ₀, c, g, λ, ν, ρ\n    - **Search functionality within symbol palette**
     - **Recently used symbols section for quick access**
-- **Rich text editor with enhanced toolbar for each Option (A, B, C, D):**
+- **Rich text editor with live rendered output for each Option (A, B, C, D):**
+  - Editor area with toolbar
+  - **Rendered output area directly below each option editor**
   - Full formatting support: bold, italic, underline, lists, tables
   - Image upload capability
   - **Enhanced equation editor with comprehensive symbol library (same as Question Text)**
   - **Quick access buttons for square root (√) and division (÷)**
   - **Symbol palette dropdown with all mathematical and science symbols**
-- **Rich text editor with enhanced toolbar for Answer field:**
+- **Correct Answer selection:**
+  - Radio buttons to select correct option
+  - **Selected correct answer's rendered output displayed prominently below radio buttons**
+- **Rich text editor with live rendered output for Answer field:**
+  - Editor area with toolbar
+  - **Rendered output area directly below editor**
   - Full formatting support\n  - **Enhanced equation editor with comprehensive symbol library**
-- **Rich text editor with enhanced toolbar for Explanation field:**
-  - Full formatting support
-  - **Enhanced equation editor with comprehensive symbol library**
+- **Rich text editor with live rendered output for Explanation field:**
+  - Editor area with toolbar
+  - **Rendered output area directly below editor**
+  - Full formatting support\n  - **Enhanced equation editor with comprehensive symbol library**
 - Image upload with preview
 - Validation messages inline
 - Save and Cancel buttons at bottom
 
-#### 8.5.4 Bulk Upload Dialog\n- Modal dialog with glassmorphism styling\n- Step-by-step upload process:\n  1. Download template\n  2. Fill template\n  3. Upload filled template\n  4. Preview and validate
+#### 8.5.4 Bulk Upload Dialog\n- Modal dialog with glassmorphism styling
+- Step-by-step upload process:\n  1. Download template\n  2. Fill template\n  3. Upload filled template
+  4. Preview and validate
   5. Confirm upload
 - Progress indicator for each step
 - Error display with row-wise details
 - Download error report button
-
-#### 8.5.5 Question Details Panel
+\n#### 8.5.5 Question Details Panel (UPDATED)
 - Side panel or modal dialog
-- Full question display with formatting
-- All metadata displayed
-- Usage list with question paper names
+- **Full question display with rendered output:**
+  - **Serial Number displayed prominently at top (e.g., Question #001)**
+  - **Question text (rendered with full formatting, equations, and images)**
+  - **Options (rendered with full formatting, equations, and images for MCQ/True-False)**
+  - **Correct answer (rendered with full formatting, equations, and images)**
+  - **Answer (rendered with full formatting, equations, and images for other question types)**
+  - **Explanation (rendered with full formatting, equations, and images)**
+- All metadata displayed\n- Usage list with question paper names
 - Edit and Delete buttons at bottom
 
-### 8.6 Question Bank Help and Documentation (Principal)\n
+### 8.6 Question Bank Help and Documentation (Principal) (UPDATED)
+
 #### 8.6.1 Help Resources
 - Help icon in Question Bank page
 - Opens help dialog with:
@@ -334,10 +375,14 @@ Smart • Secure • Scalable Online Exams
   - How to filter and search questions
   - How to export questions
   - Understanding question usage tracking
+  - **Understanding serial numbers**
+  - **How serial numbers are generated**
+  - **How to search by serial number**
   - **How to use the enhanced equation editor**
   - **How to insert square root and division symbols**
   - **How to access all mathematical and science symbols**
-  - FAQ section\n\n#### 8.6.2 FAQ Topics
+  - **Understanding live rendered output in question editor**
+  - FAQ section\n\n#### 8.6.2 FAQ Topics (UPDATED)
 - What is Question Bank?
 - How to add a new question?
 - How to bulk upload questions?
@@ -355,12 +400,21 @@ Smart • Secure • Scalable Online Exams
 - How to format option text with rich text editor?
 - Can I add images to option text?
 - Can I add equations to option text?
+- **What is a serial number?**
+- **How are serial numbers generated?**
+- **Can I change a question's serial number?**
+- **Are serial numbers unique?**
+- **How to search by serial number?**
+- **What happens to serial numbers when I delete a question?**
 - **How to insert square root symbol in questions and options?**
 - **How to insert division symbol in questions and options?**
 - **What mathematical symbols are available in the equation editor?**
 - **How to access Greek letters and science symbols?**
 - **How to search for specific symbols in the symbol palette?**
 - **Can I use LaTeX syntax for complex equations?**
+- **What is live rendered output?**
+- **How does the rendered output work in the question editor?**
+- **Can I see how my question will look while editing?**
 \n---
 
 ## 25. UPDATED: Real-Time Storage Monitoring Module
@@ -380,8 +434,7 @@ Smart • Secure • Scalable Online Exams
   - Role-based access control (Admin only)\n  - Dynamic alerts for users exceeding storage thresholds
   - Server capacity alerts when total usage exceeds thresholds (e.g., 80%, 90%, 95%)
   - Storage optimization recommendations\n  - Predictive analytics: Estimate when server capacity will be reached based on current growth trends
-
-### 25.2 Real-Time Storage Monitoring Database Structure
+\n### 25.2 Real-Time Storage Monitoring Database Structure
 
 #### 25.2.1 User Storage Usage Table
 Table name: user_storage_usage
@@ -445,7 +498,8 @@ Columns:
   - Normal: total_storage_usage_percentage < alert_threshold_percentage
   - Warning: alert_threshold_percentage ≤ total_storage_usage_percentage < critical_threshold_percentage
   - Critical: total_storage_usage_percentage ≥ critical_threshold_percentage\n- last_calculated_at (Timestamp with timezone, required)
-- created_at (Timestamp)\n- updated_at (Timestamp)
+- created_at (Timestamp)
+- updated_at (Timestamp)
 
 **Purpose:** This table stores aggregated server-wide storage summary. Updated dynamically every 10 seconds.
 
@@ -492,7 +546,8 @@ Columns:
     - database_storage_usage_percentage = (total_database_storage_used_bytes / total_database_storage_capacity_bytes) × 100
     - total_storage_usage_percentage = (total_storage_used_bytes / total_storage_capacity_bytes) × 100
   - Determine server_status based on total_storage_usage_percentage and thresholds
-  - Update server_storage_summary table\n
+  - Update server_storage_summary table
+
 ### 25.3 Real-Time Storage Monitoring Interface (UPDATED)
 
 #### 25.3.1 Real-Time Storage Monitoring Page Layout (UPDATED)
@@ -556,8 +611,7 @@ Columns:
 - Storage Status: Display status badge (Normal: green, Warning: orange, Critical: red)
 - Last Updated: Display timestamp with relative time (e.g., '10 seconds ago')
 \n#### 25.3.3 NEW: Configure Server Capacity Dialog\n- Modal dialog with glassmorphism styling
-- Title: 'Configure Server Capacity'
-- Form fields:
+- Title: 'Configure Server Capacity'\n- Form fields:
   - **Total File Storage Capacity:** Number input with unit selector (GB/TB)
   - **Total Database Storage Capacity:** Number input with unit selector (GB/TB)
   - **Alert Threshold Percentage:** Number input (e.g., 80)\n  - **Critical Threshold Percentage:** Number input (e.g., 95)
@@ -639,8 +693,7 @@ Columns:
       \"total_file_storage_capacity_bytes\": 1099511627776,
       \"total_database_storage_capacity_bytes\": 549755813888,
       \"total_storage_capacity_bytes\": 1649267441664,
-      \"alert_threshold_percentage\": 80,
-      \"critical_threshold_percentage\": 95
+      \"alert_threshold_percentage\": 80,\n      \"critical_threshold_percentage\": 95
     }
   }
   ```
@@ -792,7 +845,8 @@ Columns:
   - Display average storage usage per user
   - Icon: User icon
   - Color: Green
-- Users Exceeding Threshold:\n  - Display count of users with Warning or Critical status
+- Users Exceeding Threshold:
+  - Display count of users with Warning or Critical status
   - Icon: Alert icon
   - Color: Orange/Red
 
@@ -909,6 +963,6 @@ Columns:
 
 ## 26. Conclusion (UPDATED)
 
-A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting with full formatting support for both question text and option text (including bold, italic, underline, lists, tables, image upload, and LaTeX equations with comprehensive mathematical and science symbol library), updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The latest enhancements include: (1) Full Question Bank access for Principals with all Teacher-level features including create, edit, delete, bulk upload, filter, search, export, and question usage tracking capabilities, enabling Principals to manage questions across their school efficiently; (2) Enhanced rich text editor support for question text and option text with comprehensive mathematical and science symbol library, including quick access buttons for square root (√) and division (÷) symbols, organized symbol palette with categories (Basic Math, Greek Letters, Operators, Relations, Arrows, Set Theory, Logic, Geometry, Science & Chemistry, Physics), search functionality, and recently used symbols section, providing Teachers and Principals with powerful tools to create complex mathematical and scientific questions with ease; and (3) Dynamic Real-Time Storage Monitoring with Server Capacity Comparison—a powerful tool for administrators to monitor storage usage across the platform in real-time, compare current usage against total server capacity, receive dynamic alerts when thresholds are exceeded, and leverage predictive analytics to forecast capacity exhaustion dates. These features enable proactive server management, support capacity planning, improve resource allocation, identify storage bottlenecks, provide actionable insights for storage optimization, and ensure the platform can scale efficiently to meet growing demands. With dynamic calculations updated every 10 seconds, visual capacity indicators, server capacity configuration options, and comprehensive analytics dashboards, administrators have complete visibility and control over storage resources, enabling them to make informed decisions about server upgrades, data cleanup policies, and user storage limits.\n
+A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting with full formatting support for both question text and option text (including bold, italic, underline, lists, tables, image upload, and LaTeX equations with comprehensive mathematical and science symbol library), updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The latest enhancements include: (1) Full Question Bank access for Principals with all Teacher-level features including create, edit, delete, bulk upload, filter, search, export, and question usage tracking capabilities, enabling Principals to manage questions across their school efficiently; (2) Enhanced rich text editor support for question text and option text with comprehensive mathematical and science symbol library, including quick access buttons for square root (√) and division (÷) symbols, organized symbol palette with categories (Basic Math, Greek Letters, Operators, Relations, Arrows, Set Theory, Logic, Geometry, Science & Chemistry, Physics), search functionality, and recently used symbols section, providing Teachers and Principals with powerful tools to create complex mathematical and scientific questions with ease; (3) Live Rendered Output Display—a powerful feature that eliminates the need for separate preview options by displaying rendered output directly in the question editor and card view. As users type in the rich text editor for Question Text, Options, Correct Answer, Answer, and Explanation fields, the formatted content (including text formatting, mathematical equations, and images) is rendered in real-time below the editor, providing immediate visual feedback. This rendered output is also displayed directly in the question card view on the Question Bank page and in the Question Details panel, ensuring users can see exactly how their questions will appear without needing to click a preview button. This seamless integration enhances the user experience by providing instant visual confirmation of formatting, equations, and images, reducing errors, and streamlining the question creation and editing workflow; (4) Dynamic Real-Time Storage Monitoring with Server Capacity Comparison—a powerful tool for administrators to monitor storage usage across the platform in real-time, compare current usage against total server capacity, receive dynamic alerts when thresholds are exceeded, and leverage predictive analytics to forecast capacity exhaustion dates. These features enable proactive server management, support capacity planning, improve resource allocation, identify storage bottlenecks, provide actionable insights for storage optimization, and ensure the platform can scale efficiently to meet growing demands. With dynamic calculations updated every 10 seconds, visual capacity indicators, server capacity configuration options, and comprehensive analytics dashboards, administrators have complete visibility and control over storage resources, enabling them to make informed decisions about server upgrades, data cleanup policies, and user storage limits; and (5) Serial Number System for Question Bank—a new feature that assigns a unique, auto-generated serial number to every question in the Question Bank, displayed prominently in question cards, question details, and the question editor. Serial numbers are formatted as zero-padded 3-digit numbers (e.g., #001, #002, #003) and are unique within each school. This enhancement improves question identification, tracking, and organization, making it easier for Principals and Teachers to reference specific questions in discussions, reports, and question papers. Serial numbers are auto-generated during question creation and bulk upload, remain unchanged during edits, and are not re-sequenced when questions are deleted, ensuring consistency and reliability across the platform.\n
 ## Reference Files
 1. User-provided image: formula.jpg
