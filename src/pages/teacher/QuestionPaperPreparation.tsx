@@ -762,6 +762,7 @@ export default function QuestionPaperPreparation() {
                       <TableHeader>
                         <TableRow>
                           <TableHead className="w-12">Select</TableHead>
+                          <TableHead className="w-16">#</TableHead>
                           <TableHead className="min-w-[350px]">Question</TableHead>
                           <TableHead className="w-36">Type</TableHead>
                           <TableHead className="w-32">Difficulty</TableHead>
@@ -773,13 +774,15 @@ export default function QuestionPaperPreparation() {
                       <TableBody>
                         {getFilteredQuestions().length === 0 ? (
                           <TableRow>
-                            <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                            <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                               No questions available
                             </TableCell>
                           </TableRow>
                         ) : (
-                          getFilteredQuestions().map((question) => {
+                          getFilteredQuestions().map((question, index) => {
                             const usage = questionUsageStats[question.id] || { count: 0, papers: [] };
+                            // Find the original index in availableQuestions for serial number
+                            const serialNumber = availableQuestions.findIndex(q => q.id === question.id) + 1;
                             return (
                             <TableRow key={question.id}>
                               <TableCell className="align-top w-12">
@@ -787,6 +790,9 @@ export default function QuestionPaperPreparation() {
                                   checked={selectedQuestions.has(question.id)}
                                   onCheckedChange={() => handleQuestionToggle(question.id)}
                                 />
+                              </TableCell>
+                              <TableCell className="align-top w-16">
+                                <span className="font-medium text-muted-foreground">{serialNumber}</span>
                               </TableCell>
                               <TableCell className="align-top min-w-[350px]">
                                 <MathRenderer 

@@ -44,8 +44,7 @@ Smart • Secure • Scalable Online Exams
   - Search by question text, tags, serial number, or ID
 - Action buttons at top-right:
   - Add Question button (gradient, purple-blue)
-  - Bulk Upload button (outlined)\n  - Export button (outlined)
-- Main question list area:\n  - Card-based layout with glassmorphism effect
+  - Bulk Upload button (outlined)\n  - Export button (outlined)\n- Main question list area:\n  - Card-based layout with glassmorphism effect
   - Each card displays:
     - **Serial Number (displayed prominently at top-left corner of card, e.g., #001, #002, #003)**
     - **Question text (rendered output with full formatting, equations, and images displayed directly)**
@@ -56,7 +55,8 @@ Smart • Secure • Scalable Online Exams
     - Created by (Teacher name)
     - Created date
     - Usage count (number of papers using this question)
-    - Action buttons: Edit, Delete, View Details\n  - Pagination at bottom
+    - Action buttons: Edit, Delete, View Details
+  - Pagination at bottom
 - Summary statistics at top:\n  - Total questions count
   - Questions by difficulty (Easy, Medium, Hard counts)
   - Questions by type (MCQ, True/False, etc. counts)
@@ -88,13 +88,12 @@ Smart • Secure • Scalable Online Exams
       - Division button (÷)
       - Fraction button (a/b)
       - Exponent button (x²)
-      - Subscript button (x₁)\n      - Symbol palette dropdown with categorized symbols:\n        - Basic Math
-        - Greek Letters
-        - Operators
-        - Relations
+      - Subscript button (x₁)\n      - Symbol palette dropdown with categorized symbols:\n        - Basic Math\n        - Greek Letters
+        - Operators\n        - Relations
         - Arrows
         - Set Theory
-        - Logic\n        - Geometry
+        - Logic
+        - Geometry
         - Science & Chemistry
         - Physics
     - **Rendered output area shows formatted text, equations, and images in real-time**
@@ -135,8 +134,7 @@ Smart • Secure • Scalable Online Exams
     - **Live rendered output displayed directly below editor**
     - **Supports mathematical equations (LaTeX) with comprehensive symbol library**\n    - **Enhanced equation editor toolbar with quick access to all symbols**\n- Save button (gradient, green)
 - Cancel button (outlined)
-- Validation messages
-\n#### 8.2.3 Bulk Upload Questions\n- Same functionality as Teacher bulk upload
+- Validation messages\n\n#### 8.2.3 Bulk Upload Questions\n- Same functionality as Teacher bulk upload
 - Excel template with three sheets:
   - **Option Sheet:** Dropdown values for Subject, Class, Chapter, Question Type, Difficulty Level\n  - **Question Sheet:** Data entry columns (Serial Number, Subject, Class, Chapter, Question Type, Difficulty Level, Question Text, Option A, Option B, Option C, Option D, Correct Answer, Marks, Tags, Explanation)
   - **Reference Sheet:** Example questions with filled data for reference
@@ -158,7 +156,8 @@ Smart • Secure • Scalable Online Exams
   - Display row-wise errors if validation fails
   - Allow Principal to download error report
   - Allow Principal to fix errors and re-upload
-\n#### 8.2.4 Question Details View (UPDATED)
+
+#### 8.2.4 Question Details View (UPDATED)
 - Modal dialog or side panel\n- Display full question details:\n  - **Serial Number (displayed prominently at top, e.g., Question #001)**
   - **Question text (rendered output with full formatting, equations, and images)**
   - Question type\n  - Subject, Class, Chapter\n  - Difficulty level
@@ -174,14 +173,14 @@ Smart • Secure • Scalable Online Exams
 - Action buttons:
   - Edit button\n  - Delete button
   - Close button
-\n#### 8.2.5 Delete Question Validation
-- Before deleting, system checks if question is used in any question paper
+\n#### 8.2.5 Delete Question Validation\n- Before deleting, system checks if question is used in any question paper
 - If used:\n  - Display warning message: 'This question is used in X question paper(s). Deleting it will affect those papers. Are you sure you want to delete?'
   - List affected question papers
   - Require confirmation\n- If not used:
   - Display confirmation message: 'Are you sure you want to delete this question?'
   - Require confirmation
-- After deletion:\n  - Display success message\n  - Refresh question list
+- After deletion:
+  - Display success message\n  - Refresh question list
 
 ### 8.3 Question Bank Database Structure (Principal Access) (UPDATED)
 
@@ -417,6 +416,278 @@ Smart • Secure • Scalable Online Exams
 - **Can I see how my question will look while editing?**
 \n---
 
+## 15. Create Question Paper Module (UPDATED)
+
+### 15.1 Create Question Paper Overview
+- Purpose: Enable Teachers and Principals to create question papers by selecting questions from the question bank
+- Access: Teachers and Principals can create question papers for their school
+- Key Features:
+  - Select questions from question bank
+  - **NEW: Display Serial Number for each question in the Select Questions interface**
+  - **NEW: Filter and search questions by Serial Number**
+  - **NEW: Sort questions by Serial Number**
+  - Filter questions by subject, class, chapter, difficulty, question type\n  - View question details before selection
+  - Real-time statistics showing total marks, question count, difficulty distribution
+  - Smart selection features (balanced distribution, even lesson coverage, easy question only)
+  - Preview and print question paper
+  - Save question paper as draft or publish
+  - Question usage tracking
+\n### 15.2 Create Question Paper Interface (UPDATED)
+\n#### 15.2.1 Create Question Paper Page Layout (UPDATED)
+- Page title: 'Create Question Paper'
+- Breadcrumb: Dashboard > Question Paper History > Create Question Paper
+- Multi-step wizard:
+  - Step 1: Basic Details (paper name, subject, class, total marks, duration)
+  - Step 2: Select Questions (UPDATED)
+  - Step 3: Preview & Save\n\n#### 15.2.2 Step 2: Select Questions Interface (UPDATED)
+- Section title: 'Select Questions'
+- Subtitle: 'Choose questions from your question bank'
+- Two view modes:
+  - **View All Questions:** Display all available questions in a table
+  - **View by Question Bank:** Display questions grouped by question bank (if applicable)
+- **UPDATED: Filter panel on left (collapsible):**
+  - All Difficulty dropdown (Easy, Medium, Hard)
+  - All Lessons dropdown (filter by chapter/lesson)
+  - **NEW: Serial Number filter (text input for exact match or range, e.g., 001 or 001-010)**
+  - Subject filter (auto-filled from Step 1)
+  - Class filter (auto-filled from Step 1)
+  - Chapter filter (dropdown)\n  - Question type filter (MCQ, True/False, Fill in the Blanks, Short Answer, Long Answer)
+  - Difficulty level filter (Easy, Medium, Hard)\n  - Created by filter (dropdown showing all Teachers in school)
+- **UPDATED: Quick filter buttons:**
+  - Select All\n  - Select Easy
+  - Select Medium
+  - Select Hard
+  - Clear\n- **UPDATED: Search bar at top:**
+  - Search by question text, tags, **Serial Number**, or ID
+  - Placeholder: 'Search by question text, tags, serial number, or ID'
+- **UPDATED: Main question selection table:**
+  - Columns:\n    - **Select (Checkbox)**
+    - **NEW: Serial Number (e.g., #001, #002, #003) - Sortable column**
+    - **Question (truncated text with 'View Details' link)**
+    - **Type (MCQ, True/False, etc.)**
+    - **Difficulty (Easy, Medium, Hard badge)**
+    - **Marks**
+  - **NEW: Serial Number column displayed prominently as the second column (after Select checkbox)**
+  - **NEW: Serial Number is sortable (ascending/descending)**
+  - Each row displays:\n    - Checkbox for selection
+    - **Serial Number (e.g., #001) with badge styling**
+    - Question text (truncated, with tooltip showing full text on hover)
+    - Question type badge
+    - Difficulty level badge (color-coded)\n    - Marks
+  - Click on question text or 'View Details' link to open question details modal
+  - Pagination at bottom\n- **Real-time Statistics Panel (Right side):**
+  - Card title: 'Real-time Statistics'
+  - Card subtitle: 'Current selection analysis'
+  - Statistics displayed:
+    - **Total Marks:** Display total marks of selected questions with large number and icon
+    - **Questions Selected:** Display count of selected questions (e.g., '0 / 123')
+    - **Difficulty Distribution:**
+      - Easy: count and percentage (e.g., '0 (0%)')
+      - Medium: count and percentage\n      - Hard: count and percentage
+    - **Lesson Coverage:** Display percentage of lessons covered (e.g., '0 / 8' with '0% of lessons covered')
+  - **Smart Selection Section:**
+    - Card title: 'Smart Selection'
+    - Card subtitle: 'Auto-select questions based on criteria'
+    - Buttons:
+      - **Balanced Distribution:** Auto-select questions with balanced difficulty distribution
+      - **Even Lesson Coverage:** Auto-select questions covering all lessons evenly
+      - **Easy Question Only:** Auto-select only easy questions
+\n#### 15.2.3 Question Details Modal (in Select Questions step) (UPDATED)
+- Modal dialog with glassmorphism styling
+- Title: 'Question Details'
+- Display full question details:
+  - **Serial Number (displayed prominently at top, e.g., Question #001)**
+  - **Question text (rendered output with full formatting, equations, and images)**
+  - Question type\n  - Subject, Class, Chapter
+  - Difficulty level
+  - **Options (rendered output with full formatting, equations, and images for MCQ/True-False)**
+  - **Correct answer (rendered output with full formatting, equations, and images)**
+  - **Answer (rendered output with full formatting, equations, and images for other question types)**
+  - Marks
+  - Tags
+  - **Explanation (rendered output with full formatting, equations, and images)**
+  - Created by (Teacher name)\n  - Created date
+  - Usage count with list of question papers using this question
+- Action buttons:
+  - **Select Question button (if not already selected)**
+  - **Deselect Question button (if already selected)**
+  - Close button
+\n#### 15.2.4 Step 3: Preview & Save\n- Section title: 'Preview & Save'\n- Preview area:
+  - Display question paper in formatted layout
+  - Show paper name, subject, class, total marks, duration at top
+  - **Display questions with Serial Numbers (e.g., Question #001, Question #002)**
+  - Display questions grouped by section (if applicable)
+  - Display question text, options, marks for each question
+  - Print button to print question paper
+- Save options:
+  - Save as Draft button
+  - Publish button
+- Validation:\n  - Ensure at least one question is selected
+  - Ensure total marks match the target total marks (if specified in Step 1)
+\n### 15.3 Create Question Paper Backend Logic (UPDATED)
+
+#### 15.3.1 Get Available Questions API (UPDATED)
+- **Endpoint:** GET /api/question-paper/available-questions
+- **Query Parameters:**
+  - subject_id (required)\n  - class_id (required)
+  - chapter_id (optional)
+  - difficulty_level (optional)
+  - question_type (optional)
+  - created_by (optional)
+  - **NEW: serial_number (optional, exact match or range, e.g., 001 or 001-010)**
+  - search (optional, search text including serial number)
+  - sort_by (optional, e.g., 'serial_number', 'created_at', 'difficulty_level')
+  - sort_order (optional, 'asc' or 'desc')\n  - page (optional, default: 1)
+  - limit (optional, default: 20)
+- **Response:**
+  ```json
+  {\n    \"success\": true,
+    \"data\": {\n      \"questions\": [\n        {
+          \"id\": \"uuid\",
+          \"serial_number\": \"001\",
+          \"subject_name\": \"Physics\",
+          \"class_name\": \"Class 12\",
+          \"chapter_name\": \"Electrostatics\",
+          \"question_type\": \"MCQ\",
+          \"difficulty_level\": \"Medium\",
+          \"question_text\": \"What is the SI unit of electric charge?\",
+          \"question_text_rendered\": \"<p>What is the SI unit of electric charge?</p>\",\n          \"options\": [\"Ampere\", \"Coulomb\", \"Volt\", \"Ohm\"],\n          \"options_rendered\": [\"<p>Ampere</p>\", \"<p>Coulomb</p>\", \"<p>Volt</p>\", \"<p>Ohm</p>\"],
+          \"correct_answer\": \"Coulomb\",
+          \"correct_answer_rendered\": \"<p>Coulomb</p>\",
+          \"marks\": 4,
+          \"tags\": [\"electric charge\", \"SI units\"],
+          \"created_by_name\": \"John Doe\",
+          \"created_at\": \"2026-01-10T10:00:00Z\",
+          \"usage_count\": 5
+        }
+      ],
+      \"total_count\": 150,
+      \"page\": 1,
+      \"limit\": 20,
+      \"total_pages\": 8
+    }
+  }
+  ```
+- **Access Control:** Teachers and Principals only, school-based data isolation
+- **Logic:**
+  - Fetch questions matching filters from question_bank table
+  - **NEW: Support filtering by serial_number (exact match or range)**\n  - **NEW: Support sorting by serial_number (ascending/descending)**
+  - Include serial_number in response for each question
+  - Return paginated results
+\n#### 15.3.2 Create Question Paper API (UPDATED)
+- **Endpoint:** POST /api/question-paper/create
+- **Request Body:**
+  ```json
+  {
+    \"paper_name\": \"Physics Mid-Term Exam\",
+    \"subject_id\": \"uuid\",
+    \"class_id\": \"uuid\",\n    \"total_marks\": 100,
+    \"duration_minutes\": 180,
+    \"question_ids\": [\"uuid1\", \"uuid2\", \"uuid3\"],
+    \"status\": \"draft\" // or \"published\"
+  }\n  ```
+- **Response:**
+  ```json
+  {
+    \"success\": true,
+    \"message\": \"Question paper created successfully\",
+    \"data\": {
+      \"paper_id\": \"uuid\",
+      \"paper_name\": \"Physics Mid-Term Exam\",
+      \"subject_name\": \"Physics\",
+      \"class_name\": \"Class 12\",
+      \"total_marks\": 100,
+      \"duration_minutes\": 180,
+      \"question_count\": 25,
+      \"status\": \"draft\",
+      \"created_at\": \"2026-01-19T14:40:29Z\"\n    }
+  }\n  ```
+- **Access Control:** Teachers and Principals only\n- **Validation:**
+  - Ensure all question_ids exist and belong to the same school
+  - Ensure total marks match sum of selected questions' marks (if strict validation enabled)
+  - Ensure at least one question is selected
+- **Logic:**
+  - Create question_papers record
+  - Create question_paper_questions records linking paper to questions
+  - Update usage_count for each selected question
+  - Return created paper details
+
+### 15.4 Create Question Paper UI Components (UPDATED)
+
+#### 15.4.1 Question Selection Table (UPDATED)
+- Responsive table with horizontal scroll
+- **UPDATED: Columns:**
+  - **Select (Checkbox)**\n  - **NEW: Serial Number (e.g., #001) - Sortable column with sort indicator**
+  - **Question (truncated text)**
+  - **Type (badge)**
+  - **Difficulty (color-coded badge)**
+  - **Marks**
+- **NEW: Serial Number column styling:**
+  - Badge styling with purple-blue gradient background
+  - Bold text\n  - Displayed prominently as second column
+  - Sortable with ascending/descending indicators
+- Hover effects on rows
+- Click on question text to open details modal
+- Checkbox selection with visual feedback
+- Pagination at bottom
+\n#### 15.4.2 Real-time Statistics Panel\n- Glassmorphism card on right side
+- Sticky positioning (stays visible while scrolling)
+- Statistics displayed with icons and large numbers
+- Progress bars for difficulty distribution
+- Color-coded badges for difficulty levels
+- Lesson coverage percentage with progress bar
+- Smart Selection buttons with gradient styling
+
+#### 15.4.3 Question Details Modal (UPDATED)
+- Modal dialog with glassmorphism styling
+- **Full question display with rendered output:**
+  - **Serial Number displayed prominently at top (e.g., Question #001)**
+  - **Question text (rendered with full formatting, equations, and images)**
+  - **Options (rendered with full formatting, equations, and images for MCQ/True-False)**
+  - **Correct answer (rendered with full formatting, equations, and images)**
+  - **Answer (rendered with full formatting, equations, and images for other question types)**\n  - **Explanation (rendered with full formatting, equations, and images)**
+- All metadata displayed\n- Usage list with question paper names
+- **Select/Deselect Question button** at bottom
+- Close button
+
+### 15.5 Create Question Paper Help and Documentation (UPDATED)
+
+#### 15.5.1 Help Resources (UPDATED)
+- Help icon in Create Question Paper page
+- Opens help dialog with:
+  - Overview of Create Question Paper module
+  - How to create a new question paper
+  - How to select questions from question bank
+  - **NEW: How to filter questions by Serial Number**
+  - **NEW: How to sort questions by Serial Number**
+  - **NEW: How to search questions by Serial Number**
+  - How to use filters and search
+  - How to view question details
+  - Understanding real-time statistics
+  - How to use Smart Selection features
+  - How to preview and print question paper
+  - How to save question paper as draft or publish
+  - FAQ section\n\n#### 15.5.2 FAQ Topics (UPDATED)
+- What is Create Question Paper?
+- How to create a new question paper?\n- How to select questions from question bank?
+- **NEW: How to filter questions by Serial Number?**
+- **NEW: How to sort questions by Serial Number?**
+- **NEW: How to search questions by Serial Number?**\n- **NEW: Can I select questions based on Serial Number range?**
+- How to filter questions by subject/class/chapter?
+- How to search for specific questions?
+- How to view question details before selection?
+- What is real-time statistics?
+- How to use Smart Selection features?
+- What is Balanced Distribution?
+- What is Even Lesson Coverage?
+- What is Easy Question Only?
+- How to preview question paper?
+- How to print question paper?
+- How to save question paper as draft?
+- How to publish question paper?
+- Can I edit a published question paper?
+\n---
+
 ## 25. UPDATED: Real-Time Storage Monitoring Module
 
 ### 25.1 Real-Time Storage Monitoring Overview
@@ -434,11 +705,11 @@ Smart • Secure • Scalable Online Exams
   - Role-based access control (Admin only)\n  - Dynamic alerts for users exceeding storage thresholds
   - Server capacity alerts when total usage exceeds thresholds (e.g., 80%, 90%, 95%)
   - Storage optimization recommendations\n  - Predictive analytics: Estimate when server capacity will be reached based on current growth trends
-\n### 25.2 Real-Time Storage Monitoring Database Structure
+
+### 25.2 Real-Time Storage Monitoring Database Structure
 
 #### 25.2.1 User Storage Usage Table
-Table name: user_storage_usage
-
+Table name: user_storage_usage\n
 Columns:
 - id (UUID, Primary Key)
 - user_id (Foreign Key → users.id, required)
@@ -507,8 +778,8 @@ Columns:
 - **Dynamic File Storage Calculation:**
   - Real-time sum of all file sizes uploaded by the user
   - Query executed every 10 seconds:\n    ```sql
-    SELECT SUM(file_size) FROM files WHERE user_id = [user_id]\n    ```
-  - Includes:\n    - Question images (from question_bank table)
+    SELECT SUM(file_size) FROM files WHERE user_id = [user_id]
+    ```\n  - Includes:\n    - Question images (from question_bank table)
     - Profile pictures (from users table)
     - Uploaded documents (if any)
     - Bulk upload template files (if stored)\n\n- **Dynamic Database Storage Calculation:**
@@ -542,8 +813,7 @@ Columns:
     FROM user_storage_usage
     ```
   - Fetch server capacity from server_capacity_config table
-  - Calculate usage percentages:\n    - file_storage_usage_percentage = (total_file_storage_used_bytes / total_file_storage_capacity_bytes) × 100
-    - database_storage_usage_percentage = (total_database_storage_used_bytes / total_database_storage_capacity_bytes) × 100
+  - Calculate usage percentages:\n    - file_storage_usage_percentage = (total_file_storage_used_bytes / total_file_storage_capacity_bytes) × 100\n    - database_storage_usage_percentage = (total_database_storage_used_bytes / total_database_storage_capacity_bytes) × 100
     - total_storage_usage_percentage = (total_storage_used_bytes / total_storage_capacity_bytes) × 100
   - Determine server_status based on total_storage_usage_percentage and thresholds
   - Update server_storage_summary table
@@ -827,8 +1097,7 @@ Columns:
 - Save button (gradient, green)\n- Cancel button (outlined)\n- Validation messages
 \n#### 25.6.5 UPDATED: Summary Statistics Cards
 - **Total File Storage Used:**
-  - Display: '400 GB / 1 TB (40%)'
-  - Icon: File icon
+  - Display: '400 GB / 1 TB (40%)'\n  - Icon: File icon
   - Color: Blue
   - Progress bar showing percentage
 - **Total Database Storage Used:**
@@ -887,7 +1156,8 @@ Columns:
   - Capacity limit line (horizontal)
   - Shaded area showing safe zone
   - Display projected exhaustion date with warning badge
-\n### 25.7 Real-Time Storage Monitoring Notifications (UPDATED)
+
+### 25.7 Real-Time Storage Monitoring Notifications (UPDATED)
 
 #### 25.7.1 Admin Notifications (UPDATED)
 - **Alert when user exceeds storage threshold** (Warning or Critical status)
@@ -963,6 +1233,7 @@ Columns:
 
 ## 26. Conclusion (UPDATED)
 
-A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting with full formatting support for both question text and option text (including bold, italic, underline, lists, tables, image upload, and LaTeX equations with comprehensive mathematical and science symbol library), updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The latest enhancements include: (1) Full Question Bank access for Principals with all Teacher-level features including create, edit, delete, bulk upload, filter, search, export, and question usage tracking capabilities, enabling Principals to manage questions across their school efficiently; (2) Enhanced rich text editor support for question text and option text with comprehensive mathematical and science symbol library, including quick access buttons for square root (√) and division (÷) symbols, organized symbol palette with categories (Basic Math, Greek Letters, Operators, Relations, Arrows, Set Theory, Logic, Geometry, Science & Chemistry, Physics), search functionality, and recently used symbols section, providing Teachers and Principals with powerful tools to create complex mathematical and scientific questions with ease; (3) Live Rendered Output Display—a powerful feature that eliminates the need for separate preview options by displaying rendered output directly in the question editor and card view. As users type in the rich text editor for Question Text, Options, Correct Answer, Answer, and Explanation fields, the formatted content (including text formatting, mathematical equations, and images) is rendered in real-time below the editor, providing immediate visual feedback. This rendered output is also displayed directly in the question card view on the Question Bank page and in the Question Details panel, ensuring users can see exactly how their questions will appear without needing to click a preview button. This seamless integration enhances the user experience by providing instant visual confirmation of formatting, equations, and images, reducing errors, and streamlining the question creation and editing workflow; (4) Dynamic Real-Time Storage Monitoring with Server Capacity Comparison—a powerful tool for administrators to monitor storage usage across the platform in real-time, compare current usage against total server capacity, receive dynamic alerts when thresholds are exceeded, and leverage predictive analytics to forecast capacity exhaustion dates. These features enable proactive server management, support capacity planning, improve resource allocation, identify storage bottlenecks, provide actionable insights for storage optimization, and ensure the platform can scale efficiently to meet growing demands. With dynamic calculations updated every 10 seconds, visual capacity indicators, server capacity configuration options, and comprehensive analytics dashboards, administrators have complete visibility and control over storage resources, enabling them to make informed decisions about server upgrades, data cleanup policies, and user storage limits; and (5) Serial Number System for Question Bank—a new feature that assigns a unique, auto-generated serial number to every question in the Question Bank, displayed prominently in question cards, question details, and the question editor. Serial numbers are formatted as zero-padded 3-digit numbers (e.g., #001, #002, #003) and are unique within each school. This enhancement improves question identification, tracking, and organization, making it easier for Principals and Teachers to reference specific questions in discussions, reports, and question papers. Serial numbers are auto-generated during question creation and bulk upload, remain unchanged during edits, and are not re-sequenced when questions are deleted, ensuring consistency and reliability across the platform.\n
+A Cube - Online Exam System is a comprehensive platform designed for educational institutions to create, conduct, and analyze online exams efficiently. With its dark purple-blue gradient theme, glassmorphism design, and professional EdTech look, the system provides a modern and engaging user experience. The automatic passing marks calculation (35% of total marks), enhanced student exam interface with question palette and timer, rich text editor integration for question formatting with full formatting support for both question text and option text (including bold, italic, underline, lists, tables, image upload, and LaTeX equations with comprehensive mathematical and science symbol library), updated bulk upload functionality with three-sheet template structure (Option, Question, Reference) to separate dropdown values, data entry, and reference examples, preview and print functionality for question papers, real-time monitoring, comprehensive analytics, and robust security features make A Cube a smart, secure, and scalable solution for NEET preparation and school-level assessments. The latest enhancements include: (1) Full Question Bank access for Principals with all Teacher-level features including create, edit, delete, bulk upload, filter, search, export, and question usage tracking capabilities, enabling Principals to manage questions across their school efficiently; (2) Enhanced rich text editor support for question text and option text with comprehensive mathematical and science symbol library, including quick access buttons for square root (√) and division (÷) symbols, organized symbol palette with categories (Basic Math, Greek Letters, Operators, Relations, Arrows, Set Theory, Logic, Geometry, Science & Chemistry, Physics), search functionality, and recently used symbols section, providing Teachers and Principals with powerful tools to create complex mathematical and scientific questions with ease; (3) Live Rendered Output Display—a powerful feature that eliminates the need for separate preview options by displaying rendered output directly in the question editor and card view. As users type in the rich text editor for Question Text, Options, Correct Answer, Answer, and Explanation fields, the formatted content (including text formatting, mathematical equations, and images) is rendered in real-time below the editor, providing immediate visual feedback. This rendered output is also displayed directly in the question card view on the Question Bank page and in the Question Details panel, ensuring users can see exactly how their questions will appear without needing to click a preview button. This seamless integration enhances the user experience by providing instant visual confirmation of formatting, equations, and images, reducing errors, and streamlining the question creation and editing workflow; (4) Dynamic Real-Time Storage Monitoring with Server Capacity Comparison—a powerful tool for administrators to monitor storage usage across the platform in real-time, compare current usage against total server capacity, receive dynamic alerts when thresholds are exceeded, and leverage predictive analytics to forecast capacity exhaustion dates. These features enable proactive server management, support capacity planning, improve resource allocation, identify storage bottlenecks, provide actionable insights for storage optimization, and ensure the platform can scale efficiently to meet growing demands. With dynamic calculations updated every 10 seconds, visual capacity indicators, server capacity configuration options, and comprehensive analytics dashboards, administrators have complete visibility and control over storage resources, enabling them to make informed decisions about server upgrades, data cleanup policies, and user storage limits; (5) Serial Number System for Question Bank—a new feature that assigns a unique, auto-generated serial number to every question in the Question Bank, displayed prominently in question cards, question details, and the question editor. Serial numbers are formatted as zero-padded 3-digit numbers (e.g., #001, #002, #003) and are unique within each school. This enhancement improves question identification, tracking, and organization, making it easier for Principals and Teachers to reference specific questions in discussions, reports, and question papers. Serial numbers are auto-generated during question creation and bulk upload, remain unchanged during edits, and are not re-sequenced when questions are deleted, ensuring consistency and reliability across the platform; and (6) **NEW: Serial Number Display in Create Question Paper Module**—a critical enhancement that addresses the user's requirement to display Serial Numbers in the Select Questions interface during question paper creation. This update enables Teachers and Principals to easily identify, filter, search, and sort questions by their Serial Numbers when creating question papers. The Serial Number column is now prominently displayed as the second column (after the Select checkbox) in the question selection table, with full sorting capability (ascending/descending). Users can filter questions by Serial Number (exact match or range, e.g., 001 or 001-010), search by Serial Number in the search bar, and view Serial Numbers in the Question Details modal. This enhancement significantly improves the question selection workflow by allowing users to pick questions based on their unique Serial Numbers, making it easier to create question papers with specific questions, track question usage, and maintain consistency across multiple question papers. The Serial Number is also displayed in the Preview & Save step, ensuring complete visibility throughout the question paper creation process.\n
 ## Reference Files
 1. User-provided image: formula.jpg
+2. User-provided screenshot: screenshot.png
