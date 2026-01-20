@@ -88,6 +88,7 @@ export default function TakeExam() {
       if (!profile) throw new Error('Profile not found');
 
       const examData = await examApi.getExamById(examId);
+      if (!examData) throw new Error('Exam not found');
       setExam(examData);
 
       // Check time in IST
@@ -134,9 +135,61 @@ export default function TakeExam() {
 
       setAttempt(attemptData);
 
+      // Load questions with validation
       const paperQuestions = await academicApi.getQuestionPaperQuestions(examData.question_paper_id);
-      setQuestions(paperQuestions || []);
-      setQuestionsLoaded(true); // Mark questions as loaded, even if empty
+      
+      // ✅ CRITICAL VALIDATION: Ensure all questions are loaded
+      console.log('=== QUESTION LOADING VALIDATION ===');
+      console.log('Exam ID:', examId);
+      console.log('Question Paper ID:', examData.question_paper_id);
+      console.log('Exam Total Marks:', examData.total_marks);
+      console.log('Questions Loaded:', paperQuestions?.length || 0);
+      
+      // Validation 1: Check if questions exist
+      if (!paperQuestions || paperQuestions.length === 0) {
+        throw new Error(
+          'No questions loaded for this exam. Please refresh the page and try again. ' +
+          'If the problem persists, contact your teacher.'
+        );
+      }
+      
+      // Validation 2: Compare with exam total marks (assuming 1 mark per question)
+      const expectedQuestionCount = examData.total_marks;
+      if (paperQuestions.length < expectedQuestionCount) {
+        throw new Error(
+          `Only ${paperQuestions.length} questions loaded, but exam requires ${expectedQuestionCount} questions. ` +
+          'Please refresh the page and try again. If the problem persists, contact your teacher.'
+        );
+      }
+      
+      // Validation 3: Check for duplicate display_order
+      const displayOrders = paperQuestions.map(q => q.display_order);
+      const uniqueOrders = new Set(displayOrders);
+      if (displayOrders.length !== uniqueOrders.size) {
+        throw new Error(
+          'Question loading error: Duplicate question numbers detected. ' +
+          'Please contact your teacher.'
+        );
+      }
+      
+      // Validation 4: Check for gaps in display_order
+      const sortedOrders = [...displayOrders].sort((a, b) => a - b);
+      for (let i = 0; i < sortedOrders.length; i++) {
+        if (sortedOrders[i] !== i + 1) {
+          throw new Error(
+            `Question loading error: Missing question #${i + 1}. ` +
+            'Please refresh the page and try again.'
+          );
+        }
+      }
+      
+      console.log('✅ All validations passed');
+      console.log('Question IDs:', paperQuestions.map(q => q.question_id));
+      console.log('Display Orders:', paperQuestions.map(q => q.display_order));
+      console.log('===================================');
+      
+      setQuestions(paperQuestions);
+      setQuestionsLoaded(true);
 
       const existingAnswers = await examAnswerApi.getAnswersByAttempt(attemptData.id);
       const answersMap: Record<string, any> = {};
@@ -296,6 +349,14 @@ export default function TakeExam() {
     return true;
   };
 
+  // Helper function to get unanswered question numbers
+  const getUnansweredQuestionNumbers = (): number[] => {
+    return questions
+      .filter(q => !isQuestionAnswered(q.question_id))
+      .map(q => q.display_order)
+      .sort((a, b) => a - b);
+  };
+
   // Loading state - exam data is being fetched
   if (loading) {
     return (
@@ -349,6 +410,20 @@ export default function TakeExam() {
     );
   }
 
+  // Safety check: exam and questions must be loaded
+  if (!exam || questions.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <p className="text-muted-foreground">Unable to load exam</p>
+          <Button onClick={() => navigate('/student/exams')} className="mt-4">
+            Back to Exams
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   const currentQuestion = questions[currentQuestionIndex];
   const currentAnswer = answers[currentQuestion.question_id];
 
@@ -377,6 +452,20 @@ export default function TakeExam() {
           </div>
         </div>
       </div>
+
+      {/* Question Loading Success Indicator */}
+      {questionsLoaded && questions.length > 0 && (
+        <div className="container mx-auto px-4 pt-4">
+          <div className="p-3 bg-success/10 border border-success rounded-lg">
+            <div className="flex items-center gap-2 text-success text-sm">
+              <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+              <span className="font-medium">
+                ✅ {questions.length} questions loaded successfully
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -637,18 +726,87 @@ export default function TakeExam() {
       </div>
 
       <AlertDialog open={submitDialogOpen} onOpenChange={setSubmitDialogOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle>Submit Exam</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to submit your exam? You have answered{' '}
-              {questions.filter(q => isQuestionAnswered(q.question_id)).length} out of {questions.length} questions.
-              This action cannot be undone.
+            <AlertDialogDescription className="space-y-4">
+              <p>Are you sure you want to submit your exam?</p>
+              
+              {/* Summary Card */}
+              <div className="p-4 bg-muted rounded-lg space-y-2">
+                <div className="font-medium text-foreground">Summary:</div>
+                <div className="flex justify-between text-sm">
+                  <span>Total Questions:</span>
+                  <span className="font-medium">{questions.length}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Answered:</span>
+                  <span className="font-medium text-success">
+                    {questions.filter(q => isQuestionAnswered(q.question_id)).length}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Not Answered:</span>
+                  <span className="font-medium text-destructive">
+                    {getUnansweredQuestionNumbers().length}
+                  </span>
+                </div>
+              </div>
+              
+              {/* Warning Banner for Unanswered Questions */}
+              {getUnansweredQuestionNumbers().length > 0 && (
+                <div className="p-4 bg-destructive/10 border-2 border-destructive rounded-lg space-y-2">
+                  <div className="flex items-center gap-2 text-destructive font-semibold">
+                    <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                    <span>Warning: You have {getUnansweredQuestionNumbers().length} unanswered questions!</span>
+                  </div>
+                  
+                  <div className="text-sm text-destructive/90">
+                    <p className="font-medium mb-1">Unanswered Questions:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {getUnansweredQuestionNumbers().map(num => (
+                        <Badge key={num} variant="destructive" className="text-xs">
+                          #{num}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <p className="text-sm text-destructive/90 mt-2">
+                    ⚠️ Unanswered questions will be marked as incorrect and you will receive 0 marks for them.
+                  </p>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full mt-2 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                    onClick={() => {
+                      setSubmitDialogOpen(false);
+                      // Jump to first unanswered question
+                      const firstUnanswered = questions.findIndex(q => !isQuestionAnswered(q.question_id));
+                      if (firstUnanswered !== -1) {
+                        setCurrentQuestionIndex(firstUnanswered);
+                      }
+                    }}
+                  >
+                    Review Unanswered Questions
+                  </Button>
+                </div>
+              )}
+              
+              <p className="text-sm text-muted-foreground">
+                This action cannot be undone. Once submitted, you cannot change your answers.
+              </p>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleSubmit}>Submit</AlertDialogAction>
+            <AlertDialogAction 
+              onClick={handleSubmit}
+              className={getUnansweredQuestionNumbers().length > 0 ? 'bg-destructive hover:bg-destructive/90' : ''}
+            >
+              {getUnansweredQuestionNumbers().length > 0 ? 'Submit Anyway' : 'Submit Exam'}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

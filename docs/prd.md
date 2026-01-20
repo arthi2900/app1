@@ -1,6 +1,7 @@
-# A Cube - Online Exam System Requirements Document (Consolidated Final Version)
+# A Cube - Online Exam System Requirements Document (Final Version)
 
-## 1. Application Description\n
+## 1. Application Description
+
 ### 1.1 Application Name
 A Cube - Online Exam System
 
@@ -32,7 +33,8 @@ Smart • Secure • Scalable Online Exams
 - **Re-sequencing:** Automatically re-sequence selected questions as 1, 2, 3, etc. in final question paper
 - **Live Rendered Output:** Real-time display of formatted text, equations, and images in question editor
 - **Comprehensive Symbol Library:** Quick access to square root (√), division (÷), and 100+ mathematical and science symbols
-- **Smart Selection:** Balanced distribution, even lesson coverage, easy question only\n- **Predictive Analytics:** Forecast server capacity exhaustion dates
+- **Smart Selection:** Balanced distribution, even lesson coverage, easy question only
+- **Predictive Analytics:** Forecast server capacity exhaustion dates
 - **Server Capacity Comparison:** Real-time monitoring of storage usage vs. server capacity
 \n---
 
@@ -40,14 +42,14 @@ Smart • Secure • Scalable Online Exams
 
 ### 3.1 Overview
 - Every question in the Question Bank is assigned a unique, auto-generated serial number
-- Serial numbers are formatted as zero-padded 3-digit numbers (e.g., #001, #002, #003)\n- Serial numbers are unique within each school
-- Serial numbers are displayed prominently in question cards, question details, and question editor
+- Serial numbers are formatted as zero-padded 3-digit numbers (e.g., #001, #002, #003)
+- Serial numbers are unique within each school\n- Serial numbers are displayed prominently in question cards, question details, and question editor
 \n### 3.2 Serial Number Generation Logic
-- When creating a new question, the system finds the highest serial_number in the school
-- Increments by 1 and assigns to the new question
+- When creating a new question, the system finds the highest serial_number in the school\n- Increments by 1 and assigns to the new question
 - Format: LPAD(next_number, 3, '0')
 - Example: If highest serial_number is 025, next question gets 026
-\n### 3.3 Serial Number Display
+
+### 3.3 Serial Number Display
 - **Question Bank Page:** Serial number displayed prominently at top-left corner of each question card (e.g., #001)\n- **Question Details Panel:** Serial number displayed at top (e.g., Question #001)
 - **Add/Edit Question Dialog:** Serial number displayed as read-only field at top (e.g., #001)
 - **Bulk Upload:** Serial numbers auto-generated during upload if not provided
@@ -57,16 +59,17 @@ Smart • Secure • Scalable Online Exams
 - Serial numbers remain unchanged during question edits
 - Serial numbers are NOT re-sequenced when questions are deleted (gaps are allowed)
 - Serial numbers can be used for filtering, searching, and sorting
-\n### 3.5 Serial Number in Database
+
+### 3.5 Serial Number in Database
 - **Table:** question_bank\n- **Column:** serial_number (String, unique within school, required)
 - **Format:** Zero-padded 3-digit number (e.g., 001, 002, 003)\n- **Display Format:** #001, #002, #003 in UI
 \n---
 
-## 4. Original Serial Number Maintenance and Re-sequencing (Create Question Paper)\n
+## 4. Original Serial Number Maintenance and Re-sequencing (Create Question Paper)
+
 ### 4.1 Overview
 When creating a question paper, the system maintains Original Serial Numbers from the Question Bank during the selection process, then re-sequences selected questions for display in the final question paper.
-
-### 4.2 Original Serial Number (During Selection)
+\n### 4.2 Original Serial Number (During Selection)
 - **Definition:** The serial number of the question from the Question Bank (e.g., #002, #005, #010)
 - **Display Location:** Question selection table, filters, search, sorting, question details modal
 - **Purpose:** Allows users to easily identify and select questions based on their Original Serial Numbers
@@ -74,9 +77,9 @@ When creating a question paper, the system maintains Original Serial Numbers fro
 
 ### 4.3 Re-sequenced Question Number (After Selection)
 - **Definition:** The sequential question number in the question paper (e.g., 1, 2, 3, 4, etc.)
-- **Display Location:** Question paper preview, final question paper output
-- **Purpose:** Provides clean, sequential numbering in the final question paper
-- **Behavior:** Selected questions are automatically re-sequenced starting from 1\n
+- **Display Location:** Question paper preview, final question paper output\n- **Purpose:** Provides clean, sequential numbering in the final question paper
+- **Behavior:** Selected questions are automatically re-sequenced starting from 1
+
 ### 4.4 Example Workflow
 1. **Selection Phase:**
    - User selects questions with Original Serial Numbers: #002, #005, #010
@@ -91,7 +94,8 @@ When creating a question paper, the system maintains Original Serial Numbers fro
    - Question paper displays: Question 1, Question 2, Question 3
    - Backend stores both original_serial_number and paper_question_number
 \n### 4.5 Database Structure
-**Table:** question_paper_questions\n\n**Columns:**
+**Table:** question_paper_questions
+\n**Columns:**
 - id (UUID, Primary Key)
 - paper_id (Foreign Key → question_papers.id, required)
 - question_id (Foreign Key → question_bank.id, required)
@@ -103,18 +107,17 @@ When creating a question paper, the system maintains Original Serial Numbers fro
   - This is the display order in the question paper
 - marks (Integer, required)
 - created_at (Timestamp)\n- updated_at (Timestamp)
-
-### 4.6 Benefits
-- **Traceability:** Maintain link to original Question Bank during selection
+\n### 4.6 Benefits\n- **Traceability:** Maintain link to original Question Bank during selection
 - **Professional Presentation:** Clean, sequential numbering in final question paper
 - **Data Integrity:** Store both original and re-sequenced numbers for future analysis
 - **Cross-referencing:** Enable question reuse tracking and analysis across question papers
 
 ---
+\n## 5. Question Bank Module (Consolidated)
 
-## 5. Question Bank Module (Consolidated)\n
 ### 5.1 Overview
-- Purpose: Enable Teachers and Principals to create, manage, and organize questions\n- Access: Teachers can manage their own questions; Principals can manage all questions in their school
+- Purpose: Enable Teachers and Principals to create, manage, and organize questions
+- Access: Teachers can manage their own questions; Principals can manage all questions in their school
 - Key Features:
   - Create questions with rich text editor and LaTeX support
   - Bulk upload questions using Excel template
@@ -166,8 +169,7 @@ When creating a question paper, the system maintains Original Serial Numbers fro
   - **Question Text:** Rich text editor with live rendered output (required)
     - Editor area with toolbar at top
     - **Live rendered output displayed directly below editor as user types**
-    - Supports formatting: bold, italic, underline, lists, tables\n    - Supports image upload
-    - **Supports mathematical equations (LaTeX) with comprehensive symbol library including:**
+    - Supports formatting: bold, italic, underline, lists, tables\n    - Supports image upload\n    - **Supports mathematical equations (LaTeX) with comprehensive symbol library including:**
       - **Square root (√) symbol**
       - **Division (÷) symbol**
       - **All basic mathematical operators:** +, −, ×, ÷, =, ≠, <, >, ≤, ≥
@@ -251,8 +253,7 @@ When creating a question paper, the system maintains Original Serial Numbers fro
   - Allow user to fix errors and re-upload
 
 #### 5.2.4 Question Details View
-- Modal dialog or side panel\n- Display full question details:
-  - **Serial Number (displayed prominently at top, e.g., Question #001)**
+- Modal dialog or side panel\n- Display full question details:\n  - **Serial Number (displayed prominently at top, e.g., Question #001)**
   - **Question text (rendered output with full formatting, equations, and images)**
   - Question type\n  - Subject, Class, Chapter\n  - Difficulty level
   - **Options (rendered output with full formatting, equations, and images for MCQ/True-False)**\n  - **Correct answer (rendered output with full formatting, equations, and images)**
@@ -284,7 +285,8 @@ When creating a question paper, the system maintains Original Serial Numbers fro
   - **serial_number (String, unique within school, required)**
     - Format: Zero-padded 3-digit number (e.g., 001, 002, 003)
     - Auto-generated sequentially within each school
-    - Displayed as #001, #002, #003 in UI\n  - school_id (Foreign Key → schools.id, required)
+    - Displayed as #001, #002, #003 in UI
+  - school_id (Foreign Key → schools.id, required)
   - subject_id (Foreign Key → subjects.id, required)
   - class_id (Foreign Key → classes.id, required)
   - chapter_id (Foreign Key → chapters.id, required)
@@ -320,7 +322,8 @@ When creating a question paper, the system maintains Original Serial Numbers fro
   {\n    \"success\": true,
     \"data\": {\n      \"questions\": [\n        {
           \"id\": \"uuid\",
-          \"serial_number\": \"001\",\n          \"subject_name\": \"Physics\",
+          \"serial_number\": \"001\",
+          \"subject_name\": \"Physics\",
           \"class_name\": \"Class 12\",
           \"chapter_name\": \"Electrostatics\",
           \"question_type\": \"MCQ\",
@@ -883,8 +886,7 @@ Columns:
       \"total_file_storage_capacity_bytes\": 1099511627776,
       \"total_database_storage_capacity_bytes\": 549755813888,
       \"total_storage_capacity_bytes\": 1649267441664,
-      \"alert_threshold_percentage\": 80,
-      \"critical_threshold_percentage\": 95
+      \"alert_threshold_percentage\": 80,\n      \"critical_threshold_percentage\": 95
     }
   }
   ```
