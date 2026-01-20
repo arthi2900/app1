@@ -112,6 +112,29 @@ export interface QuestionWithSubject extends Question {
   subjects?: Subject;
 }
 
+// Global Questions (shared across all schools, managed by admins)
+export interface GlobalQuestion {
+  id: string;
+  question_text: string;
+  question_type: QuestionType;
+  options: string[] | MatchPair[] | null;
+  answer_options: string[] | null;
+  correct_answer: string;
+  marks: number;
+  negative_marks: number;
+  difficulty: DifficultyLevel;
+  bank_name: string;
+  lesson_id: string | null;
+  image_url: string | null;
+  serial_number: string; // Persistent serial number (e.g., '001', '002', '003')
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+  source_question_id: string | null; // Reference to original question if copied from school
+  usage_count: number; // Track how many times this question is used
+  match_pairs?: MatchPair[] | null;
+}
+
 export interface Lesson {
   id: string;
   subject_id: string;

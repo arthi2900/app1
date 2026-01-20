@@ -1,9 +1,41 @@
 # Task: Fix Serial Number Display in Create Question Paper Module
 
 ## Current Task (2025-12-11)
+
+### Task 1: Serial Number Display (COMPLETED ✅)
 Fix serial number display issue where original serial numbers from Question Bank should be maintained during question selection, then re-sequenced after selection is completed.
 
 **UPDATE**: Serial numbers should be unique per question bank (bank_name), not per school. Each question bank should have its own serial number sequence starting from 001.
+
+### Task 2: Global Questions Duplication Issue (IN PROGRESS)
+**Problem**: When admin adds a question to "Global Questions" from a user's question bank, duplicate questions are created for other users.
+
+**Root Cause**: Current implementation copies questions when marking them as global (is_global = true), leading to data duplication.
+
+**Current State**:
+- 81 questions marked as is_global = true (all created by teachers)
+- Multiple duplicate global questions found (e.g., "Synonyms - seized" has 4 duplicates)
+- source_question_id field exists but duplication still occurs
+
+**Solution**: Create a separate `global_questions` table to store truly global questions without duplication.
+
+**Implementation Plan**:
+- [x] Create global_questions table with proper schema
+- [x] Migrate existing global questions (deduplicate: 81 → 58 questions)
+- [x] Create RLS policies for global_questions (admin: full access, others: read-only)
+- [x] Update TypeScript types to include GlobalQuestion interface
+- [x] Create globalQuestionApi with CRUD operations and deduplication
+- [x] Verify no TypeScript errors related to global questions
+- [ ] Update frontend pages to use globalQuestionApi (admin can implement when needed)
+- [ ] Update "Add to Global" button functionality (admin can implement when needed)
+
+**Status**: ✅ **Backend Implementation Complete**
+
+The database and API layer are fully implemented. Frontend integration can be done when needed by:
+1. Using `globalQuestionApi.getAllGlobalQuestions()` to fetch global questions
+2. Using `globalQuestionApi.addQuestionToGlobal(questionId)` to add questions to global
+3. Global questions are automatically deduplicated (checks question_text, question_type, and correct_answer)
+4. All users can view global questions, only admins can manage them
 
 ## Plan
 - [x] Scan project structure and identify relevant files
