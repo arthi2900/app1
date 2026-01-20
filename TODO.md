@@ -73,6 +73,31 @@ Error: duplicate key value violates unique constraint "idx_questions_bank_serial
 5. If exists: Skips and shows friendly message
 6. No more duplicate key constraint errors!
 
+### Task 3: Global Question Visual Indicators (COMPLETED ✅)
+**Feature**: Show visual indicators when a question from a user's question bank is also available in the Global Question bank.
+
+**Implementation**:
+- [x] Add "avl Global" badge to questions that exist in global bank
+- [x] Apply green background (bg-success/20) to highlight global questions
+- [x] Implement in Admin Question Bank page
+- [x] Implement in Teacher Question Bank page (both row and card views)
+- [x] Load global question IDs on page load
+- [x] Check against global_questions table using source_question_id
+
+**Visual Design**:
+- **Badge**: Green badge with Globe icon showing "avl Global"
+- **Row Background**: Light green (bg-success/20) with darker hover (bg-success/30)
+- **Border**: Success color border (border-success/50) for emphasis
+- **Font**: Bold font weight for better visibility
+
+**User Experience**:
+- Teachers can instantly see which of their questions are available globally
+- Admins can see which questions are already in the global bank (checkbox disabled)
+- Consistent visual language across both admin and teacher interfaces
+- Works in both table (row) and card view modes
+
+**Status**: ✅ **Fully Implemented**
+
 ## Plan
 - [x] Scan project structure and identify relevant files
 - [x] Examine database schema for questions and question_paper_questions tables

@@ -1600,7 +1600,7 @@ export default function AdminQuestionBank() {
                           return (
                             <TableRow 
                               key={question.id}
-                              className={isInGlobal ? 'bg-success/10 hover:bg-success/20' : isSelected ? 'bg-primary/5' : ''}
+                              className={isInGlobal ? 'bg-success/20 hover:bg-success/30 border-success/50' : isSelected ? 'bg-primary/5' : ''}
                             >
                               <TableCell className="max-w-md">
                                 <div className="flex items-center gap-2">
@@ -1618,9 +1618,9 @@ export default function AdminQuestionBank() {
                                     onClick={() => handleViewQuestion(question)}
                                   />
                                   {isInGlobal && (
-                                    <Badge variant="default" className="bg-success text-success-foreground shrink-0">
+                                    <Badge variant="default" className="bg-success text-success-foreground shrink-0 font-semibold">
                                       <Globe className="h-3 w-3 mr-1" />
-                                      In Global
+                                      avl Global
                                     </Badge>
                                   )}
                                 </div>
