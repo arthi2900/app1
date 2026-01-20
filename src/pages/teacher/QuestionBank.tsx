@@ -28,7 +28,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Trash2, FileQuestion, BookOpen, LayoutGrid, LayoutList, Pencil, Upload, FileSpreadsheet, Globe } from 'lucide-react';
+import { Plus, Trash2, FileQuestion, BookOpen, LayoutGrid, LayoutList, Pencil, Upload, FileSpreadsheet } from 'lucide-react';
 import { questionApi, subjectApi, academicApi, profileApi, lessonApi } from '@/db/api';
 import { useToast } from '@/hooks/use-toast';
 import type { Question, Subject, Class, Lesson, TeacherAssignmentWithDetails, Profile, MatchPair } from '@/types/types';
@@ -66,7 +66,6 @@ export default function QuestionBank() {
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [formResetKey, setFormResetKey] = useState(0); // Key to force RichTextEditor reset
-  const [questionsInGlobal, setQuestionsInGlobal] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -173,9 +172,6 @@ export default function QuestionBank() {
         );
         setLessons(filteredLessons);
       }
-
-      // Load questions that are already in global bank
-      await loadQuestionsInGlobal();
     } catch (error: any) {
       console.error('Error loading data:', error);
       toast({
@@ -185,28 +181,6 @@ export default function QuestionBank() {
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const loadQuestionsInGlobal = async () => {
-    try {
-      // Check the global_questions table for source_question_id
-      const { data, error } = await supabase
-        .from('global_questions')
-        .select('source_question_id')
-        .not('source_question_id', 'is', null);
-
-      if (error) throw error;
-
-      const questionIds = new Set(
-        data
-          .map((q) => q.source_question_id)
-          .filter((id): id is string => id !== null)
-      );
-
-      setQuestionsInGlobal(questionIds);
-    } catch (error) {
-      console.error('Error loading global question IDs:', error);
     }
   };
 
@@ -2028,30 +2002,17 @@ export default function QuestionBank() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {questions.map((question, index) => {
-                  const isInGlobal = questionsInGlobal.has(question.id);
-                  return (
-                  <TableRow 
-                    key={question.id}
-                    className={isInGlobal ? 'bg-success/20 hover:bg-success/30 border-success/50' : ''}
-                  >
+                {questions.map((question, index) => (
+                  <TableRow key={question.id}>
                     <TableCell className="font-medium text-muted-foreground">
                       #{question.serial_number || (index + 1).toString().padStart(3, '0')}
                     </TableCell>
                     <TableCell className="max-w-md">
                       <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <MathRenderer 
-                            content={question.question_text}
-                            className="question-content line-clamp-3 flex-1"
-                          />
-                          {isInGlobal && (
-                            <Badge variant="default" className="bg-success text-success-foreground shrink-0 font-semibold">
-                              <Globe className="h-3 w-3 mr-1" />
-                              avl Global
-                            </Badge>
-                          )}
-                        </div>
+                        <MathRenderer 
+                          content={question.question_text}
+                          className="question-content line-clamp-3"
+                        />
                         {question.image_url && (
                           <img
                             src={question.image_url}
@@ -2115,19 +2076,13 @@ export default function QuestionBank() {
                       </div>
                     </TableCell>
                   </TableRow>
-                  );
-                })}
+                ))}
               </TableBody>
             </Table>
           ) : (
             <div className="space-y-3">
-              {questions.map((question, index) => {
-                const isInGlobal = questionsInGlobal.has(question.id);
-                return (
-                <Card 
-                  key={question.id} 
-                  className={`hover:shadow-md transition-shadow ${isInGlobal ? 'bg-success/10 border-success/50' : ''}`}
-                >
+              {questions.map((question, index) => (
+                <Card key={question.id} className="hover:shadow-md transition-shadow">
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
                       {/* Left Section: Question Number & Image */}
@@ -2149,18 +2104,12 @@ export default function QuestionBank() {
 
                       {/* Middle Section: Question Content */}
                       <div className="flex-1 min-w-0 space-y-3">
-                        {/* Question Text with Global Badge */}
-                        <div className="flex items-start gap-2">
+                        {/* Question Text */}
+                        <div>
                           <MathRenderer 
                             content={question.question_text}
-                            className="question-content text-base flex-1"
+                            className="question-content text-base"
                           />
-                          {isInGlobal && (
-                            <Badge variant="default" className="bg-success text-success-foreground shrink-0 font-semibold">
-                              <Globe className="h-3 w-3 mr-1" />
-                              avl Global
-                            </Badge>
-                          )}
                         </div>
 
                         {/* Options Display - Compact Inline */}
@@ -2298,8 +2247,7 @@ export default function QuestionBank() {
                     </div>
                   </CardContent>
                 </Card>
-                );
-              })}
+              ))}
             </div>
           )}
         </CardContent>

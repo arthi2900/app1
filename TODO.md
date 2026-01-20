@@ -76,13 +76,15 @@ Error: duplicate key value violates unique constraint "idx_questions_bank_serial
 ### Task 3: Global Question Visual Indicators (COMPLETED ✅)
 **Feature**: Show visual indicators when a question from a user's question bank is also available in the Global Question bank.
 
+**Scope**: Admin interface ONLY (Admin → Question Bank Management → User Questions tab)
+
 **Implementation**:
 - [x] Add "avl Global" badge to questions that exist in global bank
 - [x] Apply green background (bg-success/20) to highlight global questions
-- [x] Implement in Admin Question Bank page
-- [x] Implement in Teacher Question Bank page (both row and card views)
+- [x] Implement in Admin Question Bank page (User Questions section)
 - [x] Load global question IDs on page load
 - [x] Check against global_questions table using source_question_id
+- [x] Disable checkbox for questions already in global bank
 
 **Visual Design**:
 - **Badge**: Green badge with Globe icon showing "avl Global"
@@ -91,10 +93,10 @@ Error: duplicate key value violates unique constraint "idx_questions_bank_serial
 - **Font**: Bold font weight for better visibility
 
 **User Experience**:
-- Teachers can instantly see which of their questions are available globally
-- Admins can see which questions are already in the global bank (checkbox disabled)
-- Consistent visual language across both admin and teacher interfaces
-- Works in both table (row) and card view modes
+- Admins can instantly see which user questions are already in the global bank
+- Checkbox is disabled for questions already in global bank (prevents duplicates)
+- Clear visual feedback with green highlighting and badge
+- Only visible in Admin interface, not in Teacher interface
 
 **Status**: ✅ **Fully Implemented**
 
