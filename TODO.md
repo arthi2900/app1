@@ -100,6 +100,28 @@ Error: duplicate key value violates unique constraint "idx_questions_bank_serial
 
 **Status**: ✅ **Fully Implemented**
 
+### Task 4: Fix Missing Users in Question Bank Management (COMPLETED ✅)
+**Issue**: Some users who have questions in their question bank were not being displayed in Admin → Question Bank Management → User Questions section.
+
+**Root Cause**: 
+- The `getUserQuestionBanks()` API function was filtering out questions where `bank_name` is NULL
+- Users who created questions without assigning them to a named bank were excluded from the list
+
+**Solution**:
+- [x] Removed `.not('bank_name', 'is', null)` filter from `getUserQuestionBanks()`
+- [x] Modified logic to include ALL users who have created questions
+- [x] Added "Unnamed Bank" label for questions without a bank_name
+- [x] Updated `getQuestionsByUserAndBank()` to handle "Unnamed Bank" case
+- [x] Used `.is('bank_name', null)` query for unnamed bank questions
+
+**Impact**:
+- All users with questions now appear in the User Questions section
+- Questions without bank names are grouped under "Unnamed Bank"
+- No data loss or missing users
+- Maintains backward compatibility with existing named banks
+
+**Status**: ✅ **Fully Implemented**
+
 ## Plan
 - [x] Scan project structure and identify relevant files
 - [x] Examine database schema for questions and question_paper_questions tables

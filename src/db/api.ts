@@ -608,7 +608,6 @@ export const questionApi = {
         )
       `)
       .eq('is_global', false)
-      .not('bank_name', 'is', null)
       .order('bank_name', { ascending: true });
     
     if (error) throw error;
@@ -617,7 +616,7 @@ export const questionApi = {
     const userBanksMap = new Map<string, { userName: string; userRole: string; bankNames: Set<string> }>();
     
     (Array.isArray(data) ? data : []).forEach((item: any) => {
-      if (item.creator && item.bank_name) {
+      if (item.creator) {
         const userId = item.creator.id;
         if (!userBanksMap.has(userId)) {
           userBanksMap.set(userId, {
@@ -626,7 +625,9 @@ export const questionApi = {
             bankNames: new Set()
           });
         }
-        userBanksMap.get(userId)?.bankNames.add(item.bank_name);
+        // Add bank name if it exists, otherwise add a default label
+        const bankName = item.bank_name || 'Unnamed Bank';
+        userBanksMap.get(userId)?.bankNames.add(bankName);
       }
     });
 
@@ -639,13 +640,20 @@ export const questionApi = {
   },
 
   async getQuestionsByUserAndBank(userId: string, bankName: string): Promise<Question[]> {
-    const { data, error } = await supabase
+    let query = supabase
       .from('questions')
       .select('*')
       .eq('created_by', userId)
-      .eq('bank_name', bankName)
-      .eq('is_global', false)
-      .order('created_at', { ascending: true });
+      .eq('is_global', false);
+    
+    // Handle "Unnamed Bank" case (questions with null bank_name)
+    if (bankName === 'Unnamed Bank') {
+      query = query.is('bank_name', null);
+    } else {
+      query = query.eq('bank_name', bankName);
+    }
+    
+    const { data, error } = await query.order('created_at', { ascending: true });
     
     if (error) throw error;
     return Array.isArray(data) ? data : [];
