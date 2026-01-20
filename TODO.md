@@ -122,6 +122,44 @@ Error: duplicate key value violates unique constraint "idx_questions_bank_serial
 
 **Status**: ✅ **Fully Implemented**
 
+### Task 5: Hide Suspended Users from Non-Admin Views (COMPLETED ✅)
+**Requirement**: Suspended users should not be displayed anywhere except when an admin logs in.
+
+**Analysis**:
+- Suspended field exists in profiles table (boolean, default: false)
+- Login already prevents suspended users from accessing the system
+- Need to filter suspended users from all user listing APIs for non-admin users
+- Admin users should still see suspended users for management purposes
+
+**Implementation**:
+- [x] Identified all API functions that fetch user profiles
+- [x] Added suspended filter to non-admin user listing functions:
+  - `getProfilesByRole()` - Added `.eq('suspended', false)` filter
+  - `getTeachersBySchoolId()` - Added `.eq('suspended', false)` filter
+  - `getStudentsBySchoolId()` - Added `.eq('suspended', false)` filter
+  - `getStudentsWithClassSection()` - Added `.eq('suspended', false)` filter
+  - `academicApi.getStudentsByClassSection()` - Filter suspended students in results
+  - `academicApi.getStudentsByClass()` - Filter suspended students in results
+  - `examApi.getAllStudentsForExam()` - Added `.eq('suspended', false)` filter
+- [x] Kept `getAllProfiles()` without filter (admin-only function in UserManagement)
+- [x] Historical data (exam attempts, allocations) still shows suspended users for record-keeping
+
+**Impact**:
+- Suspended users cannot login (already implemented)
+- Suspended users are hidden from all user selection lists for non-admins
+- Principal cannot see suspended teachers/students in their lists
+- Teachers cannot select suspended students for exams
+- Admin can still see all users including suspended ones in UserManagement page
+- Historical exam data and results remain accessible for suspended users
+
+**Affected Pages**:
+- ✅ Principal: TeachersList, AcademicsManagement, PrincipalDashboard
+- ✅ Teacher: CreateExam (student selection), QuestionBank
+- ✅ Admin: UserManagement (still shows suspended users)
+- ✅ All role-based user listings
+
+**Status**: ✅ **Fully Implemented**
+
 ## Plan
 - [x] Scan project structure and identify relevant files
 - [x] Examine database schema for questions and question_paper_questions tables

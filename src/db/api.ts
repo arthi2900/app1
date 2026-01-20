@@ -107,6 +107,7 @@ export const profileApi = {
       .from('profiles')
       .select('*')
       .eq('role', role)
+      .eq('suspended', false)
       .order('created_at', { ascending: false });
     if (error) throw error;
     return Array.isArray(data) ? data : [];
@@ -162,6 +163,7 @@ export const profileApi = {
       .eq('role', 'teacher')
       .eq('school_id', schoolId)
       .eq('approved', true)
+      .eq('suspended', false)
       .order('full_name', { ascending: true });
     if (error) throw error;
     
@@ -185,6 +187,7 @@ export const profileApi = {
       .eq('role', 'student')
       .eq('school_id', schoolId)
       .eq('approved', true)
+      .eq('suspended', false)
       .order('full_name', { ascending: true });
     if (error) throw error;
     
@@ -222,6 +225,7 @@ export const profileApi = {
       .eq('role', 'student')
       .eq('school_id', schoolId)
       .eq('approved', true)
+      .eq('suspended', false)
       .order('full_name', { ascending: true});
     if (error) throw error;
     
@@ -1041,7 +1045,10 @@ export const academicApi = {
       .eq('academic_year', academicYear)
       .order('created_at', { ascending: true });
     if (error) throw error;
-    return Array.isArray(data) ? data : [];
+    
+    // Filter out suspended students
+    const students = Array.isArray(data) ? data : [];
+    return students.filter((item: any) => item.student && !item.student.suspended);
   },
 
   async getStudentsByClass(classId: string, academicYear: string = '2024-2025'): Promise<StudentClassSectionWithDetails[]> {
@@ -1057,7 +1064,10 @@ export const academicApi = {
       .eq('academic_year', academicYear)
       .order('created_at', { ascending: true });
     if (error) throw error;
-    return Array.isArray(data) ? data : [];
+    
+    // Filter out suspended students
+    const students = Array.isArray(data) ? data : [];
+    return students.filter((item: any) => item.student && !item.student.suspended);
   },
 
   async assignStudentToClassSection(assignment: Omit<StudentClassSection, 'id' | 'created_at'>): Promise<StudentClassSection | null> {
@@ -1732,6 +1742,7 @@ export const examAttemptApi = {
       `)
       .eq('role', 'student')
       .eq('approved', true)
+      .eq('suspended', false)
       .order('full_name', { ascending: true });
 
     if (error) throw error;
