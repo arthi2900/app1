@@ -27,22 +27,51 @@ Fix serial number display issue where original serial numbers from Question Bank
 - [x] Create globalQuestionApi with CRUD operations and deduplication
 - [x] Verify no TypeScript errors related to global questions
 - [x] Clean up user "chozan"'s duplicate questions (73 → 3, removed 70 unused duplicates)
-- [ ] Update frontend pages to use globalQuestionApi (admin can implement when needed)
-- [ ] Update "Add to Global" button functionality (admin can implement when needed)
+- [x] Fix "Copy to Global" functionality to use new global_questions table
+- [x] Update AdminQuestionBank to check global_questions table for duplicates
+- [x] Improve error handling for duplicate detection
 
-**Status**: ✅ **Backend Implementation Complete + User Cleanup Done**
+**Status**: ✅ **Fully Implemented and Fixed**
 
-The database and API layer are fully implemented. User "chozan"'s question bank has been cleaned:
-- **Before**: 73 global questions (44 unique, 29 duplicates)
-- **After**: 3 global questions (kept only those used in published exam "Series 1_2")
-- **Removed**: 70 duplicate global questions
-- **Non-global questions**: 50 questions (44 unique, 6 duplicates) - No duplicates found after verification
+### Recent Fix (2026-01-19)
+**Issue**: Error when copying questions to global bank:
+```
+POST /rest/v1/questions?select=* 409 (Conflict)
+Error: duplicate key value violates unique constraint "idx_questions_bank_serial"
+```
 
-Frontend integration can be done when needed by:
-1. Using `globalQuestionApi.getAllGlobalQuestions()` to fetch global questions
-2. Using `globalQuestionApi.addQuestionToGlobal(questionId)` to add questions to global
-3. Global questions are automatically deduplicated (checks question_text, question_type, and correct_answer)
-4. All users can view global questions, only admins can manage them
+**Root Cause**: The `copyQuestionToGlobal` function was still using the OLD approach (copying to questions table with is_global=true) instead of the NEW global_questions table.
+
+**Changes Made**:
+1. **Updated `questionApi.copyQuestionToGlobal()`** (src/db/api.ts):
+   - Now uses `globalQuestionApi.addQuestionToGlobal()` internally
+   - Automatically handles deduplication
+   - No longer creates duplicate entries in questions table
+
+2. **Updated `loadQuestionsInGlobal()`** (src/pages/admin/AdminQuestionBank.tsx):
+   - Changed from checking `questions` table (is_global=true)
+   - Now checks `global_questions` table for source_question_id
+   - Correctly identifies which questions are already in global bank
+
+3. **Improved Error Handling**:
+   - Single copy: Shows specific error message for duplicates
+   - Bulk copy: Processes sequentially, counts successes/skips/errors
+   - User-friendly messages: "X questions copied, Y skipped (already exist)"
+
+**Database State**:
+- User "chozan"'s question bank cleaned:
+  - **Before**: 73 global questions (44 unique, 29 duplicates)
+  - **After**: 3 global questions (kept only those used in published exam "Series 1_2")
+  - **Removed**: 70 duplicate global questions
+  - **Non-global questions**: 50 questions (44 unique, 6 duplicates)
+
+**How It Works Now**:
+1. Admin selects questions from user's question bank
+2. Clicks "Copy to Global" button
+3. System checks if question already exists in `global_questions` table
+4. If not exists: Adds to `global_questions` with automatic deduplication
+5. If exists: Skips and shows friendly message
+6. No more duplicate key constraint errors!
 
 ## Plan
 - [x] Scan project structure and identify relevant files

@@ -582,22 +582,16 @@ export const questionApi = {
     if (fetchError) throw fetchError;
     if (!originalQuestion) throw new Error('Question not found');
 
-    // Create a copy with is_global = true, preserving the original creator
-    const { id, created_at, ...questionData } = originalQuestion;
+    // Use the new globalQuestionApi to add to global_questions table
+    // This will handle deduplication automatically
+    const globalQuestion = await globalQuestionApi.addQuestionToGlobal(questionId);
     
-    const { data, error } = await supabase
-      .from('questions')
-      .insert({
-        ...questionData,
-        is_global: true,
-        source_question_id: questionId
-        // created_by is preserved from originalQuestion via ...questionData
-      })
-      .select()
-      .maybeSingle();
+    if (!globalQuestion) {
+      throw new Error('Failed to add question to global bank');
+    }
     
-    if (error) throw error;
-    return data;
+    // Return the original question (for backward compatibility)
+    return originalQuestion;
   },
 
   async getUserQuestionBanks(): Promise<{ userId: string; userName: string; userRole: string; bankNames: string[] }[]> {

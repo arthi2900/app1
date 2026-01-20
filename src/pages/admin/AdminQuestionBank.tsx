@@ -149,10 +149,10 @@ export default function AdminQuestionBank() {
 
   const loadQuestionsInGlobal = async () => {
     try {
+      // Check the new global_questions table for source_question_id
       const { data, error } = await supabase
-        .from('questions')
+        .from('global_questions')
         .select('source_question_id')
-        .eq('is_global', true)
         .not('source_question_id', 'is', null);
 
       if (error) throw error;
@@ -187,11 +187,18 @@ export default function AdminQuestionBank() {
         description: 'Question copied to global bank',
       });
       loadData();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error copying question:', error);
+      
+      // Provide more specific error message
+      let errorMessage = 'Failed to copy question to global bank';
+      if (error?.message?.includes('already exists') || error?.message?.includes('duplicate')) {
+        errorMessage = 'This question already exists in the global bank';
+      }
+      
       toast({
         title: 'Error',
-        description: 'Failed to copy question to global bank',
+        description: errorMessage,
         variant: 'destructive',
       });
     }
@@ -212,15 +219,43 @@ export default function AdminQuestionBank() {
         return;
       }
 
-      // Copy all questions in parallel
-      await Promise.all(
-        questionsNotInGlobal.map(questionId => questionApi.copyQuestionToGlobal(questionId))
-      );
+      // Copy questions sequentially to handle duplicates gracefully
+      let successCount = 0;
+      let skipCount = 0;
+      const errors: string[] = [];
 
-      toast({
-        title: 'Success',
-        description: `${questionsNotInGlobal.length} question(s) copied to global bank`,
-      });
+      for (const questionId of questionsNotInGlobal) {
+        try {
+          await questionApi.copyQuestionToGlobal(questionId);
+          successCount++;
+        } catch (error: any) {
+          // Check if it's a duplicate error (question already exists in global bank)
+          if (error?.message?.includes('already exists') || error?.message?.includes('duplicate')) {
+            skipCount++;
+          } else {
+            errors.push(error?.message || 'Unknown error');
+          }
+        }
+      }
+
+      // Show appropriate message based on results
+      if (successCount > 0) {
+        toast({
+          title: 'Success',
+          description: `${successCount} question(s) copied to global bank${skipCount > 0 ? `, ${skipCount} skipped (already exist)` : ''}`,
+        });
+      } else if (skipCount > 0) {
+        toast({
+          title: 'Already Exists',
+          description: `All ${skipCount} question(s) already exist in the global bank`,
+        });
+      } else if (errors.length > 0) {
+        toast({
+          title: 'Error',
+          description: `Failed to copy questions: ${errors[0]}`,
+          variant: 'destructive',
+        });
+      }
 
       setSelectedQuestions(new Set());
       setBulkCopyDialog(false);
