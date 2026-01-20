@@ -160,6 +160,40 @@ Error: duplicate key value violates unique constraint "idx_questions_bank_serial
 
 **Status**: ✅ **Fully Implemented**
 
+### Task 6: Fix Percentage Calculation Bug (INVESTIGATION COMPLETE - AWAITING APPROVAL)
+
+**Issue Reported**: 
+- Student Janani D answered 16/20 questions correctly in exam "Series 1_1"
+- System shows 100% instead of correct 80%
+
+**Investigation Results**:
+- ✅ Identified root cause: `evaluate_exam_attempt()` function calculates percentage based on answered questions only
+- ✅ Current logic: (16 answered / 16 answered) × 100 = 100% ❌
+- ✅ Correct logic: (16 answered / 20 total) × 100 = 80% ✓
+- ✅ Found 4 missing questions that Janani did not answer:
+  - Display Order 2: "Synonyms - ascending"
+  - Display Order 18: "Antonyms - plunge"
+  - Display Order 19: "Antonyms - gruffly"
+  - Display Order 20: "Antonyms - mockingly"
+
+**Impact**:
+- Affects ALL students who don't answer all questions
+- Inflates percentage scores incorrectly
+- Pass/fail status remains correct (based on marks obtained vs passing marks)
+
+**Proposed Solution**:
+1. Modify `evaluate_exam_attempt()` function to use exam's total_marks from exams table
+2. Re-evaluate all affected exam attempts
+3. Update historical data with correct percentages
+
+**Status**: 🔍 **Investigation Complete - Awaiting User Approval**
+
+**Next Steps**: User must approve before implementing fix
+
+**Detailed Report**: See EXAM_ISSUE_REPORT.md
+
+---
+
 ## Plan
 - [x] Scan project structure and identify relevant files
 - [x] Examine database schema for questions and question_paper_questions tables
