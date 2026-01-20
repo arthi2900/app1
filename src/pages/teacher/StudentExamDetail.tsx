@@ -153,26 +153,65 @@ export default function StudentExamDetail() {
         );
       
       case 'multiple_response':
-        const studentAnswers = Array.isArray(studentAnswer) ? studentAnswer : [];
+        // Parse student answer if it's a string, otherwise use as-is
+        let studentAnswers: string[] = [];
+        try {
+          studentAnswers = typeof studentAnswer === 'string' 
+            ? JSON.parse(studentAnswer) 
+            : (Array.isArray(studentAnswer) ? studentAnswer : []);
+        } catch (e) {
+          console.error('Error parsing student answer:', e);
+          studentAnswers = Array.isArray(studentAnswer) ? studentAnswer : [];
+        }
+
+        // Parse correct answer if it's a string, otherwise use as-is
+        let correctAnswers: string[] = [];
+        try {
+          correctAnswers = typeof correctAnswer === 'string'
+            ? JSON.parse(correctAnswer)
+            : (Array.isArray(correctAnswer) ? correctAnswer : []);
+        } catch (e) {
+          console.error('Error parsing correct answer:', e);
+          correctAnswers = Array.isArray(correctAnswer) ? correctAnswer : [];
+        }
+
         return (
           <div className="space-y-2">
-            <div className="flex items-start gap-2">
-              <span className="font-medium">Student Answer:</span>
-              <div className="flex flex-wrap gap-1">
+            <div>
+              <span className="font-medium">Student Answers:</span>
+              <div className="mt-1 flex flex-wrap gap-2">
                 {studentAnswers.length > 0 ? (
-                  studentAnswers.map((ans: string, idx: number) => (
-                    <Badge key={idx} variant={answer.is_correct ? 'default' : 'destructive'} className={answer.is_correct ? 'bg-secondary' : ''}>
-                      {ans}
-                    </Badge>
-                  ))
+                  studentAnswers.map((ans: string, idx: number) => {
+                    const isCorrect = correctAnswers.includes(ans);
+                    return (
+                      <Badge 
+                        key={idx} 
+                        variant={isCorrect ? 'default' : 'destructive'}
+                        className={isCorrect ? 'bg-success text-white' : 'bg-destructive text-white'}
+                      >
+                        {isCorrect ? '✓ ' : '✗ '}
+                        {ans}
+                      </Badge>
+                    );
+                  })
                 ) : (
                   <Badge variant="destructive">Not Answered</Badge>
                 )}
               </div>
             </div>
-            <div className="flex items-start gap-2">
-              <span className="font-medium">Correct Answer:</span>
-              <Badge variant="outline">{correctAnswer}</Badge>
+            <div>
+              <span className="font-medium">Correct Answers:</span>
+              <div className="mt-1 flex flex-wrap gap-2">
+                {correctAnswers.map((ans: string, idx: number) => (
+                  <Badge 
+                    key={idx} 
+                    variant="default"
+                    className="bg-success text-white"
+                  >
+                    ✓ {ans}
+                  </Badge>
+                ))}
+              </div>
             </div>
           </div>
         );
