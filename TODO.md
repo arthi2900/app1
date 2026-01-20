@@ -160,37 +160,79 @@ Error: duplicate key value violates unique constraint "idx_questions_bank_serial
 
 **Status**: ✅ **Fully Implemented**
 
-### Task 6: Fix Percentage Calculation Bug (INVESTIGATION COMPLETE - AWAITING APPROVAL)
+### Task 6: Fix Exam Delivery System and Percentage Calculation (COMPREHENSIVE INVESTIGATION COMPLETE)
 
 **Issue Reported**: 
 - Student Janani D answered 16/20 questions correctly in exam "Series 1_1"
 - System shows 100% instead of correct 80%
+- **User's Critical Insight**: All 20 questions should have been displayed; only 16 were accessible
 
-**Investigation Results**:
-- ✅ Identified root cause: `evaluate_exam_attempt()` function calculates percentage based on answered questions only
-- ✅ Current logic: (16 answered / 16 answered) × 100 = 100% ❌
-- ✅ Correct logic: (16 answered / 20 total) × 100 = 80% ✓
-- ✅ Found 4 missing questions that Janani did not answer:
-  - Display Order 2: "Synonyms - ascending"
-  - Display Order 18: "Antonyms - plunge"
-  - Display Order 19: "Antonyms - gruffly"
-  - Display Order 20: "Antonyms - mockingly"
+**Comprehensive Investigation Results**:
+
+**Database Verification** ✅:
+- ✅ All 20 questions exist in database with correct display_order (1-20)
+- ✅ RLS policies allow students to view all questions from their exams
+- ✅ API function fetches all questions without LIMIT clause
+
+**Frontend Verification** ✅:
+- ✅ UI designed with question palette showing all questions
+- ✅ Skip and revisit functionality implemented
+- ✅ Question counter shows total/answered/unanswered
+- ✅ Navigation allows jumping to any question
+
+**Root Cause Analysis** ⚠️:
+- **Primary Issue**: Exam delivery system has no validation to ensure all questions are loaded
+- **Secondary Issue**: No warning when students submit with unanswered questions
+- **Tertiary Issue**: Percentage calculation uses answered questions instead of total marks
+
+**Missing Questions** (Janani did not answer):
+- Display Order 2: "Synonyms - ascending"
+- Display Order 18: "Antonyms - plunge"
+- Display Order 19: "Antonyms - gruffly"
+- Display Order 20: "Antonyms - mockingly"
+
+**Pattern**: Missing #2 and last 3 questions suggests incomplete loading or UI rendering issue
+
+**Proposed Comprehensive Solution**:
+
+1. **Frontend Validation** (CRITICAL):
+   - Verify all questions loaded before exam starts
+   - Compare loaded count with exam total_marks
+   - Show error and retry if mismatch detected
+
+2. **Submit Warning** (CRITICAL):
+   - Show clear warning for unanswered questions
+   - Display count of unanswered questions
+   - Highlight which questions are unanswered
+   - Require confirmation to proceed
+
+3. **Question Loading Indicator**:
+   - Show "✅ X questions loaded successfully"
+   - Add console logging for debugging
+   - Log question IDs and display orders
+
+4. **Database Function Fix**:
+   - Modify `evaluate_exam_attempt()` to use exam.total_marks
+   - Current: (16/16) × 100 = 100% ❌
+   - Correct: (16/20) × 100 = 80% ✓
+
+5. **Data Correction**:
+   - Re-evaluate all affected exam attempts
+   - Update Janani's percentage to 80%
+   - Notify affected students
 
 **Impact**:
 - Affects ALL students who don't answer all questions
-- Inflates percentage scores incorrectly
-- Pass/fail status remains correct (based on marks obtained vs passing marks)
+- Prevents future incomplete exam deliveries
+- Ensures data integrity and fair scoring
 
-**Proposed Solution**:
-1. Modify `evaluate_exam_attempt()` function to use exam's total_marks from exams table
-2. Re-evaluate all affected exam attempts
-3. Update historical data with correct percentages
+**Status**: 🔍 **Comprehensive Investigation Complete - Awaiting User Approval**
 
-**Status**: 🔍 **Investigation Complete - Awaiting User Approval**
+**Next Steps**: User must approve all proposed fixes before implementation
 
-**Next Steps**: User must approve before implementing fix
-
-**Detailed Report**: See EXAM_ISSUE_REPORT.md
+**Detailed Reports**: 
+- See EXAM_ISSUE_REPORT.md (scoring bug analysis)
+- See EXAM_DELIVERY_INVESTIGATION.md (comprehensive system analysis)
 
 ---
 
