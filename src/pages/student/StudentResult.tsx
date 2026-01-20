@@ -400,34 +400,71 @@ export default function StudentResult() {
                       )}
 
                       {/* Match Following */}
-                      {question.question_type === 'match_following' && (
-                        <div className="space-y-2">
-                          <div>
-                            <span className="font-medium">Your Matches:</span>
-                            <div className="mt-1 p-3 bg-muted rounded-md space-y-1">
-                              {studentAnswer && Object.entries(studentAnswer).map(([left, right]: [string, any]) => (
-                                <div key={left} className="flex items-center gap-2">
-                                  <span>{left}</span>
-                                  <span>→</span>
-                                  <span>{right}</span>
-                                </div>
-                              ))}
+                      {question.question_type === 'match_following' && (() => {
+                        // Parse student answer if it's a string, otherwise use as-is
+                        let studentMatches = {};
+                        try {
+                          studentMatches = typeof studentAnswer === 'string' 
+                            ? JSON.parse(studentAnswer) 
+                            : (studentAnswer || {});
+                        } catch (e) {
+                          console.error('Error parsing student answer:', e);
+                          studentMatches = studentAnswer || {};
+                        }
+
+                        // Parse correct answer if it's a string, otherwise use as-is
+                        let correctMatches = {};
+                        try {
+                          correctMatches = typeof correctAnswer === 'string'
+                            ? JSON.parse(correctAnswer)
+                            : (correctAnswer || {});
+                        } catch (e) {
+                          console.error('Error parsing correct answer:', e);
+                          correctMatches = correctAnswer || {};
+                        }
+
+                        return (
+                          <div className="space-y-2">
+                            <div>
+                              <span className="font-medium">Your Matches:</span>
+                              <div className="mt-1 p-3 bg-muted rounded-md space-y-1">
+                                {Object.entries(studentMatches).map(([left, right]: [string, any]) => {
+                                  const isCorrect = correctMatches[left as keyof typeof correctMatches] === right;
+                                  return (
+                                    <div key={left} className="flex items-center gap-2">
+                                      {isCorrect ? (
+                                        <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0" />
+                                      ) : (
+                                        <XCircle className="h-4 w-4 text-destructive flex-shrink-0" />
+                                      )}
+                                      <span className={isCorrect ? 'text-success' : 'text-destructive'}>
+                                        {left}
+                                      </span>
+                                      <span>→</span>
+                                      <span className={isCorrect ? 'text-success' : 'text-destructive'}>
+                                        {right}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                            <div>
+                              <span className="font-medium">Correct Matches:</span>
+                              <div className="mt-1 p-3 bg-success/10 rounded-md space-y-1">
+                                {Object.entries(correctMatches).map(([left, right]: [string, any]) => (
+                                  <div key={left} className="flex items-center gap-2">
+                                    <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0" />
+                                    <span className="text-success">{left}</span>
+                                    <span>→</span>
+                                    <span className="text-success">{right}</span>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           </div>
-                          <div>
-                            <span className="font-medium">Correct Matches:</span>
-                            <div className="mt-1 p-3 bg-muted rounded-md space-y-1">
-                              {correctAnswer && JSON.parse(correctAnswer) && Object.entries(JSON.parse(correctAnswer)).map(([left, right]: [string, any]) => (
-                                <div key={left} className="flex items-center gap-2">
-                                  <span>{left}</span>
-                                  <span>→</span>
-                                  <span>{right}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                        );
+                      })()}
                     </div>
 
                     {/* Marks Obtained */}
